@@ -242,7 +242,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.6</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.7</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -293,7 +293,11 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
       <div class="section-header second-header"><h2>NEW STANDARD TOOL</h2><span class="small-chip">TEMPLATES</span></div>
       <label class="field">ISO HOLDER / TOOL TEMPLATE<select id="toolPreset"></select></label>
       <p class="editor-hint">Catalog presets use ISO holder designations and published shank/head dimensions. The shaped pocket and clamp remain illustrative.</p>
-      <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD TEMPLATE</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button></div>
+      <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD TEMPLATE</button><button id="applyCatalogPreset" class="action-btn">APPLY CATALOG TO SELECTED</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button></div>
+      <div class="library-divider"></div>
+      <div class="section-header"><h2>DEMONSTRATION TABLE · T01–T06</h2><span class="small-chip">VALID PRESETS</span></div>
+      <p class="editor-hint">New demos use a PCLNR 80° roughing holder and PDJNR 55° finishing holder. Boring, grooving, threading and drilling samples remain labeled GENERIC / UNVERIFIED. Rebuilding replaces this job's tool table but does not change your saved shop library. Export important work before testing.</p>
+      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">RESTORE 6 DEMO TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button></div>
       <div class="library-divider"></div>
       <div class="section-header"><h2>REUSABLE SHOP LIBRARY</h2><span class="small-chip">OFFLINE</span></div>
       <div class="tool-actions"><button class="small-btn" id="saveToolLibrary">SAVE LIBRARY</button><button class="small-btn" id="loadToolLibrary">LOAD LIBRARY</button></div>
@@ -359,7 +363,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
       <div class="tool-form-grid">
         <label class="field">TURRET MOUNT<select id="toolMountSide"><option value="front">FRONT / +RADIAL VIEW</option><option value="rear">REAR / MIRROR RADIAL VIEW</option></select></label>
         <label class="field">TOOL REFERENCE<select id="toolTipReference"><option value="virtual">VIRTUAL SHARP TIP</option><option value="nose">NOSE RADIUS CENTER</option></select></label>
-        <label class="field">HOLDER SHAPE<select id="holderMode"><option value="catalog">CATALOG HOLDER / SHAPED HEAD</option><option value="rect">RECTANGULAR ENVELOPE</option><option value="custom">CUSTOM HOLDER POLYGON</option><option value="none">NO HOLDER</option></select></label>
+        <label class="field">HOLDER SHAPE · CHOOSE PRESET ABOVE FOR CATALOG<select id="holderMode"><option value="catalog">CATALOG HOLDER / SHAPED HEAD</option><option value="rect">RECTANGULAR ENVELOPE</option><option value="custom">CUSTOM HOLDER POLYGON</option><option value="none">NO HOLDER</option></select></label>
       </div>
       <details class="tip-advanced geometry-advanced" id="geometryAdvanced">
         <summary>▸ ADVANCED GEOMETRY · POCKET / HOLDER POSITION <span>U/V COORDINATES</span></summary>
@@ -554,7 +558,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.6';
+const TOOL_CORE_VERSION='0.5.7';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -707,7 +711,18 @@ function upgradeTool(t,units='inch'){
  if(!['virtual','nose'].includes(result.tipReference))result.tipReference='virtual';
  if(!result.holder||typeof result.holder!=='object'){result.holder=defaultHolder(units,result.kind);result.verified=false;}
  else result.holder={...defaultHolder(units,result.kind),...result.holder};
- if(result.holder.mode==='catalog'&&!result.catalog){result.verified=false;result.holder.mode='rect';}
+ if(result.holder.mode==='catalog'){
+  const reference=Object.values(CATALOG_HOLDERS).find(c=>result.catalog?.code===c.code);
+  if(!reference){result.verified=false;result.holder.mode='rect';}
+  else {
+   const absent=['h','b','lf','lh','wf'].filter(k=>!Number.isFinite(result.holder[k])||result.holder[k]<=0);
+   if(absent.length){
+    for(const k of absent)result.holder[k]=catalogScale(reference[k],units);
+    result.verified=false;
+    result.catalog={...result.catalog,sourceDimensions:'REFERENCE FIELDS RESTORED · UNVERIFIED'};
+   }
+  }
+ }
  if(!result.pocket||!Number.isFinite(result.pocket.u)||!Number.isFinite(result.pocket.v)){result.pocket=defaultPocket(result);result.verified=false;}
  return result;
 }
@@ -743,7 +758,31 @@ function holderPolygon(tool){
 function renderMountPoint(point,side='front'){
  return {u:point.u,v:side==='rear'?-point.v:point.v};
 }
-function starterTools(units='inch') {return ['od_c','od_d','bore_c','groove_od','thread_od','drill'].map((key,i)=>makeTemplate(key,units,i+1));}
+/** v0.5.7 corrected six-tool demonstration table. The two OD cutters are
+ * dimensioned catalog family REFERENCE outlines, not certified manufacturer CAD.
+ * Remaining process families deliberately retain clearly identified generic
+ * envelopes until measured/authorized catalog geometries exist.
+ */
+const DEMO_TOOL_PRESETS=Object.freeze([
+ 'catalog_pclnr_2525m12', // T01: 80 degree roughing, 95 degree approach
+ 'catalog_pdjnr_2525m15', // T02: 55 degree finishing, 93 degree approach
+ 'bore_c',                // T03: generic bore
+ 'groove_od',             // T04: generic grooving blade
+ 'thread_od',             // T05: generic threading tool
+ 'drill'                  // T06: generic centerline drill
+]);
+const DEMO_GENERIC_NAMES={3:'ID BORING BAR · GENERIC',4:'OD GROOVING BLADE · GENERIC',5:'OD 60° THREAD · GENERIC',6:'CENTERLINE DRILL · GENERIC'};
+function starterTools(units='inch'){
+ return DEMO_TOOL_PRESETS.map((key,i)=>{
+  const tool=makeTemplate(key,units,i+1);
+  tool.demoTemplate=key;
+  if(i>=2){tool.name=DEMO_GENERIC_NAMES[i+1];
+   tool.notes='EXAMPLE ONLY: nominal, unverified 2D holder and insert. Replace with a measured shop tool before machine planning.';
+  }
+  tool.verified=false;
+  return tool;
+ });
+}
 const normalizeJobTools=(job)=>({...job,schema:4,inspectionPositions:job.inspectionPositions&&typeof job.inspectionPositions==='object'&&!Array.isArray(job.inspectionPositions)?job.inspectionPositions:{},tools:Array.isArray(job.tools)?job.tools.map(t=>upgradeTool(t,job.units)):starterTools(job.units)});
 function convertToolUnits(tools,from,to){
  if(from===to)return structuredClone(tools);
@@ -1327,6 +1366,7 @@ const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
 const DISPLAY_KEY='miniturn.graph.displayMode.v0.5.2';
 const POINTS_KEY='miniturn.tool.markerVisibility.v0.5.5';
 const HOLDER_VIEW_KEY='miniturn.tool.catalogView.v0.5.6';
+const DEMO_BACKUP_KEY='miniturn.demoToolReset.backup.v0.5.7';
 const DISPLAY_MODES=['classic','vivid','contrast','daylight'];
 let displayMode='classic';
 try { const savedMode=localStorage.getItem(DISPLAY_KEY); if(DISPLAY_MODES.includes(savedMode))displayMode=savedMode; } catch {}
@@ -1402,7 +1442,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.5.6 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.5.7 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -1646,6 +1686,7 @@ function updateToolFields(){
  $('applyOdStartingPose').disabled=$('toolKind').value!=='od'||!['C','D','V'].includes(shape);
  $('toolCustomField').hidden=shape!=='CUSTOM';
  const hMode=$('holderMode').value;
+ $('holderMode').querySelector('option[value="catalog"]').textContent='CATALOG HOLDER (PRESET REQUIRED)';
  for(const id of ['holderStartField','holderLengthField','holderWidthField','holderCenterField'])$(id).hidden=hMode!=='rect';
  $('holderCustomField').hidden=hMode!=='custom';
  $('holderCatalogFields').hidden=hMode!=='catalog';
@@ -1653,6 +1694,7 @@ function updateToolFields(){
 }
 function readToolForm(){
  const t=structuredClone(job.tools[toolSelected]);
+ if($('holderMode').value==='catalog'&&!t.catalog)throw new Error('Select a CATALOG TOOL preset and choose APPLY TO SELECTED TOOL. Do not turn a generic rectangle into a catalog holder without its actual dimensions.');
  t.name=$('toolName').value.trim();t.station=numberField('toolStation');t.offset=numberField('toolOffset');
  t.kind=$('toolKind').value;t.shape=$('toolShape').value;t.hand=$('toolHand').value;
  t.tipDirection=numberField('toolTipDirection');t.holderBaseAngle=numberField('toolHolderBaseAngle');t.angleAdjust=numberField('toolAngleFine');t.angle=t.holderBaseAngle+t.angleAdjust;
@@ -1900,6 +1942,29 @@ function wireTools(){
   const option=document.createElement('option');option.value=val;option.textContent=name;$(id).append(option);
  }
  for(const p of TOOL_PRESETS){const option=document.createElement('option');option.value=p.key;option.textContent=p.name;$('toolPreset').append(option);}
+ $('holderMode').addEventListener('change',e=>{
+  if($('holderMode').value==='catalog'&&!job.tools[toolSelected]?.catalog){
+   e.stopImmediatePropagation();
+   $('holderMode').value=job.tools[toolSelected].holder.mode;
+   updateToolFields();drawToolPreview();
+   notify('PICK A CATALOG PRESET ABOVE, THEN APPLY TO SELECTED TOOL',true);
+  }
+ });
+ $('applyCatalogPreset').addEventListener('click',()=>{
+  if(!job.tools.length){notify('SELECT AN EXISTING TOOL',true);return;}
+  const key=$('toolPreset').value;
+  if(!key.startsWith('catalog_')){notify('CHOOSE AN ISO CATALOG PRESET FIRST',true);return;}
+  if(toolDirty&&!confirm('Discard unsaved edits and change the current tool to the chosen catalog model?'))return;
+  const previous=job.tools[toolSelected],replacement=makeTemplate(key,job.units,previous.station);
+  if(!confirm(`REPLACE ${previous.name} geometry with ${replacement.name}?\nStation T${previous.station} and offset H${previous.offset} will stay the same. Previous measured dimensions will be replaced and verification cleared.`))return;
+  replacement.id=previous.id;replacement.station=previous.station;replacement.offset=previous.offset;
+  replacement.mountSide=previous.mountSide;replacement.tipReference=previous.tipReference;
+  const trial=structuredClone(job.tools);trial[toolSelected]=replacement;
+  const check=validateToolSet(trial);
+  if(check.errors.length){notify(check.errors[0],true);return;}
+  job.tools=trial;toolDirty=false;refreshToolWorkspace();autosave();
+  notify('CATALOG GEOMETRY APPLIED · PLEASE CHECK ACTUAL TOOL DIMENSIONS');
+ });
  const fields=['catalogH','catalogB','catalogLF','catalogLH','catalogWF','toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
  const geometryFields=new Set(['catalogH','catalogB','catalogLF','catalogLH','catalogWF','toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
   'toolPocketU','toolPocketV','toolCustomPoints','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints']);
@@ -1963,6 +2028,30 @@ function wireTools(){
  $('addTool').addEventListener('click',()=>toolAction('add'));$('duplicateTool').addEventListener('click',()=>toolAction('duplicate'));
  $('deleteTool').addEventListener('click',()=>toolAction('delete'));
  document.querySelectorAll('[data-tool-action]').forEach(btn=>btn.addEventListener('click',()=>toolAction(btn.dataset.toolAction)));
+ $('resetDemoTools').addEventListener('click',()=>{
+  if(toolDirty&&!confirm('Discard unsaved tool edits before resetting the demonstration table?'))return;
+  if(!confirm('REBUILD ALL SIX DEMO TOOLS (T01–T06)?\nThis replaces the CURRENT JOB tool table, including custom tools in it. Your separately saved SHOP LIBRARY is untouched. Current job is backed up locally. Existing operations will be reassigned to demonstration tools and must be rechecked.'))return;
+  const previous=structuredClone(job),tools=starterTools(job.units);
+  const remapped=(job.operations||[]).map(op=>({...op,toolId:op.kind==='od_finish'?tools[1].id:tools[0].id}));
+  const next={...job,tools,operations:remapped,inspectionPositions:{}};
+  const check=validateJob(next);
+  if(check.errors.length){notify('RESET BLOCKED: '+check.errors[0],true);return;}
+  try{localStorage.setItem(DEMO_BACKUP_KEY,JSON.stringify(previous));}
+  catch{notify('COULD NOT SAVE SAFETY BACKUP. EXPORT YOUR JOB BEFORE RESETTING.',true);return;}
+  job=next;toolSelected=0;toolDirty=false;opSelected=0;refreshToolWorkspace();autosave();
+  notify('SIX VALID DEMO TOOLS LOADED · OLD JOB BACKED UP · VERIFY OPERATIONS');
+ });
+ $('undoDemoReset').addEventListener('click',()=>{
+  if(toolDirty&&!confirm('Discard unsaved tool edits to restore the prior job?'))return;
+  try{
+   const old=localStorage.getItem(DEMO_BACKUP_KEY);if(!old)throw Error('No previous demo-table backup found on this device.');
+   const restore=normalizeJobOperations(normalizeJobTools(JSON.parse(old)));
+   const checked=validateJob(restore);if(checked.errors.length)throw Error(checked.errors[0]);
+   if(!confirm('Restore previous job/tool table from the local safety backup? Current working job will be replaced.'))return;
+   job=restore;toolSelected=0;opSelected=0;toolDirty=false;refreshToolWorkspace();autosave();
+   notify('PREVIOUS JOB AND TOOLS RESTORED');
+  }catch(err){notify('RESTORE FAILED: '+err.message,true);}
+ });
  $('saveToolLibrary').addEventListener('click',saveLocalLibrary);$('loadToolLibrary').addEventListener('click',loadLocalLibrary);
  $('exportToolLibrary').addEventListener('click',exportLibrary);$('importToolLibrary').addEventListener('click',()=>$('toolFileImport').click());
  $('toolFileImport').addEventListener('change',async e=>{
