@@ -247,7 +247,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.8</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.9</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -422,12 +422,13 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
         <label><input type="checkbox" id="showPocket" checked> P · POCKET CENTER</label>
         <label><input type="checkbox" id="showNoseCenter" checked> C · NOSE CENTER</label>
         <label><input type="checkbox" id="showHolder" checked> HOLDER</label>
+        <label><input type="checkbox" id="showInsert" checked> INSERT</label>
       </div>
       <div class="catalog-viewbar"><label>VIEW <select id="catalogView"><option value="head">HEAD / INSERT DETAIL</option><option value="full">FULL HOLDER</option></select></label><span id="catalogProjection">SCHEMATIC TOP PROJECTION</span></div>
       <div class="tool-preview-frame"><svg id="toolGraph" viewBox="0 0 600 500" role="img" aria-label="True-scale tool insert envelope and theoretical cutting tip"></svg></div>
       <div id="toolGraphReadout" class="readout">Select a tool to see its physical outline.</div>
       <div class="tool-legend"><span><i class="legend-line finished"></i> NOMINAL OUTLINE</span><span><i class="legend-dot"></i> VIRTUAL SHARP TIP</span><span><i class="legend-line holder"></i> HOLDER ENVELOPE</span><span><i class="legend-dot datum"></i> SELECTED REFERENCE</span></div>
-      <div class="tool-warning"><strong>GEOMETRY DEFINITIONS ONLY</strong> — Catalog names and published dimensions are references; head, pocket, clamp and custom outlines are nominal 2D approximations. FRONT/REAR reverses the radial sketch only, not lathe coordinate conventions. Verify the chosen T0–T8 code against the actual control manual; pictured orientation is a rear-lathe convention. No cutter compensation, turret swing clearance, machine-specific offsets or collision certification is provided. Verify physical tools and machine conventions before later NC development.</div>
+      <div class="tool-warning"><strong>GEOMETRY DEFINITIONS ONLY</strong> — Catalog names and published dimensions are references; head relief and pocket registration are pocket-anchored but remain schematic 2D approximations. FRONT/REAR reverses the radial sketch only, not lathe coordinate conventions. Verify the chosen T0–T8 code against the actual control manual; pictured orientation is a rear-lathe convention. No cutter compensation, turret swing clearance, machine-specific offsets or collision certification is provided. Verify physical tools and machine conventions before later NC development.</div>
     </section>
   </main>
   <main class="inspect-workspace" id="inspectWorkspace" hidden>
@@ -566,7 +567,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.8';
+const TOOL_CORE_VERSION='0.5.9';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -766,38 +767,60 @@ function upgradeTool(t,units='inch'){
  if(!result.pocket||!Number.isFinite(result.pocket.u)||!Number.isFinite(result.pocket.v)){result.pocket=defaultPocket(result);result.verified=false;}
  return result;
 }
-/** A catalog illustration is assembled in tool-local top-plan U/V from the
- * published L/LF, head projection e/LH, offset s/WF, and shank B. The small
- * pocket/nose relief boundaries are approximated (no licensed DXF provided).
- * The head ends at the shank shoulder U=e and remains BEHIND the overlay insert.
- * Side elevation, rake/inclination and 3D turret geometry are intentionally deferred.
+/** Catalog-inspired, pocket-anchored PLAN projection — not an OEM DXF.
+ * The physical holder's head is constructed from the NOMINAL seated insert
+ * geometry and its pocket center, not percentages of an independent wedge.
+ * This ensures its forward relief retreats INTO the insert footprint from
+ * both flanks near the cutting corner. The underside of a real head requires
+ * 3D/side geometry and is intentionally *not* inferred here.
+ *
+ * Modifying insertFineAngle rotates the insert about P, NOT the physical pocket
+ * and head. Catalog holder head/profile remains unchanged under fine trim.
+ * Changing pocket U/V explicitly redefines a custom/altered holder layout.
  */
 function catalogHolderParts(t){
  const h=t.holder;if(h?.mode!=='catalog')return null;
  const B=h.b,s=h.wf,L=h.lf,e=h.lh,low=s-B,high=s;
  const shank=[{u:e,v:low},{u:L,v:low},{u:L,v:high},{u:e,v:high}];
- // Plan view, shaped back-to-front following the manufacturer's top-view
- // silhouette: short pointed pocket/head → diagonal transition → full shank.
- // Leading head stays under the insert; insert graphic is drawn last.
- const head=[{u:e*.10,v:low-.18*B},
-  {u:e*.37,v:low-.23*B},
-  {u:e*.73,v:low-.12*B},
-  {u:e,v:low},
-  {u:e,v:high},
-  {u:e*.62,v:high-.02*B},
-  {u:e*.17,v:high-.43*B}];
+ const ref=Object.values(CATALOG_HOLDERS).find(c=>c.code===t.catalog?.code);
+ const nominal={...t,shape:ref?.shape||t.shape,hand:ref?.hand||t.hand,
+  mountedRelief:ref?.clearance??t.mountedRelief,insertFineAngle:0};
+ const original=toolPolygon(nominal),pivot=insertPivotLocal(nominal);
+ const angle=insertMountOffset(nominal);
+ const pocket=t.pocket;
+ const seated=original.map(p=>{const q=rotateToolPoint({u:p.u-pivot.u,v:p.v-pivot.v},angle);
+  return {u:q.u+pocket.u,v:q.v+pocket.v};});
+ const [tip,flankA,back,flankB]=seated;
+ // Reference insert has a forward 55°/80° diamond pointing toward U=0.
+ // The head starts several millimeters BEHIND the virtual sharp tip, and the
+ // lower front lip follows the insert's secondary flank INTO its interior.
+ // These are deliberately schematic support offsets, not certified clearances.
+ const lerp=(a,b,q)=>({u:a.u+(b.u-a.u)*q,v:a.v+(b.v-a.v)*q});
+ const lip=lerp(tip,pocket,.27);
+ const underFlank=lerp(flankB,pocket,.23);
+ const shoulderInset={u:Math.max(e*.54,underFlank.u+B*.045),
+  v:Math.max(low+B*.065,underFlank.v+B*.006)};
+ shoulderInset.u=Math.min(e-B*1e-5,shoulderInset.u);
+ const topRelief={u:Math.min(e-B*1e-5,Math.max(e*.58,back.u+B*.10)),
+  v:Math.min(high-B*.065,Math.max(high-B*.19,back.v+B*.08))};
+ const upperSeat=lerp(flankA,pocket,.30);
+ // 7 points in contour order. Top-view holder lip lies inside the insert's
+ // two flank half-planes, avoiding the old triangular wedge in cutting space.
+ const head=[lip,underFlank,shoulderInset,{u:e,v:low},{u:e,v:high},topRelief,upperSeat];
  const envelope=[head[0],head[1],head[2],...shank,head[5],head[6]];
- const pocketCenter=t.pocket;
  const mountedEnvelope=clipHolderAtTurretFace(envelope,h.stickout);
  const mountedShank=clipHolderAtTurretFace(shank,h.stickout);
  const mountedHead=clipHolderAtTurretFace(head,h.stickout);
+ // The nominal machined insert seat is inset relative to the true insert edge.
+ // This is an UNDER-INSERT outline; hide the insert in the editor to see it.
+ const seat=seated.map(pt=>lerp(pocket,pt,.63));
+ // P is ALWAYS the modeled screw/pocket registration point. Lever-clamp
+ // bolt, when shown, is a distinct (rearward) approximate fastening feature.
+ const leverBolt=h.clamp==='LEVER'?{u:pocket.u+Math.min(B*.25,e*.20),v:pocket.v+B*.045}:null;
  return {head,shank,envelope,mountedEnvelope,mountedShank,mountedHead,
   turretFace:[{u:h.stickout,v:low-.25*B},{u:h.stickout,v:high+.25*B}],
-  pocketDetail:[{u:pocketCenter.u-.55*t.ic,v:pocketCenter.v-.15*t.ic},
-   {u:pocketCenter.u+.15*t.ic,v:pocketCenter.v-.42*t.ic},
-   {u:pocketCenter.u+.52*t.ic,v:pocketCenter.v+.08*t.ic}],
-  clampCenter:h.clamp==='SCREW'?{...pocketCenter}:{u:pocketCenter.u+.25*t.ic,v:pocketCenter.v+.12*t.ic},
-  clampRadius:.10*t.ic};
+  pocketDetail:seat,clampCenter:{...pocket},leverBolt,
+  clampRadius:.095*t.ic,geometryBasis:'POCKET-ALIGNED SCHEMATIC 2D SUPPORT'};
 }
 function holderPolygon(tool){
  const h=tool.holder;
@@ -951,7 +974,7 @@ function validateTool(t){
  if(t.mountSide!==undefined&&!['front','rear'].includes(t.mountSide))errors.push('Mount side must be FRONT or REAR.');
  if(t.tipReference!==undefined&&!['virtual','nose'].includes(t.tipReference))errors.push('Tip reference must be VIRTUAL or NOSE CENTER.');
  if(t.tipReference==='nose'&&!(t.noseRadius>0))errors.push('NOSE CENTER reference requires a nonzero nose radius.');
- if(h&&h.mode!=='none')warnings.push(h.mode==='catalog'?'CATALOG HOLDER: published H/B/LF/LH/WF dimensions, but schematic head/pocket/clamp; NOT a verified collision envelope.':'Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
+ if(h&&h.mode!=='none')warnings.push(h.mode==='catalog'?'CATALOG HOLDER: published H/B/LF/LH/WF dimensions, and pocket-anchored *schematic* head/seat; NOT a verified collision envelope.':'Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
  if(t.catalog&&((CATALOG_HOLDERS[Object.keys(CATALOG_HOLDERS).find(k=>CATALOG_HOLDERS[k].code===t.catalog.code)]?.shape||t.shape)!==t.shape||t.hand!==t.catalog.code[4]))warnings.push('Catalog insert shape or hand may no longer match selected holder designation.');
  if(!t.verified)warnings.push('GEOMETRY UNVERIFIED: placeholder dimensions; check real insert and holder before machining.');
  if(t.shape==='CUSTOM')warnings.push('Custom outline vertex 1 is the theoretical tip; pocket pivot defaults to polygon vertex average and may need measured adjustment.');
@@ -1030,7 +1053,8 @@ function buildToolGeometry(tool){
   mountedHead:parts.mountedHead.map(p=>rotateToolPoint(p,tool.angle)),
   mountedShank:parts.mountedShank.map(p=>rotateToolPoint(p,tool.angle)),
   turretFace:parts.turretFace.map(p=>rotateToolPoint(p,tool.angle)),
-  clampCenter:rotateToolPoint(parts.clampCenter,tool.angle)}:null;
+  clampCenter:rotateToolPoint(parts.clampCenter,tool.angle),
+  leverBolt:parts.leverBolt?rotateToolPoint(parts.leverBolt,tool.angle):null}:null;
  const pocketCenter=rotateToolPoint(tool.pocket,tool.angle);
  const tip=assemble({u:0,v:0});
  const noseCenter=nose.arc?assemble(nose.arc.center):null;
@@ -1814,6 +1838,7 @@ function drawToolPreview(){
  const W=600,H=500;
  const mounting=p=>renderMountPoint(p,t.mountSide);
  const holderVisible=$('showHolder').checked;
+ const insertVisible=$('showInsert').checked;
  const edge=geom.outline.map(mounting),sharp=geom.sharpOutline.map(mounting),holder=holderVisible?geom.holderOutline.map(mounting):[];
  const datum=mounting(geom.referencePoint),noseCenter=geom.noseCenter?mounting(geom.noseCenter):null;
  const pocketPoint=mounting(geom.pocketCenter),tipPoint=mounting(geom.tip);
@@ -1841,17 +1866,21 @@ function drawToolPreview(){
   if(drawingParts){
    graph.append(el('path',{d:path(shank),fill:'#adbdca','fill-opacity':'.13',stroke:'#e8b66c','stroke-width':1.5}));
    graph.append(el('path',{d:path(head),fill:'#e1a954','fill-opacity':'.29',stroke:'#f8ba5d','stroke-width':2.1}));
+   const pocketP=drawingParts.pocketDetail.map(mounting);
+   graph.append(el('path',{d:path(pocketP),fill:'#f6cb72','fill-opacity':'.13',stroke:'#ffa74f','stroke-width':1.7,'stroke-dasharray':'5 3'}));
    const cp=p2(mounting(drawingParts.clampCenter)),rad=drawingParts.clampRadius*scale;
    graph.append(el('circle',{cx:cp.x,cy:cp.y,r:Math.max(2,rad),fill:'#33494f',stroke:'#f2c787','stroke-width':2}));
    graph.append(el('line',{x1:cp.x-rad*.45,y1:cp.y,x2:cp.x+rad*.45,y2:cp.y,stroke:'#f2c787','stroke-width':1.5}));
-   const pocketP=drawingParts.pocketDetail.map(mounting);
-   graph.append(el('path',{d:path(pocketP),fill:'none',stroke:'#ffa74f','stroke-width':1.5,'stroke-dasharray':'4 5'}));
+   if(drawingParts.leverBolt){const lp=p2(mounting(drawingParts.leverBolt));
+    graph.append(el('circle',{cx:lp.x,cy:lp.y,r:Math.max(2,rad*.85),fill:'#142e2c',stroke:'#b3bdaf','stroke-width':1.8}));}
   }else graph.append(el('path',{d:path(holder),fill:'#e1a954','fill-opacity':'.11',stroke:'#e8b66c','stroke-width':2,'stroke-dasharray':'9 5'}));
  }
+ if(insertVisible){
  graph.append(el('path',{d:path(sharp),fill:'none',stroke:'#84988b','stroke-width':1.5,'stroke-dasharray':'5 5'}));
  graph.append(el('path',{d:path(edge),fill:'#219886','fill-opacity':'.33',stroke:'#5bf4d3','stroke-width':2.4,'stroke-linejoin':'round'}));
+ }
  // Highlight the primary theoretical flank direction for visual orientation checks.
- if(Object.hasOwn(DIAMOND_ANGLES,t.shape)&&sharp.length>=4){
+ if(insertVisible&&Object.hasOwn(DIAMOND_ANGLES,t.shape)&&sharp.length>=4){
   const chosen=sharp[t.hand==='L'?sharp.length-1:1];
   const root=p2(tipPoint),other=p2(chosen),len=Math.hypot(other.x-root.x,other.y-root.y),frac=Math.min(1,58/Math.max(len,0.01));
   line(root,{x:root.x+(other.x-root.x)*frac,y:root.y+(other.y-root.y)*frac},'#ffe37c',3.2);
@@ -1883,7 +1912,7 @@ function drawToolPreview(){
  label(t.mountSide==='front'?'V / FRONT ↑':'V / REAR ↓',15,24,'#aacbb8',13);
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
- $('toolPreviewTitle').textContent=`${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
+ $('toolPreviewTitle').textContent=`${insertVisible?'ASSEMBLED TOOL':'HOLDER / EMPTY POCKET'} · ${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
  $('toolGraphReadout').textContent=`${t.catalog?`${t.catalog.code} · ${t.catalog.insert} · ${t.catalog.approach}° KAPR · DIMENSIONS ${t.catalog.sourceDimensions||'REFERENCE'} · OUTLINE SCHEMATIC · MOUNTED STICKOUT ${f(t.holder.stickout)} · `:''}${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
 }
 function toolNextNumber(){const nums=new Set(job.tools.map(t=>t.station));for(let i=1;i<=999;i++)if(!nums.has(i))return i;return null;}
@@ -2079,7 +2108,7 @@ function wireTools(){
    $('toolVerified').checked=false;toolDirty=true;drawToolPreview();notify('INSERT RESEATED AT HOLDER DATUM — SAVE TOOL');
   }catch(err){notify(err.message,true);}
  });
- const markerIds=['showTip','showPocket','showNoseCenter','showHolder'];
+ const markerIds=['showTip','showPocket','showNoseCenter','showHolder','showInsert'];
  try{const saved=JSON.parse(localStorage.getItem(POINTS_KEY)||'{}');for(const id of markerIds)if(typeof saved[id]==='boolean')$(id).checked=saved[id];}catch{}
  markerIds.forEach(id=>$(id).addEventListener('change',()=>{
   try{localStorage.setItem(POINTS_KEY,JSON.stringify(Object.fromEntries(markerIds.map(i=>[i,$(i).checked]))));}catch{}
