@@ -213,7 +213,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.3</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.4</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -306,6 +306,8 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
         <button type="button" id="insertTrimPlus">+ 0.25°</button>
         <button type="button" id="applyMountPreset">APPLY STANDARD CLEARANCE</button>
       </div>
+      <button type="button" id="applyOdStartingPose" class="action-btn inspect-wide">SET STANDARD RIGHT-HAND OD POSE · CUTTING TIP RIGHT</button>
+      <div class="editor-hint">For existing tools: applies the photographed OD arrangement (D/55° → 93° shoulder approach; C/80° → 95°) while retaining holder dimensions and insert trim. Select and SAVE TOOL to store it. This sets a schematic T5 direction from the supplied REAR-lathe reference; verify the actual control's nose-comp code.</div>
       <div class="tip-direction-readout" id="insertAngleReadout">INSERT TO HOLDER: 0°</div>
       <p class="editor-hint insert-angle-hint">Modern starting examples: C/80° diamond = 5° mounted flank clearance; D/55° diamond = 3°. These are editable *projected edge clearances*, not the ISO insert side-clearance angle. Changing them rotates the insert only. Imported tools keep their old outline until you choose APPLY STANDARD CLEARANCE.</p>
       <div class="section-header second-header holder-section-title"><h2>TOOL NOSE DIRECTION · REAR LATHE</h2><span class="small-chip">SELECT T0–T8</span></div>
@@ -476,7 +478,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.3</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.4</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -485,7 +487,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.3';
+const TOOL_CORE_VERSION='0.5.4';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -513,9 +515,9 @@ function insertMountOffset(t){
 }
 function insertRelativeRotation(t){return insertMountOffset(t)+(t.insertFineAngle||0);}
 const TOOL_PRESETS=[
- {key:'od_c',name:'OD ROUGH · C 80°',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:0},
- {key:'od_d',name:'OD FINISH · D 55°',kind:'od',shape:'D',hand:'R',ic:.375,noseRadius:.015625,angle:0},
- {key:'od_v',name:'OD FINE · V 35°',kind:'od',shape:'V',hand:'R',ic:.375,noseRadius:.015625,angle:0},
+ {key:'od_c',name:'OD ROUGH · C 80°',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:180},
+ {key:'od_d',name:'OD FINISH · D 55°',kind:'od',shape:'D',hand:'R',ic:.375,noseRadius:.015625,angle:180},
+ {key:'od_v',name:'OD FINE · V 35°',kind:'od',shape:'V',hand:'R',ic:.375,noseRadius:.015625,angle:180},
  {key:'face_c',name:'FACE · C 80°',kind:'face',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:90},
  {key:'bore_c',name:'ID BORE · C 80°',kind:'id',shape:'C',hand:'R',ic:.375,noseRadius:.015625,angle:180},
  {key:'groove_od',name:'OD GROOVE · BLADE',kind:'od_groove',shape:'G',hand:'N',width:.125,reach:.65,noseRadius:0,angle:0},
@@ -538,19 +540,40 @@ function makeTemplate(key='od_c',units='inch',station=1){
  const t=TOOL_PRESETS.find(x=>x.key===key);
  if(!t)throw new Error('Unknown tool preset');
  const scale=units==='mm'?25.4:1;
+ const rightOd=t.kind==='od'&&t.hand==='R'&&['C','D','V'].includes(t.shape);
  return {id:newId(),station,offset:station,name:t.name,kind:t.kind,shape:t.shape,hand:t.hand,
   mountSide:'front',tipReference:'virtual',holder:defaultHolder(units,t.kind),
-  tipDirection:0,angleAdjust:t.angle||0,angle:t.angle||0,
+  // T5 is the right-facing illustration in the operator-supplied REAR-LATHE chart.
+  // Machine-specific nose compensation MUST still be checked before NC posting.
+  // A 180° holder direction puts the sharp tip to the right of the shank in +U axial view.
+  tipDirection:rightOd?5:0,angleAdjust:rightOd?0:(t.angle||0),angle:t.angle||0,
   mountedRelief:recommendedMountedClearance(t.shape),insertFineAngle:0,ic:(t.ic||.375)*scale,noseRadius:(t.noseRadius||0)*scale,
   width:(t.width||.125)*scale,reach:(t.reach||1)*scale,tipAngle:t.tipAngle||118,
   customPoints:(t.customPoints||[]).map(p=>({u:p.u*scale,v:p.v*scale})),notes:'',verified:false};
 }
 /** All distances use the job units, relative to the cutting insert's virtual tip. */
+/** Select a common right- or left-hand OD mounting orientation without replacing
+ * measured insert dimensions or holder geometry. Applies missing C/D nominal edge
+ * settings only, preserving any operator-entered non-null value.
+ * T5/T7 are schematic picks from the user's REAR-lathe tip chart; NC posting must
+ * never assume that either number is valid for an actual control/turret setup.
+ */
+function applyOdStartingOrientation(tool,hand='R'){
+ if(tool?.kind!=='od'||!['C','D','V'].includes(tool.shape))throw new Error('OD starter pose requires a C, D or V turning tool.');
+ if(!['R','L'].includes(hand))throw new Error('Choose RIGHT or LEFT hand.');
+ const t=structuredClone(tool);
+ t.hand=hand;t.tipDirection=hand==='R'?5:7;
+ t.angleAdjust=0;t.angle=tipBaseAngle(t.tipDirection);
+ if(t.mountedRelief==null){const r=recommendedMountedClearance(t.shape);if(r!==null)t.mountedRelief=r;}
+ if(!Number.isFinite(t.insertFineAngle))t.insertFineAngle=0;
+ t.verified=false;
+ return t;
+}
 function defaultHolder(units='inch',kind='od'){
  const scale=units==='mm'?25.4:1;
  const bore=['id','id_groove','id_thread'].includes(kind),drill=kind==='drill';
  return {mode:'rect',startU:(drill?.18:.24)*scale,length:(bore?2.5:drill?1.8:2.25)*scale,
-  width:(bore?.5:drill?.65:.75)*scale,centerV:(bore?-.12:0)*scale,points:[]};
+  width:(bore?.5:drill?.65:.75)*scale,centerV:(bore?-.12:kind==='od'?.375:0)*scale,points:[]};
 }
 /** Upgrade old v0.2 files without discarding tools or changing their physical dimensions. */
 function upgradeTool(t,units='inch'){
@@ -1449,6 +1472,7 @@ function updateToolFields(){
  $('toolTipAngleField').hidden=shape!=='B';
  $('toolMountedReliefField').hidden=!Object.hasOwn(DIAMOND_ANGLES,shape);
  $('applyMountPreset').disabled=!['C','D'].includes(shape);
+ $('applyOdStartingPose').disabled=$('toolKind').value!=='od'||!['C','D','V'].includes(shape);
  $('toolCustomField').hidden=shape!=='CUSTOM';
  const hMode=$('holderMode').value;
  for(const id of ['holderStartField','holderLengthField','holderWidthField','holderCenterField'])$(id).hidden=hMode!=='rect';
@@ -1487,6 +1511,13 @@ function drawToolPreview(){
  $('insertAngleReadout').textContent=`INSERT → HOLDER: ${relative.toFixed(2)}° · MOUNTED FLANK: ${clearance} · FINE: ${(t.insertFineAngle||0).toFixed(2)}° · HOLDER: ${t.angle.toFixed(2)}°`;
  const geom=buildToolGeometry(t);
  if(geom.errors.length){toolMessage(geom.errors,true);return;}
+ // Explicit readout of the projected axial/shoulder edge angle for the modern OD pose.
+ // This is drawn edge geometry, NOT a machine tool-compensation declaration.
+ if(t.kind==='od'&&t.hand==='R'&&t.tipDirection===5&&['C','D'].includes(t.shape)){
+  const flank=geom.sharpOutline[1];
+  const axialAngle=Math.abs(Math.atan2(flank.v,flank.u)*180/Math.PI);
+  $('insertAngleReadout').textContent+=` · OD SHOULDER APPROACH: ${axialAngle.toFixed(2)}°`;
+ }
  $('toolEditorID').textContent=toolNumber(t);toolMessage(geom.warnings);
  updateToolFields();
  const W=600,H=500;
@@ -1680,6 +1711,19 @@ function wireTools(){
   const clearance=recommendedMountedClearance($('toolShape').value);
   if(clearance===null){notify('NO STANDARD C/D PRESET FOR THIS INSERT',true);return;}
   const el=$('toolMountedRelief');el.value=String(clearance);el.dispatchEvent(new Event('input',{bubbles:true}));
+ });
+ $('applyOdStartingPose').addEventListener('click',()=>{
+  try{
+   const updated=applyOdStartingOrientation(readToolForm(),'R');
+   $('toolHand').value=updated.hand;
+   $('toolTipDirection').value=String(updated.tipDirection);
+   $('toolAngleFine').value=String(updated.angleAdjust);
+   $('toolAngle').value=String(updated.angle);
+   $('toolMountedRelief').value=updated.mountedRelief??'';
+   $('toolVerified').checked=false;
+   toolDirty=true;drawToolPreview();
+   notify('OD RIGHT STARTING POSE LOADED — F2 SAVE TOOL');
+  }catch(err){notify(err.message,true);}
  });
  $('showHolder').addEventListener('change',drawToolPreview);
  $('saveTool').addEventListener('click',()=>toolAction('save'));$('resetTool').addEventListener('click',()=>{toolDirty=false;refreshToolWorkspace();});
