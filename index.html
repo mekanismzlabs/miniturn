@@ -236,13 +236,18 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
 
 .catalog-spec #catalogDesignationGuide{color:#d0ddcc;font-size:11px;line-height:1.65}
 [data-display="daylight"] .catalog-spec #catalogDesignationGuide{color:#35483f}
+
+/* v0.5.8 — a compact mounted stickout entry for tablets */
+.mounting-field{display:flex;gap:.65rem;align-items:end;flex-wrap:wrap;margin:.5rem 0}
+.mounting-field .field{flex:1 1 190px}
+.mounting-field .action-btn{min-width:135px}
 </style>
   <title>MiniTurn — CONVERSATIONAL OPERATIONS</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.7</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.8</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -389,6 +394,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
           <label class="field">SHANK HEIGHT H <span class="field-unit"></span><input id="catalogH" type="number" min="0" step="any"></label>
           <label class="field">SHANK WIDTH B <span class="field-unit"></span><input id="catalogB" type="number" min="0" step="any"></label>
           <label class="field">FUNCTIONAL LENGTH LF <span class="field-unit"></span><input id="catalogLF" type="number" min="0" step="any"></label>
+          <label class="field">MOUNTED STICKOUT <span class="field-unit"></span><input id="catalogStickout" type="number" min="0" step="any"></label>
           <label class="field">HEAD LENGTH LH <span class="field-unit"></span><input id="catalogLH" type="number" min="0" step="any"></label>
           <label class="field">FUNCTIONAL WIDTH WF <span class="field-unit"></span><input id="catalogWF" type="number" min="0" step="any"></label>
           </div><p class="editor-hint">These dimensions initialize from product literature. The head/pocket and screw/lever graphics are parametric sketches, NOT downloaded manufacturer CAD or verified collision bodies.</p>
@@ -448,7 +454,9 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
       <button id="inspectPlaceVertex" class="action-btn inspect-wide">PLACE REFERENCE AT VERTEX</button>
       <label class="inspect-check"><input type="checkbox" id="inspectSnap"> SNAP GRAPH CLICKS TO EXACT PROFILE (LINES + ARCS)</label>
       <label class="inspect-check"><input type="checkbox" id="inspectShowRaw" checked> SHOW RAW STOCK</label>
-      <label class="inspect-check"><input type="checkbox" id="inspectShowHolder" checked> SHOW HOLDER</label>
+      <label class="inspect-check"><input type="checkbox" id="inspectShowHolder" checked> SHOW EXPOSED HOLDER + TURRET FACE</label>
+      <div class="mounting-field"><label class="field">EXPOSED STICKOUT FROM HOLDER U0 <span class="inspect-unit-label"></span><input id="inspectStickout" type="number" min="0" step="any"></label><button id="inspectApplyStickout" class="action-btn" type="button">SET STICKOUT</button></div>
+      <p class="inspect-hint" id="inspectMountInfo">Catalog tools: default turret face is an UNVERIFIED assumption. Only exposed shank is drawn.</p>
       <div class="inspect-hint">CLICK THE GRAPH to locate the selected tool reference. Each tool remembers its last test position inside the job file.</div>
       <div id="inspectStatus" class="status-box" role="status" aria-live="polite"></div>
     </section>
@@ -458,7 +466,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
         <div class="zoom-controls"><button id="inspectZoomOut" title="Zoom out">−</button><button id="inspectFit" title="Fit part and tool">FIT</button><button id="inspectZoomIn" title="Zoom in">+</button><button id="inspectMirror" class="mirror-toggle" title="Mirror display Z direction">F9 MIRROR Z</button></div>
       </div>
       <div class="inspect-graph-frame"><svg id="inspectGraph" viewBox="0 0 1000 560" role="img" aria-label="True proportional profile and manually placed tool and holder. Click to position the tool reference."></svg></div>
-      <div class="inspect-legend"><span><i class="legend-line finished"></i> FINISHED PROFILE</span><span><i class="legend-line stock"></i> RAW STOCK</span><span><i class="legend-line insert"></i> INSERT</span><span><i class="legend-line holder"></i> HOLDER</span><span><i class="legend-dot datum"></i> REFERENCE</span></div>
+      <div class="inspect-legend"><span><i class="legend-line finished"></i> FINISHED PROFILE</span><span><i class="legend-line stock"></i> RAW STOCK</span><span><i class="legend-line insert"></i> INSERT</span><span><i class="legend-line holder"></i> EXPOSED HOLDER</span><span><i class="legend-dot datum"></i> REFERENCE</span></div>
       <div class="readout" id="inspectReadout">SELECT A TOOL AND POSITION</div>
       <div class="inspect-metrics" id="inspectMetrics"></div>
       <div class="tool-warning"><strong>INSPECTION / NOT MACHINE PROOF</strong> — This is a single, static 2D section of nominal tools. It flags polygon overlap, but cannot determine safe cutting, machine travels, workholding/chuck clearance, relief angles, turret sweep, or removal history. ID hole shapes aren't represented. Use machine-approved verification before running any NC program. No NC code is generated here.</div>
@@ -558,7 +566,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.7';
+const TOOL_CORE_VERSION='0.5.8';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -591,12 +599,37 @@ function insertRelativeRotation(t){return insertMountOffset(t)+(t.insertFineAngl
  * are parametric approximations, and must never be used for NC collision approval.
  */
 const CATALOG_HOLDERS={
- pdjnr_2525m15:{code:'PDJNR 2525M-15',family:'PDJNR',brand:'ISCAR',hand:'R',insert:'DNMG 1506',shape:'D',clamp:'LEVER',approach:93,h:25,b:25,lf:150,lh:34,wf:32,ic:12.7,clearance:3,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910530'},
+ pdjnr_2525m15:{code:'PDJNR 2525M-15',family:'PDJNR',brand:'ISCAR',hand:'R',insert:'DNMG 1506',shape:'D',clamp:'LEVER',approach:93,h:25,b:25,lf:150,lh:35,wf:32,ic:12.7,clearance:3,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910530'},
  pclnr_2525m12:{code:'PCLNR 2525M-12',family:'PCLNR',brand:'ISCAR',hand:'R',insert:'CNMG 1204',shape:'C',clamp:'LEVER',approach:95,h:25,b:25,lf:150,lh:27.8,wf:32,ic:12.7,clearance:5,nose:.8,source:'https://webshop.iscar.nl/catalogue/product/1910524'},
  sdjcr_2020k11:{code:'SDJCR 2020K-11',family:'SDJCR',brand:'ISCAR',hand:'R',insert:'DCMT 11T3',shape:'D',clamp:'SCREW',approach:93,h:20,b:20,lf:125,lh:20,wf:25,ic:9.52,clearance:3,nose:.4,source:'https://webshop.iscarvn.com/catalogue/product/1910585'},
  sclcr_2525m12:{code:'SCLCR 2525M-12',family:'SCLCR',brand:'ISCAR',hand:'R',insert:'CCMT 1204',shape:'C',clamp:'SCREW',approach:95,h:25,b:25,lf:150,lh:20,wf:32,ic:12.7,clearance:5,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910566'}
 };
 const catalogScale=(v,units)=>v/(units==='inch'?25.4:1);
+/** Initial, deliberately provisional turret-face location, measured from tool-local
+ * U=0 along the holder axis. This is the exposed LENGTH, not full catalog LF.
+ * The physical turret/block has not yet been modeled or verified.
+ */
+function defaultCatalogStickout(h){return Math.min(h.lf-h.b*.30,h.lh+h.b*.65);}
+/** Clip a polygon to the exposed/toolhead side (holder-local axial U <= faceU).
+ * This preserves exact edges, does not alter the full engineering outline, and
+ * must happen BEFORE whole-tool rotation or front/rear viewing transforms.
+ */
+function clipHolderAtTurretFace(points,faceU){
+ if(!Array.isArray(points)||points.length<3||!Number.isFinite(faceU))return [];
+ const inside=p=>p.u<=faceU+1e-10;
+ const hit=(a,b)=>{const du=b.u-a.u;if(Math.abs(du)<1e-12)return {u:faceU,v:a.v};const t=(faceU-a.u)/du;return {u:faceU,v:a.v+t*(b.v-a.v)};};
+ const out=[];
+ for(let i=0;i<points.length;i++){
+  const a=points[i],b=points[(i+1)%points.length],ain=inside(a),bin=inside(b);
+  if(ain&&bin)out.push(b);
+  else if(ain&&!bin)out.push(hit(a,b));
+  else if(!ain&&bin){out.push(hit(a,b));out.push(b);}
+ }
+ const clean=[];
+ for(const p of out)if(!clean.length||Math.hypot(clean.at(-1).u-p.u,clean.at(-1).v-p.v)>1e-9)clean.push(p);
+ if(clean.length>1&&Math.hypot(clean[0].u-clean.at(-1).u,clean[0].v-clean.at(-1).v)<1e-9)clean.pop();
+ return clean.length>=3?clean:[];
+}
 /** Creating a catalog template never silently replaces an existing tool. */
 function makeCatalogTool(key,units='inch',station=1){
  const c=CATALOG_HOLDERS[key];if(!c)throw new Error('Unknown catalog holder');
@@ -606,6 +639,7 @@ function makeCatalogTool(key,units='inch',station=1){
  base.holder={mode:'catalog',family:c.family,clamp:c.clamp,
   h:catalogScale(c.h,units),b:catalogScale(c.b,units),lf:catalogScale(c.lf,units),
   lh:catalogScale(c.lh,units),wf:catalogScale(c.wf,units),
+  stickout:catalogScale(defaultCatalogStickout(c),units),
   startU:0,length:catalogScale(c.lf,units),width:catalogScale(c.h,units),centerV:catalogScale(c.h*.5,units),points:[]};
  base.catalog={code:c.code,family:c.family,brand:c.brand,insert:c.insert,source:c.source,
   approach:c.approach,sourceDimensions:'PUBLISHED',outlineAccuracy:'SCHEMATIC'};
@@ -715,6 +749,12 @@ function upgradeTool(t,units='inch'){
   const reference=Object.values(CATALOG_HOLDERS).find(c=>result.catalog?.code===c.code);
   if(!reference){result.verified=false;result.holder.mode='rect';}
   else {
+   if(!Number.isFinite(result.holder.stickout)||result.holder.stickout<=0){
+    // Legacy catalog tools keep all original full dimensions; only their new
+    // mounted-display clamp plane receives a provisional value.
+    result.holder.stickout=catalogScale(defaultCatalogStickout(reference),units);
+    result.verified=false;
+   }
    const absent=['h','b','lf','lh','wf'].filter(k=>!Number.isFinite(result.holder[k])||result.holder[k]<=0);
    if(absent.length){
     for(const k of absent)result.holder[k]=catalogScale(reference[k],units);
@@ -726,26 +766,38 @@ function upgradeTool(t,units='inch'){
  if(!result.pocket||!Number.isFinite(result.pocket.u)||!Number.isFinite(result.pocket.v)){result.pocket=defaultPocket(result);result.verified=false;}
  return result;
 }
-/** Shank/body and sloped head in tool-local (U,V), with the cutting tip at
- * local (0,0). 1:1 dimensions; illustrated pocket/reliefs are NOT sampled CAD.
- * Front/top projection only, not a 3D holder or actual underside envelope.
+/** A catalog illustration is assembled in tool-local top-plan U/V from the
+ * published L/LF, head projection e/LH, offset s/WF, and shank B. The small
+ * pocket/nose relief boundaries are approximated (no licensed DXF provided).
+ * The head ends at the shank shoulder U=e and remains BEHIND the overlay insert.
+ * Side elevation, rake/inclination and 3D turret geometry are intentionally deferred.
  */
 function catalogHolderParts(t){
  const h=t.holder;if(h?.mode!=='catalog')return null;
- const H=h.h,B=h.b,WF=h.wf,L=h.lf,N=h.lh,low=WF-B,high=WF;
- // Draw the rectangular shank with a stepped/angled chip-clearance toolhead.
- const shank=[{u:N,v:low},{u:L,v:low},{u:L,v:high},{u:N,v:high}];
- const head=[{u:N*.13,v:-.18*B},{u:N*.24,v:-.27*B},{u:N*.72,v:low-.09*B},
-  {u:N,v:low},{u:N,v:high},{u:N*.48,v:high+.03*B},{u:N*.17,v:high-.35*B}];
- // A conservative outer envelope for coarse static inspection; NOT collision certification.
- const envelope=[head[0],head[1],head[2],shank[0],shank[1],shank[2],shank[3],head[5],head[6]];
+ const B=h.b,s=h.wf,L=h.lf,e=h.lh,low=s-B,high=s;
+ const shank=[{u:e,v:low},{u:L,v:low},{u:L,v:high},{u:e,v:high}];
+ // Plan view, shaped back-to-front following the manufacturer's top-view
+ // silhouette: short pointed pocket/head → diagonal transition → full shank.
+ // Leading head stays under the insert; insert graphic is drawn last.
+ const head=[{u:e*.10,v:low-.18*B},
+  {u:e*.37,v:low-.23*B},
+  {u:e*.73,v:low-.12*B},
+  {u:e,v:low},
+  {u:e,v:high},
+  {u:e*.62,v:high-.02*B},
+  {u:e*.17,v:high-.43*B}];
+ const envelope=[head[0],head[1],head[2],...shank,head[5],head[6]];
  const pocketCenter=t.pocket;
- const bossRadius=.10*t.ic;
- return {shank,head,envelope,
-  pocketDetail:[{u:pocketCenter.u-.6*t.ic,v:pocketCenter.v-.2*t.ic},
-   {u:pocketCenter.u+.2*t.ic,v:pocketCenter.v-.45*t.ic},
-   {u:pocketCenter.u+.6*t.ic,v:pocketCenter.v+.1*t.ic}],
-  clampCenter:h.clamp==='SCREW'?{...pocketCenter}:{u:pocketCenter.u+.25*t.ic,v:pocketCenter.v+.1*t.ic},clampRadius:bossRadius};
+ const mountedEnvelope=clipHolderAtTurretFace(envelope,h.stickout);
+ const mountedShank=clipHolderAtTurretFace(shank,h.stickout);
+ const mountedHead=clipHolderAtTurretFace(head,h.stickout);
+ return {head,shank,envelope,mountedEnvelope,mountedShank,mountedHead,
+  turretFace:[{u:h.stickout,v:low-.25*B},{u:h.stickout,v:high+.25*B}],
+  pocketDetail:[{u:pocketCenter.u-.55*t.ic,v:pocketCenter.v-.15*t.ic},
+   {u:pocketCenter.u+.15*t.ic,v:pocketCenter.v-.42*t.ic},
+   {u:pocketCenter.u+.52*t.ic,v:pocketCenter.v+.08*t.ic}],
+  clampCenter:h.clamp==='SCREW'?{...pocketCenter}:{u:pocketCenter.u+.25*t.ic,v:pocketCenter.v+.12*t.ic},
+  clampRadius:.10*t.ic};
 }
 function holderPolygon(tool){
  const h=tool.holder;
@@ -795,7 +847,7 @@ function convertToolUnits(tools,from,to){
    customPoints:(old.customPoints||[]).map(p=>({u:c(p.u),v:c(p.v)})),
    pocket:{u:c(old.pocket.u),v:c(old.pocket.v)},
    holder:{...h,startU:c(h.startU),length:c(h.length),width:c(h.width),centerV:c(h.centerV),
-    ...(h.mode==='catalog'?Object.fromEntries(['h','b','lf','lh','wf'].map(k=>[k,c(h[k])])):{}),
+    ...(h.mode==='catalog'?Object.fromEntries(['h','b','lf','lh','wf','stickout'].map(k=>[k,c(h[k])])):{}),
     points:(h.points||[]).map(p=>({u:c(p.u),v:c(p.v)}))}};
  });
 }
@@ -885,6 +937,8 @@ function validateTool(t){
   else if(h.mode==='catalog'){
    for(const k of ['h','b','lf','lh','wf'])if(!f(h[k])||h[k]<=0||h[k]>1e6)errors.push(`Catalog ${k.toUpperCase()} must be positive.`);
    if(f(h.lf)&&f(h.lh)&&h.lh>=h.lf)errors.push('Catalog head LH must be shorter than LF.');
+   if(!f(h.stickout)||h.stickout<=h.lh||h.stickout>h.lf)
+    errors.push('Exposed stickout must be longer than the head projection and no longer than catalog LF.');
    if(!['SCREW','LEVER'].includes(h.clamp))errors.push('Catalog clamp must be SCREW or LEVER.');
   }else if(h.mode==='rect'){
    if(!f(h.startU)||h.startU<0||h.startU>1e6)errors.push('Holder axial setback must be >= 0.');
@@ -969,9 +1023,13 @@ function buildToolGeometry(tool){
  const oriented=poly.map(assemble),outline=nose.points.map(assemble);
  const holderLocal=holderPolygon(tool).map(p=>rotateToolPoint(p,tool.angle));
  const parts=catalogHolderParts(tool);
+ const mountedHolderLocal=(parts?parts.mountedEnvelope:holderPolygon(tool)).map(p=>rotateToolPoint(p,tool.angle));
  const catalogParts=parts?{...parts,head:parts.head.map(p=>rotateToolPoint(p,tool.angle)),
   shank:parts.shank.map(p=>rotateToolPoint(p,tool.angle)),
   pocketDetail:parts.pocketDetail.map(p=>rotateToolPoint(p,tool.angle)),
+  mountedHead:parts.mountedHead.map(p=>rotateToolPoint(p,tool.angle)),
+  mountedShank:parts.mountedShank.map(p=>rotateToolPoint(p,tool.angle)),
+  turretFace:parts.turretFace.map(p=>rotateToolPoint(p,tool.angle)),
   clampCenter:rotateToolPoint(parts.clampCenter,tool.angle)}:null;
  const pocketCenter=rotateToolPoint(tool.pocket,tool.angle);
  const tip=assemble({u:0,v:0});
@@ -979,7 +1037,7 @@ function buildToolGeometry(tool){
  const refPoint=tool.tipReference==='nose'&&noseCenter?noseCenter:tip;
  const points=[...outline,...holderLocal,tip,pocketCenter,refPoint];
  const bounds={minU:Math.min(...points.map(p=>p.u)),maxU:Math.max(...points.map(p=>p.u)),minV:Math.min(...points.map(p=>p.v)),maxV:Math.max(...points.map(p=>p.v))};
- return {...valid,insertAngle,relativeInsert,sharpOutline:oriented,outline,holderOutline:holderLocal,catalogParts,
+ return {...valid,insertAngle,relativeInsert,sharpOutline:oriented,outline,holderOutline:holderLocal,mountedHolderOutline:mountedHolderLocal,catalogParts,
   bounds,tip,pocketCenter,pivotLocal:pivot,noseCenter,referencePoint:refPoint,
   noseArc:nose.arc?{...nose.arc,center:noseCenter,from:assemble(nose.arc.from),to:assemble(nose.arc.to),
    start:nose.arc.start+insertAngle*Math.PI/180}:null};
@@ -1254,7 +1312,9 @@ function placedToolGeometry(tool,position){
  const origin=placementPoint(position),ref=renderMountPoint(geom.referencePoint,tool.mountSide);
  const move=p=>{const q=renderMountPoint(p,tool.mountSide);return {u:origin.u+q.u-ref.u,v:origin.v+q.v-ref.v};};
  return {...geom,outline:geom.outline.map(move),holderOutline:geom.holderOutline.map(move),
-  sharpOutline:geom.sharpOutline.map(move),tip:move({u:0,v:0}),referencePoint:origin,
+  mountedHolderOutline:(geom.mountedHolderOutline||geom.holderOutline).map(move),
+  turretFace:geom.catalogParts?.turretFace?.map(move)||null,
+  sharpOutline:geom.sharpOutline.map(move),tip:move(geom.tip),referencePoint:origin,
   noseCenter:geom.noseCenter?move(geom.noseCenter):null};
 }
 function pointSegmentDistance(p,a,b){
@@ -1330,7 +1390,7 @@ function inspectToolPosition(job,tool,position){
  if(bodies.errors.length)return {errors:bodies.errors};
  const toolGeom=placedToolGeometry(tool,position);
  if(toolGeom.errors.length)return {errors:toolGeom.errors};
- const holder=toolGeom.holderOutline,insert=toolGeom.outline;
+ const holder=toolGeom.mountedHolderOutline,insert=toolGeom.outline;
  const result={errors:[],bodies,toolGeom,
   holderFinished:holder.length>=3?polygonOverlap(holder,bodies.finished):null,
   holderStock:holder.length>=3?polygonOverlap(holder,bodies.stock):null,
@@ -1345,9 +1405,10 @@ function inspectToolPosition(job,tool,position){
  if(!holder.length)result.warnings.push('No holder envelope entered — holder interference unknown.');
  if(['id','id_groove','id_thread','drill'].includes(tool.kind))result.warnings.push('No bore or hole geometry is modeled; ID/drill interference indications are incomplete.');
  if(result.holderFinished)result.warnings.push('HOLDER OVERLAPS FINISHED-PART SILHOUETTE in nominal 2D view.');
- if(result.holderStock)result.warnings.push('HOLDER OVERLAPS RAW STOCK ENVELOPE; material may be removed before this position.');
+ if(result.holderStock)result.warnings.push('EXPOSED HOLDER OVERLAPS RAW STOCK ENVELOPE; material may be removed before this position.');
  if(result.insertFinished)result.warnings.push('Insert overlaps finished-part silhouette; possible intentional contact, inspect manually.');
- result.warnings.push('STATIC 2D ONLY: no chuck, turret, clamps, relief angles, machine travel, or swept motion.');
+ if(tool.holder?.mode==='catalog')result.warnings.push('Mounted inspection clips the shank at an ASSUMED turret face; physical turret/block and chuck remain unmodeled.');
+ result.warnings.push('STATIC TOP VIEW ONLY: no chuck, turret collision, underside relief, machine travel, or swept motion.');
  return result;
 }
 function convertInspectionPositions(positions,factor){
@@ -1668,7 +1729,7 @@ function fillToolForm(t){
   toolMountSide:t.mountSide||'front',toolTipReference:t.tipReference||'virtual',
   holderMode:t.holder.mode,holderStartU:t.holder.startU,holderLength:t.holder.length,
   holderWidth:t.holder.width,holderCenterV:t.holder.centerV,
-  catalogH:t.holder.h??0,catalogB:t.holder.b??0,catalogLF:t.holder.lf??0,catalogLH:t.holder.lh??0,catalogWF:t.holder.wf??0};
+  catalogH:t.holder.h??0,catalogB:t.holder.b??0,catalogLF:t.holder.lf??0,catalogLH:t.holder.lh??0,catalogWF:t.holder.wf??0,catalogStickout:t.holder.stickout??0};
  for(const [id,value] of Object.entries(values))$(id).value=value;
  $('toolCustomPoints').value=(t.customPoints||[]).map(p=>`${p.u}, ${p.v}`).join('\n');
  $('toolVerified').checked=!!t.verified;
@@ -1709,7 +1770,7 @@ function readToolForm(){
   length:numberField('holderLength'),width:numberField('holderWidth'),centerV:numberField('holderCenterV'),
   points:$('holderMode').value==='custom'?parseCustomPoints($('holderCustomPoints').value):t.holder.points,
   h:numberField('catalogH'),b:numberField('catalogB'),lf:numberField('catalogLF'),
-  lh:numberField('catalogLH'),wf:numberField('catalogWF')};
+  lh:numberField('catalogLH'),wf:numberField('catalogWF'),stickout:numberField('catalogStickout')};
  if(t.catalog&&['h','b','lf','lh','wf'].some(k=>Math.abs(t.holder[k]-(job.tools[toolSelected]?.holder?.[k]??t.holder[k]))>1e-8)){
   t.catalog.sourceDimensions='OPERATOR MODIFIED';t.verified=false;
  }
@@ -1823,7 +1884,7 @@ function drawToolPreview(){
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
  $('toolPreviewTitle').textContent=`${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
- $('toolGraphReadout').textContent=`${t.catalog?`${t.catalog.code} · ${t.catalog.insert} · ${t.catalog.approach}° KAPR · DIMENSIONS ${t.catalog.sourceDimensions||'REFERENCE'} · OUTLINE SCHEMATIC · `:''}${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
+ $('toolGraphReadout').textContent=`${t.catalog?`${t.catalog.code} · ${t.catalog.insert} · ${t.catalog.approach}° KAPR · DIMENSIONS ${t.catalog.sourceDimensions||'REFERENCE'} · OUTLINE SCHEMATIC · MOUNTED STICKOUT ${f(t.holder.stickout)} · `:''}${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
 }
 function toolNextNumber(){const nums=new Set(job.tools.map(t=>t.station));for(let i=1;i<=999;i++)if(!nums.has(i))return i;return null;}
 function addTemplate(){
@@ -1965,8 +2026,8 @@ function wireTools(){
   job.tools=trial;toolDirty=false;refreshToolWorkspace();autosave();
   notify('CATALOG GEOMETRY APPLIED · PLEASE CHECK ACTUAL TOOL DIMENSIONS');
  });
- const fields=['catalogH','catalogB','catalogLF','catalogLH','catalogWF','toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
- const geometryFields=new Set(['catalogH','catalogB','catalogLF','catalogLH','catalogWF','toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
+ const fields=['catalogH','catalogB','catalogLF','catalogLH','catalogWF','catalogStickout','toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
+ const geometryFields=new Set(['catalogH','catalogB','catalogLF','catalogLH','catalogWF','catalogStickout','toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
   'toolPocketU','toolPocketV','toolCustomPoints','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints']);
  // If the operator swaps insert SHAPE while its clearance is still the prior
  // manufacturer's example value, carry the matching new example rather than
@@ -2088,6 +2149,9 @@ function refreshInspector(){
  if(!t){$('inspectGraph').replaceChildren();$('inspectToolSummary').textContent='NO TOOLS · F11 TO ADD A TOOL';inspectMsg('NO TOOL', ['Choose F11 TOOL DEFINITIONS and add one.'],true);return;}
  selector.value=t.id;
  const p=inspectedPosition(t);$('inspectX').value=fmt(p.x);$('inspectZ').value=fmt(p.z);
+ const cat=t.holder?.mode==='catalog';$('inspectStickout').disabled=!cat;$('inspectApplyStickout').disabled=!cat;
+ $('inspectStickout').value=cat?Number(t.holder.stickout.toPrecision(9)):'';
+ $('inspectMountInfo').textContent=cat?`CATALOG LF ${fmt(t.holder.lf)} · EXPOSED ${fmt(t.holder.stickout)} ${job.units.toUpperCase()} · TURRET FACE ASSUMED / NOT VERIFIED`:'STICKOUT CONTROL APPLIES TO CATALOG HOLDERS; GENERIC OUTLINES REMAIN UNCLIPPED.';
  document.querySelectorAll('.inspect-unit-label').forEach(n=>n.textContent=job.units==='inch'?'(IN)':'(MM)');
  const vert=$('inspectVertex'),remember=vert.value;vert.replaceChildren();
  job.nodes.forEach((n,i)=>{const opt=document.createElement('option');opt.value=i;opt.textContent=`P${String(i+1).padStart(2,'0')}  X${fmt(n.x)}  Z${fmt(n.z)}`;vert.append(opt);});
@@ -2128,7 +2192,7 @@ function drawInspectorGraph(){
  if(result.errors.length){inspectMsg('INSPECTION UNAVAILABLE',result.errors,true);$('inspectMetrics').replaceChildren();return;}
  const {bodies,toolGeom}=result;
  const W=1000,H=560,showRaw=$('inspectShowRaw').checked,showHolder=$('inspectShowHolder').checked;
- const all=[...bodies.stock,...toolGeom.outline,...(showHolder?toolGeom.holderOutline:[]),toolGeom.referencePoint];
+ const all=[...bodies.stock,...toolGeom.outline,...(showHolder?toolGeom.mountedHolderOutline:[]),toolGeom.referencePoint];
  const lowU=Math.min(...all.map(q=>q.u)),highU=Math.max(...all.map(q=>q.u)),lowV=Math.min(...all.map(q=>q.v)),highV=Math.max(...all.map(q=>q.v));
  const minSpan=job.units==='inch'?.5:12.7;
  const du=Math.max(highU-lowU,minSpan),dv=Math.max(highV-lowV,minSpan);
@@ -2157,7 +2221,15 @@ function drawInspectorGraph(){
  const top=bodies.top.map(map),topPath=top.map((q,i)=>`${i?'L':'M'}${q.x.toFixed(3)},${q.y.toFixed(3)}`).join(' ');
  g.append(el('path',{d:topPath,fill:'none',stroke:'#53e7ce','stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round'}));
  g.append(el('path',{d:bodies.top.map(q=>({u:q.u,v:-q.v})).map((q,i)=>{const r=map(q);return `${i?'L':'M'}${r.x.toFixed(3)},${r.y.toFixed(3)}`;}).join(' '),fill:'none',stroke:'#53e7ce','stroke-opacity':'.4','stroke-width':2}));
- if(showHolder&&toolGeom.holderOutline.length){g.append(el('path',{d:path(toolGeom.holderOutline),fill:result.holderFinished||result.holderStock?'#fa966c':'#cda55f','fill-opacity':'.23',stroke:result.holderFinished||result.holderStock?'#ff937d':'#e8b96d','stroke-width':2.5,'stroke-dasharray':'9 5'}));}
+ if(showHolder&&toolGeom.mountedHolderOutline.length){
+  // Mounted silhouette, not all 150 mm of catalog shank. Geometry used for
+  // overlap checks is IDENTICAL to this visible exposed polygon.
+  g.append(el('path',{d:path(toolGeom.mountedHolderOutline),fill:result.holderFinished||result.holderStock?'#fa966c':'#cda55f','fill-opacity':'.23',stroke:result.holderFinished||result.holderStock?'#ff937d':'#e8b96d','stroke-width':2.5}));
+  if(toolGeom.turretFace){
+   const a=map(toolGeom.turretFace[0]),b=map(toolGeom.turretFace[1]);line(a,b,'#ffcc74',2.5,'7 5');
+   label('TURRET FACE · ASSUMED',Math.max(14,Math.min(W-15,(a.x+b.x)/2)),Math.max(22,Math.min(H-38,Math.min(a.y,b.y)-10)),'#ffcc74',12,'middle');
+  }
+ }
  g.append(el('path',{d:path(toolGeom.outline),fill:'#649bd0','fill-opacity':'.5',stroke:'#8dd8ff','stroke-width':2.4,'stroke-linejoin':'round'}));
  const tip=map(toolGeom.tip);g.append(el('circle',{cx:tip.x,cy:tip.y,r:5,fill:'#ffe2a6',stroke:'#efad5c','stroke-width':2}));
  const ref=map(toolGeom.referencePoint);g.append(el('circle',{cx:ref.x,cy:ref.y,r:8,fill:'#fa8ab9',stroke:'#ffe1ef','stroke-width':1.5}));
@@ -2180,6 +2252,16 @@ function wireInspector(){
  $('inspectTab').addEventListener('click',()=>setPage('inspect'));
  $('inspectTool').addEventListener('change',()=>{inspectedToolId=$('inspectTool').value;inspectZoom=1;inspectCamera=null;refreshInspector();});
  $('inspectApply').addEventListener('click',()=>commitInspectPosition({x:Number($('inspectX').value),z:Number($('inspectZ').value)}));
+ $('inspectApplyStickout').addEventListener('click',()=>{
+  const t=inspectionTool();if(!t||t.holder?.mode!=='catalog')return;
+  const stickout=Number($('inspectStickout').value);
+  if(!Number.isFinite(stickout)||stickout<=t.holder.lh||stickout>t.holder.lf){
+   inspectMsg('INVALID STICKOUT',['Stickout must be greater than head projection LH and no greater than holder length LF.'],true);return;
+  }
+  const next=clone(job),current=next.tools.find(tool=>tool.id===t.id);current.holder.stickout=stickout;current.verified=false;
+  job=next;dirty=true;autosave();inspectCamera=null;refreshInspector();
+  notify('MOUNTED STICKOUT SAVED FOR THIS JOB TOOL · TURRET FACE UNVERIFIED');
+ });
  for(const id of ['inspectX','inspectZ'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('inspectApply').click();}});
  for(const [id,axis,sign] of [['jogXMinus','x',-1],['jogXPlus','x',1],['jogZMinus','z',-1],['jogZPlus','z',1]])$(id).addEventListener('click',()=>inspectJog(axis,sign));
  $('inspectPlaceVertex').addEventListener('click',()=>{const n=job.nodes[Number($('inspectVertex').value)];if(n)commitInspectPosition({x:n.x,z:n.z});});
