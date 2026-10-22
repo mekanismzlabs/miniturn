@@ -200,13 +200,20 @@ body[data-display="daylight"] .saveState,body[data-display="daylight"] .tab-note
 body[data-display="daylight"] .row-table tr:hover td{background:#dbeaf3}
 body[data-display="contrast"] .section-header h2,body[data-display="contrast"] .status-box strong,body[data-display="contrast"] .softkeys b{color:#ffff73}
 body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#fff;color:#111}
+
+/* v0.5.3 insert-angle controls: independent of the old holder-angle advanced menu. */
+.insert-angle-actions {margin:9px 0 6px;flex-wrap:wrap;}
+.insert-angle-actions button:last-child {flex:2 1 200px; color:var(--ink,#defff0);}
+.insert-angle-hint{margin:8px 0 12px;line-height:1.5;}
+#insertAngleReadout{line-height:1.5;}
+#applyMountPreset:disabled{opacity:.45;cursor:not-allowed;}
 </style>
   <title>MiniTurn — CONVERSATIONAL OPERATIONS</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.2</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.3</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -284,6 +291,23 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
 0.6, 0.4
 0.1, 0.5"></textarea><span class="editor-hint">U = axial physical distance · V = radial physical distance · Reference tip is (0,0). Outline connects the points in order, then closes.</span></label>
       </div>
+      <div class="section-header second-header holder-section-title"><h2>INSERT POCKET / CUTTING-EDGE ANGLE</h2><span class="small-chip">INSERT ROTATES · HOLDER STAYS PUT</span></div>
+      <div class="tool-form-grid">
+        <label class="field" id="toolMountedReliefField">MOUNTED FLANK CLEARANCE (°)
+          <input id="toolMountedRelief" type="number" min="0" max="25" step="0.25" placeholder="LEGACY / UNSET">
+        </label>
+        <label class="field">INSERT ROTATION TRIM (°)
+          <input id="toolInsertFine" type="number" min="-30" max="30" step="0.25" value="0">
+        </label>
+      </div>
+      <div class="tip-adjust-buttons insert-angle-actions">
+        <button type="button" id="insertTrimMinus">− 0.25°</button>
+        <button type="button" id="insertTrimReset">ZERO TRIM</button>
+        <button type="button" id="insertTrimPlus">+ 0.25°</button>
+        <button type="button" id="applyMountPreset">APPLY STANDARD CLEARANCE</button>
+      </div>
+      <div class="tip-direction-readout" id="insertAngleReadout">INSERT TO HOLDER: 0°</div>
+      <p class="editor-hint insert-angle-hint">Modern starting examples: C/80° diamond = 5° mounted flank clearance; D/55° diamond = 3°. These are editable *projected edge clearances*, not the ISO insert side-clearance angle. Changing them rotates the insert only. Imported tools keep their old outline until you choose APPLY STANDARD CLEARANCE.</p>
       <div class="section-header second-header holder-section-title"><h2>TOOL NOSE DIRECTION · REAR LATHE</h2><span class="small-chip">SELECT T0–T8</span></div>
       <div class="tip-select-wrap">
         <div class="tip-select-intro">PICK THE CUTTING TIP LOCATION (FANUC-STYLE). THE MINI DIAGRAMS SHOW THE THEORETICAL TIP DOT, NOT THE TOOL STATION NUMBER.</div>
@@ -296,7 +320,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
             <label class="field">FINE ANGLE MODIFIER (°)<input id="toolAngleFine" type="number" min="-360" max="360" step="0.5" value="0"></label>
             <label class="field">TOTAL SKETCH ROTATION (°)<input type="number" id="toolAngle" readonly tabindex="-1"></label>
             <div class="tip-adjust-buttons"><button id="tipAdjustMinus" type="button">− 0.5°</button><button id="tipAdjustReset" type="button">ZERO ADJUST</button><button id="tipAdjustPlus" type="button">+ 0.5°</button></div>
-            <p class="editor-hint">A small deviation shifts the insert AND holder outline in the preview. The T-number is kept separately for later control-specific posting. This is not automatic cutter compensation.</p>
+            <p class="editor-hint">A small deviation rotates the whole holder assembly. INSERT ROTATION TRIM above rotates the insert independently. The T-number is kept separately for later control-specific posting. This is not automatic cutter compensation.</p>
           </div>
         </details>
       </div>
@@ -452,7 +476,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.1</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.3</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -461,7 +485,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.4.1';
+const TOOL_CORE_VERSION='0.5.3';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -471,6 +495,23 @@ function setToolTipDirection(tool,tip){const t=structuredClone(tool);t.tipDirect
 function setToolAngleAdjust(tool,adjust){const t=structuredClone(tool);if(!Number.isFinite(adjust)||Math.abs(adjust)>360)throw new Error('Fine angle must be within ±360°.');t.angleAdjust=adjust;t.angle=tipBaseAngle(t.tipDirection)+adjust;t.verified=false;return t;}
 const TOOL_KINDS={od:'OD TURN',id:'ID BORE',face:'FACE',od_groove:'OD GROOVE',id_groove:'ID GROOVE',od_thread:'OD THREAD',id_thread:'ID THREAD',drill:'DRILL',custom:'CUSTOM'};
 const SHAPES={C:'80° DIAMOND',D:'55° DIAMOND',V:'35° DIAMOND',S:'90° SQUARE',T:'60° TRIANGLE',G:'GROOVE BLADE',P:'60° THREAD',B:'DRILL POINT',CUSTOM:'CUSTOM POLYGON'};
+// Shop-floor defaults: projected MOUNTED cutting-edge clearance relative to a radial shoulder.
+// NOT ISO insert side-clearance/rake (CNMG, DNMG and other insert codes differ).
+// Nominal clearance is independently editable for each tool/holder.
+const MOUNT_CLEARANCE_PRESETS={C:5,D:3};
+const DIAMOND_ANGLES={C:80,D:55,V:35};
+function recommendedMountedClearance(shape){return MOUNT_CLEARANCE_PRESETS[shape]??null;}
+/** Positive in U/V: right-hand holder turns upper cutting flank toward +V;
+ * left hand is its mirror. Local U=axial, V=radial, not lathe diameter X.
+ * A null relief means a pre-v0.5.3 tool: keep its modeled insert orientation unchanged.
+ */
+function insertMountOffset(t){
+ const included=DIAMOND_ANGLES[t.shape];
+ if(included===undefined||t.mountedRelief===null||t.mountedRelief===undefined)return 0;
+ const sign=t.hand==='L'?-1:1;
+ return sign*(90-t.mountedRelief-included/2);
+}
+function insertRelativeRotation(t){return insertMountOffset(t)+(t.insertFineAngle||0);}
 const TOOL_PRESETS=[
  {key:'od_c',name:'OD ROUGH · C 80°',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:0},
  {key:'od_d',name:'OD FINISH · D 55°',kind:'od',shape:'D',hand:'R',ic:.375,noseRadius:.015625,angle:0},
@@ -499,7 +540,8 @@ function makeTemplate(key='od_c',units='inch',station=1){
  const scale=units==='mm'?25.4:1;
  return {id:newId(),station,offset:station,name:t.name,kind:t.kind,shape:t.shape,hand:t.hand,
   mountSide:'front',tipReference:'virtual',holder:defaultHolder(units,t.kind),
-  tipDirection:0,angleAdjust:t.angle||0,angle:t.angle||0,ic:(t.ic||.375)*scale,noseRadius:(t.noseRadius||0)*scale,
+  tipDirection:0,angleAdjust:t.angle||0,angle:t.angle||0,
+  mountedRelief:recommendedMountedClearance(t.shape),insertFineAngle:0,ic:(t.ic||.375)*scale,noseRadius:(t.noseRadius||0)*scale,
   width:(t.width||.125)*scale,reach:(t.reach||1)*scale,tipAngle:t.tipAngle||118,
   customPoints:(t.customPoints||[]).map(p=>({u:p.u*scale,v:p.v*scale})),notes:'',verified:false};
 }
@@ -515,6 +557,10 @@ function upgradeTool(t,units='inch'){
  const result=structuredClone(t);
  if(!Number.isInteger(result.tipDirection)||!(result.tipDirection in TIP_DIRECTIONS))result.tipDirection=0;
  if(!Number.isFinite(result.angleAdjust))result.angleAdjust=(Number.isFinite(result.angle)?result.angle:0)-tipBaseAngle(result.tipDirection);
+ // Do not silently move imported tools: legacy geometry stays at the original angle
+ // until an operator explicitly applies a mounted-relief preset.
+ if(result.mountedRelief===undefined)result.mountedRelief=null;
+ if(result.insertFineAngle===undefined)result.insertFineAngle=0;
  if(!['front','rear'].includes(result.mountSide))result.mountSide='front';
  if(!['virtual','nose'].includes(result.tipReference))result.tipReference='virtual';
  if(!result.holder||typeof result.holder!=='object'){result.holder=defaultHolder(units,result.kind);result.verified=false;}
@@ -608,6 +654,9 @@ function validateTool(t){
  if(t.tipDirection!==undefined&&(!Number.isInteger(t.tipDirection)||!(t.tipDirection in TIP_DIRECTIONS)))errors.push('Tool tip direction must be T0–T8.');
  if(t.angleAdjust!==undefined&&(!f(t.angleAdjust)||Math.abs(t.angleAdjust)>360))errors.push('Fine angle must be within ±360°.');
  if(!f(t.angle)||t.angle< -540||t.angle>540)errors.push('Total sketch rotation must be within -540° to +540°.');
+ if(t.mountedRelief!==null&&t.mountedRelief!==undefined&&(!f(t.mountedRelief)||t.mountedRelief<0||t.mountedRelief>25))errors.push('Mounted flank clearance must be 0–25°, or blank for original geometry.');
+ if(t.insertFineAngle!==undefined&&(!f(t.insertFineAngle)||Math.abs(t.insertFineAngle)>30))errors.push('Insert-to-holder fine rotation must be within ±30°.');
+ if(t.mountedRelief!==null&&t.mountedRelief!==undefined&&!Object.hasOwn(DIAMOND_ANGLES,t.shape))errors.push('Mounted clearance setting requires a diamond insert C, D or V.');
  for(const k of ['ic','width','reach'])if(!f(t[k])||t[k]<=0||t[k]>1e6)errors.push(`${k.toUpperCase()} must be positive.`);
  if(!f(t.noseRadius)||t.noseRadius<0||t.noseRadius>1e6)errors.push('Nose radius must be zero or positive.');
  if(!f(t.tipAngle)||t.tipAngle<30||t.tipAngle>160)errors.push('Drill tip included angle must be 30–160°.');
@@ -638,6 +687,8 @@ function validateTool(t){
  if(h&&h.mode!=='none')warnings.push('Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
  if(!t.verified)warnings.push('GEOMETRY UNVERIFIED: placeholder dimensions; check real insert and holder before machining.');
  if(t.shape==='CUSTOM')warnings.push('Custom points are physical axial/radial offsets from virtual tip (0,0).');
+ if(Object.hasOwn(MOUNT_CLEARANCE_PRESETS,t.shape)&&t.mountedRelief==null)warnings.push('Legacy C/D geometry retained. Use APPLY STANDARD CLEARANCE to adopt a new mounted edge angle.');
+ if(t.mountedRelief!=null)warnings.push('Mounted flank clearance is 2D projected cutting-edge geometry, not ISO insert side clearance.');
  if(t.shape==='G')warnings.push('Groove blade is a simplified rectangular envelope, not holder collision geometry.');
  return {errors,warnings};
 }
@@ -691,18 +742,19 @@ function buildToolGeometry(tool){
  const valid=validateTool(tool);
  if(valid.errors.length)return {...valid,outline:[],sharpOutline:[],holderOutline:[],tip:{u:0,v:0},noseArc:null,noseCenter:null,referencePoint:null};
  const poly=toolPolygon(tool),nose=noseGeometry(poly,tool.noseRadius);
- const oriented=poly.map(p=>rotateToolPoint(p,tool.angle));
- const outline=nose.points.map(p=>rotateToolPoint(p,tool.angle));
+ const relativeInsert=insertRelativeRotation(tool),insertAngle=tool.angle+relativeInsert;
+ const oriented=poly.map(p=>rotateToolPoint(p,insertAngle));
+ const outline=nose.points.map(p=>rotateToolPoint(p,insertAngle));
  const holderLocal=holderPolygon(tool).map(p=>rotateToolPoint(p,tool.angle));
- const noseCenter=nose.arc?rotateToolPoint(nose.arc.center,tool.angle):null;
+ const noseCenter=nose.arc?rotateToolPoint(nose.arc.center,insertAngle):null;
  const refPoint=tool.tipReference==='nose'&&noseCenter?noseCenter:{u:0,v:0};
  const points=[...outline,...holderLocal,{u:0,v:0},refPoint];
  const bounds={minU:Math.min(...points.map(p=>p.u)),maxU:Math.max(...points.map(p=>p.u)),minV:Math.min(...points.map(p=>p.v)),maxV:Math.max(...points.map(p=>p.v))};
- return {...valid,sharpOutline:oriented,outline,holderOutline:holderLocal,
+ return {...valid,insertAngle,relativeInsert,sharpOutline:oriented,outline,holderOutline:holderLocal,
   bounds,tip:{u:0,v:0},noseCenter,referencePoint:refPoint,
   noseArc:nose.arc?{...nose.arc,center:noseCenter,
-   from:rotateToolPoint(nose.arc.from,tool.angle),to:rotateToolPoint(nose.arc.to,tool.angle),
-   start:nose.arc.start+tool.angle*Math.PI/180}:null};
+   from:rotateToolPoint(nose.arc.from,insertAngle),to:rotateToolPoint(nose.arc.to,insertAngle),
+   start:nose.arc.start+insertAngle*Math.PI/180}:null};
 }
 
 const {OPERATION_VERSION,OP_KINDS,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments} = (() => {
@@ -1377,7 +1429,8 @@ function refreshToolWorkspace(){
 }
 function fillToolForm(t){
  const values={toolName:t.name,toolStation:t.station,toolOffset:t.offset,toolKind:t.kind,toolShape:t.shape,
-  toolHand:t.hand,toolAngle:t.angle,toolAngleFine:t.angleAdjust||0,toolTipDirection:t.tipDirection??0,toolIC:t.ic,toolNoseRadius:t.noseRadius,toolWidth:t.width,toolReach:t.reach,
+  toolHand:t.hand,toolAngle:t.angle,toolAngleFine:t.angleAdjust||0,toolTipDirection:t.tipDirection??0,
+  toolMountedRelief:t.mountedRelief??'',toolInsertFine:t.insertFineAngle||0,toolIC:t.ic,toolNoseRadius:t.noseRadius,toolWidth:t.width,toolReach:t.reach,
   toolTipAngle:t.tipAngle,toolNotes:t.notes||'',
   toolMountSide:t.mountSide||'front',toolTipReference:t.tipReference||'virtual',
   holderMode:t.holder.mode,holderStartU:t.holder.startU,holderLength:t.holder.length,
@@ -1394,6 +1447,8 @@ function updateToolFields(){
  $('toolWidthField').hidden=!['G','B'].includes(shape);
  $('toolReachField').hidden=!['G','B'].includes(shape);
  $('toolTipAngleField').hidden=shape!=='B';
+ $('toolMountedReliefField').hidden=!Object.hasOwn(DIAMOND_ANGLES,shape);
+ $('applyMountPreset').disabled=!['C','D'].includes(shape);
  $('toolCustomField').hidden=shape!=='CUSTOM';
  const hMode=$('holderMode').value;
  for(const id of ['holderStartField','holderLengthField','holderWidthField','holderCenterField'])$(id).hidden=hMode!=='rect';
@@ -1405,6 +1460,8 @@ function readToolForm(){
  t.name=$('toolName').value.trim();t.station=numberField('toolStation');t.offset=numberField('toolOffset');
  t.kind=$('toolKind').value;t.shape=$('toolShape').value;t.hand=$('toolHand').value;
  t.tipDirection=numberField('toolTipDirection');t.angleAdjust=numberField('toolAngleFine');t.angle=tipBaseAngle(t.tipDirection)+t.angleAdjust;t.ic=numberField('toolIC');t.noseRadius=numberField('toolNoseRadius');
+ t.mountedRelief=Object.hasOwn(DIAMOND_ANGLES,t.shape)&&$('toolMountedRelief').value.trim()!==''?numberField('toolMountedRelief'):null;
+ t.insertFineAngle=numberField('toolInsertFine');
  t.width=numberField('toolWidth');t.reach=numberField('toolReach');t.tipAngle=numberField('toolTipAngle');
  t.notes=$('toolNotes').value;t.verified=$('toolVerified').checked;
  t.customPoints=t.shape==='CUSTOM'?parseCustomPoints($('toolCustomPoints').value):t.customPoints;
@@ -1425,6 +1482,9 @@ function drawToolPreview(){
  let t;
  try{t=readToolForm();}catch(err){toolMessage([err.message],true);return;}
  updateTipDirectionPicker();
+ const relative=insertRelativeRotation(t);
+ const clearance=t.mountedRelief===null?'LEGACY / UNSET':`${t.mountedRelief}°`;
+ $('insertAngleReadout').textContent=`INSERT → HOLDER: ${relative.toFixed(2)}° · MOUNTED FLANK: ${clearance} · FINE: ${(t.insertFineAngle||0).toFixed(2)}° · HOLDER: ${t.angle.toFixed(2)}°`;
  const geom=buildToolGeometry(t);
  if(geom.errors.length){toolMessage(geom.errors,true);return;}
  $('toolEditorID').textContent=toolNumber(t);toolMessage(geom.warnings);
@@ -1456,6 +1516,12 @@ function drawToolPreview(){
  }
  graph.append(el('path',{d:path(sharp),fill:'none',stroke:'#84988b','stroke-width':1.5,'stroke-dasharray':'5 5'}));
  graph.append(el('path',{d:path(edge),fill:'#219886','fill-opacity':'.33',stroke:'#5bf4d3','stroke-width':2.4,'stroke-linejoin':'round'}));
+ // Highlight the primary theoretical flank direction for visual orientation checks.
+ if(Object.hasOwn(DIAMOND_ANGLES,t.shape)&&sharp.length>=4){
+  const chosen=sharp[t.hand==='L'?sharp.length-1:1];
+  const root=p2({u:0,v:0}),other=p2(chosen),len=Math.hypot(other.x-root.x,other.y-root.y),frac=Math.min(1,58/Math.max(len,0.01));
+  line(root,{x:root.x+(other.x-root.x)*frac,y:root.y+(other.y-root.y)*frac},'#ffe37c',3.2);
+ }
  graph.append(el('circle',{cx:axis.x,cy:axis.y,r:5,fill:'#ffc46e',stroke:'#fff3c9','stroke-width':1.5}));
  if(noseCenter){const c=p2(noseCenter);graph.append(el('circle',{cx:c.x,cy:c.y,r:3,fill:'#e8f5bb'}));}
  const d=p2(datum);
@@ -1468,7 +1534,7 @@ function drawToolPreview(){
  label(t.mountSide==='front'?'V / FRONT ↑':'V / REAR ↓',15,24,'#aacbb8',13);
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
- $('toolPreviewTitle').textContent=`${t.name.toUpperCase()} · ${SHAPES[t.shape]} · ${t.angle}° · ${t.mountSide.toUpperCase()} MOUNT · TIP T${t.tipDirection}`;
+ $('toolPreviewTitle').textContent=`${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
  $('toolGraphReadout').textContent=`${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · TIP T${t.tipDirection} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
 }
 function toolNextNumber(){const nums=new Set(job.tools.map(t=>t.station));for(let i=1;i<=999;i++)if(!nums.has(i))return i;return null;}
@@ -1583,9 +1649,21 @@ function wireTools(){
   const option=document.createElement('option');option.value=val;option.textContent=name;$(id).append(option);
  }
  for(const p of TOOL_PRESETS){const option=document.createElement('option');option.value=p.key;option.textContent=p.name;$('toolPreset').append(option);}
- const fields=['toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
- const geometryFields=new Set(['toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
+ const fields=['toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
+ const geometryFields=new Set(['toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
   'toolCustomPoints','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints']);
+ // If the operator swaps insert SHAPE while its clearance is still the prior
+ // manufacturer's example value, carry the matching new example rather than
+ // silently leaving an 80° pocket default on a new 55° insert.
+ $('toolShape').addEventListener('change',()=>{
+  const previous=job.tools[toolSelected];if(!previous)return;
+  const oldNominal=recommendedMountedClearance(previous.shape);
+  const newNominal=recommendedMountedClearance($('toolShape').value);
+  const raw=$('toolMountedRelief').value.trim();
+  if(newNominal!==null&&(raw===''||oldNominal!==null&&Number(raw)===oldNominal)){
+   $('toolMountedRelief').value=String(newNominal);
+  }
+ });
  for(const id of fields){
   const onEdit=()=>{
    if(geometryFields.has(id))$('toolVerified').checked=false;
@@ -1594,6 +1672,15 @@ function wireTools(){
   $(id).addEventListener('input',onEdit);
   $(id).addEventListener('change',onEdit);
  }
+ const insertTrim=n=>{const el=$('toolInsertFine');el.value=String(Math.round(((Number(el.value)||0)+n)*100)/100);el.dispatchEvent(new Event('input',{bubbles:true}));};
+ $('insertTrimMinus').addEventListener('click',()=>insertTrim(-.25));
+ $('insertTrimPlus').addEventListener('click',()=>insertTrim(.25));
+ $('insertTrimReset').addEventListener('click',()=>{const el=$('toolInsertFine');el.value='0';el.dispatchEvent(new Event('input',{bubbles:true}));});
+ $('applyMountPreset').addEventListener('click',()=>{
+  const clearance=recommendedMountedClearance($('toolShape').value);
+  if(clearance===null){notify('NO STANDARD C/D PRESET FOR THIS INSERT',true);return;}
+  const el=$('toolMountedRelief');el.value=String(clearance);el.dispatchEvent(new Event('input',{bubbles:true}));
+ });
  $('showHolder').addEventListener('change',drawToolPreview);
  $('saveTool').addEventListener('click',()=>toolAction('save'));$('resetTool').addEventListener('click',()=>{toolDirty=false;refreshToolWorkspace();});
  $('addTool').addEventListener('click',()=>toolAction('add'));$('duplicateTool').addEventListener('click',()=>toolAction('duplicate'));
