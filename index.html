@@ -219,13 +219,30 @@ body[data-display="daylight"] .point-toggles label{color:#14334b;border-color:#8
 body[data-display="daylight"] .geometry-advanced .tip-advanced-inner{background:#f5f9fb;color:#14334b}
 body[data-display="contrast"] .point-toggles label{color:#fff;border-color:#ccc}
 body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:#111}
+
+/* v0.5.6: intentionally compact old-control catalog readout. */
+.catalog-spec{border:1px solid #517166;background:rgba(35,85,73,.16);padding:10px 12px;margin:9px 0 16px;line-height:1.6;display:grid;gap:2px;font-family:monospace}
+.catalog-spec[hidden]{display:none}.catalog-spec strong{font-size:16px;color:#a0f7c9}
+.catalog-spec span{color:#ffe0a0}.catalog-spec a{color:#b0e8ee;font-size:12px;text-decoration:underline}
+.catalog-spec #catalogSourceLine{color:#b3c9b9;font-size:11px}
+.catalog-dimensions:not([hidden]){display:block;width:100%}.catalog-dimensions[hidden]{display:none}
+.catalog-viewbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:7px 9px;background:#101c1a;color:#caeada;font:12px monospace}
+.catalog-viewbar select{padding:5px;background:#1b2a28;color:#e3f3ea;border:1px solid #5a7e73;font:12px monospace}
+.catalog-viewbar #catalogProjection{color:#eac58d;font-size:11px}
+[data-display="daylight"] .catalog-spec,[data-display="daylight"] .catalog-viewbar{background:#eaf0ed;color:#253e38}
+[data-display="daylight"] .catalog-spec strong{color:#1e5144}
+[data-display="daylight"] .catalog-spec span,[data-display="daylight"] .catalog-viewbar #catalogProjection{color:#754619}
+[data-display="daylight"] .catalog-spec #catalogSourceLine{color:#40514c}
+
+.catalog-spec #catalogDesignationGuide{color:#d0ddcc;font-size:11px;line-height:1.65}
+[data-display="daylight"] .catalog-spec #catalogDesignationGuide{color:#35483f}
 </style>
   <title>MiniTurn — CONVERSATIONAL OPERATIONS</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.5</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.6</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -274,7 +291,8 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
       <div class="section-header"><h2>04 / JOB TOOL TABLE</h2><span class="small-chip" id="toolCount">0 TOOLS</span></div>
       <div class="tool-list" id="toolList" role="listbox" aria-label="Select a tool"></div>
       <div class="section-header second-header"><h2>NEW STANDARD TOOL</h2><span class="small-chip">TEMPLATES</span></div>
-      <label class="field">TOOL TEMPLATE<select id="toolPreset"></select></label>
+      <label class="field">ISO HOLDER / TOOL TEMPLATE<select id="toolPreset"></select></label>
+      <p class="editor-hint">Catalog presets use ISO holder designations and published shank/head dimensions. The shaped pocket and clamp remain illustrative.</p>
       <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD TEMPLATE</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button></div>
       <div class="library-divider"></div>
       <div class="section-header"><h2>REUSABLE SHOP LIBRARY</h2><span class="small-chip">OFFLINE</span></div>
@@ -284,6 +302,12 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
     </section>
     <section class="panel tool-editor-panel" aria-label="Tool geometry editor">
       <div class="section-header"><h2>05 / TOOL DEFINITION</h2><span class="small-chip" id="toolEditorID">T01 H01</span></div>
+      <div id="catalogSpec" class="catalog-spec" hidden>
+        <strong id="catalogModelName">CATALOG HOLDER</strong><span id="catalogInsertName">INSERT</span>
+        <div id="catalogSourceLine">Published dimensions; modeled silhouette</div>
+        <div id="catalogDesignationGuide">ISO designation decoding</div>
+        <a id="catalogSourceLink" href="#" target="_blank" rel="noopener noreferrer">CATALOG REFERENCE ↗</a>
+      </div>
       <div class="tool-form-grid">
         <label class="field wide">DESCRIPTION<input type="text" id="toolName" maxlength="65" spellcheck="false" autocomplete="off"></label>
         <label class="field">STATION T<input type="number" id="toolStation" min="1" max="999" step="1"></label>
@@ -335,7 +359,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
       <div class="tool-form-grid">
         <label class="field">TURRET MOUNT<select id="toolMountSide"><option value="front">FRONT / +RADIAL VIEW</option><option value="rear">REAR / MIRROR RADIAL VIEW</option></select></label>
         <label class="field">TOOL REFERENCE<select id="toolTipReference"><option value="virtual">VIRTUAL SHARP TIP</option><option value="nose">NOSE RADIUS CENTER</option></select></label>
-        <label class="field">HOLDER SHAPE<select id="holderMode"><option value="rect">RECTANGULAR ENVELOPE</option><option value="custom">CUSTOM HOLDER POLYGON</option><option value="none">NO HOLDER</option></select></label>
+        <label class="field">HOLDER SHAPE<select id="holderMode"><option value="catalog">CATALOG HOLDER / SHAPED HEAD</option><option value="rect">RECTANGULAR ENVELOPE</option><option value="custom">CUSTOM HOLDER POLYGON</option><option value="none">NO HOLDER</option></select></label>
       </div>
       <details class="tip-advanced geometry-advanced" id="geometryAdvanced">
         <summary>▸ ADVANCED GEOMETRY · POCKET / HOLDER POSITION <span>U/V COORDINATES</span></summary>
@@ -355,6 +379,16 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
           <div class="tip-adjust-buttons"><button id="tipAdjustMinus" type="button">− 0.5°</button><button id="tipAdjustReset" type="button">ZERO ADJUST</button><button id="tipAdjustPlus" type="button">+ 0.5°</button></div>
           <p class="editor-hint">Holder rotation moves the entire assembly. Insert rotation above moves only the insert around the mounting center. Geometry checks remain illustrative.</p>
           <div class="tool-form-grid">
+        <div class="catalog-dimensions" id="holderCatalogFields" hidden>
+          <div class="section-header second-header"><h2>ISO HOLDER DIMENSIONS</h2><span class="small-chip">PHYSICAL · TOP PROJECTION</span></div>
+          <div class="tool-form-grid">
+          <label class="field">SHANK HEIGHT H <span class="field-unit"></span><input id="catalogH" type="number" min="0" step="any"></label>
+          <label class="field">SHANK WIDTH B <span class="field-unit"></span><input id="catalogB" type="number" min="0" step="any"></label>
+          <label class="field">FUNCTIONAL LENGTH LF <span class="field-unit"></span><input id="catalogLF" type="number" min="0" step="any"></label>
+          <label class="field">HEAD LENGTH LH <span class="field-unit"></span><input id="catalogLH" type="number" min="0" step="any"></label>
+          <label class="field">FUNCTIONAL WIDTH WF <span class="field-unit"></span><input id="catalogWF" type="number" min="0" step="any"></label>
+          </div><p class="editor-hint">These dimensions initialize from product literature. The head/pocket and screw/lever graphics are parametric sketches, NOT downloaded manufacturer CAD or verified collision bodies.</p>
+        </div>
         <label class="field" id="holderStartField">AXIAL SETBACK <span class="field-unit"></span><input id="holderStartU" type="number" step="any" min="0"></label>
         <label class="field" id="holderLengthField">HOLDER LENGTH <span class="field-unit"></span><input id="holderLength" type="number" step="any" min="0"></label>
         <label class="field" id="holderWidthField">RADIAL WIDTH <span class="field-unit"></span><input id="holderWidth" type="number" step="any" min="0"></label>
@@ -379,10 +413,11 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
         <label><input type="checkbox" id="showNoseCenter" checked> C · NOSE CENTER</label>
         <label><input type="checkbox" id="showHolder" checked> HOLDER</label>
       </div>
+      <div class="catalog-viewbar"><label>VIEW <select id="catalogView"><option value="head">HEAD / INSERT DETAIL</option><option value="full">FULL HOLDER</option></select></label><span id="catalogProjection">SCHEMATIC TOP PROJECTION</span></div>
       <div class="tool-preview-frame"><svg id="toolGraph" viewBox="0 0 600 500" role="img" aria-label="True-scale tool insert envelope and theoretical cutting tip"></svg></div>
       <div id="toolGraphReadout" class="readout">Select a tool to see its physical outline.</div>
       <div class="tool-legend"><span><i class="legend-line finished"></i> NOMINAL OUTLINE</span><span><i class="legend-dot"></i> VIRTUAL SHARP TIP</span><span><i class="legend-line holder"></i> HOLDER ENVELOPE</span><span><i class="legend-dot datum"></i> SELECTED REFERENCE</span></div>
-      <div class="tool-warning"><strong>GEOMETRY DEFINITIONS ONLY</strong> — Insert shapes and holder rectangles are nominal 2D approximations. FRONT/REAR reverses the radial sketch only, not lathe coordinate conventions. Verify the chosen T0–T8 code against the actual control manual; pictured orientation is a rear-lathe convention. No cutter compensation, turret swing clearance, machine-specific offsets or collision certification is provided. Verify physical tools and machine conventions before later NC development.</div>
+      <div class="tool-warning"><strong>GEOMETRY DEFINITIONS ONLY</strong> — Catalog names and published dimensions are references; head, pocket, clamp and custom outlines are nominal 2D approximations. FRONT/REAR reverses the radial sketch only, not lathe coordinate conventions. Verify the chosen T0–T8 code against the actual control manual; pictured orientation is a rear-lathe convention. No cutter compensation, turret swing clearance, machine-specific offsets or collision certification is provided. Verify physical tools and machine conventions before later NC development.</div>
     </section>
   </main>
   <main class="inspect-workspace" id="inspectWorkspace" hidden>
@@ -519,7 +554,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.5';
+const TOOL_CORE_VERSION='0.5.6';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -546,7 +581,36 @@ function insertMountOffset(t){
  return sign*(90-t.mountedRelief-included/2);
 }
 function insertRelativeRotation(t){return insertMountOffset(t)+(t.insertFineAngle||0);}
+/** Published ISO-pattern model references. Dimensions H/B/LF/LH/WF/IC are
+ * taken from the cited manufacturer specifications in millimeters. A catalog
+ * identity is NOT a licensed CAD model: the head/pocket/clamp silhouettes below
+ * are parametric approximations, and must never be used for NC collision approval.
+ */
+const CATALOG_HOLDERS={
+ pdjnr_2525m15:{code:'PDJNR 2525M-15',family:'PDJNR',brand:'ISCAR',hand:'R',insert:'DNMG 1506',shape:'D',clamp:'LEVER',approach:93,h:25,b:25,lf:150,lh:34,wf:32,ic:12.7,clearance:3,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910530'},
+ pclnr_2525m12:{code:'PCLNR 2525M-12',family:'PCLNR',brand:'ISCAR',hand:'R',insert:'CNMG 1204',shape:'C',clamp:'LEVER',approach:95,h:25,b:25,lf:150,lh:27.8,wf:32,ic:12.7,clearance:5,nose:.8,source:'https://webshop.iscar.nl/catalogue/product/1910524'},
+ sdjcr_2020k11:{code:'SDJCR 2020K-11',family:'SDJCR',brand:'ISCAR',hand:'R',insert:'DCMT 11T3',shape:'D',clamp:'SCREW',approach:93,h:20,b:20,lf:125,lh:20,wf:25,ic:9.52,clearance:3,nose:.4,source:'https://webshop.iscarvn.com/catalogue/product/1910585'},
+ sclcr_2525m12:{code:'SCLCR 2525M-12',family:'SCLCR',brand:'ISCAR',hand:'R',insert:'CCMT 1204',shape:'C',clamp:'SCREW',approach:95,h:25,b:25,lf:150,lh:20,wf:32,ic:12.7,clearance:5,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910566'}
+};
+const catalogScale=(v,units)=>v/(units==='inch'?25.4:1);
+/** Creating a catalog template never silently replaces an existing tool. */
+function makeCatalogTool(key,units='inch',station=1){
+ const c=CATALOG_HOLDERS[key];if(!c)throw new Error('Unknown catalog holder');
+ const base=makeTemplate(c.shape==='D'?'od_d':'od_c',units,station);
+ base.name=c.code;base.shape=c.shape;base.hand=c.hand;base.ic=catalogScale(c.ic,units);
+ base.noseRadius=catalogScale(c.nose,units);base.mountedRelief=c.clearance;
+ base.holder={mode:'catalog',family:c.family,clamp:c.clamp,
+  h:catalogScale(c.h,units),b:catalogScale(c.b,units),lf:catalogScale(c.lf,units),
+  lh:catalogScale(c.lh,units),wf:catalogScale(c.wf,units),
+  startU:0,length:catalogScale(c.lf,units),width:catalogScale(c.h,units),centerV:catalogScale(c.h*.5,units),points:[]};
+ base.catalog={code:c.code,family:c.family,brand:c.brand,insert:c.insert,source:c.source,
+  approach:c.approach,sourceDimensions:'PUBLISHED',outlineAccuracy:'SCHEMATIC'};
+ base.holderBaseAngle=180;base.angle=180;base.angleAdjust=0;base.pocket=defaultPocket(base);
+ base.notes=`${c.brand} reference · ${c.insert} · ${c.approach}° entering angle. Head/pocket/clamp silhouette is approximate.`;
+ base.verified=false;return base;
+}
 const TOOL_PRESETS=[
+ ...Object.entries(CATALOG_HOLDERS).map(([key,c])=>({key:'catalog_'+key,name:c.code+' · '+c.insert+' · '+c.approach+'°',kind:'od',shape:c.shape,hand:c.hand})),
  {key:'od_c',name:'OD ROUGH · C 80°',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:180},
  {key:'od_d',name:'OD FINISH · D 55°',kind:'od',shape:'D',hand:'R',ic:.375,noseRadius:.015625,angle:180},
  {key:'od_v',name:'OD FINE · V 35°',kind:'od',shape:'V',hand:'R',ic:.375,noseRadius:.015625,angle:180},
@@ -589,6 +653,7 @@ function defaultPocket(t){
  * fixed for subsequent independent insert rotations. */
 function reseatInsertAtDatum(t){const result=structuredClone(t);result.pocket=defaultPocket(result);result.verified=false;return result;}
 function makeTemplate(key='od_c',units='inch',station=1){
+ if(key.startsWith('catalog_'))return makeCatalogTool(key.slice(8),units,station);
  const t=TOOL_PRESETS.find(x=>x.key===key);
  if(!t)throw new Error('Unknown tool preset');
  const scale=units==='mm'?25.4:1;
@@ -642,13 +707,36 @@ function upgradeTool(t,units='inch'){
  if(!['virtual','nose'].includes(result.tipReference))result.tipReference='virtual';
  if(!result.holder||typeof result.holder!=='object'){result.holder=defaultHolder(units,result.kind);result.verified=false;}
  else result.holder={...defaultHolder(units,result.kind),...result.holder};
+ if(result.holder.mode==='catalog'&&!result.catalog){result.verified=false;result.holder.mode='rect';}
  if(!result.pocket||!Number.isFinite(result.pocket.u)||!Number.isFinite(result.pocket.v)){result.pocket=defaultPocket(result);result.verified=false;}
  return result;
+}
+/** Shank/body and sloped head in tool-local (U,V), with the cutting tip at
+ * local (0,0). 1:1 dimensions; illustrated pocket/reliefs are NOT sampled CAD.
+ * Front/top projection only, not a 3D holder or actual underside envelope.
+ */
+function catalogHolderParts(t){
+ const h=t.holder;if(h?.mode!=='catalog')return null;
+ const H=h.h,B=h.b,WF=h.wf,L=h.lf,N=h.lh,low=WF-B,high=WF;
+ // Draw the rectangular shank with a stepped/angled chip-clearance toolhead.
+ const shank=[{u:N,v:low},{u:L,v:low},{u:L,v:high},{u:N,v:high}];
+ const head=[{u:N*.13,v:-.18*B},{u:N*.24,v:-.27*B},{u:N*.72,v:low-.09*B},
+  {u:N,v:low},{u:N,v:high},{u:N*.48,v:high+.03*B},{u:N*.17,v:high-.35*B}];
+ // A conservative outer envelope for coarse static inspection; NOT collision certification.
+ const envelope=[head[0],head[1],head[2],shank[0],shank[1],shank[2],shank[3],head[5],head[6]];
+ const pocketCenter=t.pocket;
+ const bossRadius=.10*t.ic;
+ return {shank,head,envelope,
+  pocketDetail:[{u:pocketCenter.u-.6*t.ic,v:pocketCenter.v-.2*t.ic},
+   {u:pocketCenter.u+.2*t.ic,v:pocketCenter.v-.45*t.ic},
+   {u:pocketCenter.u+.6*t.ic,v:pocketCenter.v+.1*t.ic}],
+  clampCenter:h.clamp==='SCREW'?{...pocketCenter}:{u:pocketCenter.u+.25*t.ic,v:pocketCenter.v+.1*t.ic},clampRadius:bossRadius};
 }
 function holderPolygon(tool){
  const h=tool.holder;
  if(!h||h.mode==='none')return [];
  if(h.mode==='custom')return structuredClone(h.points||[]);
+ if(h.mode==='catalog')return catalogHolderParts(tool).envelope;
  const start=h.startU,end=start+h.length,low=h.centerV-h.width/2,high=h.centerV+h.width/2;
  return [{u:start,v:low},{u:end,v:low},{u:end,v:high},{u:start,v:high}];
 }
@@ -668,6 +756,7 @@ function convertToolUnits(tools,from,to){
    customPoints:(old.customPoints||[]).map(p=>({u:c(p.u),v:c(p.v)})),
    pocket:{u:c(old.pocket.u),v:c(old.pocket.v)},
    holder:{...h,startU:c(h.startU),length:c(h.length),width:c(h.width),centerV:c(h.centerV),
+    ...(h.mode==='catalog'?Object.fromEntries(['h','b','lf','lh','wf'].map(k=>[k,c(h[k])])):{}),
     points:(h.points||[]).map(p=>({u:c(p.u),v:c(p.v)}))}};
  });
 }
@@ -753,8 +842,12 @@ function validateTool(t){
  // Holder is intentionally a distinct envelope from the cutting-edge outline.
  const h=t.holder;
  if(h!==undefined){
-  if(!h||!['rect','custom','none'].includes(h.mode))errors.push('Holder mode must be RECT, CUSTOM or NONE.');
-  else if(h.mode==='rect'){
+  if(!h||!['rect','custom','none','catalog'].includes(h.mode))errors.push('Holder mode must be RECT, CUSTOM or NONE.');
+  else if(h.mode==='catalog'){
+   for(const k of ['h','b','lf','lh','wf'])if(!f(h[k])||h[k]<=0||h[k]>1e6)errors.push(`Catalog ${k.toUpperCase()} must be positive.`);
+   if(f(h.lf)&&f(h.lh)&&h.lh>=h.lf)errors.push('Catalog head LH must be shorter than LF.');
+   if(!['SCREW','LEVER'].includes(h.clamp))errors.push('Catalog clamp must be SCREW or LEVER.');
+  }else if(h.mode==='rect'){
    if(!f(h.startU)||h.startU<0||h.startU>1e6)errors.push('Holder axial setback must be >= 0.');
    if(!f(h.length)||h.length<=0||h.length>1e6)errors.push('Holder axial length must be positive.');
    if(!f(h.width)||h.width<=0||h.width>1e6)errors.push('Holder radial width must be positive.');
@@ -765,7 +858,8 @@ function validateTool(t){
  if(t.mountSide!==undefined&&!['front','rear'].includes(t.mountSide))errors.push('Mount side must be FRONT or REAR.');
  if(t.tipReference!==undefined&&!['virtual','nose'].includes(t.tipReference))errors.push('Tip reference must be VIRTUAL or NOSE CENTER.');
  if(t.tipReference==='nose'&&!(t.noseRadius>0))errors.push('NOSE CENTER reference requires a nonzero nose radius.');
- if(h&&h.mode!=='none')warnings.push('Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
+ if(h&&h.mode!=='none')warnings.push(h.mode==='catalog'?'CATALOG HOLDER: published H/B/LF/LH/WF dimensions, but schematic head/pocket/clamp; NOT a verified collision envelope.':'Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
+ if(t.catalog&&((CATALOG_HOLDERS[Object.keys(CATALOG_HOLDERS).find(k=>CATALOG_HOLDERS[k].code===t.catalog.code)]?.shape||t.shape)!==t.shape||t.hand!==t.catalog.code[4]))warnings.push('Catalog insert shape or hand may no longer match selected holder designation.');
  if(!t.verified)warnings.push('GEOMETRY UNVERIFIED: placeholder dimensions; check real insert and holder before machining.');
  if(t.shape==='CUSTOM')warnings.push('Custom outline vertex 1 is the theoretical tip; pocket pivot defaults to polygon vertex average and may need measured adjustment.');
  if(Object.hasOwn(MOUNT_CLEARANCE_PRESETS,t.shape)&&t.mountedRelief==null)warnings.push('Legacy C/D geometry retained. Use APPLY STANDARD CLEARANCE to adopt a new mounted edge angle.');
@@ -835,13 +929,18 @@ function buildToolGeometry(tool){
  const assemble=p=>rotateToolPoint(inHolder(p),tool.angle);
  const oriented=poly.map(assemble),outline=nose.points.map(assemble);
  const holderLocal=holderPolygon(tool).map(p=>rotateToolPoint(p,tool.angle));
+ const parts=catalogHolderParts(tool);
+ const catalogParts=parts?{...parts,head:parts.head.map(p=>rotateToolPoint(p,tool.angle)),
+  shank:parts.shank.map(p=>rotateToolPoint(p,tool.angle)),
+  pocketDetail:parts.pocketDetail.map(p=>rotateToolPoint(p,tool.angle)),
+  clampCenter:rotateToolPoint(parts.clampCenter,tool.angle)}:null;
  const pocketCenter=rotateToolPoint(tool.pocket,tool.angle);
  const tip=assemble({u:0,v:0});
  const noseCenter=nose.arc?assemble(nose.arc.center):null;
  const refPoint=tool.tipReference==='nose'&&noseCenter?noseCenter:tip;
  const points=[...outline,...holderLocal,tip,pocketCenter,refPoint];
  const bounds={minU:Math.min(...points.map(p=>p.u)),maxU:Math.max(...points.map(p=>p.u)),minV:Math.min(...points.map(p=>p.v)),maxV:Math.max(...points.map(p=>p.v))};
- return {...valid,insertAngle,relativeInsert,sharpOutline:oriented,outline,holderOutline:holderLocal,
+ return {...valid,insertAngle,relativeInsert,sharpOutline:oriented,outline,holderOutline:holderLocal,catalogParts,
   bounds,tip,pocketCenter,pivotLocal:pivot,noseCenter,referencePoint:refPoint,
   noseArc:nose.arc?{...nose.arc,center:noseCenter,from:assemble(nose.arc.from),to:assemble(nose.arc.to),
    start:nose.arc.start+insertAngle*Math.PI/180}:null};
@@ -1227,6 +1326,7 @@ const LIB_KEY='miniturn.tool.library.v0.2'; // Reuses v0.2 stored library with v
 const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
 const DISPLAY_KEY='miniturn.graph.displayMode.v0.5.2';
 const POINTS_KEY='miniturn.tool.markerVisibility.v0.5.5';
+const HOLDER_VIEW_KEY='miniturn.tool.catalogView.v0.5.6';
 const DISPLAY_MODES=['classic','vivid','contrast','daylight'];
 let displayMode='classic';
 try { const savedMode=localStorage.getItem(DISPLAY_KEY); if(DISPLAY_MODES.includes(savedMode))displayMode=savedMode; } catch {}
@@ -1240,7 +1340,7 @@ for(const [role,colors] of Object.entries({
  part:'#5ce9d9 #53e7ce #4dbaa9',
  partFill:'#278d8a #1b7469 #248d80',
  insert:'#5bf4d3 #219886',
- holder:'#e8b66c #e1a954 #e8b96d #cda55f #efad5c',
+ holder:'#e8b66c #e1a954 #e8b96d #cda55f #efad5c #adbdca #f8ba5d #f2c787 #ffa74f',
  selected:'#ffc46e #ffc377 #ffe1a7 #ffd08a #f9d28b #ffd396 #e8b56a #ffdb91 #ffe2a6 #f9d28b #ffd090 #fcebc2 #fff3c9 #fff0c4',
  selectedOutline:'#8c4e25 #183a32',
  point:'#d6ffeb #e8f5bb #ffe1ef #ffbfd7 #ffcae2 #ffb9d4',
@@ -1275,6 +1375,7 @@ function applyDisplayMode(mode,redraw=true){
 
 const TIP_GRID_ORDER=[2,6,1,7,0,5,3,8,4];
 const TIP_ICON_ROT={1:-45,2:-135,3:135,4:45,5:0,6:-90,7:180,8:90};
+let catalogView='head';try{catalogView=localStorage.getItem(HOLDER_VIEW_KEY)==='full'?'full':'head';}catch{}
 let opSelected=0,opDirty=false;
 let activePage='figure',toolSelected=0,toolDirty=false,inspectedToolId=null,inspectZoom=1,inspectProjection=null,inspectCamera=null;
 const $=id=>document.getElementById(id);
@@ -1301,7 +1402,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.5.2 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.5.6 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -1526,12 +1627,13 @@ function fillToolForm(t){
   toolTipAngle:t.tipAngle,toolNotes:t.notes||'',
   toolMountSide:t.mountSide||'front',toolTipReference:t.tipReference||'virtual',
   holderMode:t.holder.mode,holderStartU:t.holder.startU,holderLength:t.holder.length,
-  holderWidth:t.holder.width,holderCenterV:t.holder.centerV};
+  holderWidth:t.holder.width,holderCenterV:t.holder.centerV,
+  catalogH:t.holder.h??0,catalogB:t.holder.b??0,catalogLF:t.holder.lf??0,catalogLH:t.holder.lh??0,catalogWF:t.holder.wf??0};
  for(const [id,value] of Object.entries(values))$(id).value=value;
  $('toolCustomPoints').value=(t.customPoints||[]).map(p=>`${p.u}, ${p.v}`).join('\n');
  $('toolVerified').checked=!!t.verified;
  $('holderCustomPoints').value=(t.holder.points||[]).map(p=>`${p.u}, ${p.v}`).join('\n');
- toolDirty=false;updateToolFields();updateTipDirectionPicker();
+ toolDirty=false;updateToolFields();updateCatalogSpec(t);updateTipDirectionPicker();
 }
 function updateToolFields(){
  const shape=$('toolShape').value;
@@ -1546,6 +1648,7 @@ function updateToolFields(){
  const hMode=$('holderMode').value;
  for(const id of ['holderStartField','holderLengthField','holderWidthField','holderCenterField'])$(id).hidden=hMode!=='rect';
  $('holderCustomField').hidden=hMode!=='custom';
+ $('holderCatalogFields').hidden=hMode!=='catalog';
  document.querySelectorAll('.field-unit').forEach(n=>n.textContent=job.units==='inch'?'(IN)':'(MM)');
 }
 function readToolForm(){
@@ -1560,10 +1663,25 @@ function readToolForm(){
  t.notes=$('toolNotes').value;t.verified=$('toolVerified').checked;
  t.customPoints=t.shape==='CUSTOM'?parseCustomPoints($('toolCustomPoints').value):t.customPoints;
  t.mountSide=$('toolMountSide').value;t.tipReference=$('toolTipReference').value;
- t.holder={mode:$('holderMode').value,startU:numberField('holderStartU'),
+ t.holder={...t.holder,mode:$('holderMode').value,startU:numberField('holderStartU'),
   length:numberField('holderLength'),width:numberField('holderWidth'),centerV:numberField('holderCenterV'),
-  points:$('holderMode').value==='custom'?parseCustomPoints($('holderCustomPoints').value):t.holder.points};
+  points:$('holderMode').value==='custom'?parseCustomPoints($('holderCustomPoints').value):t.holder.points,
+  h:numberField('catalogH'),b:numberField('catalogB'),lf:numberField('catalogLF'),
+  lh:numberField('catalogLH'),wf:numberField('catalogWF')};
+ if(t.catalog&&['h','b','lf','lh','wf'].some(k=>Math.abs(t.holder[k]-(job.tools[toolSelected]?.holder?.[k]??t.holder[k]))>1e-8)){
+  t.catalog.sourceDimensions='OPERATOR MODIFIED';t.verified=false;
+ }
  return t;
+}
+function updateCatalogSpec(t){
+ const c=t.catalog,box=$('catalogSpec');box.hidden=!c;
+ if(!c)return;
+ $('catalogModelName').textContent=c.code||t.name;
+ $('catalogInsertName').textContent=`${c.insert||t.shape} · ${c.approach||'—'}° APPROACH`;
+ $('catalogSourceLine').textContent=`${c.brand||'ISO'} REFERENCE · H/B/LF/LH/WF ${c.sourceDimensions||'PUBLISHED'} · HEAD & CLAMP MODELED`;
+ const code=c.family||'';
+ $('catalogDesignationGuide').textContent=`${code[0]==='P'?'P LEVER CLAMP':'S SCREW CLAMP'} · ${code[1]==='D'?'D 55° DIAMOND':'C 80° DIAMOND'} · ${code[2]==='J'?'J 93° APPROACH':'L 95° APPROACH'} · ${code[3]==='N'?'N 0° ISO INSERT CLEARANCE':'C 7° ISO INSERT CLEARANCE'} · R RIGHT HAND`;
+ $('catalogSourceLink').href=typeof c.source==='string'&&c.source.startsWith('https://')?c.source:'#';
 }
 function toolMessage(messages,isError=false){
  const box=$('toolStatus');box.replaceChildren();box.className='status-box '+(isError?'invalid':'ok');
@@ -1596,7 +1714,10 @@ function drawToolPreview(){
  const edge=geom.outline.map(mounting),sharp=geom.sharpOutline.map(mounting),holder=holderVisible?geom.holderOutline.map(mounting):[];
  const datum=mounting(geom.referencePoint),noseCenter=geom.noseCenter?mounting(geom.noseCenter):null;
  const pocketPoint=mounting(geom.pocketCenter),tipPoint=mounting(geom.tip);
- const all=[...edge,...sharp,...holder,datum,pocketPoint,tipPoint];
+ const detailed=geom.catalogParts&&catalogView==='head';
+ const drawingParts=geom.catalogParts;
+ const head=drawingParts?drawingParts.head.map(mounting):[],shank=drawingParts?drawingParts.shank.map(mounting):[];
+ const all=[...edge,...sharp,...(detailed?head:holder),datum,pocketPoint,tipPoint];
  const lo={u:Math.min(...all.map(p=>p.u)),v:Math.min(...all.map(p=>p.v))};
  const hi={u:Math.max(...all.map(p=>p.u)),v:Math.max(...all.map(p=>p.v))};
  const du=Math.max(hi.u-lo.u,0.00001),dv=Math.max(hi.v-lo.v,0.00001);
@@ -1614,7 +1735,15 @@ function drawToolPreview(){
  const axis=p2({u:0,v:0});line({x:0,y:axis.y},{x:W,y:axis.y},'#446f5e',1,'6 5');line({x:axis.x,y:0},{x:axis.x,y:H},'#446f5e',1,'6 5');
  const path=arr=>arr.map((p,i)=>{const pt=p2(p);return `${i?'L':'M'}${pt.x.toFixed(3)},${pt.y.toFixed(3)}`;}).join(' ')+' Z';
  if(holder.length){
-  graph.append(el('path',{d:path(holder),fill:'#e1a954','fill-opacity':'.11',stroke:'#e8b66c','stroke-width':2,'stroke-dasharray':'9 5'}));
+  if(drawingParts){
+   graph.append(el('path',{d:path(shank),fill:'#adbdca','fill-opacity':'.13',stroke:'#e8b66c','stroke-width':1.5}));
+   graph.append(el('path',{d:path(head),fill:'#e1a954','fill-opacity':'.29',stroke:'#f8ba5d','stroke-width':2.1}));
+   const cp=p2(mounting(drawingParts.clampCenter)),rad=drawingParts.clampRadius*scale;
+   graph.append(el('circle',{cx:cp.x,cy:cp.y,r:Math.max(2,rad),fill:'#33494f',stroke:'#f2c787','stroke-width':2}));
+   graph.append(el('line',{x1:cp.x-rad*.45,y1:cp.y,x2:cp.x+rad*.45,y2:cp.y,stroke:'#f2c787','stroke-width':1.5}));
+   const pocketP=drawingParts.pocketDetail.map(mounting);
+   graph.append(el('path',{d:path(pocketP),fill:'none',stroke:'#ffa74f','stroke-width':1.5,'stroke-dasharray':'4 5'}));
+  }else graph.append(el('path',{d:path(holder),fill:'#e1a954','fill-opacity':'.11',stroke:'#e8b66c','stroke-width':2,'stroke-dasharray':'9 5'}));
  }
  graph.append(el('path',{d:path(sharp),fill:'none',stroke:'#84988b','stroke-width':1.5,'stroke-dasharray':'5 5'}));
  graph.append(el('path',{d:path(edge),fill:'#219886','fill-opacity':'.33',stroke:'#5bf4d3','stroke-width':2.4,'stroke-linejoin':'round'}));
@@ -1652,7 +1781,7 @@ function drawToolPreview(){
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
  $('toolPreviewTitle').textContent=`${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
- $('toolGraphReadout').textContent=`${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
+ $('toolGraphReadout').textContent=`${t.catalog?`${t.catalog.code} · ${t.catalog.insert} · ${t.catalog.approach}° KAPR · DIMENSIONS ${t.catalog.sourceDimensions||'REFERENCE'} · OUTLINE SCHEMATIC · `:''}${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
 }
 function toolNextNumber(){const nums=new Set(job.tools.map(t=>t.station));for(let i=1;i<=999;i++)if(!nums.has(i))return i;return null;}
 function addTemplate(){
@@ -1763,13 +1892,16 @@ function wireTipDirectionPicker(){
 
 function wireTools(){
  wireTipDirectionPicker();
+ $('catalogView').value=catalogView;
+ $('catalogView').addEventListener('change',()=>{catalogView=$('catalogView').value;
+  try{localStorage.setItem(HOLDER_VIEW_KEY,catalogView);}catch{}drawToolPreview();});
  $('figureTab').addEventListener('click',()=>setPage('figure'));$('toolTab').addEventListener('click',()=>setPage('tools'));
  for(const [id,values] of [['toolKind',TOOL_KINDS],['toolShape',SHAPES]])for(const [val,name] of Object.entries(values)){
   const option=document.createElement('option');option.value=val;option.textContent=name;$(id).append(option);
  }
  for(const p of TOOL_PRESETS){const option=document.createElement('option');option.value=p.key;option.textContent=p.name;$('toolPreset').append(option);}
- const fields=['toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
- const geometryFields=new Set(['toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
+ const fields=['catalogH','catalogB','catalogLF','catalogLH','catalogWF','toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
+ const geometryFields=new Set(['catalogH','catalogB','catalogLF','catalogLH','catalogWF','toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
   'toolPocketU','toolPocketV','toolCustomPoints','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints']);
  // If the operator swaps insert SHAPE while its clearance is still the prior
  // manufacturer's example value, carry the matching new example rather than
