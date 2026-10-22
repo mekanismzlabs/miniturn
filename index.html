@@ -207,13 +207,25 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
 .insert-angle-hint{margin:8px 0 12px;line-height:1.5;}
 #insertAngleReadout{line-height:1.5;}
 #applyMountPreset:disabled{opacity:.45;cursor:not-allowed;}
+/* v0.5.5: clear pocket-centered tool setup and visibility controls. */
+.point-toggles{display:flex;gap:9px;flex-wrap:wrap;padding:10px 2px;border-bottom:1px solid #355849;align-items:center}
+.point-toggles label{display:inline-flex;align-items:center;gap:6px;border:1px solid #4d7160;border-radius:4px;padding:7px 10px;font:700 11px/1.3 Consolas,monospace;color:#d0eedd;cursor:pointer}
+.point-toggles input{accent-color:#84e9b1;width:16px;height:16px}
+.geometry-advanced{margin-top:13px;margin-bottom:11px}
+.geometry-advanced .tip-advanced-inner{padding:12px;background:#102a23}
+.geometry-advanced .tip-advanced-inner .section-header{margin-top:18px}
+#tipCompAdvanced{margin:14px 0 10px}
+body[data-display="daylight"] .point-toggles label{color:#14334b;border-color:#8299a5}
+body[data-display="daylight"] .geometry-advanced .tip-advanced-inner{background:#f5f9fb;color:#14334b}
+body[data-display="contrast"] .point-toggles label{color:#fff;border-color:#ccc}
+body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:#111}
 </style>
   <title>MiniTurn — CONVERSATIONAL OPERATIONS</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.4</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.5</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -310,27 +322,39 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
       <div class="editor-hint">For existing tools: applies the photographed OD arrangement (D/55° → 93° shoulder approach; C/80° → 95°) while retaining holder dimensions and insert trim. Select and SAVE TOOL to store it. This sets a schematic T5 direction from the supplied REAR-lathe reference; verify the actual control's nose-comp code.</div>
       <div class="tip-direction-readout" id="insertAngleReadout">INSERT TO HOLDER: 0°</div>
       <p class="editor-hint insert-angle-hint">Modern starting examples: C/80° diamond = 5° mounted flank clearance; D/55° diamond = 3°. These are editable *projected edge clearances*, not the ISO insert side-clearance angle. Changing them rotates the insert only. Imported tools keep their old outline until you choose APPLY STANDARD CLEARANCE.</p>
-      <div class="section-header second-header holder-section-title"><h2>TOOL NOSE DIRECTION · REAR LATHE</h2><span class="small-chip">SELECT T0–T8</span></div>
+      <details class="tip-advanced" id="tipCompAdvanced">
+        <summary>▸ CONTROL COMPENSATION · TOOL TIP T0–T8 <span>SEPARATE FROM GEOMETRY</span></summary>
       <div class="tip-select-wrap">
-        <div class="tip-select-intro">PICK THE CUTTING TIP LOCATION (FANUC-STYLE). THE MINI DIAGRAMS SHOW THE THEORETICAL TIP DOT, NOT THE TOOL STATION NUMBER.</div>
+        <div class="tip-select-intro">FANUC TOOL-NOSE COMPENSATION DIRECTION. SELECTING A T-NUMBER DOES NOT ROTATE THE PHYSICAL TOOL. VERIFY PER CONTROL BEFORE FUTURE POSTING.</div>
         <div id="tipDirectionGrid" class="tip-direction-grid" role="group" aria-label="Tool nose compensation orientation T0 through T8"></div>
         <input type="hidden" id="toolTipDirection" value="0">
         <div class="tip-direction-readout" id="tipDirectionReadout">T0 · NO DIRECTION SELECTED</div>
-        <details class="tip-advanced" id="orientationAdvanced">
-          <summary>▸ ANGLE ADJUST / SPECIAL HOLDER <span>ADVANCED</span></summary>
-          <div class="tip-advanced-inner">
-            <label class="field">FINE ANGLE MODIFIER (°)<input id="toolAngleFine" type="number" min="-360" max="360" step="0.5" value="0"></label>
-            <label class="field">TOTAL SKETCH ROTATION (°)<input type="number" id="toolAngle" readonly tabindex="-1"></label>
-            <div class="tip-adjust-buttons"><button id="tipAdjustMinus" type="button">− 0.5°</button><button id="tipAdjustReset" type="button">ZERO ADJUST</button><button id="tipAdjustPlus" type="button">+ 0.5°</button></div>
-            <p class="editor-hint">A small deviation rotates the whole holder assembly. INSERT ROTATION TRIM above rotates the insert independently. The T-number is kept separately for later control-specific posting. This is not automatic cutter compensation.</p>
-          </div>
-        </details>
       </div>
-      <div class="section-header second-header holder-section-title"><h2>06 / MOUNTING &amp; HOLDER ENVELOPE</h2><span class="small-chip">TIP DATUM ≠ OFFSET VALUE</span></div>
+      </details>
+      <div class="section-header second-header holder-section-title"><h2>06 / PHYSICAL HOLDER &amp; POCKET</h2><span class="small-chip">PIVOT = MOUNTING CENTER</span></div>
       <div class="tool-form-grid">
         <label class="field">TURRET MOUNT<select id="toolMountSide"><option value="front">FRONT / +RADIAL VIEW</option><option value="rear">REAR / MIRROR RADIAL VIEW</option></select></label>
         <label class="field">TOOL REFERENCE<select id="toolTipReference"><option value="virtual">VIRTUAL SHARP TIP</option><option value="nose">NOSE RADIUS CENTER</option></select></label>
         <label class="field">HOLDER SHAPE<select id="holderMode"><option value="rect">RECTANGULAR ENVELOPE</option><option value="custom">CUSTOM HOLDER POLYGON</option><option value="none">NO HOLDER</option></select></label>
+      </div>
+      <details class="tip-advanced geometry-advanced" id="geometryAdvanced">
+        <summary>▸ ADVANCED GEOMETRY · POCKET / HOLDER POSITION <span>U/V COORDINATES</span></summary>
+        <div class="tip-advanced-inner">
+          <div class="tool-form-grid">
+            <label class="field">POCKET U · AXIAL <span class="field-unit"></span><input type="number" id="toolPocketU" step="any"></label>
+            <label class="field">POCKET V · RADIAL <span class="field-unit"></span><input type="number" id="toolPocketV" step="any"></label>
+          </div>
+          <p class="editor-hint"><strong>U</strong> is holder-local AXIAL distance (positive right before holder rotation). <strong>V</strong> is holder-local RADIAL distance (positive up before holder rotation). These are physical distances, NOT incremental FANUC U commands or X diameters. Insert rotates around its pocket center; this position stays fixed.</p>
+          <button type="button" class="small-btn" id="reseatInsert">RESEAT INSERT · ALIGN VIRTUAL TIP TO HOLDER DATUM</button>
+          <div class="section-header second-header"><h2>HOLDER ORIENTATION</h2></div>
+          <div class="tool-form-grid">
+            <label class="field">HOLDER BASE ANGLE (°)<input id="toolHolderBaseAngle" type="number" min="-540" max="540" step="1"></label>
+            <label class="field">HOLDER TRIM (°)<input id="toolAngleFine" type="number" min="-360" max="360" step="0.5" value="0"></label>
+            <label class="field">TOTAL HOLDER ANGLE (°)<input type="number" id="toolAngle" readonly tabindex="-1"></label>
+          </div>
+          <div class="tip-adjust-buttons"><button id="tipAdjustMinus" type="button">− 0.5°</button><button id="tipAdjustReset" type="button">ZERO ADJUST</button><button id="tipAdjustPlus" type="button">+ 0.5°</button></div>
+          <p class="editor-hint">Holder rotation moves the entire assembly. Insert rotation above moves only the insert around the mounting center. Geometry checks remain illustrative.</p>
+          <div class="tool-form-grid">
         <label class="field" id="holderStartField">AXIAL SETBACK <span class="field-unit"></span><input id="holderStartU" type="number" step="any" min="0"></label>
         <label class="field" id="holderLengthField">HOLDER LENGTH <span class="field-unit"></span><input id="holderLength" type="number" step="any" min="0"></label>
         <label class="field" id="holderWidthField">RADIAL WIDTH <span class="field-unit"></span><input id="holderWidth" type="number" step="any" min="0"></label>
@@ -340,13 +364,21 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
 2.5,0.35
 0.20,0.35"></textarea><span class="editor-hint">Local physical coordinates from virtual sharp tip. The program draws the envelope but does not infer machine tool-offset geometry.</span></label>
       </div>
+        </div>
+      </details>
       <label class="verified-line"><input id="toolVerified" type="checkbox"> DIMENSIONS CHECKED AGAINST ACTUAL TOOL (operator declaration; not machining certification)</label>
       <div class="tool-actions"><button class="action-btn primary" id="saveTool">F2 · SAVE TOOL</button><button class="action-btn" id="resetTool">RESET UNSAVED EDITS</button></div>
       <div id="toolStatus" class="status-box" role="status" aria-live="polite"></div>
     </section>
     <section class="panel tool-preview-panel" aria-label="True-proportion tool envelope preview">
       <div class="section-header"><h2>07 / TOOL + HOLDER GRAPH</h2><span class="small-chip">AXIAL / RADIAL 1:1</span></div>
-      <div id="toolPreviewTitle" class="graph-subtitle">CUTTING TOOL + HOLDER ENVELOPE</div><label class="holder-view-toggle"><input type="checkbox" id="showHolder" checked> SHOW HOLDER ENVELOPE</label>
+      <div id="toolPreviewTitle" class="graph-subtitle">CUTTING TOOL + HOLDER ENVELOPE</div>
+      <div class="point-toggles" aria-label="Tool graphical reference visibility">
+        <label><input type="checkbox" id="showTip" checked> T · SHARP TIP</label>
+        <label><input type="checkbox" id="showPocket" checked> P · POCKET CENTER</label>
+        <label><input type="checkbox" id="showNoseCenter" checked> C · NOSE CENTER</label>
+        <label><input type="checkbox" id="showHolder" checked> HOLDER</label>
+      </div>
       <div class="tool-preview-frame"><svg id="toolGraph" viewBox="0 0 600 500" role="img" aria-label="True-scale tool insert envelope and theoretical cutting tip"></svg></div>
       <div id="toolGraphReadout" class="readout">Select a tool to see its physical outline.</div>
       <div class="tool-legend"><span><i class="legend-line finished"></i> NOMINAL OUTLINE</span><span><i class="legend-dot"></i> VIRTUAL SHARP TIP</span><span><i class="legend-line holder"></i> HOLDER ENVELOPE</span><span><i class="legend-dot datum"></i> SELECTED REFERENCE</span></div>
@@ -478,7 +510,7 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.4</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.5</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -487,14 +519,14 @@ body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#f
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.4';
+const TOOL_CORE_VERSION='0.5.5';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
 const TIP_DIRECTIONS={0:{label:'ROUND / NONE',base:0},1:{label:'UPPER RIGHT',base:-135},2:{label:'UPPER LEFT',base:-45},3:{label:'LOWER LEFT',base:45},4:{label:'LOWER RIGHT',base:135},5:{label:'RIGHT',base:180},6:{label:'TOP',base:-90},7:{label:'LEFT',base:0},8:{label:'BOTTOM',base:90}};
 function tipBaseAngle(tip){const x=TIP_DIRECTIONS[tip];if(!x)throw new Error('Tip direction must be T0–T8.');return x.base;}
-function setToolTipDirection(tool,tip){const t=structuredClone(tool);t.tipDirection=Number(tip);t.angleAdjust=0;t.angle=tipBaseAngle(t.tipDirection);t.verified=false;return t;}
-function setToolAngleAdjust(tool,adjust){const t=structuredClone(tool);if(!Number.isFinite(adjust)||Math.abs(adjust)>360)throw new Error('Fine angle must be within ±360°.');t.angleAdjust=adjust;t.angle=tipBaseAngle(t.tipDirection)+adjust;t.verified=false;return t;}
+function setToolTipDirection(tool,tip){const t=structuredClone(tool);if(!(Number(tip) in TIP_DIRECTIONS))throw new Error('Choose T0–T8.');t.tipDirection=Number(tip);return t;}
+function setToolAngleAdjust(tool,adjust){const t=structuredClone(tool);if(!Number.isFinite(adjust)||Math.abs(adjust)>360)throw new Error('Fine angle must be within ±360°.');t.angleAdjust=adjust;t.angle=(t.holderBaseAngle??(t.angle-t.angleAdjust))+adjust;t.verified=false;return t;}
 const TOOL_KINDS={od:'OD TURN',id:'ID BORE',face:'FACE',od_groove:'OD GROOVE',id_groove:'ID GROOVE',od_thread:'OD THREAD',id_thread:'ID THREAD',drill:'DRILL',custom:'CUSTOM'};
 const SHAPES={C:'80° DIAMOND',D:'55° DIAMOND',V:'35° DIAMOND',S:'90° SQUARE',T:'60° TRIANGLE',G:'GROOVE BLADE',P:'60° THREAD',B:'DRILL POINT',CUSTOM:'CUSTOM POLYGON'};
 // Shop-floor defaults: projected MOUNTED cutting-edge clearance relative to a radial shoulder.
@@ -536,20 +568,41 @@ const tDot=(a,b)=>a.u*b.u+a.v*b.v;
 const dist=(a,b)=>tNorm(tVec(a,b));
 const mmScale=(n,units)=>n*(units==='mm'?25.4:1);
 const newId=()=>`tool-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+/** Insert outline is authored with theoretical tip at vertex 0. The default
+ * screw/pocket pivot is the arithmetic center of the polygon vertices. For the
+ * C/D/V/S diamond shapes this is the intersection of the diagonals. It is an
+ * approximate center for custom/non-diamond templates until measured.
+ * The pocket position is expressed in HOLDER-LOCAL physical axial (u) and
+ * radial (v) distances; it is not a machine U or diameter X value.
+ */
+function insertPivotLocal(t){
+ const points=toolPolygon(t);
+ if(!points.length)return {u:0,v:0};
+ return {u:points.reduce((s,p)=>s+p.u,0)/points.length,v:points.reduce((s,p)=>s+p.v,0)/points.length};
+}
+function defaultPocket(t){
+ const pivot=insertPivotLocal(t);
+ return rotateToolPoint(pivot,insertRelativeRotation(t));
+}
+/** Make the modeled theoretical tip coincide with the holder origin, keeping
+ * a shop-standard starting tool recognizable while leaving the pocket center
+ * fixed for subsequent independent insert rotations. */
+function reseatInsertAtDatum(t){const result=structuredClone(t);result.pocket=defaultPocket(result);result.verified=false;return result;}
 function makeTemplate(key='od_c',units='inch',station=1){
  const t=TOOL_PRESETS.find(x=>x.key===key);
  if(!t)throw new Error('Unknown tool preset');
  const scale=units==='mm'?25.4:1;
  const rightOd=t.kind==='od'&&t.hand==='R'&&['C','D','V'].includes(t.shape);
- return {id:newId(),station,offset:station,name:t.name,kind:t.kind,shape:t.shape,hand:t.hand,
+ const result={id:newId(),station,offset:station,name:t.name,kind:t.kind,shape:t.shape,hand:t.hand,
   mountSide:'front',tipReference:'virtual',holder:defaultHolder(units,t.kind),
   // T5 is the right-facing illustration in the operator-supplied REAR-LATHE chart.
   // Machine-specific nose compensation MUST still be checked before NC posting.
   // A 180° holder direction puts the sharp tip to the right of the shank in +U axial view.
-  tipDirection:rightOd?5:0,angleAdjust:rightOd?0:(t.angle||0),angle:t.angle||0,
+  tipDirection:rightOd?5:0,holderBaseAngle:t.angle||0,angleAdjust:0,angle:t.angle||0,
   mountedRelief:recommendedMountedClearance(t.shape),insertFineAngle:0,ic:(t.ic||.375)*scale,noseRadius:(t.noseRadius||0)*scale,
   width:(t.width||.125)*scale,reach:(t.reach||1)*scale,tipAngle:t.tipAngle||118,
   customPoints:(t.customPoints||[]).map(p=>({u:p.u*scale,v:p.v*scale})),notes:'',verified:false};
+ result.pocket=defaultPocket(result);return result;
 }
 /** All distances use the job units, relative to the cutting insert's virtual tip. */
 /** Select a common right- or left-hand OD mounting orientation without replacing
@@ -563,10 +616,10 @@ function applyOdStartingOrientation(tool,hand='R'){
  if(!['R','L'].includes(hand))throw new Error('Choose RIGHT or LEFT hand.');
  const t=structuredClone(tool);
  t.hand=hand;t.tipDirection=hand==='R'?5:7;
- t.angleAdjust=0;t.angle=tipBaseAngle(t.tipDirection);
+ t.angleAdjust=0;t.holderBaseAngle=tipBaseAngle(t.tipDirection);t.angle=t.holderBaseAngle;
  if(t.mountedRelief==null){const r=recommendedMountedClearance(t.shape);if(r!==null)t.mountedRelief=r;}
  if(!Number.isFinite(t.insertFineAngle))t.insertFineAngle=0;
- t.verified=false;
+ t.pocket=defaultPocket(t);t.verified=false;
  return t;
 }
 function defaultHolder(units='inch',kind='od'){
@@ -580,6 +633,7 @@ function upgradeTool(t,units='inch'){
  const result=structuredClone(t);
  if(!Number.isInteger(result.tipDirection)||!(result.tipDirection in TIP_DIRECTIONS))result.tipDirection=0;
  if(!Number.isFinite(result.angleAdjust))result.angleAdjust=(Number.isFinite(result.angle)?result.angle:0)-tipBaseAngle(result.tipDirection);
+ if(!Number.isFinite(result.holderBaseAngle))result.holderBaseAngle=(Number.isFinite(result.angle)?result.angle:0)-result.angleAdjust;
  // Do not silently move imported tools: legacy geometry stays at the original angle
  // until an operator explicitly applies a mounted-relief preset.
  if(result.mountedRelief===undefined)result.mountedRelief=null;
@@ -588,6 +642,7 @@ function upgradeTool(t,units='inch'){
  if(!['virtual','nose'].includes(result.tipReference))result.tipReference='virtual';
  if(!result.holder||typeof result.holder!=='object'){result.holder=defaultHolder(units,result.kind);result.verified=false;}
  else result.holder={...defaultHolder(units,result.kind),...result.holder};
+ if(!result.pocket||!Number.isFinite(result.pocket.u)||!Number.isFinite(result.pocket.v)){result.pocket=defaultPocket(result);result.verified=false;}
  return result;
 }
 function holderPolygon(tool){
@@ -611,6 +666,7 @@ function convertToolUnits(tools,from,to){
   const old=upgradeTool(t,from),h=old.holder;
   return {...old,ic:c(old.ic),noseRadius:c(old.noseRadius),width:c(old.width),reach:c(old.reach),
    customPoints:(old.customPoints||[]).map(p=>({u:c(p.u),v:c(p.v)})),
+   pocket:{u:c(old.pocket.u),v:c(old.pocket.v)},
    holder:{...h,startU:c(h.startU),length:c(h.length),width:c(h.width),centerV:c(h.centerV),
     points:(h.points||[]).map(p=>({u:c(p.u),v:c(p.v)}))}};
  });
@@ -679,6 +735,8 @@ function validateTool(t){
  if(!f(t.angle)||t.angle< -540||t.angle>540)errors.push('Total sketch rotation must be within -540° to +540°.');
  if(t.mountedRelief!==null&&t.mountedRelief!==undefined&&(!f(t.mountedRelief)||t.mountedRelief<0||t.mountedRelief>25))errors.push('Mounted flank clearance must be 0–25°, or blank for original geometry.');
  if(t.insertFineAngle!==undefined&&(!f(t.insertFineAngle)||Math.abs(t.insertFineAngle)>30))errors.push('Insert-to-holder fine rotation must be within ±30°.');
+ if(!f(t.holderBaseAngle)||Math.abs(t.holderBaseAngle)>540)errors.push('Holder mounting base angle must be within ±540°.');
+ if(!t.pocket||!f(t.pocket.u)||!f(t.pocket.v)||Math.abs(t.pocket.u)>1e6||Math.abs(t.pocket.v)>1e6)errors.push('Insert pocket position requires finite axial/radial values.');
  if(t.mountedRelief!==null&&t.mountedRelief!==undefined&&!Object.hasOwn(DIAMOND_ANGLES,t.shape))errors.push('Mounted clearance setting requires a diamond insert C, D or V.');
  for(const k of ['ic','width','reach'])if(!f(t[k])||t[k]<=0||t[k]>1e6)errors.push(`${k.toUpperCase()} must be positive.`);
  if(!f(t.noseRadius)||t.noseRadius<0||t.noseRadius>1e6)errors.push('Nose radius must be zero or positive.');
@@ -709,7 +767,7 @@ function validateTool(t){
  if(t.tipReference==='nose'&&!(t.noseRadius>0))errors.push('NOSE CENTER reference requires a nonzero nose radius.');
  if(h&&h.mode!=='none')warnings.push('Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
  if(!t.verified)warnings.push('GEOMETRY UNVERIFIED: placeholder dimensions; check real insert and holder before machining.');
- if(t.shape==='CUSTOM')warnings.push('Custom points are physical axial/radial offsets from virtual tip (0,0).');
+ if(t.shape==='CUSTOM')warnings.push('Custom outline vertex 1 is the theoretical tip; pocket pivot defaults to polygon vertex average and may need measured adjustment.');
  if(Object.hasOwn(MOUNT_CLEARANCE_PRESETS,t.shape)&&t.mountedRelief==null)warnings.push('Legacy C/D geometry retained. Use APPLY STANDARD CLEARANCE to adopt a new mounted edge angle.');
  if(t.mountedRelief!=null)warnings.push('Mounted flank clearance is 2D projected cutting-edge geometry, not ISO insert side clearance.');
  if(t.shape==='G')warnings.push('Groove blade is a simplified rectangular envelope, not holder collision geometry.');
@@ -761,22 +819,31 @@ function noseGeometry(poly,r){
  return {points:[to,...poly.slice(1),from,...samples.slice(1)],arc};
 }
 function rotateToolPoint(p,degrees){const t=degrees*Math.PI/180,c=Math.cos(t),s=Math.sin(t);return {u:p.u*c-p.v*s,v:p.u*s+p.v*c};}
+/** Assembly transform: local INSERT point -> rotate about insert mounting/pocket
+ * center -> translate to fixed holder-local pocket -> rotate whole holder.
+ * Nose rounding is constructed in unrotated insert space before transformation.
+ */
 function buildToolGeometry(tool){
  const valid=validateTool(tool);
- if(valid.errors.length)return {...valid,outline:[],sharpOutline:[],holderOutline:[],tip:{u:0,v:0},noseArc:null,noseCenter:null,referencePoint:null};
+ if(valid.errors.length)return {...valid,outline:[],sharpOutline:[],holderOutline:[],tip:null,pocketCenter:null,noseArc:null,noseCenter:null,referencePoint:null};
  const poly=toolPolygon(tool),nose=noseGeometry(poly,tool.noseRadius);
- const relativeInsert=insertRelativeRotation(tool),insertAngle=tool.angle+relativeInsert;
- const oriented=poly.map(p=>rotateToolPoint(p,insertAngle));
- const outline=nose.points.map(p=>rotateToolPoint(p,insertAngle));
+ const pivot=insertPivotLocal(tool),relativeInsert=insertRelativeRotation(tool),insertAngle=tool.angle+relativeInsert;
+ const inHolder=p=>{
+  const r=rotateToolPoint({u:p.u-pivot.u,v:p.v-pivot.v},relativeInsert);
+  return {u:r.u+tool.pocket.u,v:r.v+tool.pocket.v};
+ };
+ const assemble=p=>rotateToolPoint(inHolder(p),tool.angle);
+ const oriented=poly.map(assemble),outline=nose.points.map(assemble);
  const holderLocal=holderPolygon(tool).map(p=>rotateToolPoint(p,tool.angle));
- const noseCenter=nose.arc?rotateToolPoint(nose.arc.center,insertAngle):null;
- const refPoint=tool.tipReference==='nose'&&noseCenter?noseCenter:{u:0,v:0};
- const points=[...outline,...holderLocal,{u:0,v:0},refPoint];
+ const pocketCenter=rotateToolPoint(tool.pocket,tool.angle);
+ const tip=assemble({u:0,v:0});
+ const noseCenter=nose.arc?assemble(nose.arc.center):null;
+ const refPoint=tool.tipReference==='nose'&&noseCenter?noseCenter:tip;
+ const points=[...outline,...holderLocal,tip,pocketCenter,refPoint];
  const bounds={minU:Math.min(...points.map(p=>p.u)),maxU:Math.max(...points.map(p=>p.u)),minV:Math.min(...points.map(p=>p.v)),maxV:Math.max(...points.map(p=>p.v))};
  return {...valid,insertAngle,relativeInsert,sharpOutline:oriented,outline,holderOutline:holderLocal,
-  bounds,tip:{u:0,v:0},noseCenter,referencePoint:refPoint,
-  noseArc:nose.arc?{...nose.arc,center:noseCenter,
-   from:rotateToolPoint(nose.arc.from,insertAngle),to:rotateToolPoint(nose.arc.to,insertAngle),
+  bounds,tip,pocketCenter,pivotLocal:pivot,noseCenter,referencePoint:refPoint,
+  noseArc:nose.arc?{...nose.arc,center:noseCenter,from:assemble(nose.arc.from),to:assemble(nose.arc.to),
    start:nose.arc.start+insertAngle*Math.PI/180}:null};
 }
 
@@ -1159,6 +1226,7 @@ const VIEW_KEY='miniturn.graph.mirrorZ';
 const LIB_KEY='miniturn.tool.library.v0.2'; // Reuses v0.2 stored library with v0.3 migration.
 const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
 const DISPLAY_KEY='miniturn.graph.displayMode.v0.5.2';
+const POINTS_KEY='miniturn.tool.markerVisibility.v0.5.5';
 const DISPLAY_MODES=['classic','vivid','contrast','daylight'];
 let displayMode='classic';
 try { const savedMode=localStorage.getItem(DISPLAY_KEY); if(DISPLAY_MODES.includes(savedMode))displayMode=savedMode; } catch {}
@@ -1452,7 +1520,8 @@ function refreshToolWorkspace(){
 }
 function fillToolForm(t){
  const values={toolName:t.name,toolStation:t.station,toolOffset:t.offset,toolKind:t.kind,toolShape:t.shape,
-  toolHand:t.hand,toolAngle:t.angle,toolAngleFine:t.angleAdjust||0,toolTipDirection:t.tipDirection??0,
+  toolHand:t.hand,toolAngle:t.angle,toolHolderBaseAngle:t.holderBaseAngle,toolAngleFine:t.angleAdjust||0,toolTipDirection:t.tipDirection??0,
+  toolPocketU:t.pocket.u,toolPocketV:t.pocket.v,
   toolMountedRelief:t.mountedRelief??'',toolInsertFine:t.insertFineAngle||0,toolIC:t.ic,toolNoseRadius:t.noseRadius,toolWidth:t.width,toolReach:t.reach,
   toolTipAngle:t.tipAngle,toolNotes:t.notes||'',
   toolMountSide:t.mountSide||'front',toolTipReference:t.tipReference||'virtual',
@@ -1483,7 +1552,8 @@ function readToolForm(){
  const t=structuredClone(job.tools[toolSelected]);
  t.name=$('toolName').value.trim();t.station=numberField('toolStation');t.offset=numberField('toolOffset');
  t.kind=$('toolKind').value;t.shape=$('toolShape').value;t.hand=$('toolHand').value;
- t.tipDirection=numberField('toolTipDirection');t.angleAdjust=numberField('toolAngleFine');t.angle=tipBaseAngle(t.tipDirection)+t.angleAdjust;t.ic=numberField('toolIC');t.noseRadius=numberField('toolNoseRadius');
+ t.tipDirection=numberField('toolTipDirection');t.holderBaseAngle=numberField('toolHolderBaseAngle');t.angleAdjust=numberField('toolAngleFine');t.angle=t.holderBaseAngle+t.angleAdjust;
+ t.pocket={u:numberField('toolPocketU'),v:numberField('toolPocketV')};t.ic=numberField('toolIC');t.noseRadius=numberField('toolNoseRadius');
  t.mountedRelief=Object.hasOwn(DIAMOND_ANGLES,t.shape)&&$('toolMountedRelief').value.trim()!==''?numberField('toolMountedRelief'):null;
  t.insertFineAngle=numberField('toolInsertFine');
  t.width=numberField('toolWidth');t.reach=numberField('toolReach');t.tipAngle=numberField('toolTipAngle');
@@ -1525,7 +1595,8 @@ function drawToolPreview(){
  const holderVisible=$('showHolder').checked;
  const edge=geom.outline.map(mounting),sharp=geom.sharpOutline.map(mounting),holder=holderVisible?geom.holderOutline.map(mounting):[];
  const datum=mounting(geom.referencePoint),noseCenter=geom.noseCenter?mounting(geom.noseCenter):null;
- const all=[...edge,...sharp,...holder,{u:0,v:0},datum];
+ const pocketPoint=mounting(geom.pocketCenter),tipPoint=mounting(geom.tip);
+ const all=[...edge,...sharp,...holder,datum,pocketPoint,tipPoint];
  const lo={u:Math.min(...all.map(p=>p.u)),v:Math.min(...all.map(p=>p.v))};
  const hi={u:Math.max(...all.map(p=>p.u)),v:Math.max(...all.map(p=>p.v))};
  const du=Math.max(hi.u-lo.u,0.00001),dv=Math.max(hi.v-lo.v,0.00001);
@@ -1550,23 +1621,38 @@ function drawToolPreview(){
  // Highlight the primary theoretical flank direction for visual orientation checks.
  if(Object.hasOwn(DIAMOND_ANGLES,t.shape)&&sharp.length>=4){
   const chosen=sharp[t.hand==='L'?sharp.length-1:1];
-  const root=p2({u:0,v:0}),other=p2(chosen),len=Math.hypot(other.x-root.x,other.y-root.y),frac=Math.min(1,58/Math.max(len,0.01));
+  const root=p2(tipPoint),other=p2(chosen),len=Math.hypot(other.x-root.x,other.y-root.y),frac=Math.min(1,58/Math.max(len,0.01));
   line(root,{x:root.x+(other.x-root.x)*frac,y:root.y+(other.y-root.y)*frac},'#ffe37c',3.2);
  }
- graph.append(el('circle',{cx:axis.x,cy:axis.y,r:5,fill:'#ffc46e',stroke:'#fff3c9','stroke-width':1.5}));
- if(noseCenter){const c=p2(noseCenter);graph.append(el('circle',{cx:c.x,cy:c.y,r:3,fill:'#e8f5bb'}));}
+ // Each reference marker is view-only; visibility never affects the tool model.
+ if($('showTip').checked){
+  const tpt=p2(tipPoint);
+  graph.append(el('circle',{cx:tpt.x,cy:tpt.y,r:5,fill:'#ffc46e',stroke:'#fff3c9','stroke-width':1.5}));
+  label('T',tpt.x+8,tpt.y-9,'#ffc46e',14);
+ }
+ if($('showPocket').checked){
+  const p=p2(pocketPoint);
+  graph.append(el('circle',{cx:p.x,cy:p.y,r:9,fill:'none',stroke:'#ffe37c','stroke-width':2}));
+  line({x:p.x-13,y:p.y},{x:p.x+13,y:p.y},'#ffe37c',1.5);
+  line({x:p.x,y:p.y-13},{x:p.x,y:p.y+13},'#ffe37c',1.5);
+  label('P',p.x+11,p.y-11,'#ffe37c',14);
+ }
+ if(noseCenter&&$('showNoseCenter').checked){
+  const c=p2(noseCenter);graph.append(el('circle',{cx:c.x,cy:c.y,r:4,fill:'#a4c5ff',stroke:'#ffffff','stroke-width':1}));
+  label('C',c.x+7,c.y+16,'#a4c5ff',13);
+ }
  const d=p2(datum);
- graph.append(el('circle',{cx:d.x,cy:d.y,r:7,fill:'none',stroke:'#fa8cb4','stroke-width':2.5}));
- graph.append(el('line',{x1:d.x-8,y1:d.y,x2:d.x+8,y2:d.y,stroke:'#fa8cb4','stroke-width':1.4}));
- graph.append(el('line',{x1:d.x,y1:d.y-8,x2:d.x,y2:d.y+8,stroke:'#fa8cb4','stroke-width':1.4}));
- label('● VIRTUAL TIP = 0,0',15,H-66,'#ffd08a',12);
- label('⊕ REFERENCE: '+(t.tipReference==='virtual'?'VIRTUAL TIP':'NOSE CENTER'),15,H-47,'#ffb9d4',12);
+ if((t.tipReference==='virtual'&&$('showTip').checked)||(t.tipReference==='nose'&&$('showNoseCenter').checked))
+  graph.append(el('circle',{cx:d.x,cy:d.y,r:7,fill:'none',stroke:'#fa8cb4','stroke-width':2.3}));
+ // Hiding a marker hides its outer active-reference ring too; datum selection itself is unchanged.
+ label('T = SHARP · P = POCKET · C = NOSE',15,H-66,'#ffd08a',12);
+ label('⊕ ACTIVE REFERENCE: '+(t.tipReference==='virtual'?'THEORETICAL TIP':'NOSE CENTER'),15,H-47,'#ffb9d4',12);
  label(`U / AXIAL →`,W-15,24,'#aacbb8',13,'end');
  label(t.mountSide==='front'?'V / FRONT ↑':'V / REAR ↓',15,24,'#aacbb8',13);
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
  $('toolPreviewTitle').textContent=`${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
- $('toolGraphReadout').textContent=`${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · TIP T${t.tipDirection} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
+ $('toolGraphReadout').textContent=`${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
 }
 function toolNextNumber(){const nums=new Set(job.tools.map(t=>t.station));for(let i=1;i<=999;i++)if(!nums.has(i))return i;return null;}
 function addTemplate(){
@@ -1645,15 +1731,15 @@ function tipIcon(n){
 function updateTipDirectionPicker(){
  const selected=Number($('toolTipDirection').value),meta=TIP_DIRECTIONS[selected]||TIP_DIRECTIONS[0];
  document.querySelectorAll('.tip-direction').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.tip)===selected)));
- $('tipDirectionReadout').textContent=`T${selected} · ${meta.label} · ${meta.base}° NOMINAL + ${$('toolAngleFine').value||'0'}° ADJUST · ${$('toolAngle').value||'0'}° TOTAL`;
+ $('tipDirectionReadout').textContent=`T${selected} · ${meta.label} · COMPENSATION DIRECTION ONLY · HOLDER ${$('toolAngle').value||'0'}° UNCHANGED`;
 }
 function syncFineAngle(){
- const n=Number($('toolTipDirection').value),adjust=Number($('toolAngleFine').value);
- if(Number.isFinite(adjust))$('toolAngle').value=String(tipBaseAngle(n)+adjust);
+ const adjust=Number($('toolAngleFine').value),base=Number($('toolHolderBaseAngle').value);
+ if(Number.isFinite(adjust)&&Number.isFinite(base))$('toolAngle').value=String(base+adjust);
  $('toolVerified').checked=false;toolDirty=true;drawToolPreview();
 }
 function chooseTipDirection(n){
- $('toolTipDirection').value=String(n);$('toolAngleFine').value='0';$('toolAngle').value=String(tipBaseAngle(n));
+ $('toolTipDirection').value=String(n);
  $('toolVerified').checked=false;toolDirty=true;drawToolPreview();
 }
 function wireTipDirectionPicker(){
@@ -1666,6 +1752,8 @@ function wireTipDirectionPicker(){
   b.addEventListener('click',()=>chooseTipDirection(n));grid.append(b);
  }
  grid.addEventListener('keydown',e=>{if(/^[0-8]$/.test(e.key)&&['BUTTON','DIV'].includes(e.target.tagName)){e.preventDefault();chooseTipDirection(Number(e.key));grid.querySelector(`[data-tip="${e.key}"]`)?.focus();}});
+ $('toolHolderBaseAngle').addEventListener('input',syncFineAngle);
+ $('toolHolderBaseAngle').addEventListener('change',syncFineAngle);
  $('toolAngleFine').addEventListener('input',syncFineAngle);
  $('toolAngleFine').addEventListener('change',syncFineAngle);
  $('tipAdjustMinus').addEventListener('click',()=>{$('toolAngleFine').value=String((Number($('toolAngleFine').value)||0)-.5);syncFineAngle();});
@@ -1680,9 +1768,9 @@ function wireTools(){
   const option=document.createElement('option');option.value=val;option.textContent=name;$(id).append(option);
  }
  for(const p of TOOL_PRESETS){const option=document.createElement('option');option.value=p.key;option.textContent=p.name;$('toolPreset').append(option);}
- const fields=['toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
+ const fields=['toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
  const geometryFields=new Set(['toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
-  'toolCustomPoints','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints']);
+  'toolPocketU','toolPocketV','toolCustomPoints','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints']);
  // If the operator swaps insert SHAPE while its clearance is still the prior
  // manufacturer's example value, carry the matching new example rather than
  // silently leaving an 80° pocket default on a new 55° insert.
@@ -1718,14 +1806,27 @@ function wireTools(){
    $('toolHand').value=updated.hand;
    $('toolTipDirection').value=String(updated.tipDirection);
    $('toolAngleFine').value=String(updated.angleAdjust);
+   $('toolHolderBaseAngle').value=String(updated.holderBaseAngle);
    $('toolAngle').value=String(updated.angle);
+   $('toolPocketU').value=String(updated.pocket.u);$('toolPocketV').value=String(updated.pocket.v);
    $('toolMountedRelief').value=updated.mountedRelief??'';
    $('toolVerified').checked=false;
    toolDirty=true;drawToolPreview();
    notify('OD RIGHT STARTING POSE LOADED — F2 SAVE TOOL');
   }catch(err){notify(err.message,true);}
  });
- $('showHolder').addEventListener('change',drawToolPreview);
+ $('reseatInsert').addEventListener('click',()=>{
+  try{const t=reseatInsertAtDatum(readToolForm());
+   $('toolPocketU').value=String(t.pocket.u);$('toolPocketV').value=String(t.pocket.v);
+   $('toolVerified').checked=false;toolDirty=true;drawToolPreview();notify('INSERT RESEATED AT HOLDER DATUM — SAVE TOOL');
+  }catch(err){notify(err.message,true);}
+ });
+ const markerIds=['showTip','showPocket','showNoseCenter','showHolder'];
+ try{const saved=JSON.parse(localStorage.getItem(POINTS_KEY)||'{}');for(const id of markerIds)if(typeof saved[id]==='boolean')$(id).checked=saved[id];}catch{}
+ markerIds.forEach(id=>$(id).addEventListener('change',()=>{
+  try{localStorage.setItem(POINTS_KEY,JSON.stringify(Object.fromEntries(markerIds.map(i=>[i,$(i).checked]))));}catch{}
+  drawToolPreview();
+ }));
  $('saveTool').addEventListener('click',()=>toolAction('save'));$('resetTool').addEventListener('click',()=>{toolDirty=false;refreshToolWorkspace();});
  $('addTool').addEventListener('click',()=>toolAction('add'));$('duplicateTool').addEventListener('click',()=>toolAction('duplicate'));
  $('deleteTool').addEventListener('click',()=>toolAction('delete'));
