@@ -241,13 +241,16 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
 .mounting-field{display:flex;gap:.65rem;align-items:end;flex-wrap:wrap;margin:.5rem 0}
 .mounting-field .field{flex:1 1 190px}
 .mounting-field .action-btn{min-width:135px}
+
+/* v0.6.1 shop-friendly pose controls and offline reference card */
+.pose-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0 9px}.pose-controls button{min-height:54px;padding:10px 7px;border:1px solid #75a895;border-radius:7px;background:#19483b;color:#e9fff2;font-size:clamp(14px,1.8vw,21px);font-weight:bold}.pose-controls button:active{background:#31785d}.pose-readout{background:#101b16;color:#f5d18a;padding:12px 13px;border:1px solid #547265;border-radius:6px;font-size:13px;letter-spacing:.025em}.catalog-local{margin:12px 0 9px;padding:9px;background:#0a1917;border:1px solid #426859;border-radius:6px}.catalog-local summary{cursor:pointer;color:#c6f7df;font-weight:700}.catalog-local img{display:block;width:100%;height:auto;max-width:760px;margin:10px auto;border-radius:4px;background:#081514}.catalog-local p{font-size:12px;color:#b1c6b9;line-height:1.5}.catalog-external{font-size:12px}.catalog-external summary{cursor:pointer;color:#9dbdab}.catalog-external a{display:inline-block;margin-top:7px;color:#a7d7ee}.catalog-local[hidden]{display:none}@media (max-width:680px){.pose-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.pose-controls button{min-height:56px;font-size:18px}}
 </style>
   <title>MiniTurn — CONVERSATIONAL OPERATIONS</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.5.9</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.6.5</span></h1><div class="tagline">CONVERSATIONAL LATHE PROGRAMMING · FIGURE · TOOLS · POSITION · OPERATIONS</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">GEOMETRY ONLY · NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -297,12 +300,14 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
       <div class="tool-list" id="toolList" role="listbox" aria-label="Select a tool"></div>
       <div class="section-header second-header"><h2>NEW STANDARD TOOL</h2><span class="small-chip">TEMPLATES</span></div>
       <label class="field">ISO HOLDER / TOOL TEMPLATE<select id="toolPreset"></select></label>
-      <p class="editor-hint">Catalog presets use ISO holder designations and published shank/head dimensions. The shaped pocket and clamp remain illustrative.</p>
-      <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD TEMPLATE</button><button id="applyCatalogPreset" class="action-btn">APPLY CATALOG TO SELECTED</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button></div>
+      <p class="editor-hint">CHOOSE A MODEL: immediately previews a complete catalog tool in the selected editor. F2 SAVE replaces the current tool; F1 ADD TEMPLATE creates a new one. The existing tool stays unchanged until saved. Head and pocket outlines remain schematic, not collision proof.</p>
+      <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD NEW TOOL</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button></div>
       <div class="library-divider"></div>
       <div class="section-header"><h2>DEMONSTRATION TABLE · T01–T06</h2><span class="small-chip">VALID PRESETS</span></div>
-      <p class="editor-hint">New demos use a PCLNR 80° roughing holder and PDJNR 55° finishing holder. Boring, grooving, threading and drilling samples remain labeled GENERIC / UNVERIFIED. Rebuilding replaces this job's tool table but does not change your saved shop library. Export important work before testing.</p>
-      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">RESTORE 6 DEMO TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button></div>
+      <p class="editor-hint">Demo tools now include PCLNR and PDJNR OD, SCLCR boring, GHDR groove, and SER threading holders. Boring, grooving and threading now start from catalog-style references; the drill remains GENERIC / UNVERIFIED. Rebuilding replaces this job's tool table but does not change your saved shop library. Export important work before testing.</p>
+      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">LOAD CORRECTED 6 DEMO TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button><button id="undoAutoDemoFix" class="small-btn muted">UNDO AUTO GROOVE FIX</button></div>
+      <div class="tool-actions"><button id="purgeBrowserTools" class="action-btn">CLEAR OLD BROWSER TOOLS · LOAD NEW DEFAULTS</button></div>
+      <p class="editor-hint">Use this once if you no longer need old locally saved tools. Clears the active job tool table and the reusable browser-stored tool library, but preserves the part geometry, display preferences, and exported files. Existing operation tool assignments are rebuilt for the new defaults and must be reviewed.</p>
       <div class="library-divider"></div>
       <div class="section-header"><h2>REUSABLE SHOP LIBRARY</h2><span class="small-chip">OFFLINE</span></div>
       <div class="tool-actions"><button class="small-btn" id="saveToolLibrary">SAVE LIBRARY</button><button class="small-btn" id="loadToolLibrary">LOAD LIBRARY</button></div>
@@ -315,7 +320,12 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
         <strong id="catalogModelName">CATALOG HOLDER</strong><span id="catalogInsertName">INSERT</span>
         <div id="catalogSourceLine">Published dimensions; modeled silhouette</div>
         <div id="catalogDesignationGuide">ISO designation decoding</div>
-        <a id="catalogSourceLink" href="#" target="_blank" rel="noopener noreferrer">CATALOG REFERENCE ↗</a>
+        <details id="catalogLocalCard" class="catalog-local">
+          <summary>LOCAL REFERENCE · OFFLINE SCHEMATIC</summary>
+          <img id="catalogLocalImage" width="760" height="400" alt="Locally stored top-view tool schematic" decoding="async">
+          <p>Original MiniTurn diagram based on the currently modeled geometry. Reference only; NOT exact manufacturer CAD, dimensions, or certified clearance.</p>
+        </details>
+        <details class="catalog-external"><summary>ONLINE SOURCE · OPTIONAL</summary><a id="catalogSourceLink" href="#" target="_blank" rel="noopener noreferrer">MANUFACTURER WEB REFERENCE ↗ (MAY CHANGE)</a></details>
       </div>
       <div class="tool-form-grid">
         <label class="field wide">DESCRIPTION<input type="text" id="toolName" maxlength="65" spellcheck="false" autocomplete="off"></label>
@@ -336,6 +346,16 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
 0.6, 0.4
 0.1, 0.5"></textarea><span class="editor-hint">U = axial physical distance · V = radial physical distance · Reference tip is (0,0). Outline connects the points in order, then closes.</span></label>
       </div>
+      <div class="section-header second-header pose-section-title"><h2>TOOL POSE · WHOLE ASSEMBLY</h2><span class="small-chip">90° STEPS</span></div>
+      <input id="toolPoseRotation" type="hidden" value="0">
+      <div class="pose-controls" aria-label="Rotate the entire tool in the 2D top projection">
+        <button type="button" id="poseMinus90">↶ −90°</button>
+        <button type="button" id="posePlus90">↷ +90°</button>
+        <button type="button" id="poseFlip180">↻ 180°</button>
+        <button type="button" id="poseReset">RESET</button>
+      </div>
+      <div id="toolPoseReadout" class="pose-readout" role="status" aria-live="polite">QUARTER TURN 0°</div>
+      <p class="editor-hint">Turns the holder, pocket, insert and theoretical point together. Keeps insert-to-holder trim and FANUC T0–T8 tip direction unchanged. Save tool to keep the new pose.</p>
       <div class="section-header second-header holder-section-title"><h2>INSERT POCKET / CUTTING-EDGE ANGLE</h2><span class="small-chip">INSERT ROTATES · HOLDER STAYS PUT</span></div>
       <div class="tool-form-grid">
         <label class="field" id="toolMountedReliefField">MOUNTED FLANK CLEARANCE (°)
@@ -386,7 +406,7 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
             <label class="field">TOTAL HOLDER ANGLE (°)<input type="number" id="toolAngle" readonly tabindex="-1"></label>
           </div>
           <div class="tip-adjust-buttons"><button id="tipAdjustMinus" type="button">− 0.5°</button><button id="tipAdjustReset" type="button">ZERO ADJUST</button><button id="tipAdjustPlus" type="button">+ 0.5°</button></div>
-          <p class="editor-hint">Holder rotation moves the entire assembly. Insert rotation above moves only the insert around the mounting center. Geometry checks remain illustrative.</p>
+          <p class="editor-hint">Total angle = holder base + 90° pose + fine holder trim. Insert rotation above moves only the insert around the pocket center. FANUC T0–T8 controls compensation direction, not physical pose.</p>
           <div class="tool-form-grid">
         <div class="catalog-dimensions" id="holderCatalogFields" hidden>
           <div class="section-header second-header"><h2>ISO HOLDER DIMENSIONS</h2><span class="small-chip">PHYSICAL · TOP PROJECTION</span></div>
@@ -567,14 +587,25 @@ body[data-display="contrast"] .geometry-advanced .tip-advanced-inner{background:
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.5.9';
+const TOOL_CORE_VERSION='0.6.5';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
 const TIP_DIRECTIONS={0:{label:'ROUND / NONE',base:0},1:{label:'UPPER RIGHT',base:-135},2:{label:'UPPER LEFT',base:-45},3:{label:'LOWER LEFT',base:45},4:{label:'LOWER RIGHT',base:135},5:{label:'RIGHT',base:180},6:{label:'TOP',base:-90},7:{label:'LEFT',base:0},8:{label:'BOTTOM',base:90}};
 function tipBaseAngle(tip){const x=TIP_DIRECTIONS[tip];if(!x)throw new Error('Tip direction must be T0–T8.');return x.base;}
 function setToolTipDirection(tool,tip){const t=structuredClone(tool);if(!(Number(tip) in TIP_DIRECTIONS))throw new Error('Choose T0–T8.');t.tipDirection=Number(tip);return t;}
-function setToolAngleAdjust(tool,adjust){const t=structuredClone(tool);if(!Number.isFinite(adjust)||Math.abs(adjust)>360)throw new Error('Fine angle must be within ±360°.');t.angleAdjust=adjust;t.angle=(t.holderBaseAngle??(t.angle-t.angleAdjust))+adjust;t.verified=false;return t;}
+function setToolAngleAdjust(tool,adjust){const t=structuredClone(tool);if(!Number.isFinite(adjust)||Math.abs(adjust)>360)throw new Error('Fine angle must be within ±360°.');t.angleAdjust=adjust;t.angle=(t.holderBaseAngle??(t.angle-(t.poseRotation||0)-t.angleAdjust))+(t.poseRotation||0)+adjust;t.verified=false;return t;}
+/** Whole assembled tool pose; does not change relative insert trim or T0–T8 direction. */
+function setToolPose(tool,pose){
+ if(!Number.isInteger(pose)||pose%90!==0)throw new Error('Tool pose requires whole 90 degree steps.');
+ const t=structuredClone(tool);
+ const wrapped=((pose%360)+360)%360;
+ t.poseRotation=wrapped===270?-90:wrapped;
+ t.angle=t.holderBaseAngle+t.poseRotation+(t.angleAdjust||0);
+ t.verified=false;
+ return t;
+}
+
 const TOOL_KINDS={od:'OD TURN',id:'ID BORE',face:'FACE',od_groove:'OD GROOVE',id_groove:'ID GROOVE',od_thread:'OD THREAD',id_thread:'ID THREAD',drill:'DRILL',custom:'CUSTOM'};
 const SHAPES={C:'80° DIAMOND',D:'55° DIAMOND',V:'35° DIAMOND',S:'90° SQUARE',T:'60° TRIANGLE',G:'GROOVE BLADE',P:'60° THREAD',B:'DRILL POINT',CUSTOM:'CUSTOM POLYGON'};
 // Shop-floor defaults: projected MOUNTED cutting-edge clearance relative to a radial shoulder.
@@ -603,7 +634,16 @@ const CATALOG_HOLDERS={
  pdjnr_2525m15:{code:'PDJNR 2525M-15',family:'PDJNR',brand:'ISCAR',hand:'R',insert:'DNMG 1506',shape:'D',clamp:'LEVER',approach:93,h:25,b:25,lf:150,lh:35,wf:32,ic:12.7,clearance:3,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910530'},
  pclnr_2525m12:{code:'PCLNR 2525M-12',family:'PCLNR',brand:'ISCAR',hand:'R',insert:'CNMG 1204',shape:'C',clamp:'LEVER',approach:95,h:25,b:25,lf:150,lh:27.8,wf:32,ic:12.7,clearance:5,nose:.8,source:'https://webshop.iscar.nl/catalogue/product/1910524'},
  sdjcr_2020k11:{code:'SDJCR 2020K-11',family:'SDJCR',brand:'ISCAR',hand:'R',insert:'DCMT 11T3',shape:'D',clamp:'SCREW',approach:93,h:20,b:20,lf:125,lh:20,wf:25,ic:9.52,clearance:3,nose:.4,source:'https://webshop.iscarvn.com/catalogue/product/1910585'},
- sclcr_2525m12:{code:'SCLCR 2525M-12',family:'SCLCR',brand:'ISCAR',hand:'R',insert:'CCMT 1204',shape:'C',clamp:'SCREW',approach:95,h:25,b:25,lf:150,lh:20,wf:32,ic:12.7,clearance:5,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910566'}
+ sclcr_2525m12:{code:'SCLCR 2525M-12',family:'SCLCR',brand:'ISCAR',hand:'R',insert:'CCMT 1204',shape:'C',clamp:'SCREW',approach:95,h:25,b:25,lf:150,lh:20,wf:32,ic:12.7,clearance:5,nose:.4,source:'https://webshop.iscarusa.com/catalogue/product/1910566'},
+ // These are recognizable catalog examples. Their *outline* and unlisted seat
+ // dimensions remain model estimates; published lengths/diameters/limits below
+ // are kept separately from the graphical envelope and labeled as such.
+ s20r_sclcr09:{code:'S20R SCLCR-09',family:'SCLCR-ID',category:'bore',brand:'ISCAR',kind:'id',hand:'R',insert:'CCMT 09T3',shape:'C',clamp:'SCREW',approach:95,h:20,b:20,lf:200,lh:50,wf:13,ic:9.525,clearance:5,nose:.4,dmin:25,barDiameter:20,reducedLength:50,estimatedFields:['H AS PROJECTED DIAMETER','HEAD DETAIL','NOSE RADIUS'],source:'https://webshop.iscarusa.com/catalogue/product/1893858'},
+ s16q_sclcr09:{code:'S16Q SCLCR-09',family:'SCLCR-ID',category:'bore',brand:'ISCAR',kind:'id',hand:'R',insert:'CCMT 09T3',shape:'C',clamp:'SCREW',approach:95,h:16,b:16,lf:180,lh:45,wf:11,ic:9.525,clearance:5,nose:.4,dmin:20,barDiameter:16,reducedLength:45,estimatedFields:['H AS PROJECTED DIAMETER','HEAD DETAIL','NOSE RADIUS'],source:'https://webshop.iscarusa.com/catalogue/product/1893921'},
+ ghdr25_3:{code:'GHDR 25-3',family:'GHDR',category:'groove',brand:'ISCAR',kind:'od_groove',hand:'R',insert:'GROOVE 3MM (EXAMPLE)',shape:'G',clamp:'LEVER',approach:null,h:25,b:25,lf:135,lh:26,wf:23.8,ic:3,clearance:null,nose:0,cutWidth:3,maxDepth:9,headBladeWidth:2.4,estimatedFields:['EXAMPLE INSERT WIDTH','POCKET/CLAMP DETAIL'],source:'https://webshop.iscar.in/catalogue/product/1926446'},
+ ghgr25_3:{code:'GHGR 25-3',family:'GHGR',category:'groove',brand:'ISCAR',kind:'od_groove',hand:'R',insert:'GROOVE 3MM (EXAMPLE)',shape:'G',clamp:'LEVER',approach:null,h:25,b:25,lf:140,lh:36,wf:23.7,ic:3,clearance:null,nose:0,cutWidth:3,maxDepth:20,headBladeWidth:2.5,estimatedFields:['EXAMPLE INSERT WIDTH','POCKET/CLAMP DETAIL'],source:'https://webshop.iscarltd.com/catalogue/product/1926493'},
+ ser2525m16:{code:'SER 2525 M16',family:'SER',category:'thread',brand:'ISCAR',kind:'od_thread',hand:'R',insert:'16ER 60° (EXAMPLE)',shape:'P',clamp:'SCREW',approach:null,h:25,b:25,lf:150,lh:30,wf:25,ic:9.525,clearance:null,nose:0,threadAngle:60,estimatedFields:['HEAD LENGTH LH','ILLUSTRATIVE 16ER TIP','POCKET DETAIL'],source:'https://webshop.iscar.in/catalogue/product/1957221'},
+ sir0020p16:{code:'SIR 0020 P16',family:'SIR',category:'internal_thread',brand:'ISCAR',kind:'id_thread',hand:'R',insert:'16IR 60° (EXAMPLE)',shape:'P',clamp:'SCREW',approach:null,h:20,b:20,lf:170,lh:38,wf:13.7,ic:9.525,clearance:null,nose:0,threadAngle:60,dmin:24,barDiameter:20,estimatedFields:['HEAD LENGTH LH','ILLUSTRATIVE 16IR TIP','POCKET DETAIL'],source:'https://webshop.iscarusa.com/catalogue/product/1957243'}
 };
 const catalogScale=(v,units)=>v/(units==='inch'?25.4:1);
 /** Initial, deliberately provisional turret-face location, measured from tool-local
@@ -634,32 +674,52 @@ function clipHolderAtTurretFace(points,faceU){
 /** Creating a catalog template never silently replaces an existing tool. */
 function makeCatalogTool(key,units='inch',station=1){
  const c=CATALOG_HOLDERS[key];if(!c)throw new Error('Unknown catalog holder');
- const base=makeTemplate(c.shape==='D'?'od_d':'od_c',units,station);
- base.name=c.code;base.shape=c.shape;base.hand=c.hand;base.ic=catalogScale(c.ic,units);
- base.noseRadius=catalogScale(c.nose,units);base.mountedRelief=c.clearance;
+ const fallback={bore:'bore_c',groove:'groove_od',thread:'thread_od',internal_thread:'thread_id'};
+ const base=makeTemplate(fallback[c.category]||(c.shape==='D'?'od_d':'od_c'),units,station);
+ base.name=c.code;base.kind=c.kind||'od';base.shape=c.shape;base.hand=c.hand;
+ base.ic=catalogScale(c.ic,units);base.noseRadius=catalogScale(c.nose,units);
+ base.mountedRelief=c.category?null:c.clearance;
+ if(c.category==='groove'){
+  base.width=catalogScale(c.cutWidth,units);
+  // Illustrative projected insert radial reach; not the CDX rated depth.
+  base.reach=catalogScale(Math.min(c.maxDepth*.85,8),units);
+ }
  base.holder={mode:'catalog',family:c.family,clamp:c.clamp,
   h:catalogScale(c.h,units),b:catalogScale(c.b,units),lf:catalogScale(c.lf,units),
   lh:catalogScale(c.lh,units),wf:catalogScale(c.wf,units),
   stickout:catalogScale(defaultCatalogStickout(c),units),
   startU:0,length:catalogScale(c.lf,units),width:catalogScale(c.h,units),centerV:catalogScale(c.h*.5,units),points:[]};
  base.catalog={code:c.code,family:c.family,brand:c.brand,insert:c.insert,source:c.source,
-  approach:c.approach,sourceDimensions:'PUBLISHED',outlineAccuracy:'SCHEMATIC'};
- base.holderBaseAngle=180;base.angle=180;base.angleAdjust=0;base.pocket=defaultPocket(base);
- base.notes=`${c.brand} reference · ${c.insert} · ${c.approach}° entering angle. Head/pocket/clamp silhouette is approximate.`;
+  category:c.category||'od',approach:c.approach,sourceDimensions:c.estimatedFields?'PUBLISHED + ESTIMATED':'PUBLISHED',outlineAccuracy:'SCHEMATIC',
+  estimatedFields:c.estimatedFields||[],
+  // Reference values are explicitly millimeters and never silently unit-converted.
+  limitsMM:{...(c.dmin?{minBore:c.dmin}:{}),...(c.barDiameter?{shankDiameter:c.barDiameter}:{}),
+   ...(c.maxDepth?{maxGrooveDepth:c.maxDepth}:{}),...(c.cutWidth?{exampleInsertWidth:c.cutWidth}:{}),
+   ...(c.reducedLength?{reducedLength:c.reducedLength}:{})}};
+ if(c.category==='groove')base.grooveSeat='inline'; // Inline insert: long axis follows the shank; width crosses it.
+ // Single machine-coordinate convention for every RIGHT-HAND front-tool preset:
+ // U = -Z, so the tool must extend from the cutting reference toward -U
+ // (away from the stock / toward the turret in the normal Z0-face setup).
+ // The local CAD outline extends +U behind its tip; 180° points it into -U.
+ // This is physical pose only: FANUC T0-T8 metadata remains independent.
+ base.holderBaseAngle=180;
+ base.angle=base.holderBaseAngle;base.angleAdjust=0;base.poseRotation=0;
+ base.pocket=defaultPocket(base);
+ base.notes=`${c.brand} reference · ${c.insert}. Published catalog body/limit data; head, seat, insert graphics SCHEMATIC ONLY.`;
  base.verified=false;return base;
 }
 const TOOL_PRESETS=[
- ...Object.entries(CATALOG_HOLDERS).map(([key,c])=>({key:'catalog_'+key,name:c.code+' · '+c.insert+' · '+c.approach+'°',kind:'od',shape:c.shape,hand:c.hand})),
+ ...Object.entries(CATALOG_HOLDERS).map(([key,c])=>({key:'catalog_'+key,name:c.code+' · '+c.insert+(c.approach?' · '+c.approach+'°':''),kind:c.kind||'od',shape:c.shape,hand:c.hand})),
  {key:'od_c',name:'OD ROUGH · C 80°',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:180},
  {key:'od_d',name:'OD FINISH · D 55°',kind:'od',shape:'D',hand:'R',ic:.375,noseRadius:.015625,angle:180},
  {key:'od_v',name:'OD FINE · V 35°',kind:'od',shape:'V',hand:'R',ic:.375,noseRadius:.015625,angle:180},
  {key:'face_c',name:'FACE · C 80°',kind:'face',shape:'C',hand:'R',ic:.5,noseRadius:.03125,angle:90},
  {key:'bore_c',name:'ID BORE · C 80°',kind:'id',shape:'C',hand:'R',ic:.375,noseRadius:.015625,angle:180},
- {key:'groove_od',name:'OD GROOVE · BLADE',kind:'od_groove',shape:'G',hand:'N',width:.125,reach:.65,noseRadius:0,angle:0},
+ {key:'groove_od',name:'OD GROOVE · BLADE',kind:'od_groove',shape:'G',hand:'N',width:.125,reach:.65,noseRadius:0,angle:180},
  {key:'groove_id',name:'ID GROOVE · BLADE',kind:'id_groove',shape:'G',hand:'N',width:.125,reach:.50,noseRadius:0,angle:180},
- {key:'thread_od',name:'OD THREAD · 60°',kind:'od_thread',shape:'P',hand:'R',ic:.375,noseRadius:0,angle:0},
+ {key:'thread_od',name:'OD THREAD · 60°',kind:'od_thread',shape:'P',hand:'R',ic:.375,noseRadius:0,angle:180},
  {key:'thread_id',name:'ID THREAD · 60°',kind:'id_thread',shape:'P',hand:'R',ic:.375,noseRadius:0,angle:180},
- {key:'drill',name:'CENTERLINE DRILL',kind:'drill',shape:'B',hand:'N',width:.375,reach:1.5,tipAngle:118,noseRadius:0,angle:0},
+ {key:'drill',name:'CENTERLINE DRILL',kind:'drill',shape:'B',hand:'N',width:.375,reach:1.5,tipAngle:118,noseRadius:0,angle:180},
  {key:'custom',name:'CUSTOM PROFILE',kind:'custom',shape:'CUSTOM',hand:'N',noseRadius:0,angle:0,
   customPoints:[{u:0,v:0},{u:.55,v:.12},{u:.75,v:.55},{u:.2,v:.75},{u:-.25,v:.35}]}
 ];
@@ -702,10 +762,11 @@ function makeTemplate(key='od_c',units='inch',station=1){
   // T5 is the right-facing illustration in the operator-supplied REAR-LATHE chart.
   // Machine-specific nose compensation MUST still be checked before NC posting.
   // A 180° holder direction puts the sharp tip to the right of the shank in +U axial view.
-  tipDirection:rightOd?5:0,holderBaseAngle:t.angle||0,angleAdjust:0,angle:t.angle||0,
+  tipDirection:rightOd?5:0,holderBaseAngle:t.angle||0,poseRotation:0,angleAdjust:0,angle:t.angle||0,
   mountedRelief:recommendedMountedClearance(t.shape),insertFineAngle:0,ic:(t.ic||.375)*scale,noseRadius:(t.noseRadius||0)*scale,
   width:(t.width||.125)*scale,reach:(t.reach||1)*scale,tipAngle:t.tipAngle||118,
   customPoints:(t.customPoints||[]).map(p=>({u:p.u*scale,v:p.v*scale})),notes:'',verified:false};
+ if(t.shape==='G')result.grooveSeat='inline'; // New generic groove templates are aligned as well.
  result.pocket=defaultPocket(result);return result;
 }
 /** All distances use the job units, relative to the cutting insert's virtual tip. */
@@ -720,7 +781,7 @@ function applyOdStartingOrientation(tool,hand='R'){
  if(!['R','L'].includes(hand))throw new Error('Choose RIGHT or LEFT hand.');
  const t=structuredClone(tool);
  t.hand=hand;t.tipDirection=hand==='R'?5:7;
- t.angleAdjust=0;t.holderBaseAngle=tipBaseAngle(t.tipDirection);t.angle=t.holderBaseAngle;
+ t.angleAdjust=0;t.poseRotation=0;t.holderBaseAngle=tipBaseAngle(t.tipDirection);t.angle=t.holderBaseAngle;
  if(t.mountedRelief==null){const r=recommendedMountedClearance(t.shape);if(r!==null)t.mountedRelief=r;}
  if(!Number.isFinite(t.insertFineAngle))t.insertFineAngle=0;
  t.pocket=defaultPocket(t);t.verified=false;
@@ -737,7 +798,13 @@ function upgradeTool(t,units='inch'){
  const result=structuredClone(t);
  if(!Number.isInteger(result.tipDirection)||!(result.tipDirection in TIP_DIRECTIONS))result.tipDirection=0;
  if(!Number.isFinite(result.angleAdjust))result.angleAdjust=(Number.isFinite(result.angle)?result.angle:0)-tipBaseAngle(result.tipDirection);
- if(!Number.isFinite(result.holderBaseAngle))result.holderBaseAngle=(Number.isFinite(result.angle)?result.angle:0)-result.angleAdjust;
+ if(!Number.isFinite(result.poseRotation)){
+  // Preserve the exact displayed angle of tools saved before quarter-turn pose
+  // was introduced, even if a legacy editor left base/fine desynchronized.
+  result.poseRotation=0;
+  if(Number.isFinite(result.angle)&&Number.isFinite(result.angleAdjust))result.holderBaseAngle=result.angle-result.angleAdjust;
+ }
+ if(!Number.isFinite(result.holderBaseAngle))result.holderBaseAngle=(Number.isFinite(result.angle)?result.angle:0)-result.angleAdjust-result.poseRotation;
  // Do not silently move imported tools: legacy geometry stays at the original angle
  // until an operator explicitly applies a mounted-relief preset.
  if(result.mountedRelief===undefined)result.mountedRelief=null;
@@ -764,6 +831,30 @@ function upgradeTool(t,units='inch'){
    }
   }
  }
+ // Versioned demonstration upgrade only. Never reorient a shop tool or an edited
+ // demo tool, and never replace a separately saved library. The original
+ // grooving example had its long dimension perpendicular to the holder.
+ // A genuinely untouched T04 demo can be corrected safely in place.
+ if(result.shape==='G'&&result.grooveSeat===undefined){
+  const catalogDemo=result.demoTemplate==='catalog_ghdr25_3'||result.demoTemplate==='catalog_ghgr25_3';
+  const matchingCatalog=CATALOG_HOLDERS[result.demoTemplate?.slice(8)];
+  const unitsScale=units==='inch'?1/25.4:1;
+  const near=(a,b)=>Number.isFinite(a)&&Math.abs(a-b)<1e-6;
+  const unedited=catalogDemo&&matchingCatalog&&result.name===matchingCatalog.code&&
+   result.holder?.mode==='catalog'&&result.catalog?.code===matchingCatalog.code&&
+   result.kind==='od_groove'&&result.station===4&&result.offset===4&&
+   near(result.width,matchingCatalog.cutWidth*unitsScale)&&
+   near(result.reach,Math.min(matchingCatalog.maxDepth*.85,8)*unitsScale)&&
+   near(result.holder.lf,matchingCatalog.lf*unitsScale)&&
+   near(result.holder.lh,matchingCatalog.lh*unitsScale)&&
+   near(result.holder.b,matchingCatalog.b*unitsScale)&&
+   near(result.angle,0)&&near(result.poseRotation||0,0)&&
+   near(result.angleAdjust||0,0)&&near(result.insertFineAngle||0,0)&&
+   near(result.pocket?.u,result.width/2)&&near(result.pocket?.v,result.reach/2)&&
+   result.verified===false;
+  result.grooveSeat=unedited?'inline':'legacy';
+  if(unedited){result.pocket=defaultPocket(result);result.demoAutoUpdated='0.6.3';result.verified=false;}
+ }
  if(!result.pocket||!Number.isFinite(result.pocket.u)||!Number.isFinite(result.pocket.v)){result.pocket=defaultPocket(result);result.verified=false;}
  return result;
 }
@@ -778,11 +869,124 @@ function upgradeTool(t,units='inch'){
  * and head. Catalog holder head/profile remains unchanged under fine trim.
  * Changing pocket U/V explicitly redefines a custom/altered holder layout.
  */
+/** Non-OD catalog family profiles use consistent schematic top-view boundaries.
+ * The BODY is a projected envelope; diametral bore clearance cannot be certified
+ * from this plan section. Measured OEM drawings are required before NC use.
+ */
+function specialCatalogParts(t,ref){
+ const h=t.holder, B=h.b, e=h.lh, L=h.lf, p=t.pocket, category=ref.category;
+ // One local, dimensional top-view frame shared by insert, pocket and holder.
+ // In a real cylindrical bar this 2D rectangular span represents its projection.
+ // A RIGHT-HAND 180° tool pose flips the local V coordinate as well as U.
+ // ID boring / ID threading must put the bar INWARD from the cutting tip in
+ // physical X, whereas OD grooving / OD threading must place the body OUTWARD.
+ // Rear-mount display mirrors V again; choose the rear local offset so the
+ // final top-view bar still lies inward from the ID tip.
+ const isBore=category==='bore'||category==='internal_thread';
+ const baseV=isBore?(t.mountSide==='rear'?-B*1.12:B*.12):-B*1.07;
+ const topV=baseV+B;
+ const shank=[{u:e,v:baseV},{u:L,v:baseV},{u:L,v:topV},{u:e,v:topV}];
+ let head,seat;
+ if(category==='groove'&&t.grooveSeat!=='inline'){
+  // Preserve explicitly edited/legacy assemblies until an operator selects a
+  // corrected catalog preset. Never silently rotate custom insert/pocket data.
+  const bladeW=t.width,run=t.reach;
+  const lower=p.v-run*.25,upper=p.v+run*.25;
+  const shoulderU=e*.80;
+  head=[{u:p.u-bladeW*.12,v:lower},{u:p.u+bladeW*.65,v:lower},
+   {u:shoulderU,v:lower-B*.065},{u:e,v:baseV},{u:e,v:topV},
+   {u:shoulderU,v:upper+B*.065},{u:p.u+bladeW*.65,v:upper},
+   {u:p.u-bladeW*.12,v:upper}];
+  seat=[{u:p.u-bladeW*.3,v:p.v-run*.19},{u:p.u+bladeW*.3,v:p.v-run*.19},
+   {u:p.u+bladeW*.3,v:p.v+run*.16},{u:p.u-bladeW*.3,v:p.v+run*.16}];
+ }else if(category==='groove'){
+  // OD radial groove, *holder-local TOP projection*: the insert length
+  // follows the shank toward the turret (+U), its cutting WIDTH spans V.
+  // Its front edge at U=0 is the cutting edge. The holder's narrow nose
+  // retreats behind the insert and broadens near the head/shank junction.
+  // Whole-tool mounting pose in machine X/Z remains a separate choice.
+  const bladeW=t.width,run=t.reach;
+  const neckU=Math.min(run*.23,p.u*.48,e*.20),transitionU=Math.min(e*.50,Math.max(run*1.22,neckU+B*.07));
+  const neckLow=p.v-bladeW*.36,neckHigh=p.v+bladeW*.36;
+  const shoulderU=e*.78;
+  head=[
+   {u:neckU,v:neckLow},
+   {u:transitionU,v:p.v-bladeW*.56},
+   {u:shoulderU,v:baseV+B*.08},
+   {u:e,v:baseV},
+   {u:e,v:topV},
+   {u:shoulderU,v:topV-B*.08},
+   {u:transitionU,v:p.v+bladeW*.56},
+   {u:neckU,v:neckHigh}
+  ];
+  seat=[{u:p.u-run*.46,v:p.v-bladeW*.38},
+   {u:p.u+run*.44,v:p.v-bladeW*.38},
+   {u:p.u+run*.44,v:p.v+bladeW*.38},
+   {u:p.u-run*.46,v:p.v+bladeW*.38}];
+ }else if(isBore){
+  // Reduced-diameter ID cutting head, backed by the cylindrical-bar projection.
+  // The older long triangular ramp was physically misleading and frequently
+  // overlapped the OD stock in the static view. Keep a slim neck immediately
+  // behind the insert; thicken smoothly into the Øbar projected shank at LH.
+  // The pocket is registered to the insert pivot, not a floating head symbol.
+  const nominal={...t,insertFineAngle:0};
+  const raw=toolPolygon(nominal),pivot=insertPivotLocal(nominal);
+  const insertAngle=insertMountOffset(nominal);
+  const seated=raw.map(q=>{const r=rotateToolPoint({u:q.u-pivot.u,v:q.v-pivot.v},insertAngle);
+   return {u:r.u+p.u,v:r.v+p.v};});
+  const noseU=Math.max(B*.08,p.u*.26);
+  const pocketLowerU=Math.max(noseU+B*.11,p.u*.85);
+  const neckU=Math.max(pocketLowerU+B*.30,e*.32);
+  const shoulderU=Math.max(neckU+B*.12,e*.70);
+  const frontBase=B*.12;
+  const lower=frontBase+B*.10,upper=frontBase+B*.80;
+  // Build a FRONT canonical pocket-supporting head and mirror its local V for
+  // the REAR holder. Simply moving the rear shank without mirroring the head
+  // left the mounting screw/pocket center suspended outside the steel.
+  const lip={u:noseU,v:p.v-B*.10};
+  head=[lip,{u:pocketLowerU,v:p.v-B*.16},{u:neckU,v:lower},{u:e,v:frontBase},
+   {u:e,v:frontBase+B},{u:shoulderU,v:upper},{u:neckU,v:frontBase+B*.43}];
+  if(t.mountSide==='rear')head=head.map(q=>({u:q.u,v:-q.v}));
+  seat=seated.map(q=>({u:p.u+(q.u-p.u)*.61,v:p.v+(q.v-p.v)*.61}));
+ }else{
+  // Shape the support along the projected cutting flanks from the NOMINAL
+  // insert seated in this holder. It cannot cover the entire sharp edge.
+  const nominal={...t,insertFineAngle:0};
+  const raw=toolPolygon(nominal),pv=insertPivotLocal(nominal),a=insertMountOffset(nominal);
+  const seated=raw.map(q=>{const r=rotateToolPoint({u:q.u-pv.u,v:q.v-pv.v},a);
+   return {u:r.u+p.u,v:r.v+p.v};});
+  const tip=seated[0],lower=seated.at(-1),upper=seated[1];
+  const mix=(q,r,k)=>({u:q.u+(r.u-q.u)*k,v:q.v+(r.v-q.v)*k});
+  const lip=mix(tip,p,.32),under=mix(lower,p,.25),over=mix(upper,p,.3);
+  const isID=category==='bore'||category==='internal_thread';
+  const shoulderV=baseV+B*(isID?.24:.17);
+  head=[lip,under,{u:e*.68,v:shoulderV},{u:e,v:baseV},
+   {u:e,v:topV},{u:e*.66,v:topV-B*.13},over];
+  seat=seated.map(q=>mix(p,q,.62));
+ }
+ // Boundary sequence is simple: front lower outline -> tail low -> shank end
+ // low -> shank end high -> head upper outline -> front. No overlapping wedge.
+ const lowIdx=3, highIdx=4;
+ const envelope=[...head.slice(0,lowIdx+1),shank[1],shank[2],...head.slice(highIdx)];
+ return {head,shank,envelope,
+  mountedEnvelope:clipHolderAtTurretFace(envelope,h.stickout),
+  mountedHead:clipHolderAtTurretFace(head,h.stickout),
+  mountedShank:clipHolderAtTurretFace(shank,h.stickout),
+  turretFace:[{u:h.stickout,v:baseV-B*.18},{u:h.stickout,v:topV+B*.18}],
+  pocketDetail:seat,clampCenter:{...p},
+  leverBolt:category==='groove'?{u:p.u+B*.50,v:p.v+B*.12}:null,
+  clampRadius:.095*t.ic,
+  geometryBasis:`${category.toUpperCase()} CATALOG-INSPIRED SCHEMATIC TOP VIEW`};
+}
 function catalogHolderParts(t){
  const h=t.holder;if(h?.mode!=='catalog')return null;
+ const ref=Object.values(CATALOG_HOLDERS).find(c=>c.code===t.catalog?.code);
+ if(ref?.category)return specialCatalogParts(t,ref);
+ // Keep the established OD pocket-to-head geometry while we correct the
+ // axial pose of the other catalog families. Catalog WF is a nominal offset;
+ // this entire silhouette remains unverified for physical holder clearance.
  const B=h.b,s=h.wf,L=h.lf,e=h.lh,low=s-B,high=s;
  const shank=[{u:e,v:low},{u:L,v:low},{u:L,v:high},{u:e,v:high}];
- const ref=Object.values(CATALOG_HOLDERS).find(c=>c.code===t.catalog?.code);
  const nominal={...t,shape:ref?.shape||t.shape,hand:ref?.hand||t.hand,
   mountedRelief:ref?.clearance??t.mountedRelief,insertFineAngle:0};
  const original=toolPolygon(nominal),pivot=insertPivotLocal(nominal);
@@ -841,17 +1045,17 @@ function renderMountPoint(point,side='front'){
 const DEMO_TOOL_PRESETS=Object.freeze([
  'catalog_pclnr_2525m12', // T01: 80 degree roughing, 95 degree approach
  'catalog_pdjnr_2525m15', // T02: 55 degree finishing, 93 degree approach
- 'bore_c',                // T03: generic bore
- 'groove_od',             // T04: generic grooving blade
- 'thread_od',             // T05: generic threading tool
+ 'catalog_s20r_sclcr09', // T03: 20 mm catalog boring bar
+ 'catalog_ghdr25_3',    // T04: 3 mm external grooving holder
+ 'catalog_ser2525m16',  // T05: 16ER laydown OD thread holder
  'drill'                  // T06: generic centerline drill
 ]);
-const DEMO_GENERIC_NAMES={3:'ID BORING BAR · GENERIC',4:'OD GROOVING BLADE · GENERIC',5:'OD 60° THREAD · GENERIC',6:'CENTERLINE DRILL · GENERIC'};
+const DEMO_GENERIC_NAMES={6:'CENTERLINE DRILL · GENERIC'};
 function starterTools(units='inch'){
  return DEMO_TOOL_PRESETS.map((key,i)=>{
   const tool=makeTemplate(key,units,i+1);
   tool.demoTemplate=key;
-  if(i>=2){tool.name=DEMO_GENERIC_NAMES[i+1];
+  if(i>=5){tool.name=DEMO_GENERIC_NAMES[i+1];
    tool.notes='EXAMPLE ONLY: nominal, unverified 2D holder and insert. Replace with a measured shop tool before machine planning.';
   }
   tool.verified=false;
@@ -909,7 +1113,9 @@ function validatePolygon(poly,errors){
 function toolPolygon(tool){
  const shape=tool.shape,IC=tool.ic,w=tool.width,reach=tool.reach;
  if(shape==='CUSTOM')return structuredClone(tool.customPoints||[]);
- if(shape==='G')return [{u:0,v:0},{u:w,v:0},{u:w,v:reach},{u:0,v:reach}];
+ if(shape==='G')return tool.grooveSeat==='inline'
+  ?[{u:0,v:0},{u:0,v:w},{u:reach,v:w},{u:reach,v:0}]
+  :[{u:0,v:0},{u:w,v:0},{u:w,v:reach},{u:0,v:reach}];
  if(shape==='B'){
   const half=w/2,run=half/Math.tan((tool.tipAngle/2)*Math.PI/180);
   return [{u:0,v:0},{u:run,v:-half},{u:reach,v:-half},{u:reach,v:half},{u:run,v:half}];
@@ -917,6 +1123,12 @@ function toolPolygon(tool){
  const theta=({C:80,D:55,V:35,S:90,T:60,P:60})[shape];
  if(!theta)return [];
  const a=theta*Math.PI/360;
+ if(shape==='P'&&['thread','internal_thread'].includes(tool.catalog?.category)){
+  // Catalog example: projected 60° laydown thread cutting V. A real 16ER/16IR
+  // insert depends on pitch/profile and seat; this is NOT a pitch-certified tip.
+  const depth=IC*.9, half=depth*Math.tan(Math.PI/6);
+  return [{u:0,v:0},{u:depth,v:half},{u:depth,v:-half}];
+ }
  if(shape==='T'||shape==='P'){
   const side=IC*Math.sqrt(3);
   return [{u:0,v:0},{u:side*Math.cos(a),v:side*Math.sin(a)},{u:side*Math.cos(a),v:-side*Math.sin(a)}];
@@ -935,6 +1147,7 @@ function validateTool(t){
  if(!['R','L','N'].includes(t.hand))errors.push('Hand must be R, L or N.');
  if(t.tipDirection!==undefined&&(!Number.isInteger(t.tipDirection)||!(t.tipDirection in TIP_DIRECTIONS)))errors.push('Tool tip direction must be T0–T8.');
  if(t.angleAdjust!==undefined&&(!f(t.angleAdjust)||Math.abs(t.angleAdjust)>360))errors.push('Fine angle must be within ±360°.');
+ if(t.poseRotation!==undefined&&(!Number.isInteger(t.poseRotation)||t.poseRotation%90!==0||t.poseRotation< -180||t.poseRotation>180))errors.push('Tool pose must be -180, -90, 0, 90 or 180 degrees.');
  if(!f(t.angle)||t.angle< -540||t.angle>540)errors.push('Total sketch rotation must be within -540° to +540°.');
  if(t.mountedRelief!==null&&t.mountedRelief!==undefined&&(!f(t.mountedRelief)||t.mountedRelief<0||t.mountedRelief>25))errors.push('Mounted flank clearance must be 0–25°, or blank for original geometry.');
  if(t.insertFineAngle!==undefined&&(!f(t.insertFineAngle)||Math.abs(t.insertFineAngle)>30))errors.push('Insert-to-holder fine rotation must be within ±30°.');
@@ -975,12 +1188,14 @@ function validateTool(t){
  if(t.tipReference!==undefined&&!['virtual','nose'].includes(t.tipReference))errors.push('Tip reference must be VIRTUAL or NOSE CENTER.');
  if(t.tipReference==='nose'&&!(t.noseRadius>0))errors.push('NOSE CENTER reference requires a nonzero nose radius.');
  if(h&&h.mode!=='none')warnings.push(h.mode==='catalog'?'CATALOG HOLDER: published H/B/LF/LH/WF dimensions, and pocket-anchored *schematic* head/seat; NOT a verified collision envelope.':'Holder is a nominal 2D envelope. This does not prove turret clearance or collision-free cutting.');
- if(t.catalog&&((CATALOG_HOLDERS[Object.keys(CATALOG_HOLDERS).find(k=>CATALOG_HOLDERS[k].code===t.catalog.code)]?.shape||t.shape)!==t.shape||t.hand!==t.catalog.code[4]))warnings.push('Catalog insert shape or hand may no longer match selected holder designation.');
+ const matchedCatalog=t.catalog?Object.values(CATALOG_HOLDERS).find(c=>c.code===t.catalog.code):null;
+ if(t.catalog&&(!matchedCatalog||matchedCatalog.shape!==t.shape||matchedCatalog.hand!==t.hand))warnings.push('Catalog insert shape or hand may no longer match selected holder designation.');
  if(!t.verified)warnings.push('GEOMETRY UNVERIFIED: placeholder dimensions; check real insert and holder before machining.');
  if(t.shape==='CUSTOM')warnings.push('Custom outline vertex 1 is the theoretical tip; pocket pivot defaults to polygon vertex average and may need measured adjustment.');
  if(Object.hasOwn(MOUNT_CLEARANCE_PRESETS,t.shape)&&t.mountedRelief==null)warnings.push('Legacy C/D geometry retained. Use APPLY STANDARD CLEARANCE to adopt a new mounted edge angle.');
  if(t.mountedRelief!=null)warnings.push('Mounted flank clearance is 2D projected cutting-edge geometry, not ISO insert side clearance.');
- if(t.shape==='G')warnings.push('Groove blade is a simplified rectangular envelope, not holder collision geometry.');
+ if(t.shape==='G')warnings.push('Grooving INSERT is a simplified projected outline; rated maximum groove depth is not proven by the graphic.');
+ if(t.catalog?.category&&t.catalog.category!=='od')warnings.push('SPECIALIZED HOLDER: schematic top view only. Min bore / max groove depth come from product specifications, not validated by 2D collision checking.');
  return {errors,warnings};
 }
 function validateToolSet(tools){
@@ -1444,6 +1659,20 @@ function convertInspectionPositions(positions,factor){
 
 return {defaultInspectionPosition,placedToolGeometry,inspectToolPosition,nearestProfilePoint,placementPoint,convertInspectionPositions,pointSegmentDistance,segmentIntersects,pointInPolygon,polygonOverlap,polygonGap,buildInspectionBodies};
 })();
+/** Bundled original MiniTurn reference SVGs. No network requests. */
+const REFERENCE_CARDS={
+  "pdjnr_2525m15": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBQREpOUiAyNTI1TS0xNSI+PHJlY3Qgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMwOTE3MTQiLz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNzYwIiBoZWlnaHQ9IjgiIGZpbGw9IiM2MmQ1YTUiLz48dGV4dCB4PSIyMiIgeT0iMzkiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZjFmZmVkIj5QREpOUiAyNTI1TS0xNTwvdGV4dD48dGV4dCB4PSIyMiIgeT0iNjQiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNhNmQ1YzAiPklOU0VSVCBETk1HIDE1MDYgIOKAoiAgQVBQUk9BQ0ggOTPCsCAg4oCiICBUT1AgVklFVyDigKIgRVNUSU1BVEVEIEhFQUQgJmFtcDsgUE9DS0VUPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI4OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2YxY2E4NCI+SCAyNSDCtyBCIDI1IMK3IExGIDE1MCDCtyBMSCAzNSDCtyBXRiAzMiAobW0pPC90ZXh0PjxyZWN0IHg9IjIyIiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzUiIHk9IjEzNyIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2QxZThkZCI+Q0FUQUxPRyBIT0xERVIgT1VUTElORTwvdGV4dD48cGF0aCBkPSJNMjc5LjczLDIwOC4wNCBMNDIuMDAsMjA4LjA0IEw0Mi4wMCwyNTkuNzIgTDI3OS43MywyNTkuNzIgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMzQ4LjE5LDIwMC4xOCBMMzI3Ljg0LDIxMi4yOCBMMzEzLjAxLDIxMi41OSBMMjc5LjczLDIwOC4wNCBMMjc5LjczLDI1OS43MiBMMzEwLjEyLDI0OS45MCBMMzQ2LjU4LDIyMy4zMiBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNTIuMDAsMTk1LjE1IEwzNTAuNDAsMjI1LjU3IEwzMjMuMjIsMjQyLjU2IEwzMjQuOTAsMjEwLjU1IEwzNTAuNzMsMTk0LjQxIEwzNTAuNzcsMTk0LjM5IEwzNTAuODEsMTk0LjM3IEwzNTAuODQsMTk0LjM1IEwzNTAuODgsMTk0LjM0IEwzNTAuOTIsMTk0LjMyIEwzNTAuOTYsMTk0LjMxIEwzNTEuMDAsMTk0LjMwIEwzNTEuMDQsMTk0LjI5IEwzNTEuMDgsMTk0LjI5IEwzNTEuMTIsMTk0LjI4IEwzNTEuMTYsMTk0LjI4IEwzNTEuMjAsMTk0LjI4IEwzNTEuMjQsMTk0LjI5IEwzNTEuMjgsMTk0LjI5IEwzNTEuMzMsMTk0LjMwIEwzNTEuMzcsMTk0LjMxIEwzNTEuNDEsMTk0LjMyIEwzNTEuNDQsMTk0LjMzIEwzNTEuNDgsMTk0LjM0IEwzNTEuNTIsMTk0LjM2IEwzNTEuNTYsMTk0LjM4IEwzNTEuNTksMTk0LjQwIEwzNTEuNjMsMTk0LjQyIEwzNTEuNjYsMTk0LjQ0IEwzNTEuNjksMTk0LjQ3IEwzNTEuNzIsMTk0LjQ5IEwzNTEuNzUsMTk0LjUyIEwzNTEuNzgsMTk0LjU1IEwzNTEuODEsMTk0LjU4IEwzNTEuODQsMTk0LjYxIEwzNTEuODYsMTk0LjY1IEwzNTEuODgsMTk0LjY4IEwzNTEuOTAsMTk0LjcyIEwzNTEuOTIsMTk0Ljc1IEwzNTEuOTQsMTk0Ljc5IEwzNTEuOTUsMTk0LjgzIEwzNTEuOTYsMTk0Ljg3IEwzNTEuOTgsMTk0LjkxIEwzNTEuOTgsMTk0Ljk1IEwzNTEuOTksMTk0Ljk5IEwzNTIuMDAsMTk1LjAzIEwzNTIuMDAsMTk1LjA3IEwzNTIuMDAsMTk1LjExIEwzNTIuMDAsMTk1LjE1IFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSIzMzcuNjUiIGN5PSIyMTguMDYiIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMzMwLjY1IDIxOC4wNmgxNE0zMzcuNjUgMjExLjA2djE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxyZWN0IHg9IjM4NiIgeT0iMTE2IiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIyMiIgcng9IjkiIGZpbGw9IiMwYjFlMWMiIHN0cm9rZT0iIzMxNWQ1MSIvPjx0ZXh0IHg9IjM5OSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5JTlNFUlQgLyBIRUFEIERFVEFJTDwvdGV4dD48cGF0aCBkPSJNNjQ3Ljk0LDE1NC44NiBMNTkzLjIwLDE4Ny40MCBMNTUzLjMzLDE4OC4yNCBMNDYzLjgxLDE3Ni4wMCBMNDYzLjgxLDMxNS4wMCBMNTQ1LjU0LDI4OC41OSBMNjQzLjYxLDIxNy4xMCBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02NDQuMDUsMTYxLjQ1IEw2NDEuMjEsMjE1LjY5IEw1OTUuMTYsMjQ0LjQ2IEw1OTguMDAsMTkwLjIzIFoiIGZpbGw9IiMxOTMzMzAiIHN0cm9rZT0iI2ZmY2M3NSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNjU4LjE5LDE0MS4zNCBMNjUzLjkwLDIyMy4xNiBMNTgwLjgwLDI2OC44NCBMNTg1LjMxLDE4Mi43NiBMNjU0Ljc5LDEzOS4zNCBMNjU0Ljg5LDEzOS4yOCBMNjU0Ljk4LDEzOS4yMyBMNjU1LjA4LDEzOS4xOCBMNjU1LjE5LDEzOS4xNCBMNjU1LjI5LDEzOS4xMSBMNjU1LjQwLDEzOS4wOCBMNjU1LjUwLDEzOS4wNSBMNjU1LjYxLDEzOS4wMyBMNjU1LjcyLDEzOS4wMSBMNjU1LjgzLDEzOS4wMCBMNjU1Ljk0LDEzOS4wMCBMNjU2LjA1LDEzOS4wMCBMNjU2LjE2LDEzOS4wMSBMNjU2LjI3LDEzOS4wMiBMNjU2LjM4LDEzOS4wNCBMNjU2LjQ5LDEzOS4wNiBMNjU2LjU5LDEzOS4wOSBMNjU2LjcwLDEzOS4xMiBMNjU2LjgwLDEzOS4xNiBMNjU2LjkwLDEzOS4yMSBMNjU3LjAwLDEzOS4yNSBMNjU3LjEwLDEzOS4zMSBMNjU3LjE5LDEzOS4zNyBMNjU3LjI4LDEzOS40MyBMNjU3LjM3LDEzOS41MCBMNjU3LjQ1LDEzOS41NyBMNjU3LjUzLDEzOS42NCBMNjU3LjYxLDEzOS43MiBMNjU3LjY4LDEzOS44MSBMNjU3Ljc1LDEzOS44OSBMNjU3LjgxLDEzOS45OCBMNjU3Ljg3LDE0MC4wOCBMNjU3LjkzLDE0MC4xNyBMNjU3Ljk4LDE0MC4yNyBMNjU4LjAyLDE0MC4zNyBMNjU4LjA2LDE0MC40NyBMNjU4LjEwLDE0MC41OCBMNjU4LjEzLDE0MC42OCBMNjU4LjE1LDE0MC43OSBMNjU4LjE3LDE0MC45MCBMNjU4LjE4LDE0MS4wMSBMNjU4LjE5LDE0MS4xMiBMNjU4LjE5LDE0MS4yMyBMNjU4LjE5LDE0MS4zNCBaIiBmaWxsPSIjMDg3NzZjIiBzdHJva2U9IiM2OGVmY2QiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iNjE5LjYxIiBjeT0iMjAyLjk2IiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTYxMi42MSAyMDIuOTZoMTRNNjE5LjYxIDE5NS45NnYxNCIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSI2NTguNDEiIGN5PSIxMzcuMDciIHI9IjMuMiIgZmlsbD0iI2Y2YTVjYSIvPjx0ZXh0IHg9IjI1IiB5PSIzNjUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiNiN2Q5YzciPkNZQU4gSU5TRVJUICAgwrcgICBBTUJFUiBIT0xERVIgICDCtyAgIFlFTExPVyBQT0NLRVQgQ0VOVEVSPC90ZXh0Pjx0ZXh0IHg9IjI1IiB5PSIzODUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiNmMGE5ODAiPk9SSUdJTkFMIE1JTklUVVJOIFNDSEVNQVRJQyDigKIgTk9UIEEgTUFOVUZBQ1RVUkVSIERSQVdJTkcg4oCiIE5PIENPTExJU0lPTiBBUFBST1ZBTDwvdGV4dD48L3N2Zz4=",
+  "pclnr_2525m12": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBQQ0xOUiAyNTI1TS0xMiI+PHJlY3Qgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMwOTE3MTQiLz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNzYwIiBoZWlnaHQ9IjgiIGZpbGw9IiM2MmQ1YTUiLz48dGV4dCB4PSIyMiIgeT0iMzkiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZjFmZmVkIj5QQ0xOUiAyNTI1TS0xMjwvdGV4dD48dGV4dCB4PSIyMiIgeT0iNjQiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNhNmQ1YzAiPklOU0VSVCBDTk1HIDEyMDQgIOKAoiAgQVBQUk9BQ0ggOTXCsCAg4oCiICBUT1AgVklFVyDigKIgRVNUSU1BVEVEIEhFQUQgJmFtcDsgUE9DS0VUPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI4OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2YxY2E4NCI+SCAyNSDCtyBCIDI1IMK3IExGIDE1MCDCtyBMSCAyNy44IMK3IFdGIDMyIChtbSk8L3RleHQ+PHJlY3QgeD0iMjIiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzNSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5DQVRBTE9HIEhPTERFUiBPVVRMSU5FPC90ZXh0PjxwYXRoIGQ9Ik0yOTQuNjgsMjA4LjMxIEw0Mi4wMCwyMDguMzEgTDQyLjAwLDI2MC4wMCBMMjk0LjY4LDI2MC4wMCBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNDguMjcsMTk3LjczIEwzMjguMzksMTk4Ljk0IEwzMjEuMTIsMjExLjY3IEwyOTQuNjgsMjA4LjMxIEwyOTQuNjgsMjYwLjAwIEwzMTguMTEsMjUwLjE4IEwzNDYuMjEsMjE2Ljc2IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM1MS45OSwxOTUuODAgTDM0OS44NCwyMjAuNDAgTDMyMy4yOCwyMjIuNzIgTDMyNS42MCwxOTYuMTYgTDM1MC4yMCwxOTQuMDAgTDM1MC4yOCwxOTQuMDAgTDM1MC4zNywxOTQuMDAgTDM1MC40NSwxOTQuMDAgTDM1MC41MywxOTQuMDEgTDM1MC42MSwxOTQuMDIgTDM1MC42OSwxOTQuMDQgTDM1MC43NywxOTQuMDUgTDM1MC44NSwxOTQuMDggTDM1MC45MywxOTQuMTEgTDM1MS4wMSwxOTQuMTQgTDM1MS4wOCwxOTQuMTcgTDM1MS4xNiwxOTQuMjEgTDM1MS4yMywxOTQuMjUgTDM1MS4yOSwxOTQuMzAgTDM1MS4zNiwxOTQuMzUgTDM1MS40MiwxOTQuNDAgTDM1MS40OSwxOTQuNDUgTDM1MS41NCwxOTQuNTEgTDM1MS42MCwxOTQuNTcgTDM1MS42NSwxOTQuNjQgTDM1MS43MCwxOTQuNzAgTDM1MS43NSwxOTQuNzcgTDM1MS43OSwxOTQuODQgTDM1MS44MywxOTQuOTIgTDM1MS44NiwxOTQuOTkgTDM1MS44OSwxOTUuMDcgTDM1MS45MiwxOTUuMTUgTDM1MS45NCwxOTUuMjIgTDM1MS45NiwxOTUuMzAgTDM1MS45OCwxOTUuMzkgTDM1MS45OSwxOTUuNDcgTDM1Mi4wMCwxOTUuNTUgTDM1Mi4wMCwxOTUuNjMgTDM1Mi4wMCwxOTUuNzEgTDM1MS45OSwxOTUuODAgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjMzNy43MiIgY3k9IjIwOC4yOCIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0zMzAuNzIgMjA4LjI4aDE0TTMzNy43MiAyMDEuMjh2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHJlY3QgeD0iMzg2IiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzk5IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPklOU0VSVCAvIEhFQUQgREVUQUlMPC90ZXh0PjxwYXRoIGQ9Ik02MjcuNDYsMTQ4Ljk2IEw1NzQuNDYsMTUyLjE5IEw1NTUuMDksMTg2LjExIEw0ODQuNTgsMTc3LjE1IEw0ODQuNTgsMzE1LjAwIEw1NDcuMDUsMjg4LjgxIEw2MjEuOTcsMTk5LjcwIFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTYyMy42MSwxNTIuODEgTDYxOS43MSwxOTcuNDQgTDU3NS4wOCwyMDEuMzQgTDU3OC45OSwxNTYuNzEgWiIgZmlsbD0iIzE5MzMzMCIgc3Ryb2tlPSIjZmZjYzc1IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02MzcuNDAsMTQzLjgwIEw2MzEuNjcsMjA5LjM5IEw1NjAuODMsMjE1LjU5IEw1NjcuMDMsMTQ0Ljc2IEw2MzIuNjMsMTM5LjAyIEw2MzIuODUsMTM5LjAwIEw2MzMuMDcsMTM5LjAwIEw2MzMuMjksMTM5LjAxIEw2MzMuNTAsMTM5LjAzIEw2MzMuNzIsMTM5LjA2IEw2MzMuOTQsMTM5LjEwIEw2MzQuMTUsMTM5LjE1IEw2MzQuMzYsMTM5LjIxIEw2MzQuNTcsMTM5LjI4IEw2MzQuNzcsMTM5LjM3IEw2MzQuOTcsMTM5LjQ2IEw2MzUuMTcsMTM5LjU2IEw2MzUuMzYsMTM5LjY4IEw2MzUuNTQsMTM5LjgwIEw2MzUuNzIsMTM5LjkzIEw2MzUuODksMTQwLjA3IEw2MzYuMDUsMTQwLjIxIEw2MzYuMjEsMTQwLjM3IEw2MzYuMzUsMTQwLjUzIEw2MzYuNDksMTQwLjcwIEw2MzYuNjIsMTQwLjg4IEw2MzYuNzUsMTQxLjA2IEw2MzYuODYsMTQxLjI1IEw2MzYuOTYsMTQxLjQ1IEw2MzcuMDUsMTQxLjY1IEw2MzcuMTQsMTQxLjg1IEw2MzcuMjEsMTQyLjA2IEw2MzcuMjcsMTQyLjI3IEw2MzcuMzIsMTQyLjQ4IEw2MzcuMzYsMTQyLjcwIEw2MzcuMzksMTQyLjkyIEw2MzcuNDEsMTQzLjE0IEw2MzcuNDIsMTQzLjM2IEw2MzcuNDIsMTQzLjU4IEw2MzcuNDAsMTQzLjgwIFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSI1OTkuMzUiIGN5PSIxNzcuMDciIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNTkyLjM1IDE3Ny4wN2gxNE01OTkuMzUgMTcwLjA3djE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxjaXJjbGUgY3g9IjYzNy44NiIgY3k9IjEzOC41NiIgcj0iMy4yIiBmaWxsPSIjZjZhNWNhIi8+PHRleHQgeD0iMjUiIHk9IjM2NSIgZm9udC1zaXplPSIxMyIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2I3ZDljNyI+Q1lBTiBJTlNFUlQgICDCtyAgIEFNQkVSIEhPTERFUiAgIMK3ICAgWUVMTE9XIFBPQ0tFVCBDRU5URVI8L3RleHQ+PHRleHQgeD0iMjUiIHk9IjM4NSIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2YwYTk4MCI+T1JJR0lOQUwgTUlOSVRVUk4gU0NIRU1BVElDIOKAoiBOT1QgQSBNQU5VRkFDVFVSRVIgRFJBV0lORyDigKIgTk8gQ09MTElTSU9OIEFQUFJPVkFMPC90ZXh0Pjwvc3ZnPg==",
+  "sdjcr_2020k11": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBTREpDUiAyMDIwSy0xMSI+PHJlY3Qgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMwOTE3MTQiLz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNzYwIiBoZWlnaHQ9IjgiIGZpbGw9IiM2MmQ1YTUiLz48dGV4dCB4PSIyMiIgeT0iMzkiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZjFmZmVkIj5TREpDUiAyMDIwSy0xMTwvdGV4dD48dGV4dCB4PSIyMiIgeT0iNjQiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNhNmQ1YzAiPklOU0VSVCBEQ01UIDExVDMgIOKAoiAgQVBQUk9BQ0ggOTPCsCAg4oCiICBUT1AgVklFVyDigKIgRVNUSU1BVEVEIEhFQUQgJmFtcDsgUE9DS0VUPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI4OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2YxY2E4NCI+SCAyMCDCtyBCIDIwIMK3IExGIDEyNSDCtyBMSCAyMCDCtyBXRiAyNSAobW0pPC90ZXh0PjxyZWN0IHg9IjIyIiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzUiIHk9IjEzNyIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2QxZThkZCI+Q0FUQUxPRyBIT0xERVIgT1VUTElORTwvdGV4dD48cGF0aCBkPSJNMzAyLjQ4LDIwNy45NiBMNDIuMDAsMjA3Ljk2IEw0Mi4wMCwyNTcuNTggTDMwMi40OCwyNTcuNTggWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMzQ4LjU5LDIwMS41MSBMMzMwLjI5LDIxMi4zOSBMMzI1LjMxLDIxMi42OSBMMzAyLjQ4LDIwNy45NiBMMzAyLjQ4LDI1Ny41OCBMMzIxLjE4LDI0OC4xNSBMMzQ3LjE1LDIyMi4zMyBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNTIuMDAsMTk3LjQ2IEwzNTAuNTksMjI0LjM1IEwzMjYuMTQsMjM5LjYzIEwzMjcuNjUsMjEwLjg0IEwzNTAuNDgsMTk2LjU3IEwzNTAuNTIsMTk2LjU1IEwzNTAuNTcsMTk2LjUyIEwzNTAuNjEsMTk2LjUwIEwzNTAuNjYsMTk2LjQ4IEwzNTAuNzAsMTk2LjQ3IEwzNTAuNzUsMTk2LjQ1IEwzNTAuODAsMTk2LjQ0IEwzNTAuODUsMTk2LjQzIEwzNTAuOTAsMTk2LjQzIEwzNTAuOTUsMTk2LjQyIEwzNTAuOTksMTk2LjQyIEwzNTEuMDQsMTk2LjQyIEwzNTEuMDksMTk2LjQyIEwzNTEuMTQsMTk2LjQzIEwzNTEuMTksMTk2LjQ0IEwzNTEuMjQsMTk2LjQ1IEwzNTEuMjksMTk2LjQ2IEwzNTEuMzMsMTk2LjQ3IEwzNTEuMzgsMTk2LjQ5IEwzNTEuNDIsMTk2LjUxIEwzNTEuNDcsMTk2LjUzIEwzNTEuNTEsMTk2LjU2IEwzNTEuNTUsMTk2LjU4IEwzNTEuNTksMTk2LjYxIEwzNTEuNjMsMTk2LjY0IEwzNTEuNjcsMTk2LjY3IEwzNTEuNzEsMTk2LjcxIEwzNTEuNzQsMTk2Ljc0IEwzNTEuNzcsMTk2Ljc4IEwzNTEuODAsMTk2LjgyIEwzNTEuODMsMTk2Ljg2IEwzNTEuODYsMTk2LjkwIEwzNTEuODgsMTk2Ljk0IEwzNTEuOTAsMTk2Ljk5IEwzNTEuOTIsMTk3LjAzIEwzNTEuOTQsMTk3LjA4IEwzNTEuOTYsMTk3LjEyIEwzNTEuOTcsMTk3LjE3IEwzNTEuOTgsMTk3LjIyIEwzNTEuOTksMTk3LjI3IEwzNTIuMDAsMTk3LjMyIEwzNTIuMDAsMTk3LjM3IEwzNTIuMDAsMTk3LjQxIEwzNTIuMDAsMTk3LjQ2IFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSIzMzkuMTIiIGN5PSIyMTcuNjAiIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMzMyLjEyIDIxNy42MGgxNE0zMzkuMTIgMjEwLjYwdjE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxyZWN0IHg9IjM4NiIgeT0iMTE2IiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIyMiIgcng9IjkiIGZpbGw9IiMwYjFlMWMiIHN0cm9rZT0iIzMxNWQ1MSIvPjx0ZXh0IHg9IjM5OSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5JTlNFUlQgLyBIRUFEIERFVEFJTDwvdGV4dD48cGF0aCBkPSJNNjIyLjQ1LDE1My42NSBMNTY5Ljc2LDE4NC45NiBMNTU1LjQzLDE4NS44MiBMNDg5Ljc1LDE3Mi4yMiBMNDg5Ljc1LDMxNS4wMCBMNTQzLjU1LDI4Ny44NyBMNjE4LjI5LDIxMy41NSBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02MTguNzEsMTU5Ljk5IEw2MTUuOTgsMjEyLjE5IEw1NzEuNjUsMjM5Ljg4IEw1NzQuMzgsMTg3LjY5IFoiIGZpbGw9IiMxOTMzMzAiIHN0cm9rZT0iI2ZmY2M3NSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNjMyLjI0LDE0Mi4wMCBMNjI4LjE5LDIxOS4zOCBMNTU3LjgzLDI2My4zNSBMNTYyLjE3LDE4MC40OSBMNjI3Ljg4LDEzOS40MyBMNjI4LjAwLDEzOS4zNiBMNjI4LjEzLDEzOS4zMCBMNjI4LjI1LDEzOS4yNCBMNjI4LjM5LDEzOS4xOCBMNjI4LjUyLDEzOS4xNCBMNjI4LjY2LDEzOS4xMCBMNjI4Ljc5LDEzOS4wNiBMNjI4LjkzLDEzOS4wNCBMNjI5LjA3LDEzOS4wMiBMNjI5LjIxLDEzOS4wMSBMNjI5LjM1LDEzOS4wMCBMNjI5LjUwLDEzOS4wMCBMNjI5LjY0LDEzOS4wMSBMNjI5Ljc4LDEzOS4wMyBMNjI5LjkyLDEzOS4wNSBMNjMwLjA2LDEzOS4wOCBMNjMwLjE5LDEzOS4xMSBMNjMwLjMzLDEzOS4xNiBMNjMwLjQ2LDEzOS4yMSBMNjMwLjU5LDEzOS4yNiBMNjMwLjcyLDEzOS4zMyBMNjMwLjg0LDEzOS4zOSBMNjMwLjk2LDEzOS40NyBMNjMxLjA4LDEzOS41NSBMNjMxLjE5LDEzOS42NCBMNjMxLjMwLDEzOS43MyBMNjMxLjQwLDEzOS44MyBMNjMxLjUwLDEzOS45MyBMNjMxLjU5LDE0MC4wMyBMNjMxLjY4LDE0MC4xNSBMNjMxLjc2LDE0MC4yNiBMNjMxLjg0LDE0MC4zOCBMNjMxLjkxLDE0MC41MCBMNjMxLjk3LDE0MC42MyBMNjMyLjAzLDE0MC43NiBMNjMyLjA4LDE0MC44OSBMNjMyLjEyLDE0MS4wMyBMNjMyLjE2LDE0MS4xNiBMNjMyLjE5LDE0MS4zMCBMNjMyLjIyLDE0MS40NCBMNjMyLjIzLDE0MS41OCBMNjMyLjI0LDE0MS43MiBMNjMyLjI1LDE0MS44NiBMNjMyLjI0LDE0Mi4wMCBaIiBmaWxsPSIjMDg3NzZjIiBzdHJva2U9IiM2OGVmY2QiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iNTk1LjE4IiBjeT0iMTk5Ljk0IiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTU4OC4xOCAxOTkuOTRoMTRNNTk1LjE4IDE5Mi45NHYxNCIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSI2MzIuNTMiIGN5PSIxMzYuNTMiIHI9IjMuMiIgZmlsbD0iI2Y2YTVjYSIvPjx0ZXh0IHg9IjI1IiB5PSIzNjUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiNiN2Q5YzciPkNZQU4gSU5TRVJUICAgwrcgICBBTUJFUiBIT0xERVIgICDCtyAgIFlFTExPVyBQT0NLRVQgQ0VOVEVSPC90ZXh0Pjx0ZXh0IHg9IjI1IiB5PSIzODUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiNmMGE5ODAiPk9SSUdJTkFMIE1JTklUVVJOIFNDSEVNQVRJQyDigKIgTk9UIEEgTUFOVUZBQ1RVUkVSIERSQVdJTkcg4oCiIE5PIENPTExJU0lPTiBBUFBST1ZBTDwvdGV4dD48L3N2Zz4=",
+  "sclcr_2525m12": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBTQ0xDUiAyNTI1TS0xMiI+PHJlY3Qgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMwOTE3MTQiLz48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNzYwIiBoZWlnaHQ9IjgiIGZpbGw9IiM2MmQ1YTUiLz48dGV4dCB4PSIyMiIgeT0iMzkiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZjFmZmVkIj5TQ0xDUiAyNTI1TS0xMjwvdGV4dD48dGV4dCB4PSIyMiIgeT0iNjQiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNhNmQ1YzAiPklOU0VSVCBDQ01UIDEyMDQgIOKAoiAgQVBQUk9BQ0ggOTXCsCAg4oCiICBUT1AgVklFVyDigKIgRVNUSU1BVEVEIEhFQUQgJmFtcDsgUE9DS0VUPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI4OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2YxY2E4NCI+SCAyNSDCtyBCIDI1IMK3IExGIDE1MCDCtyBMSCAyMCDCtyBXRiAzMiAobW0pPC90ZXh0PjxyZWN0IHg9IjIyIiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzUiIHk9IjEzNyIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2QxZThkZCI+Q0FUQUxPRyBIT0xERVIgT1VUTElORTwvdGV4dD48cGF0aCBkPSJNMzEwLjc0LDIwOC4zNSBMNDIuMDAsMjA4LjM1IEw0Mi4wMCwyNjAuMDMgTDMxMC43NCwyNjAuMDMgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMzQ4LjE4LDE5Ny43OCBMMzI4LjMxLDE5OC45OSBMMzI1Ljk5LDIxMS43MSBMMzEwLjc0LDIwOC4zNSBMMzEwLjc0LDI2MC4wMyBMMzE4LjAzLDI1MC4yMSBMMzQ2LjEyLDIxNi44MSBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNTIuMDAsMTk0Ljg2IEwzNDkuNzYsMjIwLjQ0IEwzMjMuMjAsMjIyLjc2IEwzMjUuNTMsMTk2LjIxIEwzNTEuMTAsMTkzLjk3IEwzNTEuMTQsMTkzLjk3IEwzNTEuMTgsMTkzLjk3IEwzNTEuMjIsMTkzLjk3IEwzNTEuMjcsMTkzLjk3IEwzNTEuMzEsMTkzLjk4IEwzNTEuMzUsMTkzLjk4IEwzNTEuMzksMTkzLjk5IEwzNTEuNDMsMTk0LjAxIEwzNTEuNDcsMTk0LjAyIEwzNTEuNTAsMTk0LjAzIEwzNTEuNTQsMTk0LjA1IEwzNTEuNTgsMTk0LjA3IEwzNTEuNjEsMTk0LjA5IEwzNTEuNjUsMTk0LjEyIEwzNTEuNjgsMTk0LjE0IEwzNTEuNzEsMTk0LjE3IEwzNTEuNzQsMTk0LjE5IEwzNTEuNzcsMTk0LjIyIEwzNTEuODAsMTk0LjI1IEwzNTEuODMsMTk0LjI5IEwzNTEuODUsMTk0LjMyIEwzNTEuODcsMTk0LjM1IEwzNTEuODksMTk0LjM5IEwzNTEuOTEsMTk0LjQyIEwzNTEuOTMsMTk0LjQ2IEwzNTEuOTUsMTk0LjUwIEwzNTEuOTYsMTk0LjU0IEwzNTEuOTcsMTk0LjU4IEwzNTEuOTgsMTk0LjYyIEwzNTEuOTksMTk0LjY2IEwzNTEuOTksMTk0LjcwIEwzNTIuMDAsMTk0Ljc0IEwzNTIuMDAsMTk0Ljc4IEwzNTIuMDAsMTk0LjgyIEwzNTIuMDAsMTk0Ljg2IFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSIzMzcuNjQiIGN5PSIyMDguMzIiIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMzMwLjY0IDIwOC4zMmgxNE0zMzcuNjQgMjAxLjMydjE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxyZWN0IHg9IjM4NiIgeT0iMTE2IiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIyMiIgcng9IjkiIGZpbGw9IiMwYjFlMWMiIHN0cm9rZT0iIzMxNWQ1MSIvPjx0ZXh0IHg9IjM5OSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5JTlNFUlQgLyBIRUFEIERFVEFJTDwvdGV4dD48cGF0aCBkPSJNNjA1Ljc5LDE0OS4xNyBMNTUyLjg2LDE1Mi4zOSBMNTQ2LjY2LDE4Ni4yOCBMNTA2LjA0LDE3Ny4zMyBMNTA2LjA0LDMxNS4wMCBMNTI1LjQ4LDI4OC44NCBMNjAwLjMxLDE5OS44NCBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02MDEuOTUsMTUzLjAxIEw1OTguMDUsMTk3LjU4IEw1NTMuNDgsMjAxLjQ4IEw1NTcuMzgsMTU2LjkxIFoiIGZpbGw9IiMxOTMzMzAiIHN0cm9rZT0iI2ZmY2M3NSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNjE1Ljk1LDE0MS4zOSBMNjA5Ljk5LDIwOS41MyBMNTM5LjI0LDIxNS43MiBMNTQ1LjQzLDE0NC45NyBMNjEzLjU2LDEzOS4wMSBMNjEzLjY3LDEzOS4wMCBMNjEzLjc4LDEzOS4wMCBMNjEzLjg5LDEzOS4wMCBMNjE0LjAwLDEzOS4wMSBMNjE0LjExLDEzOS4wMyBMNjE0LjIyLDEzOS4wNSBMNjE0LjMzLDEzOS4wNyBMNjE0LjQzLDEzOS4xMSBMNjE0LjU0LDEzOS4xNCBMNjE0LjY0LDEzOS4xOCBMNjE0Ljc0LDEzOS4yMyBMNjE0LjgzLDEzOS4yOCBMNjE0LjkzLDEzOS4zNCBMNjE1LjAyLDEzOS40MCBMNjE1LjExLDEzOS40NiBMNjE1LjE5LDEzOS41MyBMNjE1LjI3LDEzOS42MSBMNjE1LjM1LDEzOS42OCBMNjE1LjQzLDEzOS43NyBMNjE1LjUwLDEzOS44NSBMNjE1LjU2LDEzOS45NCBMNjE1LjYyLDE0MC4wMyBMNjE1LjY4LDE0MC4xMyBMNjE1LjczLDE0MC4yMiBMNjE1Ljc4LDE0MC4zMiBMNjE1LjgyLDE0MC40MiBMNjE1Ljg1LDE0MC41MyBMNjE1Ljg4LDE0MC42MyBMNjE1LjkxLDE0MC43NCBMNjE1LjkzLDE0MC44NSBMNjE1Ljk0LDE0MC45NiBMNjE1Ljk1LDE0MS4wNyBMNjE1Ljk2LDE0MS4xOCBMNjE1Ljk2LDE0MS4yOCBMNjE1Ljk1LDE0MS4zOSBaIiBmaWxsPSIjMDg3NzZjIiBzdHJva2U9IiM2OGVmY2QiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iNTc3LjcxIiBjeT0iMTc3LjI1IiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTU3MC43MSAxNzcuMjVoMTRNNTc3LjcxIDE3MC4yNXYxNCIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSI2MTYuMTgiIGN5PSIxMzguNzgiIHI9IjMuMiIgZmlsbD0iI2Y2YTVjYSIvPjx0ZXh0IHg9IjI1IiB5PSIzNjUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiNiN2Q5YzciPkNZQU4gSU5TRVJUICAgwrcgICBBTUJFUiBIT0xERVIgICDCtyAgIFlFTExPVyBQT0NLRVQgQ0VOVEVSPC90ZXh0Pjx0ZXh0IHg9IjI1IiB5PSIzODUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZpbGw9IiNmMGE5ODAiPk9SSUdJTkFMIE1JTklUVVJOIFNDSEVNQVRJQyDigKIgTk9UIEEgTUFOVUZBQ1RVUkVSIERSQVdJTkcg4oCiIE5PIENPTExJU0lPTiBBUFBST1ZBTDwvdGV4dD48L3N2Zz4=",
+  "s20r_sclcr09": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBTMjBSIFNDTENSLTA5Ij48cmVjdCB3aWR0aD0iNzYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzA5MTcxNCIvPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI3NjAiIGhlaWdodD0iOCIgZmlsbD0iIzYyZDVhNSIvPjx0ZXh0IHg9IjIyIiB5PSIzOSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmMWZmZWQiPlMyMFIgU0NMQ1ItMDk8L3RleHQ+PHRleHQgeD0iMjIiIHk9IjY0IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjYTZkNWMwIj5JTlNFUlQgQ0NNVCAwOVQzICDigKIgIEFQUFJPQUNIIDk1wrAgIOKAoiAgVE9QIFZJRVcg4oCiIEVTVElNQVRFRCBIRUFEICZhbXA7IFBPQ0tFVDwvdGV4dD48dGV4dCB4PSIyMiIgeT0iODgiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNmMWNhODQiPkggMjAgwrcgQiAyMCDCtyBMRiAyMDAgwrcgTEggNTAgwrcgV0YgMTMgKG1tKTwvdGV4dD48cmVjdCB4PSIyMiIgeT0iMTE2IiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIyMiIgcng9IjkiIGZpbGw9IiMwYjFlMWMiIHN0cm9rZT0iIzMxNWQ1MSIvPjx0ZXh0IHg9IjM1IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPkNBVEFMT0cgSE9MREVSIE9VVExJTkU8L3RleHQ+PHBhdGggZD0iTTI3NC43NiwyMTguMTcgTDQyLjAwLDIxOC4xNyBMNDIuMDAsMjQ5LjIwIEwyNzQuNzYsMjQ5LjIwIFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM0OS4zNiwyMTEuMzQgTDM0Mi41NywyMDkuNDggTDMyNy41MiwyMjEuMjcgTDI3NC43NiwyMTguMTcgTDI3NC43NiwyNDkuMjAgTDI5OC4wMywyNDMuMDAgTDMyNy41MiwyMzEuNTEgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMzUxLjc4LDIxNC45MiBMMzQwLjg1LDIyNC4wOSBMMzI5LjM1LDIxNC40NCBMMzQwLjg1LDIwNC44MCBMMzUxLjc4LDIxMy45NyBMMzUxLjgwLDIxMy45OSBMMzUxLjgyLDIxNC4wMSBMMzUxLjg0LDIxNC4wMyBMMzUxLjg2LDIxNC4wNiBMMzUxLjg4LDIxNC4wOCBMMzUxLjkwLDIxNC4xMSBMMzUxLjkyLDIxNC4xMyBMMzUxLjkzLDIxNC4xNiBMMzUxLjk1LDIxNC4xOSBMMzUxLjk2LDIxNC4yMiBMMzUxLjk3LDIxNC4yNSBMMzUxLjk4LDIxNC4yOCBMMzUxLjk4LDIxNC4zMSBMMzUxLjk5LDIxNC4zNCBMMzUyLjAwLDIxNC4zNyBMMzUyLjAwLDIxNC40MCBMMzUyLjAwLDIxNC40MyBMMzUyLjAwLDIxNC40NiBMMzUyLjAwLDIxNC40OSBMMzUyLjAwLDIxNC41MiBMMzUxLjk5LDIxNC41NSBMMzUxLjk4LDIxNC41OCBMMzUxLjk4LDIxNC42MSBMMzUxLjk3LDIxNC42NCBMMzUxLjk2LDIxNC42NyBMMzUxLjk1LDIxNC43MCBMMzUxLjkzLDIxNC43MyBMMzUxLjkyLDIxNC43NSBMMzUxLjkwLDIxNC43OCBMMzUxLjg4LDIxNC44MSBMMzUxLjg2LDIxNC44MyBMMzUxLjg0LDIxNC44NSBMMzUxLjgyLDIxNC44OCBMMzUxLjgwLDIxNC45MCBMMzUxLjc4LDIxNC45MiBaIiBmaWxsPSIjMDg3NzZjIiBzdHJva2U9IiM2OGVmY2QiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMzQwLjg1IiBjeT0iMjE0LjQ0IiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTMzMy44NSAyMTQuNDRoMTRNMzQwLjg1IDIwNy40NHYxNCIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjEiLz48cmVjdCB4PSIzODYiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzOTkiIHk9IjEzNyIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2QxZThkZCI+SU5TRVJUIC8gSEVBRCBERVRBSUw8L3RleHQ+PHBhdGggZD0iTTcwMy41OSwxNjQuOTQgTDY3Ni43MSwxNTcuNTYgTDYxNy4wNCwyMDQuMzAgTDQwNy45MywxOTIuMDAgTDQwNy45MywzMTUuMDAgTDUwMC4xOCwyOTAuNDAgTDYxNy4wNCwyNDQuODkgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNjk3LjY3LDE3Ny4yNCBMNjY5Ljg3LDIwMC41NiBMNjQyLjA3LDE3Ny4yNCBMNjY5Ljg3LDE1My45MSBaIiBmaWxsPSIjMTkzMzMwIiBzdHJva2U9IiNmZmNjNzUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTcxMy4xOSwxNzkuMTIgTDY2OS44NywyMTUuNDcgTDYyNC4zMCwxNzcuMjQgTDY2OS44NywxMzkuMDAgTDcxMy4xOSwxNzUuMzUgTDcxMy4yOCwxNzUuNDMgTDcxMy4zNywxNzUuNTIgTDcxMy40NiwxNzUuNjEgTDcxMy41MywxNzUuNzAgTDcxMy42MSwxNzUuODAgTDcxMy42OCwxNzUuOTAgTDcxMy43NCwxNzYuMDEgTDcxMy44MCwxNzYuMTEgTDcxMy44NSwxNzYuMjIgTDcxMy45MCwxNzYuMzQgTDcxMy45NCwxNzYuNDUgTDcxMy45OCwxNzYuNTcgTDcxNC4wMSwxNzYuNjkgTDcxNC4wMywxNzYuODEgTDcxNC4wNSwxNzYuOTMgTDcxNC4wNiwxNzcuMDUgTDcxNC4wNywxNzcuMTcgTDcxNC4wNywxNzcuMzAgTDcxNC4wNiwxNzcuNDIgTDcxNC4wNSwxNzcuNTQgTDcxNC4wMywxNzcuNjYgTDcxNC4wMSwxNzcuNzggTDcxMy45OCwxNzcuOTAgTDcxMy45NCwxNzguMDIgTDcxMy45MCwxNzguMTMgTDcxMy44NSwxNzguMjUgTDcxMy44MCwxNzguMzYgTDcxMy43NCwxNzguNDcgTDcxMy42OCwxNzguNTcgTDcxMy42MSwxNzguNjcgTDcxMy41MywxNzguNzcgTDcxMy40NiwxNzguODYgTDcxMy4zNywxNzguOTUgTDcxMy4yOCwxNzkuMDQgTDcxMy4xOSwxNzkuMTIgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjY2OS44NyIgY3k9IjE3Ny4yNCIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik02NjIuODcgMTc3LjI0aDE0TTY2OS44NyAxNzAuMjR2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PGNpcmNsZSBjeD0iNzE1LjQ0IiBjeT0iMTc3LjI0IiByPSIzLjIiIGZpbGw9IiNmNmE1Y2EiLz48dGV4dCB4PSIyNSIgeT0iMzY1IiBmb250LXNpemU9IjEzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjYjdkOWM3Ij5DWUFOIElOU0VSVCAgIMK3ICAgQU1CRVIgSE9MREVSICAgwrcgICBZRUxMT1cgUE9DS0VUIENFTlRFUjwvdGV4dD48dGV4dCB4PSIyNSIgeT0iMzg1IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjZjBhOTgwIj5PUklHSU5BTCBNSU5JVFVSTiBTQ0hFTUFUSUMg4oCiIE5PVCBBIE1BTlVGQUNUVVJFUiBEUkFXSU5HIOKAoiBOTyBDT0xMSVNJT04gQVBQUk9WQUw8L3RleHQ+PC9zdmc+",
+  "s16q_sclcr09": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBTMTZRIFNDTENSLTA5Ij48cmVjdCB3aWR0aD0iNzYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzA5MTcxNCIvPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI3NjAiIGhlaWdodD0iOCIgZmlsbD0iIzYyZDVhNSIvPjx0ZXh0IHg9IjIyIiB5PSIzOSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmMWZmZWQiPlMxNlEgU0NMQ1ItMDk8L3RleHQ+PHRleHQgeD0iMjIiIHk9IjY0IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjYTZkNWMwIj5JTlNFUlQgQ0NNVCAwOVQzICDigKIgIEFQUFJPQUNIIDk1wrAgIOKAoiAgVE9QIFZJRVcg4oCiIEVTVElNQVRFRCBIRUFEICZhbXA7IFBPQ0tFVDwvdGV4dD48dGV4dCB4PSIyMiIgeT0iODgiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNmMWNhODQiPkggMTYgwrcgQiAxNiDCtyBMRiAxODAgwrcgTEggNDUgwrcgV0YgMTEgKG1tKTwvdGV4dD48cmVjdCB4PSIyMiIgeT0iMTE2IiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIyMiIgcng9IjkiIGZpbGw9IiMwYjFlMWMiIHN0cm9rZT0iIzMxNWQ1MSIvPjx0ZXh0IHg9IjM1IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPkNBVEFMT0cgSE9MREVSIE9VVExJTkU8L3RleHQ+PHBhdGggZD0iTTI3NC43OSwyMjAuMjIgTDQyLjAwLDIyMC4yMiBMNDIuMDAsMjQ3LjgxIEwyNzQuNzksMjQ3LjgxIFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM0OS4wNiwyMTQuMTUgTDM0MS41MiwyMTIuNTAgTDMyNy41NSwyMjIuOTggTDI3NC43OSwyMjAuMjIgTDI3NC43OSwyNDcuODEgTDI5OC4wNywyNDIuMjkgTDMyNy41NSwyMzIuMDggWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMzUxLjc1LDIxNy40NCBMMzM5LjYxLDIyNy42MyBMMzI2LjgzLDIxNi45MSBMMzM5LjYxLDIwNi4xOSBMMzUxLjc1LDIxNi4zOCBMMzUxLjc4LDIxNi40MCBMMzUxLjgwLDIxNi40MyBMMzUxLjgzLDIxNi40NSBMMzUxLjg1LDIxNi40OCBMMzUxLjg3LDIxNi41MSBMMzUxLjg5LDIxNi41NCBMMzUxLjkxLDIxNi41NyBMMzUxLjkyLDIxNi42MCBMMzUxLjk0LDIxNi42MyBMMzUxLjk1LDIxNi42NiBMMzUxLjk2LDIxNi42OSBMMzUxLjk3LDIxNi43MiBMMzUxLjk4LDIxNi43NiBMMzUxLjk5LDIxNi43OSBMMzUxLjk5LDIxNi44MiBMMzUyLjAwLDIxNi44NiBMMzUyLjAwLDIxNi44OSBMMzUyLjAwLDIxNi45MyBMMzUyLjAwLDIxNi45NiBMMzUxLjk5LDIxNy4wMCBMMzUxLjk5LDIxNy4wMyBMMzUxLjk4LDIxNy4wNiBMMzUxLjk3LDIxNy4xMCBMMzUxLjk2LDIxNy4xMyBMMzUxLjk1LDIxNy4xNiBMMzUxLjk0LDIxNy4xOSBMMzUxLjkyLDIxNy4yMiBMMzUxLjkxLDIxNy4yNSBMMzUxLjg5LDIxNy4yOCBMMzUxLjg3LDIxNy4zMSBMMzUxLjg1LDIxNy4zNCBMMzUxLjgzLDIxNy4zNyBMMzUxLjgwLDIxNy4zOSBMMzUxLjc4LDIxNy40MiBMMzUxLjc1LDIxNy40NCBaIiBmaWxsPSIjMDg3NzZjIiBzdHJva2U9IiM2OGVmY2QiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMzM5LjYxIiBjeT0iMjE2LjkxIiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTMzMi42MSAyMTYuOTFoMTRNMzM5LjYxIDIwOS45MXYxNCIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjEiLz48cmVjdCB4PSIzODYiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzOTkiIHk9IjEzNyIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2QxZThkZCI+SU5TRVJUIC8gSEVBRCBERVRBSUw8L3RleHQ+PHBhdGggZD0iTTcwNC4yMCwxNzUuNDEgTDY3My45NCwxNjguNzcgTDYxNy44NSwyMTAuODYgTDQwNi4wMCwxOTkuNzggTDQwNi4wMCwzMTAuNTUgTDQ5OS40NiwyODguNDAgTDYxNy44NSwyNDcuNDEgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNjk3LjU0LDE4Ni40OSBMNjY2LjI1LDIxMi43NCBMNjM0Ljk2LDE4Ni40OSBMNjY2LjI1LDE2MC4yMyBaIiBmaWxsPSIjMTkzMzMwIiBzdHJva2U9IiNmZmNjNzUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTcxNS4wMSwxODguNjEgTDY2Ni4yNSwyMjkuNTMgTDYxNC45NSwxODYuNDkgTDY2Ni4yNSwxNDMuNDUgTDcxNS4wMSwxODQuMzcgTDcxNS4xMiwxODQuNDYgTDcxNS4yMSwxODQuNTYgTDcxNS4zMSwxODQuNjYgTDcxNS40MCwxODQuNzYgTDcxNS40OCwxODQuODcgTDcxNS41NiwxODQuOTkgTDcxNS42MywxODUuMTAgTDcxNS43MCwxODUuMjMgTDcxNS43NiwxODUuMzUgTDcxNS44MSwxODUuNDggTDcxNS44NiwxODUuNjEgTDcxNS45MCwxODUuNzQgTDcxNS45MywxODUuODcgTDcxNS45NiwxODYuMDEgTDcxNS45OCwxODYuMTUgTDcxNS45OSwxODYuMjggTDcxNi4wMCwxODYuNDIgTDcxNi4wMCwxODYuNTYgTDcxNS45OSwxODYuNzAgTDcxNS45OCwxODYuODMgTDcxNS45NiwxODYuOTcgTDcxNS45MywxODcuMTEgTDcxNS45MCwxODcuMjQgTDcxNS44NiwxODcuMzcgTDcxNS44MSwxODcuNTAgTDcxNS43NiwxODcuNjMgTDcxNS43MCwxODcuNzUgTDcxNS42MywxODcuODcgTDcxNS41NiwxODcuOTkgTDcxNS40OCwxODguMTEgTDcxNS40MCwxODguMjIgTDcxNS4zMSwxODguMzIgTDcxNS4yMSwxODguNDIgTDcxNS4xMiwxODguNTIgTDcxNS4wMSwxODguNjEgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjY2Ni4yNSIgY3k9IjE4Ni40OSIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik02NTkuMjUgMTg2LjQ5aDE0TTY2Ni4yNSAxNzkuNDl2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PGNpcmNsZSBjeD0iNzE3LjU0IiBjeT0iMTg2LjQ5IiByPSIzLjIiIGZpbGw9IiNmNmE1Y2EiLz48dGV4dCB4PSIyNSIgeT0iMzY1IiBmb250LXNpemU9IjEzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjYjdkOWM3Ij5DWUFOIElOU0VSVCAgIMK3ICAgQU1CRVIgSE9MREVSICAgwrcgICBZRUxMT1cgUE9DS0VUIENFTlRFUjwvdGV4dD48dGV4dCB4PSIyNSIgeT0iMzg1IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjZjBhOTgwIj5PUklHSU5BTCBNSU5JVFVSTiBTQ0hFTUFUSUMg4oCiIE5PVCBBIE1BTlVGQUNUVVJFUiBEUkFXSU5HIOKAoiBOTyBDT0xMSVNJT04gQVBQUk9WQUw8L3RleHQ+PC9zdmc+",
+  "ghdr25_3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBHSERSIDI1LTMiPjxyZWN0IHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkxNzE0Ii8+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI4IiBmaWxsPSIjNjJkNWE1Ii8+PHRleHQgeD0iMjIiIHk9IjM5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2YxZmZlZCI+R0hEUiAyNS0zPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI2NCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2E2ZDVjMCI+SU5TRVJUIEdST09WRSAzTU0gKEVYQU1QTEUpICDigKIgIEdST09WRSAg4oCiICBUT1AgVklFVyDigKIgRVNUSU1BVEVEIEhFQUQgJmFtcDsgUE9DS0VUPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI4OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2YxY2E4NCI+SCAyNSDCtyBCIDI1IMK3IExGIDEzNSDCtyBMSCAyNiDCtyBXRiAyMy44IChtbSk8L3RleHQ+PHJlY3QgeD0iMjIiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzNSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5DQVRBTE9HIEhPTERFUiBPVVRMSU5FPC90ZXh0PjxwYXRoIGQ9Ik0yOTIuMzAsMTkyLjY0IEw0Mi4wMCwxOTIuNjQgTDQyLjAwLDI1MC4wNCBMMjkyLjMwLDI1MC4wNCBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNDcuOTYsMjU1LjAzIEwzMzAuNTcsMjUzLjY1IEwzMDUuNDMsMTk3LjIzIEwyOTIuMzAsMTkyLjY0IEwyOTIuMzAsMjUwLjA0IEwzMDUuNDMsMjQ1LjQ1IEwzMzAuNTcsMjYxLjM2IEwzNDcuOTYsMjU5Ljk5IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM1Mi4wMCwyNTQuMDYgTDM1Mi4wMCwyNjAuOTUgTDMzNC40MywyNjAuOTUgTDMzNC40MywyNTQuMDYgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjM0My4yMiIgY3k9IjI1Ny41MSIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0zMzYuMjIgMjU3LjUxaDE0TTM0My4yMiAyNTAuNTF2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHJlY3QgeD0iMzg2IiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzk5IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPklOU0VSVCAvIEhFQUQgREVUQUlMPC90ZXh0PjxwYXRoIGQ9Ik02MjcuMTAsMjk4Ljc3IEw1ODIuNTYsMjk1LjI0IEw1MTguMTksMTUwLjc2IEw0ODQuNTUsMTM5LjAwIEw0ODQuNTUsMjg2LjAxIEw1MTguMTksMjc0LjI1IEw1ODIuNTYsMzE1LjAwIEw2MjcuMTAsMzExLjQ3IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTYzNS42NSwyOTguNDIgTDU5NS4xNiwyOTguNDIgTDU5NS4xNiwzMTEuODIgTDYzNS42NSwzMTEuODIgWiIgZmlsbD0iIzE5MzMzMCIgc3Ryb2tlPSIjZmZjYzc1IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02MzcuNDUsMjk2LjMwIEw2MzcuNDUsMzEzLjk0IEw1OTIuNDYsMzEzLjk0IEw1OTIuNDYsMjk2LjMwIFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSI2MTQuOTUiIGN5PSIzMDUuMTIiIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNjA3Ljk1IDMwNS4xMmgxNE02MTQuOTUgMjk4LjEydjE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxjaXJjbGUgY3g9IjYzNy40NSIgY3k9IjI5Ni4zMCIgcj0iMy4yIiBmaWxsPSIjZjZhNWNhIi8+PHRleHQgeD0iMjUiIHk9IjM2NSIgZm9udC1zaXplPSIxMyIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2I3ZDljNyI+Q1lBTiBJTlNFUlQgICDCtyAgIEFNQkVSIEhPTERFUiAgIMK3ICAgWUVMTE9XIFBPQ0tFVCBDRU5URVI8L3RleHQ+PHRleHQgeD0iMjUiIHk9IjM4NSIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2YwYTk4MCI+T1JJR0lOQUwgTUlOSVRVUk4gU0NIRU1BVElDIOKAoiBOT1QgQSBNQU5VRkFDVFVSRVIgRFJBV0lORyDigKIgTk8gQ09MTElTSU9OIEFQUFJPVkFMPC90ZXh0Pjwvc3ZnPg==",
+  "ghgr25_3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBHSEdSIDI1LTMiPjxyZWN0IHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkxNzE0Ii8+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI4IiBmaWxsPSIjNjJkNWE1Ii8+PHRleHQgeD0iMjIiIHk9IjM5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2YxZmZlZCI+R0hHUiAyNS0zPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI2NCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2E2ZDVjMCI+SU5TRVJUIEdST09WRSAzTU0gKEVYQU1QTEUpICDigKIgIEdST09WRSAg4oCiICBUT1AgVklFVyDigKIgRVNUSU1BVEVEIEhFQUQgJmFtcDsgUE9DS0VUPC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI4OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2YxY2E4NCI+SCAyNSDCtyBCIDI1IMK3IExGIDE0MCDCtyBMSCAzNiDCtyBXRiAyMy43IChtbSk8L3RleHQ+PHJlY3QgeD0iMjIiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzNSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5DQVRBTE9HIEhPTERFUiBPVVRMSU5FPC90ZXh0PjxwYXRoIGQ9Ik0yNzIuMjksMTkzLjg2IEw0Mi4wMCwxOTMuODYgTDQyLjAwLDI0OS4yMiBMMjcyLjI5LDI0OS4yMiBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNDcuOTMsMjU0LjAzIEwzMzAuMzksMjUyLjcwIEwyODkuODIsMTk4LjI5IEwyNzIuMjksMTkzLjg2IEwyNzIuMjksMjQ5LjIyIEwyODkuODIsMjQ0Ljc5IEwzMzAuMzksMjYwLjE0IEwzNDcuOTMsMjU4LjgxIFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM1Mi4wMCwyNTMuMTAgTDM1Mi4wMCwyNTkuNzQgTDMzNC4yOSwyNTkuNzQgTDMzNC4yOSwyNTMuMTAgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjM0My4xNCIgY3k9IjI1Ni40MiIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0zMzYuMTQgMjU2LjQyaDE0TTM0My4xNCAyNDkuNDJ2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHJlY3QgeD0iMzg2IiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzk5IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPklOU0VSVCAvIEhFQUQgREVUQUlMPC90ZXh0PjxwYXRoIGQ9Ik02NTYuMDMsMjk4Ljc3IEw2MDkuNDUsMjk1LjI0IEw1MDEuNzMsMTUwLjc2IEw0NTUuMTUsMTM5LjAwIEw0NTUuMTUsMjg2LjAxIEw1MDEuNzMsMjc0LjI1IEw2MDkuNDUsMzE1LjAwIEw2NTYuMDMsMzExLjQ3IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTY2NC45NywyOTguNDIgTDYyMi42MywyOTguNDIgTDYyMi42MywzMTEuODIgTDY2NC45NywzMTEuODIgWiIgZmlsbD0iIzE5MzMzMCIgc3Ryb2tlPSIjZmZjYzc1IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02NjYuODUsMjk2LjMwIEw2NjYuODUsMzEzLjk0IEw2MTkuODAsMzEzLjk0IEw2MTkuODAsMjk2LjMwIFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSI2NDMuMzMiIGN5PSIzMDUuMTIiIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNjM2LjMzIDMwNS4xMmgxNE02NDMuMzMgMjk4LjEydjE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxjaXJjbGUgY3g9IjY2Ni44NSIgY3k9IjI5Ni4zMCIgcj0iMy4yIiBmaWxsPSIjZjZhNWNhIi8+PHRleHQgeD0iMjUiIHk9IjM2NSIgZm9udC1zaXplPSIxMyIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2I3ZDljNyI+Q1lBTiBJTlNFUlQgICDCtyAgIEFNQkVSIEhPTERFUiAgIMK3ICAgWUVMTE9XIFBPQ0tFVCBDRU5URVI8L3RleHQ+PHRleHQgeD0iMjUiIHk9IjM4NSIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2YwYTk4MCI+T1JJR0lOQUwgTUlOSVRVUk4gU0NIRU1BVElDIOKAoiBOT1QgQSBNQU5VRkFDVFVSRVIgRFJBV0lORyDigKIgTk8gQ09MTElTSU9OIEFQUFJPVkFMPC90ZXh0Pjwvc3ZnPg==",
+  "ser2525m16": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBTRVIgMjUyNSBNMTYiPjxyZWN0IHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkxNzE0Ii8+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI4IiBmaWxsPSIjNjJkNWE1Ii8+PHRleHQgeD0iMjIiIHk9IjM5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2YxZmZlZCI+U0VSIDI1MjUgTTE2PC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI2NCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2E2ZDVjMCI+SU5TRVJUIDE2RVIgNjDCsCAoRVhBTVBMRSkgIOKAoiAgVEhSRUFEICDigKIgIFRPUCBWSUVXIOKAoiBFU1RJTUFURUQgSEVBRCAmYW1wOyBQT0NLRVQ8L3RleHQ+PHRleHQgeD0iMjIiIHk9Ijg4IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjZjFjYTg0Ij5IIDI1IMK3IEIgMjUgwrcgTEYgMTUwIMK3IExIIDMwIMK3IFdGIDI1IChtbSk8L3RleHQ+PHJlY3QgeD0iMjIiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzNSIgeT0iMTM3IiBmb250LXNpemU9IjEzIiBmaWxsPSIjZDFlOGRkIj5DQVRBTE9HIEhPTERFUiBPVVRMSU5FPC90ZXh0PjxwYXRoIGQ9Ik0yOTAuMDAsMTk0LjI0IEw0Mi4wMCwxOTQuMjQgTDQyLjAwLDI0NS45MSBMMjkwLjAwLDI0NS45MSBaIiBmaWxsPSIjNTk0NjI1IiBzdHJva2U9IiNlNmFhNWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNDguMjIsMjQ5LjUzIEwzMzUuNzYsMjQxLjg2IEwzMDkuODQsMjAzLjAzIEwyOTAuMDAsMTk0LjI0IEwyOTAuMDAsMjQ1LjkxIEwzMTEuMDgsMjM5LjE5IEwzMzYuMDYsMjU2LjY5IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM1Mi4wMCwyNDkuNTMgTDMzNC4yOCwyNTkuNzYgTDMzNC4yOCwyMzkuMzAgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjM0MC4xOSIgY3k9IjI0OS41MyIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik0zMzMuMTkgMjQ5LjUzaDE0TTM0MC4xOSAyNDIuNTN2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHJlY3QgeD0iMzg2IiB5PSIxMTYiIHdpZHRoPSIzNTAiIGhlaWdodD0iMjIyIiByeD0iOSIgZmlsbD0iIzBiMWUxYyIgc3Ryb2tlPSIjMzE1ZDUxIi8+PHRleHQgeD0iMzk5IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPklOU0VSVCAvIEhFQUQgREVUQUlMPC90ZXh0PjxwYXRoIGQ9Ik02MzQuMTMsMjg3LjUyIEw2MDAuNjUsMjY2LjkxIEw1MzEuMDIsMTYyLjYwIEw0NzcuNzIsMTM5LjAwIEw0NzcuNzIsMjc3LjgwIEw1MzQuMzUsMjU5Ljc2IEw2MDEuNDUsMzA2Ljc2IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTYzMi4yMiwyODcuNTIgTDYwMi43MiwzMDQuNTYgTDYwMi43MiwyNzAuNDggWiIgZmlsbD0iIzE5MzMzMCIgc3Ryb2tlPSIjZmZjYzc1IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik02NDQuMjgsMjg3LjUyIEw1OTYuNjksMzE1LjAwIEw1OTYuNjksMjYwLjA0IFoiIGZpbGw9IiMwODc3NmMiIHN0cm9rZT0iIzY4ZWZjZCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48Y2lyY2xlIGN4PSI2MTIuNTUiIGN5PSIyODcuNTIiIHI9IjQuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNjA1LjU1IDI4Ny41MmgxNE02MTIuNTUgMjgwLjUydjE0IiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMSIvPjxjaXJjbGUgY3g9IjY0NC4yOCIgY3k9IjI4Ny41MiIgcj0iMy4yIiBmaWxsPSIjZjZhNWNhIi8+PHRleHQgeD0iMjUiIHk9IjM2NSIgZm9udC1zaXplPSIxMyIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2I3ZDljNyI+Q1lBTiBJTlNFUlQgICDCtyAgIEFNQkVSIEhPTERFUiAgIMK3ICAgWUVMTE9XIFBPQ0tFVCBDRU5URVI8L3RleHQ+PHRleHQgeD0iMjUiIHk9IjM4NSIgZm9udC1zaXplPSIxMiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZmlsbD0iI2YwYTk4MCI+T1JJR0lOQUwgTUlOSVRVUk4gU0NIRU1BVElDIOKAoiBOT1QgQSBNQU5VRkFDVFVSRVIgRFJBV0lORyDigKIgTk8gQ09MTElTSU9OIEFQUFJPVkFMPC90ZXh0Pjwvc3ZnPg==",
+  "sir0020p16": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNzYwIDQwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNaW5pVHVybiByZWZlcmVuY2Ugc2NoZW1hdGljIGZvciBTSVIgMDAyMCBQMTYiPjxyZWN0IHdpZHRoPSI3NjAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkxNzE0Ii8+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9Ijc2MCIgaGVpZ2h0PSI4IiBmaWxsPSIjNjJkNWE1Ii8+PHRleHQgeD0iMjIiIHk9IjM5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2YxZmZlZCI+U0lSIDAwMjAgUDE2PC90ZXh0Pjx0ZXh0IHg9IjIyIiB5PSI2NCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2E2ZDVjMCI+SU5TRVJUIDE2SVIgNjDCsCAoRVhBTVBMRSkgIOKAoiAgSU5URVJOQUwgVEhSRUFEICDigKIgIFRPUCBWSUVXIOKAoiBFU1RJTUFURUQgSEVBRCAmYW1wOyBQT0NLRVQ8L3RleHQ+PHRleHQgeD0iMjIiIHk9Ijg4IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjZjFjYTg0Ij5IIDIwIMK3IEIgMjAgwrcgTEYgMTcwIMK3IExIIDM4IMK3IFdGIDEzLjcgKG1tKTwvdGV4dD48cmVjdCB4PSIyMiIgeT0iMTE2IiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjIyMiIgcng9IjkiIGZpbGw9IiMwYjFlMWMiIHN0cm9rZT0iIzMxNWQ1MSIvPjx0ZXh0IHg9IjM1IiB5PSIxMzciIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNkMWU4ZGQiPkNBVEFMT0cgSE9MREVSIE9VVExJTkU8L3RleHQ+PHBhdGggZD0iTTI4Mi43MSwyMTUuNDcgTDQyLjAwLDIxNS40NyBMNDIuMDAsMjUxLjk0IEwyODIuNzEsMjUxLjk0IFoiIGZpbGw9IiM1OTQ2MjUiIHN0cm9rZT0iI2U2YWE1YSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTM0OS4wOCwyMDcuNDQgTDM0My4xNCwyMDUuMjUgTDMyOS44MywyMTkuMTEgTDI4Mi43MSwyMTUuNDcgTDI4Mi43MSwyNTEuOTQgTDMwMy40OSwyNDQuNjQgTDMyOS44MywyMzEuMTUgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMzUyLjAwLDIxMS4wOSBMMzM2LjM3LDIyMC4xMSBMMzM2LjM3LDIwMi4wNiBaIiBmaWxsPSIjMDg3NzZjIiBzdHJva2U9IiM2OGVmY2QiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMzQxLjU4IiBjeT0iMjExLjA5IiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTMzNC41OCAyMTEuMDloMTRNMzQxLjU4IDIwNC4wOXYxNCIgc3Ryb2tlPSIjZmJkNTcyIiBzdHJva2Utd2lkdGg9IjEiLz48cmVjdCB4PSIzODYiIHk9IjExNiIgd2lkdGg9IjM1MCIgaGVpZ2h0PSIyMjIiIHJ4PSI5IiBmaWxsPSIjMGIxZTFjIiBzdHJva2U9IiMzMTVkNTEiLz48dGV4dCB4PSIzOTkiIHk9IjEzNyIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2QxZThkZCI+SU5TRVJUIC8gSEVBRCBERVRBSUw8L3RleHQ+PHBhdGggZD0iTTY3Mi45NywxNTcuOTggTDY1Mi4wMSwxNTAuMjYgTDYwNS4wMiwxOTkuMTcgTDQzOC43MywxODYuMjkgTDQzOC43MywzMTUuMDAgTDUxMi4wOSwyODkuMjYgTDYwNS4wMiwyNDEuNjQgWiIgZmlsbD0iIzU5NDYyNSIgc3Ryb2tlPSIjZTZhYTVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNjY4LjkzLDE3MC44NSBMNjM1LjI4LDE5MC4yOCBMNjM1LjI4LDE1MS40MiBaIiBmaWxsPSIjMTkzMzMwIiBzdHJva2U9IiNmZmNjNzUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTY4My4yNywxNzAuODUgTDYyOC4xMCwyMDIuNzAgTDYyOC4xMCwxMzkuMDAgWiIgZmlsbD0iIzA4Nzc2YyIgc3Ryb2tlPSIjNjhlZmNkIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjY0Ni40OSIgY3k9IjE3MC44NSIgcj0iNC41IiBmaWxsPSJub25lIiBzdHJva2U9IiNmYmQ1NzIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik02MzkuNDkgMTcwLjg1aDE0TTY0Ni40OSAxNjMuODV2MTQiIHN0cm9rZT0iI2ZiZDU3MiIgc3Ryb2tlLXdpZHRoPSIxIi8+PGNpcmNsZSBjeD0iNjgzLjI3IiBjeT0iMTcwLjg1IiByPSIzLjIiIGZpbGw9IiNmNmE1Y2EiLz48dGV4dCB4PSIyNSIgeT0iMzY1IiBmb250LXNpemU9IjEzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjYjdkOWM3Ij5DWUFOIElOU0VSVCAgIMK3ICAgQU1CRVIgSE9MREVSICAgwrcgICBZRUxMT1cgUE9DS0VUIENFTlRFUjwvdGV4dD48dGV4dCB4PSIyNSIgeT0iMzg1IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmaWxsPSIjZjBhOTgwIj5PUklHSU5BTCBNSU5JVFVSTiBTQ0hFTUFUSUMg4oCiIE5PVCBBIE1BTlVGQUNUVVJFUiBEUkFXSU5HIOKAoiBOTyBDT0xMSVNJT04gQVBQUk9WQUw8L3RleHQ+PC9zdmc+"
+};
+
 const KEY='miniturn.v0.1.autosave';
 const VIEW_KEY='miniturn.graph.mirrorZ';
 const LIB_KEY='miniturn.tool.library.v0.2'; // Reuses v0.2 stored library with v0.3 migration.
@@ -1451,7 +1680,9 @@ const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
 const DISPLAY_KEY='miniturn.graph.displayMode.v0.5.2';
 const POINTS_KEY='miniturn.tool.markerVisibility.v0.5.5';
 const HOLDER_VIEW_KEY='miniturn.tool.catalogView.v0.5.6';
-const DEMO_BACKUP_KEY='miniturn.demoToolReset.backup.v0.5.7';
+const REFERENCE_VIEW_KEY='miniturn.tool.localRef.v0.6.1';
+const DEMO_BACKUP_KEY='miniturn.demoToolReset.backup.v0.6';
+const AUTO_DEMO_BACKUP_KEY='miniturn.grooveDemoMigration.original.v0.6.5';
 const DISPLAY_MODES=['classic','vivid','contrast','daylight'];
 let displayMode='classic';
 try { const savedMode=localStorage.getItem(DISPLAY_KEY); if(DISPLAY_MODES.includes(savedMode))displayMode=savedMode; } catch {}
@@ -1502,7 +1733,7 @@ const TIP_GRID_ORDER=[2,6,1,7,0,5,3,8,4];
 const TIP_ICON_ROT={1:-45,2:-135,3:135,4:45,5:0,6:-90,7:180,8:90};
 let catalogView='head';try{catalogView=localStorage.getItem(HOLDER_VIEW_KEY)==='full'?'full':'head';}catch{}
 let opSelected=0,opDirty=false;
-let activePage='figure',toolSelected=0,toolDirty=false,inspectedToolId=null,inspectZoom=1,inspectProjection=null,inspectCamera=null;
+let activePage='figure',toolSelected=0,toolDirty=false,toolDraftBase=null,inspectedToolId=null,inspectZoom=1,inspectProjection=null,inspectCamera=null;
 const $=id=>document.getElementById(id);
 const svgNS='http://www.w3.org/2000/svg';
 const clone=o=>structuredClone(o);
@@ -1527,7 +1758,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.5.7 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.6.5 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -1557,7 +1788,28 @@ function scheduleFigureDraw(){
 }
 
 function notify(msg, bad=false){lastStatus=msg; $('saveState').textContent=msg; $('saveState').className=bad?'saved-tag bad':'saved-tag';}
-function loadLocal(){try{const stored=JSON.parse(localStorage.getItem(KEY));if(stored){const upgraded=normalizeJobOperations(normalizeJobTools(stored));if(!validateJob(upgraded).errors.length){job=upgraded;selected=0;notify('RESTORED LOCAL JOB');return;}}}catch{} notify('DEMO JOB LOADED');}
+function loadLocal(){
+ try{
+  const stored=JSON.parse(localStorage.getItem(KEY));
+  if(stored){
+   const upgraded=normalizeJobOperations(normalizeJobTools(stored));
+   if(!validateJob(upgraded).errors.length){
+    job=upgraded;selected=0;
+    const fresh=(upgraded.tools||[]).filter(t=>t.demoAutoUpdated==='0.6.3'&&
+     !(stored.tools||[]).some(o=>o.id===t.id&&o.demoAutoUpdated==='0.6.3'));
+    if(fresh.length){
+     try{
+      if(!localStorage.getItem(AUTO_DEMO_BACKUP_KEY))localStorage.setItem(AUTO_DEMO_BACKUP_KEY,JSON.stringify(stored));
+      localStorage.setItem(KEY,JSON.stringify(upgraded));
+      notify('UNEDITED DEMO T04 GROOVE ORIENTATION FIXED · INSPECT BEFORE USE');
+     }catch{notify('DEMO UPDATED IN MEMORY · EXPORT JOB IF STORAGE IS LIMITED',true);}
+    }else notify('RESTORED LOCAL JOB');
+    return;
+   }
+  }
+ }catch{}
+ notify('DEMO JOB LOADED');
+}
 function autosave(){try{if(!validateJob(job).errors.length){localStorage.setItem(KEY,JSON.stringify(job));dirty=false;notify('SAVED ON DEVICE');}else notify('FIX GEOMETRY TO SAVE',true);}catch{notify('LOCAL STORAGE UNAVAILABLE — EXPORT JOB',true);}}
 function refreshSetup(){ $('jobName').value=job.name||''; $('unitSelect').value=job.units; $('unitTag').textContent=job.units==='inch'?'INCH':'MM'; $('stockDiameter').value=fmt(job.stock.diameter); $('stockLength').value=fmt(job.stock.length);}
 function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1); const n=job.nodes[selected];$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();}
@@ -1737,16 +1989,24 @@ function drawToolList(){
 function selectTool(i){
  if(i===toolSelected&&job.tools.length)return;
  if(toolDirty&&!confirm('Discard unsaved changes to the current tool?'))return;
- toolSelected=Math.max(0,Math.min(job.tools.length-1,i));toolDirty=false;refreshToolWorkspace();
+ toolSelected=Math.max(0,Math.min(job.tools.length-1,i));toolDirty=false;toolDraftBase=null;refreshToolWorkspace();
 }
 function refreshToolWorkspace(){
- job=normalizeJobTools(job);drawToolList();if(!job.tools.length){$('toolEditorID').textContent='NO TOOLS';$('toolGraph').replaceChildren();$('toolPreviewTitle').textContent='NO TOOL SELECTED';$('toolGraphReadout').textContent='ADD A STANDARD OR CUSTOM TOOL';toolMessage(['Use F1 or ADD TEMPLATE to create a tool.']);return;}
+ toolDraftBase=null;job=normalizeJobTools(job);drawToolList();if(!job.tools.length){$('toolEditorID').textContent='NO TOOLS';$('toolGraph').replaceChildren();$('toolPreviewTitle').textContent='NO TOOL SELECTED';$('toolGraphReadout').textContent='ADD A STANDARD OR CUSTOM TOOL';toolMessage(['Use F1 or ADD TEMPLATE to create a tool.']);return;}
  toolSelected=Math.min(toolSelected,job.tools.length-1);
  drawToolList();fillToolForm(job.tools[toolSelected]);drawToolPreview();
 }
 function fillToolForm(t){
+ // Match the visible catalog selector to the tool being edited. Switching tools
+ // must never trigger the 'new catalog draft' change event automatically.
+ if(t.catalog?.code){
+  const key=Object.keys(CATALOG_HOLDERS).find(k=>CATALOG_HOLDERS[k].code===t.catalog.code);
+  if(key)$('toolPreset').value='catalog_'+key;
+ }else if(t.demoTemplate&&TOOL_PRESETS.some(p=>p.key===t.demoTemplate)){
+  $('toolPreset').value=t.demoTemplate;
+ }
  const values={toolName:t.name,toolStation:t.station,toolOffset:t.offset,toolKind:t.kind,toolShape:t.shape,
-  toolHand:t.hand,toolAngle:t.angle,toolHolderBaseAngle:t.holderBaseAngle,toolAngleFine:t.angleAdjust||0,toolTipDirection:t.tipDirection??0,
+  toolHand:t.hand,toolAngle:t.angle,toolHolderBaseAngle:t.holderBaseAngle,toolPoseRotation:t.poseRotation||0,toolAngleFine:t.angleAdjust||0,toolTipDirection:t.tipDirection??0,
   toolPocketU:t.pocket.u,toolPocketV:t.pocket.v,
   toolMountedRelief:t.mountedRelief??'',toolInsertFine:t.insertFineAngle||0,toolIC:t.ic,toolNoseRadius:t.noseRadius,toolWidth:t.width,toolReach:t.reach,
   toolTipAngle:t.tipAngle,toolNotes:t.notes||'',
@@ -1759,6 +2019,7 @@ function fillToolForm(t){
  $('toolVerified').checked=!!t.verified;
  $('holderCustomPoints').value=(t.holder.points||[]).map(p=>`${p.u}, ${p.v}`).join('\n');
  toolDirty=false;updateToolFields();updateCatalogSpec(t);updateTipDirectionPicker();
+ $('toolPoseReadout').textContent=`QUARTER TURN ${(t.poseRotation||0)>0?'+':''}${t.poseRotation||0}° · ASSEMBLY ${t.angle}° · INSERT TRIM INDEPENDENT`;
 }
 function updateToolFields(){
  const shape=$('toolShape').value;
@@ -1771,18 +2032,18 @@ function updateToolFields(){
  $('applyOdStartingPose').disabled=$('toolKind').value!=='od'||!['C','D','V'].includes(shape);
  $('toolCustomField').hidden=shape!=='CUSTOM';
  const hMode=$('holderMode').value;
- $('holderMode').querySelector('option[value="catalog"]').textContent='CATALOG HOLDER (PRESET REQUIRED)';
+ $('holderMode').querySelector('option[value="catalog"]').textContent='CATALOG HOLDER · DIMENSIONS LOADED';
  for(const id of ['holderStartField','holderLengthField','holderWidthField','holderCenterField'])$(id).hidden=hMode!=='rect';
  $('holderCustomField').hidden=hMode!=='custom';
  $('holderCatalogFields').hidden=hMode!=='catalog';
  document.querySelectorAll('.field-unit').forEach(n=>n.textContent=job.units==='inch'?'(IN)':'(MM)');
 }
 function readToolForm(){
- const t=structuredClone(job.tools[toolSelected]);
- if($('holderMode').value==='catalog'&&!t.catalog)throw new Error('Select a CATALOG TOOL preset and choose APPLY TO SELECTED TOOL. Do not turn a generic rectangle into a catalog holder without its actual dimensions.');
+ const t=structuredClone(toolDraftBase||job.tools[toolSelected]);
+ if($('holderMode').value==='catalog'&&!t.catalog)throw new Error('Choose a catalog model above; it loads its own dimensions automatically.');
  t.name=$('toolName').value.trim();t.station=numberField('toolStation');t.offset=numberField('toolOffset');
  t.kind=$('toolKind').value;t.shape=$('toolShape').value;t.hand=$('toolHand').value;
- t.tipDirection=numberField('toolTipDirection');t.holderBaseAngle=numberField('toolHolderBaseAngle');t.angleAdjust=numberField('toolAngleFine');t.angle=t.holderBaseAngle+t.angleAdjust;
+ t.tipDirection=numberField('toolTipDirection');t.holderBaseAngle=numberField('toolHolderBaseAngle');t.poseRotation=numberField('toolPoseRotation');t.angleAdjust=numberField('toolAngleFine');t.angle=t.holderBaseAngle+t.poseRotation+t.angleAdjust;
  t.pocket={u:numberField('toolPocketU'),v:numberField('toolPocketV')};t.ic=numberField('toolIC');t.noseRadius=numberField('toolNoseRadius');
  t.mountedRelief=Object.hasOwn(DIAMOND_ANGLES,t.shape)&&$('toolMountedRelief').value.trim()!==''?numberField('toolMountedRelief'):null;
  t.insertFineAngle=numberField('toolInsertFine');
@@ -1804,11 +2065,23 @@ function updateCatalogSpec(t){
  const c=t.catalog,box=$('catalogSpec');box.hidden=!c;
  if(!c)return;
  $('catalogModelName').textContent=c.code||t.name;
- $('catalogInsertName').textContent=`${c.insert||t.shape} · ${c.approach||'—'}° APPROACH`;
- $('catalogSourceLine').textContent=`${c.brand||'ISO'} REFERENCE · H/B/LF/LH/WF ${c.sourceDimensions||'PUBLISHED'} · HEAD & CLAMP MODELED`;
- const code=c.family||'';
- $('catalogDesignationGuide').textContent=`${code[0]==='P'?'P LEVER CLAMP':'S SCREW CLAMP'} · ${code[1]==='D'?'D 55° DIAMOND':'C 80° DIAMOND'} · ${code[2]==='J'?'J 93° APPROACH':'L 95° APPROACH'} · ${code[3]==='N'?'N 0° ISO INSERT CLEARANCE':'C 7° ISO INSERT CLEARANCE'} · R RIGHT HAND`;
+ const detail=c.approach?` · ${c.approach}° APPROACH`:'';
+ $('catalogInsertName').textContent=`${c.insert||t.shape}${detail}`;
+ $('catalogSourceLine').textContent=`${c.brand||'ISO'} REFERENCE · ${c.sourceDimensions||'UNVERIFIED'} · SCHEMATIC HEAD / POCKET`;
+ const family=c.family||'';const info=c.limitsMM||{};
+ const range=[info.shankDiameter&&`Ø${info.shankDiameter} BAR`,info.minBore&&`MIN BORE Ø${info.minBore} MM`,
+  info.exampleInsertWidth&&`EXAMPLE CUT WIDTH ${info.exampleInsertWidth} MM`,
+  info.maxGrooveDepth&&`CATALOG MAX DEPTH ${info.maxGrooveDepth} MM`,
+  info.reducedLength&&`REDUCED NECK ${info.reducedLength} MM`].filter(Boolean);
+ $('catalogDesignationGuide').textContent=c.category&&c.category!=='od'
+  ?`${family} · ${c.category.replaceAll('_',' ').toUpperCase()} · ${range.join(' · ')||'DIMENSIONS REFERENCE ONLY'} · ESTIMATED: ${(c.estimatedFields||[]).join(', ')||'HEAD AND SEAT'}`
+  :`${family} · ${c.approach||'—'}° APPROACH · ${c.insert} · ${t.hand}-HAND`;
  $('catalogSourceLink').href=typeof c.source==='string'&&c.source.startsWith('https://')?c.source:'#';
+ const refKey=Object.keys(CATALOG_HOLDERS).find(key=>CATALOG_HOLDERS[key].code===c.code);
+ const img=$('catalogLocalImage'),card=refKey?REFERENCE_CARDS[refKey]:null;
+ $('catalogLocalCard').hidden=!card;
+ if(card){img.src=card;img.alt=`Offline schematic reference for ${c.code}; not certified manufacturer geometry`;}
+
 }
 function toolMessage(messages,isError=false){
  const box=$('toolStatus');box.replaceChildren();box.className='status-box '+(isError?'invalid':'ok');
@@ -1913,11 +2186,11 @@ function drawToolPreview(){
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
  $('toolPreviewTitle').textContent=`${insertVisible?'ASSEMBLED TOOL':'HOLDER / EMPTY POCKET'} · ${t.name.toUpperCase()} · ${SHAPES[t.shape]} · HOLDER ${t.angle.toFixed(2)}° · INSERT REL ${geom.relativeInsert.toFixed(2)}° · TIP T${t.tipDirection}`;
- $('toolGraphReadout').textContent=`${t.catalog?`${t.catalog.code} · ${t.catalog.insert} · ${t.catalog.approach}° KAPR · DIMENSIONS ${t.catalog.sourceDimensions||'REFERENCE'} · OUTLINE SCHEMATIC · MOUNTED STICKOUT ${f(t.holder.stickout)} · `:''}${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
+ $('toolGraphReadout').textContent=`${t.kind==='id'?'ID BORE: CUTTING POINT OUTWARD OF BAR; SHAFT/BAR BEHIND TIP TOWARD TURRET · ':''}${t.kind==='od_groove'?'OD RADIAL GROOVE: CUTTING WIDTH CROSSES THE INSERT / SHANK AXIS; HOLDER POSE IN MACHINE IS SEPARATE · ':''}${t.catalog?`${t.catalog.code} · ${t.catalog.insert} · ${t.catalog.approach?`${t.catalog.approach}° KAPR`:(t.catalog.category||'') .replaceAll('_',' ').toUpperCase()} · DIMENSIONS ${t.catalog.sourceDimensions||'REFERENCE'} · OUTLINE SCHEMATIC · MOUNTED STICKOUT ${f(t.holder.stickout)} · `:''}${toolNumber(t)} · ${TOOL_KINDS[t.kind]} · ${t.hand}-HAND · R${f(t.noseRadius)} · COMP T${t.tipDirection} · POCKET U${f(t.pocket.u)} V${f(t.pocket.v)} · ${t.mountSide.toUpperCase()} TURRET · ${t.holder.mode.toUpperCase()} HOLDER · ${t.tipReference==='virtual'?'VIRTUAL':'NOSE CENTER'} REFERENCE · PHYSICAL 1:1 AXES`;
 }
 function toolNextNumber(){const nums=new Set(job.tools.map(t=>t.station));for(let i=1;i<=999;i++)if(!nums.has(i))return i;return null;}
 function addTemplate(){
- if(toolDirty&&!confirm('Discard unsaved tool editor changes?'))return;
+ if(toolDirty&&!toolDraftBase&&!confirm('Discard unsaved tool editor changes to add a new tool?'))return;
  if(job.tools.length>=100){notify('TOOL TABLE LIMITED TO 100',true);return;}
  const n=toolNextNumber();if(!n){notify('NO AVAILABLE STATION',true);return;}
  const t=makeTemplate($('toolPreset').value,job.units,n);
@@ -1995,8 +2268,9 @@ function updateTipDirectionPicker(){
  $('tipDirectionReadout').textContent=`T${selected} · ${meta.label} · COMPENSATION DIRECTION ONLY · HOLDER ${$('toolAngle').value||'0'}° UNCHANGED`;
 }
 function syncFineAngle(){
- const adjust=Number($('toolAngleFine').value),base=Number($('toolHolderBaseAngle').value);
- if(Number.isFinite(adjust)&&Number.isFinite(base))$('toolAngle').value=String(base+adjust);
+ const adjust=Number($('toolAngleFine').value),base=Number($('toolHolderBaseAngle').value),pose=Number($('toolPoseRotation').value);
+ if(Number.isFinite(adjust)&&Number.isFinite(base)&&Number.isFinite(pose))$('toolAngle').value=String(base+pose+adjust);
+ $('toolPoseReadout').textContent=`QUARTER TURN ${pose>0?'+':''}${pose}° · ASSEMBLY ${$('toolAngle').value}° · INSERT TRIM INDEPENDENT`;
  $('toolVerified').checked=false;toolDirty=true;drawToolPreview();
 }
 function chooseTipDirection(n){
@@ -2013,6 +2287,16 @@ function wireTipDirectionPicker(){
   b.addEventListener('click',()=>chooseTipDirection(n));grid.append(b);
  }
  grid.addEventListener('keydown',e=>{if(/^[0-8]$/.test(e.key)&&['BUTTON','DIV'].includes(e.target.tagName)){e.preventDefault();chooseTipDirection(Number(e.key));grid.querySelector(`[data-tip="${e.key}"]`)?.focus();}});
+ for(const [id,delta] of [['poseMinus90',-90],['posePlus90',90],['poseFlip180',180],['poseReset',null]]){
+  $(id).addEventListener('click',()=>{
+   try{
+    const current=readToolForm();
+    const next=setToolPose(current,delta===null?0:current.poseRotation+delta);
+    $('toolPoseRotation').value=String(next.poseRotation);
+    $('toolVerified').checked=false;toolDirty=true;syncFineAngle();
+   }catch(err){notify(err.message,true);}
+  });
+ }
  $('toolHolderBaseAngle').addEventListener('input',syncFineAngle);
  $('toolHolderBaseAngle').addEventListener('change',syncFineAngle);
  $('toolAngleFine').addEventListener('input',syncFineAngle);
@@ -2032,28 +2316,28 @@ function wireTools(){
   const option=document.createElement('option');option.value=val;option.textContent=name;$(id).append(option);
  }
  for(const p of TOOL_PRESETS){const option=document.createElement('option');option.value=p.key;option.textContent=p.name;$('toolPreset').append(option);}
+ $('toolPreset').addEventListener('change',()=>{
+  if(!job.tools.length)return;
+  if(toolDirty&&!confirm('Discard unsaved tool edits and preview the selected standard tool?')){
+   return;
+  }
+  try{
+   const previous=job.tools[toolSelected];
+   const t=makeTemplate($('toolPreset').value,job.units,previous.station);
+   t.id=previous.id;t.station=previous.station;t.offset=previous.offset;
+   t.mountSide=previous.mountSide;t.tipReference=previous.tipReference==='nose'&&t.noseRadius>0?'nose':'virtual';
+   toolDraftBase=t;fillToolForm(t);toolDirty=true;
+   drawToolPreview();
+   notify(`${t.name} LOADED AS PREVIEW · F2 SAVE CURRENT / F1 ADD NEW`);
+  }catch(err){notify(err.message,true);}
+ });
  $('holderMode').addEventListener('change',e=>{
   if($('holderMode').value==='catalog'&&!job.tools[toolSelected]?.catalog){
    e.stopImmediatePropagation();
    $('holderMode').value=job.tools[toolSelected].holder.mode;
    updateToolFields();drawToolPreview();
-   notify('PICK A CATALOG PRESET ABOVE, THEN APPLY TO SELECTED TOOL',true);
+   notify('CHOOSE A CATALOG MODEL ABOVE; ITS COMPLETE DIMENSIONS LOAD AUTOMATICALLY',true);
   }
- });
- $('applyCatalogPreset').addEventListener('click',()=>{
-  if(!job.tools.length){notify('SELECT AN EXISTING TOOL',true);return;}
-  const key=$('toolPreset').value;
-  if(!key.startsWith('catalog_')){notify('CHOOSE AN ISO CATALOG PRESET FIRST',true);return;}
-  if(toolDirty&&!confirm('Discard unsaved edits and change the current tool to the chosen catalog model?'))return;
-  const previous=job.tools[toolSelected],replacement=makeTemplate(key,job.units,previous.station);
-  if(!confirm(`REPLACE ${previous.name} geometry with ${replacement.name}?\nStation T${previous.station} and offset H${previous.offset} will stay the same. Previous measured dimensions will be replaced and verification cleared.`))return;
-  replacement.id=previous.id;replacement.station=previous.station;replacement.offset=previous.offset;
-  replacement.mountSide=previous.mountSide;replacement.tipReference=previous.tipReference;
-  const trial=structuredClone(job.tools);trial[toolSelected]=replacement;
-  const check=validateToolSet(trial);
-  if(check.errors.length){notify(check.errors[0],true);return;}
-  job.tools=trial;toolDirty=false;refreshToolWorkspace();autosave();
-  notify('CATALOG GEOMETRY APPLIED · PLEASE CHECK ACTUAL TOOL DIMENSIONS');
  });
  const fields=['catalogH','catalogB','catalogLF','catalogLH','catalogWF','catalogStickout','toolPocketU','toolPocketV','toolMountedRelief','toolInsertFine','toolName','toolStation','toolOffset','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle','toolNotes','toolCustomPoints','toolVerified','toolMountSide','toolTipReference','holderMode','holderStartU','holderLength','holderWidth','holderCenterV','holderCustomPoints'];
  const geometryFields=new Set(['catalogH','catalogB','catalogLF','catalogLH','catalogWF','catalogStickout','toolMountedRelief','toolInsertFine','toolKind','toolShape','toolHand','toolIC','toolNoseRadius','toolWidth','toolReach','toolTipAngle',
@@ -2093,6 +2377,7 @@ function wireTools(){
    $('toolHand').value=updated.hand;
    $('toolTipDirection').value=String(updated.tipDirection);
    $('toolAngleFine').value=String(updated.angleAdjust);
+   $('toolPoseRotation').value=String(updated.poseRotation||0);
    $('toolHolderBaseAngle').value=String(updated.holderBaseAngle);
    $('toolAngle').value=String(updated.angle);
    $('toolPocketU').value=String(updated.pocket.u);$('toolPocketV').value=String(updated.pocket.v);
@@ -2118,6 +2403,25 @@ function wireTools(){
  $('addTool').addEventListener('click',()=>toolAction('add'));$('duplicateTool').addEventListener('click',()=>toolAction('duplicate'));
  $('deleteTool').addEventListener('click',()=>toolAction('delete'));
  document.querySelectorAll('[data-tool-action]').forEach(btn=>btn.addEventListener('click',()=>toolAction(btn.dataset.toolAction)));
+ $('purgeBrowserTools').addEventListener('click',()=>{
+  if(!confirm('CLEAR ALL PREVIOUS TOOL DEFINITIONS saved by MiniTurn in this browser?\n\nThis will replace all active-job tools with the latest six demo tools and DELETE your browser-saved reusable shop tool library. It does NOT remove part geometry, display settings, exported JSON files, or any ChatGPT history.\n\nExisting operation tool assignments will be rebuilt and need review. This cannot be undone from the old library unless you exported a JSON backup.'))return;
+  const tools=starterTools(job.units);
+  const operations=(job.operations||[]).map(op=>({...op,
+    toolId:op.kind==='od_finish'?tools[1].id:tools[0].id}));
+  const next={...job,tools,operations,inspectionPositions:{}};
+  const checked=validateJob(next);
+  if(checked.errors.length){notify('TOOL RESET BLOCKED: '+checked.errors[0],true);return;}
+  try{
+    // Do not destroy any unrelated browser preferences, version settings,
+    // or profile/job coordinates. A JSON export is the backup mechanism.
+    localStorage.removeItem(LIB_KEY);
+    localStorage.removeItem(DEMO_BACKUP_KEY);
+    localStorage.removeItem(AUTO_DEMO_BACKUP_KEY);
+    job=next;toolSelected=0;opSelected=0;toolDirty=false;inspectedToolId=null;
+    refreshToolWorkspace();autosave();
+    notify('OLD BROWSER TOOLS CLEARED · CORRECTED TOOL POSES LOADED');
+  }catch(err){notify('TOOL RESET FAILED: '+err.message,true);}
+ });
  $('resetDemoTools').addEventListener('click',()=>{
   if(toolDirty&&!confirm('Discard unsaved tool edits before resetting the demonstration table?'))return;
   if(!confirm('REBUILD ALL SIX DEMO TOOLS (T01–T06)?\nThis replaces the CURRENT JOB tool table, including custom tools in it. Your separately saved SHOP LIBRARY is untouched. Current job is backed up locally. Existing operations will be reassigned to demonstration tools and must be rechecked.'))return;
@@ -2130,6 +2434,23 @@ function wireTools(){
   catch{notify('COULD NOT SAVE SAFETY BACKUP. EXPORT YOUR JOB BEFORE RESETTING.',true);return;}
   job=next;toolSelected=0;toolDirty=false;opSelected=0;refreshToolWorkspace();autosave();
   notify('SIX VALID DEMO TOOLS LOADED · OLD JOB BACKED UP · VERIFY OPERATIONS');
+ });
+ $('undoAutoDemoFix').addEventListener('click',()=>{
+  try{
+   const old=localStorage.getItem(AUTO_DEMO_BACKUP_KEY);
+   if(!old)throw Error('No automatic demo correction backup exists on this device.');
+   const originals=JSON.parse(old).tools||[];
+   const affected=(job.tools||[]).filter(t=>t.demoAutoUpdated==='0.6.3');
+   if(!affected.length)throw Error('No auto-corrected demo tools in the active job.');
+   if(!confirm('Restore ONLY the old GHDR/GHGR demo insert orientation? Other current tools and part edits will remain. This restores the earlier unverified illustration.'))return;
+   const replacements=new Map(originals.map(t=>[t.id,t]));
+   job.tools=job.tools.map(t=>{
+    if(t.demoAutoUpdated!=='0.6.3'||!replacements.has(t.id))return t;
+    return upgradeTool({...replacements.get(t.id),grooveSeat:'legacy'},job.units);
+   });
+   toolDirty=false;refreshToolWorkspace();autosave();
+   notify('OLD DEMO INSERT ORIENTATION RESTORED · CATALOG RESET TO REAPPLY');
+  }catch(err){notify('AUTO FIX UNDO: '+err.message,true);}
  });
  $('undoDemoReset').addEventListener('click',()=>{
   if(toolDirty&&!confirm('Discard unsaved tool edits to restore the prior job?'))return;
