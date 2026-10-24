@@ -283,7 +283,7 @@ body[data-display="daylight"] .machine-view-guide-inner p{color:#27414d;}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.6.14</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.6.15</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -633,7 +633,7 @@ body[data-display="daylight"] .machine-view-guide-inner p{color:#27414d;}
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.6.14';
+const TOOL_CORE_VERSION='0.6.15';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -1073,7 +1073,12 @@ function catalogHolderParts(t){
  // shared by the seated insert, screw, relief, head and square shank.
  const seat=seated.map(pt=>({u:pocket.u+(pt.u-pocket.u)*.63,
                             v:pocket.v+(pt.v-pocket.v)*.63}));
- const high=pocket.v+B*.51,low=high-B;
+ // WF is measured from the cutting tip to the FAR axial side of the shank.
+ // For a radial (+X) holder, the shank's NEAR side must trail the tip by
+ // (WF - B), e.g. 32 - 25 = 7 mm for PCLNR/PDJNR 2525 holders.
+ // The pocket and cutting insert do not move; only the steel holder's axial
+ // placement is corrected. Local +V becomes machine +Z at a 90° X mount.
+ const high=h.wf,low=high-B;
  const shank=[{u:e,v:low},{u:L,v:low},{u:L,v:high},{u:e,v:high}];
  // Catalogue-style right-hand OD head in PLAN VIEW:
  // a compact insert-bearing nose, a narrow machined lower relief,
@@ -1085,7 +1090,7 @@ function catalogHolderParts(t){
  const shoulderU=Math.max(pocket.u+B*.63,e-B*.30);
  const reliefU=Math.max(pocket.u+B*.38,shoulderU-B*.18);
  const endU=Math.max(pocket.u+B*.20,reliefU-B*.23);
- const lowerBand=pocket.v-B*.23,upperBand=high-B*.13;
+ const lowerBand=Math.max(pocket.v-B*.23,B*.045),upperBand=high-B*.13;
  const lowChamfer=low+B*.10,highChamfer=high-B*.06;
  // Minor insert-land faces give the recognisable pocket-head silhouette.
  // This is NOT a traced OEM head or certified interference envelope.
@@ -1148,7 +1153,7 @@ const DEMO_TOOL_PRESETS=Object.freeze([
  'catalog_ser2525m16',  // T05: 16ER laydown OD thread holder
  'drill'                  // T06: generic centerline drill
 ]);
-const TOOL_TEMPLATE_REVISION='0.6.14';
+const TOOL_TEMPLATE_REVISION='0.6.15';
 // Bump this revision whenever standard-tool pocket, pose, insert or holder
 // defaults change. Browser autosave is NOT the source of truth for presets.
 const DEMO_GENERIC_NAMES={6:'CENTERLINE DRILL · GENERIC'};
@@ -1832,7 +1837,7 @@ const REFERENCE_CARDS={
 
 const KEY='miniturn.v0.1.autosave';
 const VIEW_KEY='miniturn.graph.mirrorZ';
-const TOOL_MIGRATION_BACKUP_KEY='miniturn.toolMigration.original.v0.6.14';
+const TOOL_MIGRATION_BACKUP_KEY='miniturn.toolMigration.original.v0.6.15';
 const LIB_KEY='miniturn.tool.library.v0.2'; // Reuses v0.2 stored library with v0.3 migration.
 const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
 const DISPLAY_KEY='miniturn.graph.displayMode.v0.5.2';
@@ -1916,7 +1921,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.6.14 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.6.15 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
