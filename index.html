@@ -283,7 +283,7 @@ body[data-display="daylight"] .machine-view-guide-inner p{color:#27414d;}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.6.13</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.6.14</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -338,7 +338,7 @@ body[data-display="daylight"] .machine-view-guide-inner p{color:#27414d;}
       <details class="tip-advanced library-maintenance"><summary>▸ LIBRARY / DEMO TOOLS / RESET</summary><div class="library-maintenance-inner"><div class="library-divider"></div>
       <div class="section-header"><h2>DEMO TOOLS</h2><span class="small-chip">VALID PRESETS</span></div>
       
-      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">LOAD 6 DEMO TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button><button id="undoAutoDemoFix" class="small-btn muted">UNDO AUTO GROOVE FIX</button></div>
+      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">REBUILD 6 STANDARD TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button></div>
       <div class="tool-actions"><button id="purgeBrowserTools" class="action-btn">RESET SAVED TOOLS</button></div>
       
       <div class="library-divider"></div>
@@ -633,7 +633,7 @@ body[data-display="daylight"] .machine-view-guide-inner p{color:#27414d;}
  * They are NOT lathe X diameter values. Nominal ISO insert templates and holder envelopes are schematic,
  * not verified holder/insert assemblies or collision models.
  */
-const TOOL_CORE_VERSION='0.6.13';
+const TOOL_CORE_VERSION='0.6.14';
 // FANUC-style REAR LATHE diagram order, as supplied by the user.
 // Numbers describe tool-nose compensation DIRECTION, not turret station IDs.
 // Nominal angles below are solely illustrative for the local 2D tool sketch.
@@ -780,6 +780,7 @@ function makeCatalogTool(key,units='inch',station=1){
   base.holder.tipProtrusion=catalogScale(2,units); // initial unverified example, user-editable
  }
  base.notes=`${c.brand} reference · ${c.insert}. Published catalog body/limit data; head, seat, insert graphics SCHEMATIC ONLY.`;
+ base.templateGeometryRevision=TOOL_TEMPLATE_REVISION;
  base.verified=false;return base;
 }
 const TOOL_PRESETS=[
@@ -846,7 +847,7 @@ function makeTemplate(key='od_c',units='inch',station=1){
   result.holder={...result.holder,mode:'bar',barDiameter:D,tipProtrusion:.075*scale,
    h:D,b:D,lf:3*scale,lh:.65*scale,stickout:3*scale};
  }
- result.pocket=defaultPocket(result);return result;
+ result.pocket=defaultPocket(result);result.templateGeometryRevision=TOOL_TEMPLATE_REVISION;return result;
 }
 /** All distances use the job units, relative to the cutting insert's virtual tip. */
 /** Select a common right- or left-hand OD mounting orientation without replacing
@@ -1147,11 +1148,14 @@ const DEMO_TOOL_PRESETS=Object.freeze([
  'catalog_ser2525m16',  // T05: 16ER laydown OD thread holder
  'drill'                  // T06: generic centerline drill
 ]);
+const TOOL_TEMPLATE_REVISION='0.6.14';
+// Bump this revision whenever standard-tool pocket, pose, insert or holder
+// defaults change. Browser autosave is NOT the source of truth for presets.
 const DEMO_GENERIC_NAMES={6:'CENTERLINE DRILL · GENERIC'};
 function starterTools(units='inch'){
  return DEMO_TOOL_PRESETS.map((key,i)=>{
   const tool=makeTemplate(key,units,i+1);
-  tool.demoTemplate=key;
+  tool.demoTemplate=key;tool.templateGeometryRevision=TOOL_TEMPLATE_REVISION;
   if(i>=5){tool.name=DEMO_GENERIC_NAMES[i+1];
    tool.notes='EXAMPLE ONLY: nominal, unverified 2D holder and insert. Replace with a measured shop tool before machine planning.';
   }
@@ -1160,6 +1164,42 @@ function starterTools(units='inch'){
  });
 }
 const normalizeJobTools=(job)=>({...job,schema:4,inspectionPositions:job.inspectionPositions&&typeof job.inspectionPositions==='object'&&!Array.isArray(job.inspectionPositions)?job.inspectionPositions:{},tools:Array.isArray(job.tools)?job.tools.map(t=>upgradeTool(t,job.units)):starterTools(job.units)});
+/** Upgrade built-in/example tool definitions on load, NOT on a manual reset.
+ * The canonical templates above own all geometry. Keep stable tool IDs so
+ * operations keep their assignments; keep part dimensions and UI settings.
+ * Shop tools explicitly marked customized, or verified/measured, are retained.
+ * Old unverified catalog copies also refresh because their old angles are
+ * incompatible with current geometry. Never revive obsolete demo outlines.
+ */
+function upgradeObsoleteToolDefinitions(input){
+ const source=normalizeJobOperations(normalizeJobTools(input));
+ const previousRevision=input.toolTemplateRevision||null;
+ let count=0;const replacedIds=[];
+ const tools=source.tools.map(old=>{
+  if(old.templateGeometryRevision===TOOL_TEMPLATE_REVISION)return old;
+  if(old.userCustomized===true||old.verified===true)return old;
+  let key=null;
+  if(typeof old.demoTemplate==='string'&&TOOL_PRESETS.some(p=>p.key===old.demoTemplate)&&old.demoTemplate!=='custom')key=old.demoTemplate;
+  if(!key&&old.catalog?.code){
+   const code=old.catalog.code;
+   const match=Object.entries(CATALOG_HOLDERS).find(([,c])=>c.code===code);
+   if(match)key='catalog_'+match[0];
+  }
+  if(!key)return old; // operator-drawn customs never become catalogue defaults
+  const fresh=makeTemplate(key,source.units,old.station);
+  fresh.id=old.id;fresh.station=old.station;fresh.offset=old.offset;
+  fresh.demoTemplate=old.demoTemplate||undefined;
+  fresh.templateGeometryRevision=TOOL_TEMPLATE_REVISION;
+  fresh.verified=false;
+  count++;replacedIds.push(old.id);
+  return fresh;
+ });
+ const inspectionPositions={...(source.inspectionPositions||{})};
+ for(const id of replacedIds)delete inspectionPositions[id];
+ return {job:{...source,tools,inspectionPositions,toolTemplateRevision:TOOL_TEMPLATE_REVISION},
+  replaced:count,changed:count>0||previousRevision!==TOOL_TEMPLATE_REVISION};
+}
+
 function convertToolUnits(tools,from,to){
  if(from===to)return structuredClone(tools);
  if(!['inch','mm'].includes(from)||!['inch','mm'].includes(to))throw new Error('Invalid unit conversion');
@@ -1500,7 +1540,7 @@ const CORE_VERSION = '0.5.0';
 const EPS = 1e-9;
 const defaultJob = () => {
  const base={
-  schema: 5, inspectionPositions: {}, name: 'STEP SHAFT DEMO', units: 'inch',
+  schema: 5, toolTemplateRevision:TOOL_TEMPLATE_REVISION, inspectionPositions: {}, name: 'STEP SHAFT DEMO', units: 'inch',
   tools: starterTools('inch'),
   stock: {diameter: 2.250, length: 4.000},
   nodes: [
@@ -1792,6 +1832,7 @@ const REFERENCE_CARDS={
 
 const KEY='miniturn.v0.1.autosave';
 const VIEW_KEY='miniturn.graph.mirrorZ';
+const TOOL_MIGRATION_BACKUP_KEY='miniturn.toolMigration.original.v0.6.14';
 const LIB_KEY='miniturn.tool.library.v0.2'; // Reuses v0.2 stored library with v0.3 migration.
 const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
 const DISPLAY_KEY='miniturn.graph.displayMode.v0.5.2';
@@ -1875,7 +1916,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.6.13 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.6.14 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -1909,17 +1950,15 @@ function loadLocal(){
  try{
   const stored=JSON.parse(localStorage.getItem(KEY));
   if(stored){
-   const upgraded=normalizeJobOperations(normalizeJobTools(stored));
+   const migration=upgradeObsoleteToolDefinitions(stored),upgraded=migration.job;
    if(!validateJob(upgraded).errors.length){
     job=upgraded;selected=0;
-    const fresh=(upgraded.tools||[]).filter(t=>t.demoAutoUpdated==='0.6.3'&&
-     !(stored.tools||[]).some(o=>o.id===t.id&&o.demoAutoUpdated==='0.6.3'));
-    if(fresh.length){
+    if(migration.changed){
      try{
-      if(!localStorage.getItem(AUTO_DEMO_BACKUP_KEY))localStorage.setItem(AUTO_DEMO_BACKUP_KEY,JSON.stringify(stored));
+      if(!localStorage.getItem(TOOL_MIGRATION_BACKUP_KEY))localStorage.setItem(TOOL_MIGRATION_BACKUP_KEY,JSON.stringify(stored));
       localStorage.setItem(KEY,JSON.stringify(upgraded));
-      notify('UNEDITED DEMO T04 GROOVE ORIENTATION FIXED · INSPECT BEFORE USE');
-     }catch{notify('DEMO UPDATED IN MEMORY · EXPORT JOB IF STORAGE IS LIMITED',true);}
+      notify(migration.replaced?`UPDATED ${migration.replaced} STANDARD TOOLS AUTOMATICALLY`:'LOCAL JOB UPGRADED');
+     }catch{notify('UPDATED TOOLS IN MEMORY · STORAGE NOT AVAILABLE',true);}
     }else notify('RESTORED LOCAL JOB');
     return;
    }
@@ -2021,9 +2060,9 @@ function wire(){
  $('zoomOut').addEventListener('click',()=>{zoom=Math.max(.25,zoom/1.5);drawGraph();});
  $('zoomFit').addEventListener('click',()=>doAction('fit'));
  $('mirrorZ').addEventListener('click',()=>{doAction('mirror');if(activePage==='tools')drawToolPreview();});
- $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job={schema:5,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6},nodes:[{z:0,x:job.units==='inch'?1:25.4,corner:'sharp',size:0},{z:job.units==='inch'?-2:-50.8,x:job.units==='inch'?1:25.4,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{}};selected=0;zoom=1;panU=0;panV=0;update();autosave();});
+ $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job={schema:5,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6},nodes:[{z:0,x:job.units==='inch'?1:25.4,corner:'sharp',size:0},{z:job.units==='inch'?-2:-50.8,x:job.units==='inch'?1:25.4,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{}};selected=0;zoom=1;panU=0;panV=0;update();autosave();});
  $('importJob').addEventListener('click',()=>$('fileImport').click());
- $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const result=buildProfile(loaded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=normalizeJobOperations(normalizeJobTools(loaded));opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
+ $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const result=buildProfile(loaded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=upgradeObsoleteToolDefinitions(loaded).job;opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
  $('exportJob').addEventListener('click',()=>{const check=buildProfile(job);if(check.errors.length){notify(check.errors[0],true);return;}download(JSON.stringify(job,null,2),safeFilename()+'.miniturn.json','application/json');notify('JOB FILE EXPORTED');});
  $('reportButton').addEventListener('click',()=>doAction('report'));
  $('closeReport').addEventListener('click',()=>$('reportDialog').close());
@@ -2366,6 +2405,7 @@ function addTemplate(){
 function saveCurrentTool(){
  if(!job.tools.length){notify('ADD A TOOL FIRST',true);return;}
  let t;try{t=readToolForm();}catch(err){toolMessage([err.message],true);notify('CUSTOM OUTLINE: '+err.message,true);return;}
+ t.userCustomized=true;t.templateGeometryRevision=TOOL_TEMPLATE_REVISION;
  const tools=structuredClone(job.tools);tools[toolSelected]=t;
  const v=validateToolSet(tools);
  if(v.errors.length){toolMessage(v.errors,true);notify(v.errors[0],true);return;}
@@ -2377,7 +2417,7 @@ function duplicateCurrentTool(){
  if(job.tools.length>=100){notify('TOOL TABLE LIMITED TO 100',true);return;}
  const n=toolNextNumber(),t=structuredClone(job.tools[toolSelected]);if(!n){notify('NO AVAILABLE STATION',true);return;}
  t.id=`tool-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
- t.station=n;t.offset=n;t.name=(t.name.slice(0,56)+' COPY').slice(0,65);t.verified=false;
+ t.station=n;t.offset=n;t.name=(t.name.slice(0,56)+' COPY').slice(0,65);t.verified=false;t.userCustomized=true;delete t.demoTemplate;
  const tools=[...job.tools,t],v=validateToolSet(tools);if(v.errors.length){notify(v.errors[0],true);return;}
  job.tools=tools;toolSelected=tools.length-1;toolDirty=false;refreshToolWorkspace();autosave();
 }
@@ -2397,7 +2437,7 @@ function commitLibrary(tools,units){
 }
 function saveLocalLibrary(){
  if(toolDirty){notify('SAVE CURRENT TOOL BEFORE SAVING LIBRARY',true);return;}
- try{localStorage.setItem(LIB_KEY,JSON.stringify({schema:2,units:job.units,tools:job.tools}));notify('SHOP TOOL LIBRARY SAVED ON DEVICE');}
+ try{localStorage.setItem(LIB_KEY,JSON.stringify({schema:2,toolTemplateRevision:TOOL_TEMPLATE_REVISION,units:job.units,tools:job.tools}));notify('SHOP TOOL LIBRARY SAVED ON DEVICE');}
  catch{notify('LOCAL STORAGE BLOCKED — EXPORT LIBRARY FILE',true);}
 }
 function loadLocalLibrary(){
@@ -2405,12 +2445,14 @@ function loadLocalLibrary(){
  try{const saved=localStorage.getItem(LIB_KEY);if(!saved)throw new Error('No saved library on this device.');
   const pack=JSON.parse(saved);if(!['inch','mm'].includes(pack.units))throw new Error('Invalid library units.');
   if(!confirm('Replace the current job tool table with the saved shop library?'))return;
-  commitLibrary(pack.tools,pack.units);notify('SHOP TOOL LIBRARY LOADED');
+  const migrated=upgradeObsoleteToolDefinitions({schema:5,units:pack.units,tools:pack.tools,operations:[],inspectionPositions:{},toolTemplateRevision:pack.toolTemplateRevision});
+  commitLibrary(migrated.job.tools,pack.units);
+  notify(migrated.replaced?`LIBRARY LOADED · ${migrated.replaced} OLD CATALOG TOOLS REFRESHED`:'SHOP TOOL LIBRARY LOADED');
  }catch(err){notify('LOAD LIBRARY: '+err.message,true);}
 }
 function exportLibrary(){
  if(toolDirty){notify('SAVE CURRENT TOOL FIRST',true);return;}
- const pack={format:'miniturn-tool-library',schema:2,units:job.units,tools:job.tools};
+ const pack={format:'miniturn-tool-library',schema:2,toolTemplateRevision:TOOL_TEMPLATE_REVISION,units:job.units,tools:job.tools};
  download(JSON.stringify(pack,null,2),'MiniTurn_Shop_Tool_Library.json','application/json');notify('TOOL LIBRARY EXPORTED');
 }
 function toolAction(action){
@@ -2614,28 +2656,11 @@ function wireTools(){
   job=next;toolSelected=0;toolDirty=false;opSelected=0;refreshToolWorkspace();autosave();
   notify('SIX VALID DEMO TOOLS LOADED · OLD JOB BACKED UP · VERIFY OPERATIONS');
  });
- $('undoAutoDemoFix').addEventListener('click',()=>{
-  try{
-   const old=localStorage.getItem(AUTO_DEMO_BACKUP_KEY);
-   if(!old)throw Error('No automatic demo correction backup exists on this device.');
-   const originals=JSON.parse(old).tools||[];
-   const affected=(job.tools||[]).filter(t=>t.demoAutoUpdated==='0.6.3');
-   if(!affected.length)throw Error('No auto-corrected demo tools in the active job.');
-   if(!confirm('Restore ONLY the old GHDR/GHGR demo insert orientation? Other current tools and part edits will remain. This restores the earlier unverified illustration.'))return;
-   const replacements=new Map(originals.map(t=>[t.id,t]));
-   job.tools=job.tools.map(t=>{
-    if(t.demoAutoUpdated!=='0.6.3'||!replacements.has(t.id))return t;
-    return upgradeTool({...replacements.get(t.id),grooveSeat:'legacy'},job.units);
-   });
-   toolDirty=false;refreshToolWorkspace();autosave();
-   notify('OLD DEMO INSERT ORIENTATION RESTORED · CATALOG RESET TO REAPPLY');
-  }catch(err){notify('AUTO FIX UNDO: '+err.message,true);}
- });
  $('undoDemoReset').addEventListener('click',()=>{
   if(toolDirty&&!confirm('Discard unsaved tool edits to restore the prior job?'))return;
   try{
    const old=localStorage.getItem(DEMO_BACKUP_KEY);if(!old)throw Error('No previous demo-table backup found on this device.');
-   const restore=normalizeJobOperations(normalizeJobTools(JSON.parse(old)));
+   const restore=upgradeObsoleteToolDefinitions(JSON.parse(old)).job;
    const checked=validateJob(restore);if(checked.errors.length)throw Error(checked.errors[0]);
    if(!confirm('Restore previous job/tool table from the local safety backup? Current working job will be replaced.'))return;
    job=restore;toolSelected=0;opSelected=0;toolDirty=false;refreshToolWorkspace();autosave();
