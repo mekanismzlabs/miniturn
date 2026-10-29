@@ -333,20 +333,124 @@ body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-
 /* v0.7.3: full 8-direction FAPT movement keypad and inline editable P01 */
 @media(max-width:380px){.p1-presets button{font-size:10px}.p1-actions button{font-size:12px}}
 .p1-presets button:disabled{opacity:.4;cursor:not-allowed}
+
+/* v0.7.4 -- dark Mazak Smooth-inspired palette; not an OEM replica. */
+body[data-display="mazatrol"]{
+ color-scheme:dark;--bg:#080c16;--surface:#151824;--surface2:#191f31;--panel-border:#40506b;
+ --teal:#ff9c44;--mint:#f5d49b;--ink:#e6eaf4;--mute:#adbad0;--amber:#ffa24d;--red:#ff7b71;
+ --plot-bg:#070b19;--plot-part:#8ed6ed;--plot-stock:#b1a683;--plot-active:#ff973f;
+ background:#090c15;background-image:none;
+}
+body[data-display="mazatrol"] .app-shell{background:none}
+body[data-display="mazatrol"] .masthead{border-color:#eb7135}
+body[data-display="mazatrol"] .brand-mark{background:#1d293d;border-color:#f27e37;color:#ffa24d}
+body[data-display="mazatrol"] h1,body[data-display="mazatrol"] .section-header h2{color:#ff9a43}
+body[data-display="mazatrol"] .panel{background:#141822;border:1px solid #39445a;border-radius:5px}
+body[data-display="mazatrol"] .tagline,body[data-display="mazatrol"] .graph-subtitle,body[data-display="mazatrol"] .field,body[data-display="mazatrol"] .edit-caption,body[data-display="mazatrol"] .legend,body[data-display="mazatrol"] .view-note{color:#abbad2}
+body[data-display="mazatrol"] input,body[data-display="mazatrol"] select,body[data-display="mazatrol"] textarea,
+body[data-display="mazatrol"] .display-picker select{color:#f3f4f9;background:#080e1e;border-color:#465773}
+body[data-display="mazatrol"] input:focus,body[data-display="mazatrol"] select:focus,body[data-display="mazatrol"] textarea:focus{border-color:#ff9c44;box-shadow:0 0 0 1px #f18a4f}
+body[data-display="mazatrol"] .page-tab,body[data-display="mazatrol"] .small-btn,body[data-display="mazatrol"] .action-btn,
+body[data-display="mazatrol"] .text-btn,body[data-display="mazatrol"] .softkeys button,body[data-display="mazatrol"] .numeric-pad button,
+body[data-display="mazatrol"] .zoom-controls button,body[data-display="mazatrol"] .feature-keys button,
+body[data-display="mazatrol"] .symbolic-keys button,body[data-display="mazatrol"] .p1-presets button,
+body[data-display="mazatrol"] .sign-key,body[data-display="mazatrol"] .region-pick button{background:#1c2636;color:#e5ebf5;border-color:#465a74}
+body[data-display="mazatrol"] .page-tab.active,body[data-display="mazatrol"] .action-btn.primary,
+body[data-display="mazatrol"] .numeric-pad .enter-key,body[data-display="mazatrol"] .symbolic-keys .selected-symbol,
+body[data-display="mazatrol"] .feature-keys .selected-symbol{background:#ab502a;color:#fff;border-color:#fa9c52}
+body[data-display="mazatrol"] .page-tab.active{background:#e57d38;color:#121827}
+body[data-display="mazatrol"] .small-chip,body[data-display="mazatrol"] .saved-tag{background:#202839;color:#ffbb73;border-color:#826141}
+body[data-display="mazatrol"] .display-picker,body[data-display="mazatrol"] .p1-start,
+body[data-display="mazatrol"] .profile-editor-details,body[data-display="mazatrol"] .status-box,
+body[data-display="mazatrol"] .readout,body[data-display="mazatrol"] .rows-wrap,
+body[data-display="mazatrol"] .op-access-panel{background:#101929;border-color:#44556e;color:#d9e6f8}
+body[data-display="mazatrol"] .row-table th{background:#1a3149;color:#ecb482}
+body[data-display="mazatrol"] .row-table td{border-color:#314053;color:#e2e8ef}
+body[data-display="mazatrol"] .row-table tr.active-row td{background:#255883;color:#fff}
+body[data-display="mazatrol"] .graph-frame,body[data-display="mazatrol"] .operation-graph-frame,
+body[data-display="mazatrol"] .tool-preview-frame,body[data-display="mazatrol"] .inspect-graph-frame{border-color:#456184}
+body[data-display="mazatrol"] .operation-row.active,body[data-display="mazatrol"] .tool-row.active{background:#245383;color:#fff}
+body[data-display="mazatrol"] .softkeys b{color:#ffb062}
+body[data-display="mazatrol"] dialog{background:#171d29;color:#edf0f8;border-color:#8b6d58}
+.op-step-picker{display:none!important}
+/* Dedicated compact, operator-facing unit-sheet layout. */
+.job-workspace{display:grid;grid-template-columns:minmax(310px,.9fr) minmax(420px,1.35fr);gap:12px;margin-top:14px;align-items:start}
+.job-setup-panel{grid-row:span 2}
+.job-workspace .section-header h2{font-size:13px;letter-spacing:1px}
+.job-setup-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.job-setup-grid .field{min-width:0;font-size:10px}
+.job-setup-grid .field.wide{grid-column:1/-1}
+.job-setup-grid input,.job-setup-grid select,.job-setup-grid textarea{width:100%;min-height:40px;background:#0a1815;color:var(--ink);border:1px solid #426454;border-radius:4px;padding:9px;outline:none;font:13px/1.5 Consolas,monospace;resize:vertical}
+.job-summary-bar{padding:12px 2px;margin-top:10px;font-size:11px;line-height:1.6;color:var(--mute)}
+.preflight-detail{border-top:1px solid var(--panel-border);padding:10px 0;margin-top:7px}
+.preflight-detail summary{color:var(--amber);cursor:pointer;font-weight:800;letter-spacing:.3px;font-size:12px;padding:5px 0}
+.preflight-detail[open] summary{margin-bottom:10px}
+.job-savebar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:13px}
+.job-savebar .action-btn{flex:0 1 auto;min-width:170px}
+.job-small-note{color:var(--mute);font-size:11px;line-height:1.5;margin:8px 0}
+.job-table-wrap{width:100%;overflow-x:auto;max-height:390px;overflow-y:auto;border:1px solid var(--panel-border);border-radius:4px}
+.job-table{border-collapse:collapse;min-width:540px;width:100%;white-space:nowrap;text-align:left;font-size:11px;font-variant-numeric:tabular-nums}
+.job-table th{position:sticky;top:0;background:#24392e;color:#b8eacb;text-transform:uppercase;letter-spacing:.5px;font-size:10px;padding:11px 9px}
+.job-table td{padding:11px 9px;border-bottom:1px solid #294337;cursor:pointer;color:var(--ink)}
+.job-table tr[aria-selected="true"] td{background:#2c5a46;color:#fff}
+.job-table tr:hover td{filter:brightness(1.2)}
+.job-table .op-disabled{opacity:.5}
+.job-step-detail{margin-top:12px;padding:12px;border:1px solid var(--panel-border);border-radius:5px;background:#0a1917;min-height:110px}
+.job-step-detail h3{font-size:13px;color:var(--amber);margin:0 0 9px}
+.job-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 15px}
+.job-detail-grid .detail-item{border-bottom:1px solid #365044;padding-bottom:7px;min-width:0}
+.job-detail-grid .detail-key{font-size:9px;letter-spacing:.6px;color:var(--mute);margin-bottom:3px}
+.job-detail-grid .detail-val{font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.job-preflight-panel{grid-column:2}
+.preflight-head{padding:10px 12px;background:#172318;border:1px solid #52724e;border-radius:4px;font-size:12px;line-height:1.5}
+.job-issues{padding:5px 0;font-size:11px;line-height:1.6}
+.pf-issue{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid #273c32}
+.pf-issue strong{min-width:48px;color:#eaa86e}
+.pf-issue.problem strong{color:#ff8f80}
+.pf-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pf-checks label{display:flex;align-items:flex-start;gap:7px;font-size:11px;line-height:1.5;color:var(--ink)}
+.pf-checks input{flex:none;width:17px;height:17px;accent-color:var(--amber);margin:0}
+.job-post-contract{font:11px/1.7 Consolas,monospace;white-space:pre-wrap;word-break:break-word;border:1px solid var(--panel-border);border-radius:4px;padding:12px;background:#091712;color:var(--ink);max-height:280px;overflow:auto}
+.job-export-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.job-export-buttons button{flex:1 1 175px}
+.job-export-buttons button:disabled{opacity:.48;cursor:not-allowed;border-style:dashed}
+body[data-display="mazatrol"] .job-setup-grid input,body[data-display="mazatrol"] .job-setup-grid select,body[data-display="mazatrol"] .job-setup-grid textarea{background:#070e1d;color:#fff;border-color:#56687f}
+body[data-display="mazatrol"] .job-table th{background:#28374e;color:#ffb67d}
+body[data-display="mazatrol"] .job-table td{border-color:#2c3b53}
+body[data-display="mazatrol"] .job-table tr[aria-selected="true"] td{background:#2a547f}
+body[data-display="mazatrol"] .job-step-detail,body[data-display="mazatrol"] .preflight-head{background:#111b2d;border-color:#425675}
+body[data-display="mazatrol"] .job-detail-grid .detail-item,body[data-display="mazatrol"] .pf-issue{border-color:#304158}
+body[data-display="mazatrol"] .job-post-contract{background:#0d1423;border-color:#44536b}
+body[data-display="daylight"] .job-setup-grid input,body[data-display="daylight"] .job-setup-grid select,body[data-display="daylight"] .job-setup-grid textarea{background:white;color:#12344a;border-color:#8aa1b2}
+body[data-display="daylight"] .job-table th{background:#e0eaf1;color:#19384d}
+body[data-display="daylight"] .job-table td{color:#1b3b50;border-color:#c5d4df}
+body[data-display="daylight"] .job-table tr[aria-selected="true"] td{background:#c0dcef}
+body[data-display="daylight"] .job-step-detail,body[data-display="daylight"] .preflight-head{background:#f4f8fb;color:#173a52}
+body[data-display="daylight"] .job-detail-grid .detail-item,body[data-display="daylight"] .pf-issue{border-color:#cad8e1}
+body[data-display="daylight"] .job-post-contract{background:white;color:#14334b}
+body[data-display="daylight"] .job-small-note{color:#344d60}
+body[data-display="contrast"] .job-setup-grid input,body[data-display="contrast"] .job-setup-grid select,body[data-display="contrast"] .job-setup-grid textarea{background:#000;color:#fff;border-color:#fff}
+body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .preflight-head,body[data-display="contrast"] .job-post-contract{background:#000;color:#fff;border-color:#fff}
+@media(max-width:1100px){.job-workspace{grid-template-columns:1fr}.job-setup-panel{grid-row:auto}.job-preflight-panel{grid-column:1}.job-setup-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.job-setup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.job-workspace{gap:10px}.job-detail-grid,.pf-checks{grid-template-columns:1fr 1fr}.job-setup-panel,.job-sequence-panel,.job-preflight-panel{padding:10px}.job-workspace .section-header h2{font-size:12px}}
+@media(max-width:390px){.job-setup-grid{grid-template-columns:1fr}.job-detail-grid,.pf-checks{grid-template-columns:1fr}}
+@media print{.masthead .header-right,.page-tabs,.footer-bar,.job-savebar,.job-export-buttons,.runtime-alert{display:none!important}.app-shell{max-width:none}.job-workspace{display:block!important}.job-workspace .panel{break-inside:avoid;margin-bottom:14px}body{color:#111!important;background:white!important}}
+
 </style>
-  <title>MiniTurn v0.7.3 — SYMBOLIC FIGURE</title>
+  <title>MiniTurn v0.7.4 — CONVERSATIONAL LATHE / JOB PREFLIGHT</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.3</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
-    <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.4</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">POST PIPELINE · NC BLOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
     <button id="figureTab" class="page-tab active" aria-pressed="true">F10 · FIGURE</button>
     <button id="toolTab" class="page-tab" aria-pressed="false">F11 · TOOL DEFINITIONS</button>
     <button id="inspectTab" class="page-tab" aria-pressed="false">F12 · POSITION CHECK</button>
     <button id="opTab" class="page-tab" aria-pressed="false">ALT+4 · MACHINING</button>
+    <button id="jobTab" class="page-tab" aria-pressed="false">ALT+5 · JOB / PREFLIGHT</button>
     
   </nav>
   <main class="workspace" id="figureWorkspace">
@@ -655,7 +759,7 @@ body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-
     </section>
     <section class="panel operation-editor-panel" aria-label="Operation parameter entry">
       <div class="section-header"><h2>11 / MACHINING DATA INPUT</h2><span class="small-chip" id="opEditorTitle">OP 01</span></div>
-      <label class="field op-step-picker">EDIT STEP<select id="opStepSelect" aria-label="Select existing machining step to edit"></select></label>
+      <label class="field op-step-picker" hidden>EDIT STEP<select id="opStepSelect" aria-label="Select existing machining step to edit"></select></label>
       <div class="operation-form-grid">
         <label class="field wide">OPERATION DESCRIPTION<input type="text" id="opName" maxlength="65" spellcheck="false" autocomplete="off"></label>
         <label class="field">CHANGE STEP TYPE<select id="opKind"><option value="face">FACE</option><option value="od_rough">OD ROUGH</option><option value="od_finish">OD FINISH</option><option value="od_groove">OD GROOVE</option><option value="od_thread">OD THREAD</option></select></label>
@@ -720,6 +824,51 @@ body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-
       <div class="operation-legend"><span><i class="legend-line finished"></i> COMPLETE FIGURE</span><span><i class="legend-line region"></i> SELECTED OPERATION</span><span><i class="legend-line stock"></i> RAW STOCK</span></div>
       <div id="opReadout" class="readout">SELECT AN OPERATION TO INSPECT ITS REGION</div>
       <div class="tool-warning compact-warning">REGION PREVIEW ONLY · NO TOOLPATH / G-CODE</div>
+    </section>
+  </main>
+  <main class="job-workspace" id="jobWorkspace" hidden>
+    <section class="panel job-setup-panel" aria-label="Job and machine setup">
+      <div class="section-header"><h2>13 / COMMON JOB DATA</h2><span class="small-chip">SAVED WITH JOB</span></div>
+      <div class="job-setup-grid">
+        <label class="field">PART NUMBER<input id="pfPart" type="text" maxlength="64" autocomplete="off" spellcheck="false" placeholder="DRAWING / PART ID"></label>
+        <label class="field">REVISION<input id="pfRev" type="text" maxlength="16" autocomplete="off" spellcheck="false" placeholder="REV"></label>
+        <label class="field">WORK ORDER<input id="pfOrder" type="text" maxlength="64" autocomplete="off" spellcheck="false" placeholder="OPTIONAL"></label>
+        <label class="field">MATERIAL / GRADE<input id="pfMaterial" type="text" maxlength="64" autocomplete="off" spellcheck="false" placeholder="E.G. 4140 HT"></label>
+        <label class="field">PROGRAM ID<input id="pfProgram" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="DRAFT O-NUMBER"></label>
+        <label class="field">MACHINE / POST TARGET<select id="pfMachine"></select></label>
+      </div>
+      <div class="job-summary-bar" id="pfOverview"></div>
+      <details class="preflight-detail" open><summary>WORKHOLDING / MACHINE DATUMS</summary>
+        <div class="job-setup-grid">
+          <label class="field">CHUCK / FIXTURE<input id="pfFixture" type="text" maxlength="80" spellcheck="false" placeholder="CHUCK, JAWS, FIXTURE"></label>
+          <label class="field">WORK Z0 DATUM<input id="pfDatum" type="text" maxlength="90" spellcheck="false" placeholder="E.G. STOCK FACE / FINISH FACE"></label>
+          <label class="field">GRIP LENGTH <span class="pf-unit"></span><input id="pfGrip" type="number" min="0" step="any" placeholder="MEASURE"></label>
+          <label class="field">STICKOUT FROM JAWS <span class="pf-unit"></span><input id="pfStickout" type="number" min="0" step="any" placeholder="MEASURE"></label>
+          <label class="field">SAFE X Ø <span class="pf-unit"></span><input id="pfSafeX" type="number" min="0" step="any" placeholder="TO BE VERIFIED"></label>
+          <label class="field">SAFE Z <span class="pf-unit"></span><input id="pfSafeZ" type="number" step="any" placeholder="TO BE VERIFIED"></label>
+          <label class="field">MAX RPM LIMIT<input id="pfMaxRpm" type="number" min="1" step="1" placeholder="MACHINE / CHUCK LIMIT"></label>
+          <label class="field">SUPPORT<select id="pfSupport"><option value="none">NONE</option><option value="tailstock">TAILSTOCK</option><option value="steady">STEADY REST</option><option value="other">OTHER / CUSTOM</option></select></label>
+          <label class="field wide">SETUP NOTES / HAZARDS<textarea id="pfNotes" rows="3" maxlength="1200" spellcheck="false" placeholder="Jaw projection, coolant, subspindle, offsets, interference, special instructions..."></textarea></label>
+        </div>
+      </details>
+      <div class="job-savebar"><button class="action-btn primary" id="pfSave">SAVE JOB DATA</button><span id="pfSavedMsg" class="job-small-note">Machine templates are placeholders; none are production-qualified.</span></div>
+    </section>
+    <section class="panel job-sequence-panel" aria-label="Mazatrol-inspired operation sequence">
+      <div class="section-header"><h2>14 / MACHINING SEQUENCE</h2><span id="pfStepCount" class="small-chip">0 STEPS</span></div>
+      <div class="job-table-wrap"><table class="job-table"><thead><tr><th>NO.</th><th>UNIT / OPERATION</th><th>TOOL</th><th>F/REV</th><th>RPM</th><th>STATE</th></tr></thead><tbody id="pfSteps"></tbody></table></div>
+      <div id="pfStepDetail" class="job-step-detail" aria-live="polite"></div>
+      <div class="job-savebar"><button id="pfEditStep" class="action-btn">EDIT SELECTED STEP</button><button id="pfAddStep" class="action-btn">ADD MACHINING STEP</button></div>
+    </section>
+    <section class="panel job-preflight-panel" aria-label="Preflight checklist and post readiness">
+      <div class="section-header"><h2>15 / PREFLIGHT & POST READINESS</h2><span class="small-chip">NO ASSUMED SAFETY</span></div>
+      <div class="preflight-head" id="pfReadiness"></div>
+      <div id="pfIssues" class="job-issues" role="status" aria-live="polite"></div>
+      <details class="preflight-detail"><summary>OPERATOR CHECKLIST · SESSION ONLY</summary>
+        <div id="pfChecks" class="pf-checks"></div>
+        <p class="job-small-note">Checks are cleared when job, tool, or operation data changes and when a file is reopened. They are not a machine safety certification.</p>
+      </details>
+      <details class="preflight-detail"><summary>POSTPROCESSOR CONTRACT / TECHNICAL DETAILS</summary><pre id="pfPostContract" class="job-post-contract"></pre></details>
+      <div class="job-export-buttons"><button id="pfExportSetup" class="action-btn primary">SAVE SETUP SHEET .TXT</button><button id="pfExportPlan" class="action-btn">EXPORT PROCESS PLAN .JSON</button><button id="pfExportNC" class="action-btn" disabled title="Unavailable until verified toolpaths and a qualified machine post exist">NC OUTPUT · LOCKED</button></div>
     </section>
   </main>
   <footer class="footer-bar">
@@ -1740,7 +1889,7 @@ const defaultJob = () => {
     {z: -3.500, x: 2.000, corner: 'sharp', size: 0}
   ]
  };
- base.operations=[];return base;
+ base.operations=[];base.setup=makeJobSetup();return base;
 };
 const finite = v => typeof v === 'number' && Number.isFinite(v);
 const round = (v, decimals=7) => Math.round((v + Number.EPSILON) * 10**decimals) / 10**decimals;
@@ -1865,7 +2014,7 @@ function convertJobUnits(job, target) {
   if (job.units===target) return structuredClone(job);
   const factor=job.units==='inch'?25.4:1/25.4;
   const convert=v=>round(v*factor,7);
-  return {...structuredClone(job),units:target,stock:{...job.stock,diameter:convert(job.stock.diameter),length:convert(job.stock.length),bore:convert(job.stock.bore||0)},nodes:job.nodes.map(p=>({...p,x:convert(p.x),z:convert(p.z),size:convert(p.size||0),...(p.threadPitch?{threadPitch:convert(p.threadPitch)}:{}),...(p.grooveWidth?{grooveWidth:convert(p.grooveWidth)}:{})})),tools:Array.isArray(job.tools)?convertToolUnits(job.tools,job.units,target):undefined,inspectionPositions:Object.fromEntries(Object.entries(job.inspectionPositions||{}).filter(([,p])=>p&&finite(p.x)&&finite(p.z)).map(([id,p])=>[id,{x:convert(p.x),z:convert(p.z)}])),operations:convertOperationUnits(job.operations||[],job.units,target)};
+  return {...structuredClone(job),units:target,stock:{...job.stock,diameter:convert(job.stock.diameter),length:convert(job.stock.length),bore:convert(job.stock.bore||0)},nodes:job.nodes.map(p=>({...p,x:convert(p.x),z:convert(p.z),size:convert(p.size||0),...(p.threadPitch?{threadPitch:convert(p.threadPitch)}:{}),...(p.grooveWidth?{grooveWidth:convert(p.grooveWidth)}:{})})),tools:Array.isArray(job.tools)?convertToolUnits(job.tools,job.units,target):undefined,inspectionPositions:Object.fromEntries(Object.entries(job.inspectionPositions||{}).filter(([,p])=>p&&finite(p.x)&&finite(p.z)).map(([id,p])=>[id,{x:convert(p.x),z:convert(p.z)}])),operations:convertOperationUnits(job.operations||[],job.units,target),setup:convertSetupUnits(job.setup,job.units,target)};
 }
 function describeGeometry(job,profile) {
   if (profile.errors.length) return 'GEOMETRY INVALID: '+profile.errors.join(' | ');
@@ -2035,7 +2184,7 @@ const HOLDER_VIEW_KEY='miniturn.tool.catalogView.v0.5.6';
 const REFERENCE_VIEW_KEY='miniturn.tool.localRef.v0.6.1';
 const DEMO_BACKUP_KEY='miniturn.demoToolReset.backup.v0.6';
 const AUTO_DEMO_BACKUP_KEY='miniturn.grooveDemoMigration.original.v0.6.7';
-const DISPLAY_MODES=['classic','vivid','contrast','daylight'];
+const DISPLAY_MODES=['classic','vivid','contrast','daylight','mazatrol'];
 let displayMode='classic';
 try { const savedMode=localStorage.getItem(DISPLAY_KEY); if(DISPLAY_MODES.includes(savedMode))displayMode=savedMode; } catch {}
 const GRAPH_COLOR_ROLES={};
@@ -2059,6 +2208,7 @@ for(const [role,colors] of Object.entries({
 const GRAPH_COLOR_PALETTES={
  vivid:{bg:'#08162c',grid:'#213c5d',label:'#b8d7fa',axis:'#83b8e1',stock:'#a3c8f7',part:'#45ffa6',partFill:'#00816b',insert:'#16efec',holder:'#ffaa4e',selected:'#ffcf57',selectedOutline:'#614a17',point:'#fff4da',warning:'#ff689c',preview:'#a58bff',note:'#f5d8ff'},
  contrast:{bg:'#000000',grid:'#343434',label:'#ffffff',axis:'#aaaaaa',stock:'#ededed',part:'#00ffed',partFill:'#08756e',insert:'#00d5ff',holder:'#ff9900',selected:'#ffed00',selectedOutline:'#ffffff',point:'#ffffff',warning:'#ff4488',preview:'#bc94ff',note:'#ffed00'},
+ mazatrol:{bg:'#070b19',grid:'#26364e',label:'#aebfd7',axis:'#677e9e',stock:'#b1a683',part:'#8ed6ed',partFill:'#264669',insert:'#59e0e2',holder:'#ef9d51',selected:'#ff9b4b',selectedOutline:'#67341c',point:'#e6edf8',warning:'#ff7666',preview:'#a5a1fb',note:'#ffd39b'},
  daylight:{bg:'#ffffff',grid:'#dbe4e9',label:'#233948',axis:'#697985',stock:'#646e76',part:'#006aa8',partFill:'#b9e4f3',insert:'#008876',holder:'#934100',selected:'#b52515',selectedOutline:'#5d2617',point:'#7b1540',warning:'#b00030',preview:'#6343aa',note:'#7b1540'}
 };
 function graphColor(value){
@@ -2071,13 +2221,13 @@ function applyDisplayMode(mode,redraw=true){
  document.body.dataset.display=displayMode;
  $('displayMode').value=displayMode;
  const meta=document.querySelector('meta[name="theme-color"]');
- if(meta)meta.content=displayMode==='daylight'?'#eaf0f2':displayMode==='contrast'?'#000000':displayMode==='vivid'?'#08162c':'#0b1715';
+ if(meta)meta.content=displayMode==='mazatrol'?'#080c16':displayMode==='daylight'?'#eaf0f2':displayMode==='contrast'?'#000000':displayMode==='vivid'?'#08162c':'#0b1715';
  try{localStorage.setItem(DISPLAY_KEY,displayMode);}catch{}
  if(!redraw)return;
  if(activePage==='figure')drawGraph();
  else if(activePage==='tools')drawToolPreview();
  else if(activePage==='inspect')drawInspectorGraph();
- else if(activePage==='operations'&&job.operations.length)drawOperationGraph();
+ else if(activePage==='operations'&&job.operations.length)drawOperationGraph();else if(activePage==='job')refreshJobInfo();
 }
 
 
@@ -2334,9 +2484,9 @@ function drawGraph(){
  const points=sampleProfile(profile,scale);
  const up=points.map(map),down=[...points].reverse().map(p=>map({u:p.u,v:-p.v}));
  const trace=arr=>arr.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(3)} ${p.y.toFixed(3)}`).join(' ');
- layer.append(el('path',{d:trace([...up,...down])+' Z',fill:'#278d8a','fill-opacity':'.20',stroke:'none'}));
+ if(up.length>=2){layer.append(el('path',{d:trace([...up,...down])+' Z',fill:'#278d8a','fill-opacity':'.20',stroke:'none'}));
  layer.append(el('path',{d:trace(up),fill:'none',stroke:'#5ce9d9','stroke-width':'3','stroke-linecap':'round','stroke-linejoin':'round'}));
- layer.append(el('path',{d:trace(down),fill:'none',stroke:'#5ce9d9','stroke-width':'2','stroke-opacity':'.55','stroke-linecap':'round','stroke-linejoin':'round'}));
+ layer.append(el('path',{d:trace(down),fill:'none',stroke:'#5ce9d9','stroke-width':'2','stroke-opacity':'.55','stroke-linecap':'round','stroke-linejoin':'round'}));}
  for(let i=0;i<job.nodes.length;i++){
   const p=map({u:-job.nodes[i].z,v:job.nodes[i].x/2}),on=i===selected;
   layer.append(el('circle',{cx:p.x,cy:p.y,r:on?7:3.5,fill:on?'#ffc46e':'#d6ffeb',stroke:on?'#fff0c4':'#183a32','stroke-width':2}));
@@ -2352,7 +2502,7 @@ function drawGraph(){
  $('mirrorZ').classList.toggle('active',mirrorZ);
  $('mirrorZ').title=mirrorZ?'Show normal Z orientation (Z0 left)':'Mirror Z direction on graph (Z0 right)';
 }
-function update(){refreshSetup();selectRow(selected);if(activePage==='tools')refreshToolWorkspace();if(activePage==='inspect')refreshInspector();if(activePage==='operations')refreshOperations();}
+function update(){refreshSetup();selectRow(selected);if(activePage==='tools')refreshToolWorkspace();if(activePage==='inspect')refreshInspector();if(activePage==='operations')refreshOperations();if(activePage==='job')refreshJobInfo();}
 function readEditor(){const x=parseNumeric($('editX').value),z=parseNumeric($('editZ').value),size=parseNumeric($('editSize').value),corner=$('editCorner').value;
  if(x===null||z===null||((corner!=='sharp')&&(size===null||size<=0))){notify('ENTER VALID NUMERIC X/Z AND CORNER SIZE',true);return null;}
  return {x,z,corner,size:corner==='sharp'?0:size};}
@@ -2454,14 +2604,14 @@ function wire(){
  $('zoomOut').addEventListener('click',()=>{zoom=Math.max(.25,zoom/1.5);drawGraph();});
  $('zoomFit').addEventListener('click',()=>doAction('fit'));
  $('mirrorZ').addEventListener('click',()=>{doAction('mirror');if(activePage==='tools')drawToolPreview();});
- $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job=upgradeFigureIds({schema:5,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6,type:'solid',bore:0},workSide:'front',nodes:[{z:0,x:job.units==='inch'?2.5:63.5,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{}});symbolicHistory=[];selected=0;zoom=1;panU=0;panV=0;update();autosave();});
+ $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job=upgradeFigureIds({schema:5,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6,type:'solid',bore:0},workSide:'front',nodes:[{z:0,x:job.units==='inch'?2.5:63.5,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{},setup:makeJobSetup()});symbolicHistory=[];selected=0;zoom=1;panU=0;panV=0;update();autosave();});
  $('importJob').addEventListener('click',()=>$('fileImport').click());
  $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const result=buildProfile(loaded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=applyLegacyJob(loaded);symbolicHistory=[];opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
  $('exportJob').addEventListener('click',()=>{const check=buildProfile(job);if(check.errors.length){notify(check.errors[0],true);return;}download(JSON.stringify(job,null,2),safeFilename()+'.miniturn.json','application/json');notify('JOB FILE EXPORTED');});
  $('reportButton').addEventListener('click',()=>doAction('report'));
  $('closeReport').addEventListener('click',()=>$('reportDialog').close());
  $('downloadReport').addEventListener('click',()=>download($('reportText').textContent,safeFilename()+'_figure.txt','text/plain'));
- window.addEventListener('keydown',e=>{if(e.altKey&&e.key==='1'){e.preventDefault();setPage('figure');return;}if(e.altKey&&e.key==='2'){e.preventDefault();setPage('tools');return;}if(e.altKey&&e.key==='3'){e.preventDefault();setPage('inspect');return;}if(e.altKey&&e.key==='4'){e.preventDefault();setPage('operations');return;}if(e.key==='F12'){e.preventDefault();setPage('inspect');return;}if(e.key==='F10'){e.preventDefault();setPage('figure');return;}if(e.key==='F11'){e.preventDefault();setPage('tools');return;}if(activePage==='operations'){if(e.key==='F9'){e.preventDefault();doAction('mirror');drawOperationGraph();return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();opAction(['add','save','duplicate','delete','prev','next','up','down'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected-1);return;}return;}if(activePage==='inspect'){if(e.key==='F9'){e.preventDefault();doAction('mirror');refreshInspector();return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();inspectAction(['prev','next','xminus','xplus','zminus','zplus','snap','fit'][Number(e.key.slice(1))-1]);return;}return;}if(activePage==='tools'){if(/^F[1-8]$/.test(e.key)){e.preventDefault();toolAction(['add','save','duplicate','delete','prev','next','libsave','libexport'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected-1);return;}return;}if(e.key==='F9'){e.preventDefault();doAction('mirror');return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();doAction(['insert','replace','delete','prev','next','fit','save','report'][Number(e.key.slice(1))-1]);return;}
+ window.addEventListener('keydown',e=>{if(e.altKey&&e.key==='1'){e.preventDefault();setPage('figure');return;}if(e.altKey&&e.key==='2'){e.preventDefault();setPage('tools');return;}if(e.altKey&&e.key==='3'){e.preventDefault();setPage('inspect');return;}if(e.altKey&&e.key==='4'){e.preventDefault();setPage('operations');return;}if(e.altKey&&e.key==='5'){e.preventDefault();setPage('job');return;}if(e.key==='F12'){e.preventDefault();setPage('inspect');return;}if(e.key==='F10'){e.preventDefault();setPage('figure');return;}if(e.key==='F11'){e.preventDefault();setPage('tools');return;}if(activePage==='operations'){if(e.key==='F9'){e.preventDefault();doAction('mirror');drawOperationGraph();return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();opAction(['add','save','duplicate','delete','prev','next','up','down'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected-1);return;}return;}if(activePage==='inspect'){if(e.key==='F9'){e.preventDefault();doAction('mirror');refreshInspector();return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();inspectAction(['prev','next','xminus','xplus','zminus','zplus','snap','fit'][Number(e.key.slice(1))-1]);return;}return;}if(activePage==='tools'){if(/^F[1-8]$/.test(e.key)){e.preventDefault();toolAction(['add','save','duplicate','delete','prev','next','libsave','libexport'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected-1);return;}return;}if(e.key==='F9'){e.preventDefault();doAction('mirror');return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();doAction(['insert','replace','delete','prev','next','fit','save','report'][Number(e.key.slice(1))-1]);return;}
   if(e.key==='Escape'&&$('reportDialog').open){$('reportDialog').close();return;}
   if(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement)return;
   if(e.key==='ArrowDown'){e.preventDefault();doAction('next');}if(e.key==='ArrowUp'){e.preventDefault();doAction('prev');}
@@ -2511,11 +2661,208 @@ $('diagnosticDismiss').addEventListener('click',()=>$('runtimeAlert').hidden=tru
 // When an Android browser view is suspended and resumes, check the SVG is still present.
 // Rebuild once, not in a repeating background timer.
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')requestAnimationFrame(()=>{
- try{if(activePage==='figure')drawGraph();else if(activePage==='tools')drawToolPreview();else if(activePage==='inspect')drawInspectorGraph();else if(activePage==='operations')drawOperationGraph();}
+ try{if(activePage==='figure')drawGraph();else if(activePage==='tools')drawToolPreview();else if(activePage==='inspect')drawInspectorGraph();else if(activePage==='operations')drawOperationGraph();else if(activePage==='job')refreshJobInfo();}
  catch(err){reportRuntimeError(err,'RESUME REDRAW');}
 });});
 window.addEventListener('pagehide',()=>{if(!dirty)return;try{localStorage.setItem(KEY,JSON.stringify(job));}catch{}});
-loadLocal();wire();wireTools();wireInspector();wireOperations();applyDisplayMode(displayMode,false);$('displayMode').addEventListener('change',e=>applyDisplayMode(e.target.value));update();
+
+// v0.7.4: machine-neutral post planning contract, deliberately distinct from executable NC.
+// SOURCE: job, stable figure point IDs, independent tool library, operation intent.
+// FUTURE: machine-independent verified motion IR -> collision check -> qualified controller post.
+// Never allow intent, a preview, or checkbox acknowledgments to bypass this gate.
+const MACHINE_PROFILES=Object.freeze({
+ unassigned:{label:'UNASSIGNED / SELECT MACHINE',family:'unspecified',post:'none',status:'not_configured'},
+ generic:{label:'GENERIC TWO-AXIS LATHE · UNVERIFIED',family:'generic_lathe',post:'none',status:'not_configured'},
+ haas_st30:{label:'HAAS ST-30 · POST NOT QUALIFIED',family:'haas_st30',post:'none',status:'not_configured'},
+ doosan_puma:{label:'DOOSAN PUMA · POST NOT QUALIFIED',family:'doosan_puma',post:'none',status:'not_configured'},
+ doosan_large:{label:'LARGE DOOSAN · POST NOT QUALIFIED',family:'doosan_large',post:'none',status:'not_configured'},
+ doosan_vtl:{label:'DOOSAN VTL (FUTURE) · POST NOT QUALIFIED',family:'doosan_vtl',post:'none',status:'not_configured'}
+});
+const POST_IR_VERSION='miniturn.process-plan/1';
+const PRECHECK_ITEMS=[
+ ['tool','Tool definitions, orientation and cutting corner checked against installed holders'],
+ ['offsets','Station / offsets verified at the actual machine'],
+ ['clamp','Jaw envelope, grip and workholding verified'],
+ ['datum','Work Z0 / X0 and usable machine travel verified'],
+ ['clearance','Retract/approach clearance checked across all operations'],
+ ['simulate','Independent simulation and single-block / dry-run plan arranged']
+];
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, full collision clearance, or qualified controller post exists in v0.7.4.';
+const pfSessionChecks=new Set();
+let pfSelected=0,pfJobFingerprint='';
+let pfEditing=false;
+function makeJobSetup(){return {part:'',revision:'',workOrder:'',material:'',program:'',machine:'unassigned',fixture:'',datum:'',grip:null,stickout:null,safeX:null,safeZ:null,maxRpm:null,support:'none',notes:''};}
+function normOptionalNumber(v){return v===''||v===null||v===undefined||!Number.isFinite(Number(v))?null:Number(v);}
+function normalizeJobSetup(setup){
+ const s={...makeJobSetup(),...(setup&&typeof setup==='object'&&!Array.isArray(setup)?setup:{})};
+ for(const k of ['part','revision','workOrder','material','program','fixture','datum','notes'])s[k]=String(s[k]??'').slice(0,k==='notes'?1200:90);
+ if(!MACHINE_PROFILES[s.machine])s.machine='unassigned';
+ if(!['none','tailstock','steady','other'].includes(s.support))s.support='none';
+ for(const k of ['grip','stickout','safeX','safeZ','maxRpm'])s[k]=normOptionalNumber(s[k]);
+ return s;
+}
+function convertSetupUnits(setup,from,to){const s=normalizeJobSetup(setup);if(from===to)return s;const k=from==='inch'?25.4:1/25.4;for(const n of ['grip','stickout','safeX','safeZ'])if(Number.isFinite(s[n]))s[n]=Math.round(s[n]*k*1e7)/1e7;return s;}
+const cleanTxt=s=>String(s||'').replace(/[\x00-\x1f\x7f]/g,' ').trim();
+const pfValue=v=>Number.isFinite(v)?(job.units==='inch'?v.toFixed(4):v.toFixed(3)):'NOT ENTERED';
+function pfFingerprintFor(j){return JSON.stringify([j.units,j.stock,j.workSide,j.nodes,j.tools,j.operations,normalizeJobSetup(j.setup)]);}
+function extractStep(op,index,source,profileOverride=null){
+ const t=source.tools.find(x=>x.id===op.toolId)||null;
+ const profile=profileOverride||buildProfile({...source,operations:[]});
+ const fromPt=source.nodes[op.from],toPt=source.nodes[op.to];
+ return {sequence:index+1,id:op.id,enabled:op.enabled,kind:op.kind,label:op.name,
+   tool:t?{id:t.id,station:t.station,offset:t.offset,name:t.name,kind:t.kind,shape:t.shape,tipDirection:t.tipDirection,hand:t.hand??null,insertNoseRadius:t.noseRadius??null,insertWidth:t.width??null,verified:!!t.verified,mountAxis:t.mountAxis??null,mountSide:t.mountSide??null}:null,
+   geometry:op.kind==='face'?{type:'face-envelope',z:op.faceZ,outerXDiameter:op.faceStartX,innerXDiameter:op.faceEndX}:
+    {type:'profile-interval',fromIndex:op.from,toIndex:op.to,fromPointId:fromPt?.id??null,toPointId:toPt?.id??null,
+     primitives:operationContourSegments(profile,op).map(s=>structuredClone(s))},
+   machining:{feedPerRev:op.feed,rpm:op.rpm,depthOfCutRadial:op.doc,finishRadial:op.finishRadial,finishAxial:op.finishAxial,clearanceRadial:op.clearanceRadial,retractZ:op.retractZ,accessPlan:op.accessPlan??'review'},
+   pathStatus:'NOT_GENERATED',verifiedMotions:[]};
+}
+function buildProcessPlan(source){
+ const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
+ return {format:POST_IR_VERSION,version:'0.7.4',status:'INTENT_ONLY_NON_EXECUTABLE',
+  part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
+  machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
+  coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,workSide:source.workSide,units:source.units},
+  setup:{...s,stock:structuredClone(source.stock)},
+  figures:{nodes:structuredClone(source.nodes),sourceErrors:[...profile.errors],exactSegments:profile.errors.length?[]:structuredClone(profile.segments)},
+  steps:source.operations.map((op,i)=>extractStep(op,i,source,profile)),
+  preflight:(()=>{const r=preflightReport(source);return {...r,operatorChecks:PRECHECK_ITEMS.map(([id,label])=>({id,label,confirmedInThisSession:pfSessionChecks.has(id)})),sessionOnly:true};})(),
+  motionIR:{version:1,units:source.units,modalState:null,verified:false,blocks:[],cuttingPathsGenerated:false},
+  verification:{toolpath:false,collision:false,holderClearance:false,kinematics:false,controllerPost:false},
+  post:{available:false,driver:null,artifact:null,reason:NC_EXPORT_DISABLED_REASON}};
+}
+// This is the ONLY future entry point for NC emission. Block all attempts until
+// the separate path planning, verification AND machine-specific post stages exist.
+function emitNCFromPlan(plan){
+ if(!plan?.motionIR?.verified||!plan?.motionIR?.blocks?.length||!plan?.verification?.collision||!plan?.verification?.controllerPost||!plan?.post?.available)
+  throw new Error(NC_EXPORT_DISABLED_REASON);
+ throw new Error('POST NOT IMPLEMENTED / NO QUALIFIED NC DRIVER');
+}
+function preflightReport(source){
+ const s=normalizeJobSetup(source.setup),geometry=buildProfile(source),operation=validateOperations(source.operations,source);
+ const blockers=[],reviews=[];
+ const add=(target,msg)=>{if(!target.includes(msg))target.push(msg);};
+ for(const x of geometry.errors)add(blockers,x);
+ if(!source.operations.some(x=>x.enabled))add(blockers,'No enabled machining steps defined.');
+ for(const x of operation.errors)add(blockers,x);
+ if(s.machine==='unassigned')add(blockers,'Select the target machine.');
+ if(!s.datum.trim())add(blockers,'Work Z0 datum has not been defined.');
+ if(!s.fixture.trim())add(blockers,'Chuck / fixture setup has not been recorded.');
+ if(!Number.isFinite(s.grip)||s.grip<=0)add(blockers,'Grip length is not recorded.');
+ if(!Number.isFinite(s.stickout)||s.stickout<=0)add(blockers,'Stickout from jaws is not recorded.');
+ if(!Number.isFinite(s.safeX)||s.safeX<=0)add(blockers,'Safe approach X diameter is not specified.');
+ else if(s.safeX<=source.stock.diameter)add(reviews,'Safe approach X is not above stock OD; confirm travel and clearance.');
+ if(!Number.isFinite(s.safeZ))add(blockers,'Safe Z location is not specified.');
+ else if(s.safeZ<=0)add(reviews,'Safe Z is at or behind face Z0; check workholding clearance.');
+ if(!Number.isFinite(s.maxRpm)||s.maxRpm<=0||!Number.isInteger(s.maxRpm))add(blockers,'Machine / workholding max RPM limit not entered.');
+ else for(let i=0;i<source.operations.length;i++)if(source.operations[i].enabled&&source.operations[i].rpm>s.maxRpm)add(blockers,`Step ${i+1}: RPM exceeds job max RPM.`);
+ if(!s.part.trim())add(reviews,'Part number / drawing identifier not entered.');
+ if(!s.material.trim())add(reviews,'Material / grade has not been entered.');
+ if(!s.program.trim())add(reviews,'Program ID has not been assigned.');
+ for(const w of [...geometry.warnings,...operation.warnings])add(reviews,w);
+ const ids=new Map();for(const op of source.operations.filter(x=>x.enabled)){const t=source.tools.find(t=>t.id===op.toolId);if(!t)continue;const key=`${t.station}/${t.offset}`;if(ids.has(key)&&ids.get(key)!==t.id)add(blockers,`Tool station/offset ${key} is assigned to multiple different tools.`);else ids.set(key,t.id);}
+ return {blockers,reviews,confirmed:PRECHECK_ITEMS.filter(([k])=>pfSessionChecks.has(k)).length,
+          total:PRECHECK_ITEMS.length,postBlocked:NC_EXPORT_DISABLED_REASON};
+}
+function createTextCell(tr,text,className){const el=document.createElement('td');el.textContent=text;if(className)el.className=className;tr.append(el);return el;}
+function addDetail(container,label,value){const div=document.createElement('div');div.className='detail-item';const k=document.createElement('div');k.className='detail-key';k.textContent=label;const v=document.createElement('div');v.className='detail-val';v.textContent=String(value??'—');div.append(k,v);container.append(div);}
+function renderStepDetail(){
+ const target=$('pfStepDetail');target.replaceChildren();const op=job.operations[pfSelected];
+ if(!op){target.textContent='NO MACHINING STEPS · ADD A STEP ON THE MACHINING SCREEN';$('pfEditStep').disabled=true;return;}
+ $('pfEditStep').disabled=false;
+ const h=document.createElement('h3');h.textContent=`UNIT ${String(pfSelected+1).padStart(2,'0')} / ${op.name}`;target.append(h);
+ const p=extractStep(op,pfSelected,job),t=p.tool;
+ const fields=document.createElement('div');fields.className='job-detail-grid';target.append(fields);
+ addDetail(fields,'UNIT TYPE',OP_KINDS[op.kind]||op.kind);
+ addDetail(fields,'ENABLED',op.enabled?'YES':'NO / SKIPPED');
+ addDetail(fields,'TOOL / OFFSET',t?`T${t.station} H${t.offset} · ${t.name}`:'MISSING TOOL');
+ addDetail(fields,'INSERT / HAND',t?`${t.shape} · ${t.hand||'—'} · T${t.tipDirection}`:'—');
+ addDetail(fields,'INSERT GEOMETRY',t?`NOSE R ${pfValue(t.insertNoseRadius)} · WIDTH ${pfValue(t.insertWidth)}`:'—');
+ addDetail(fields,'MOUNT / CHECK',t?`${t.mountAxis||'—'} / ${t.mountSide||'—'} · ${t.verified?'MARKED CHECKED':'NOT CHECKED'}`:'—');
+ addDetail(fields,'SPINDLE',`${op.rpm} RPM · G97 INTENT (FIXED RPM)`);
+ addDetail(fields,'FEED / REV',`${pfValue(op.feed)} ${job.units==='inch'?'IN':'MM'}/REV`);
+ addDetail(fields,'DOC / RADIAL',`${pfValue(op.doc)} ${job.units}`);
+ addDetail(fields,'FINISH STOCK (R / Z)',`${pfValue(op.finishRadial)} / ${pfValue(op.finishAxial)}`);
+ addDetail(fields,'CLEARANCE (RADIAL / Z)',`${pfValue(op.clearanceRadial)} / ${pfValue(op.retractZ)}`);
+ if(op.kind==='face')addDetail(fields,'FACE EXTENTS',`XØ${pfValue(op.faceStartX)} → XØ${pfValue(op.faceEndX)} @ Z${pfValue(op.faceZ)}`);
+ else addDetail(fields,'FIGURE REGION',`P${op.from+1} → P${op.to+1} · ${p.geometry.primitives.length} primitives`);
+ if(op.kind==='od_groove'){const groove=findFigureGrooves(job.nodes).find(g=>g.from===op.from&&g.to===op.to);addDetail(fields,'GROOVE',groove?`WIDTH ${pfValue(groove.width)} · DEPTH R ${pfValue(groove.depth)}`:'INCOMPLETE / NOT MATCHED');}
+ addDetail(fields,'ACCESS STRATEGY',op.accessPlan||'review');
+ addDetail(fields,'MOTION / POST','INTENT ONLY · PATH NOT GENERATED');
+}
+function fillJobSetupForm(){
+ const s=normalizeJobSetup(job.setup);
+ for(const [id,k] of [['pfPart','part'],['pfRev','revision'],['pfOrder','workOrder'],['pfMaterial','material'],['pfProgram','program'],['pfMachine','machine'],['pfFixture','fixture'],['pfDatum','datum'],['pfGrip','grip'],['pfStickout','stickout'],['pfSafeX','safeX'],['pfSafeZ','safeZ'],['pfMaxRpm','maxRpm'],['pfSupport','support'],['pfNotes','notes']]){
+  const el=$(id);if(!el)continue;const val=s[k];el.value=val===null?'':String(val);
+ }
+ document.querySelectorAll('.pf-unit').forEach(x=>x.textContent=job.units==='inch'?'(IN)':'(MM)');
+}
+function readJobSetupForm(){
+ const s=normalizeJobSetup(job.setup);
+ for(const [id,k] of [['pfPart','part'],['pfRev','revision'],['pfOrder','workOrder'],['pfMaterial','material'],['pfProgram','program'],['pfMachine','machine'],['pfFixture','fixture'],['pfDatum','datum'],['pfSupport','support'],['pfNotes','notes']])s[k]=$(id).value.trim();
+ for(const [id,k] of [['pfGrip','grip'],['pfStickout','stickout'],['pfSafeX','safeX'],['pfSafeZ','safeZ'],['pfMaxRpm','maxRpm']])s[k]=normOptionalNumber($(id).value);
+ return normalizeJobSetup(s);
+}
+function validateSetupEntry(s){
+ const problems=[];
+ for(const k of ['grip','stickout','safeX'])if(s[k]!==null&&s[k]<=0)problems.push(`${k.toUpperCase()} must be positive or blank.`);
+ if(s.maxRpm!==null&&(!Number.isInteger(s.maxRpm)||s.maxRpm<=0))problems.push('MAX RPM must be a positive integer or blank.');
+ if(s.grip!==null&&s.grip>job.stock.length)problems.push('Grip length exceeds total stock length. Verify setup.');
+ return problems;
+}
+function saveJobSetup(){
+ const setup=readJobSetupForm(),errors=validateSetupEntry(setup);
+ if(errors.length){$('pfSavedMsg').textContent=errors[0];notify(errors[0],true);return false;}
+ job.setup=setup;pfEditing=false;autosave();refreshJobInfo();$('pfSavedMsg').textContent='JOB DATA SAVED ON DEVICE';return true;
+}
+function refreshJobInfo(){
+ job.setup=normalizeJobSetup(job.setup);
+ const fingerprint=pfFingerprintFor(job);if(fingerprint!==pfJobFingerprint){pfSessionChecks.clear();pfJobFingerprint=fingerprint;}
+ if(!pfEditing)fillJobSetupForm();
+ const s=job.setup;pfSelected=Math.max(0,Math.min(pfSelected,job.operations.length-1));
+ $('pfOverview').textContent=`${job.name} · ${job.units==='inch'?'INCH':'MM'} · STOCK Ø${pfValue(job.stock.diameter)} × ${pfValue(job.stock.length)} · ${job.workSide.toUpperCase()} SETUP · ${job.nodes.length} PROFILE POINTS`;
+ $('pfStepCount').textContent=`${job.operations.length} STEPS`;
+ const tbody=$('pfSteps');tbody.replaceChildren();
+ job.operations.forEach((op,i)=>{const tr=document.createElement('tr');tr.setAttribute('aria-selected',String(i===pfSelected));tr.tabIndex=0;
+   const t=job.tools.find(x=>x.id===op.toolId);createTextCell(tr,String(i+1).padStart(2,'0'));
+   createTextCell(tr,`${OP_KINDS[op.kind]||op.kind} · ${op.name}`);createTextCell(tr,t?`T${t.station} H${t.offset}`:'—');
+   createTextCell(tr,pfValue(op.feed));createTextCell(tr,String(op.rpm));createTextCell(tr,op.enabled?'DEFINED':'OFF','op-disabled');
+   tr.addEventListener('click',()=>{pfSelected=i;refreshJobInfo();});tr.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();pfSelected=i;refreshJobInfo();}});tbody.append(tr);
+ });renderStepDetail();
+ const report=preflightReport(job),issue=$('pfIssues');issue.replaceChildren();
+ const head=$('pfReadiness');head.textContent=`${report.blockers.length} SETUP BLOCKER(S) · ${report.reviews.length} REVIEW ITEM(S) · ${report.confirmed}/${report.total} OPERATOR CHECKS · NC OUTPUT LOCKED`;
+ const show=(tag,msg,problem)=>{const div=document.createElement('div');div.className='pf-issue'+(problem?' problem':'');const badge=document.createElement('strong');badge.textContent=tag;const content=document.createElement('span');content.textContent=msg;div.append(badge,content);issue.append(div);};
+ if(!report.blockers.length)show('SETUP','Required setup fields completed; values not independently verified.',false);
+ for(const msg of report.blockers)show('BLOCK',msg,true);
+ for(const msg of report.reviews)show('CHECK',msg,false);
+ show('NC','VERIFIED TOOLPATH, COLLISION CHECK & MACHINE POST NOT IMPLEMENTED — CODE EMISSION DISABLED.',true);
+ const checks=$('pfChecks');checks.replaceChildren();
+ for(const [key,desc] of PRECHECK_ITEMS){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=pfSessionChecks.has(key);cb.addEventListener('change',()=>{if(cb.checked)pfSessionChecks.add(key);else pfSessionChecks.delete(key);const r=preflightReport(job);head.textContent=`${r.blockers.length} SETUP BLOCKER(S) · ${r.reviews.length} REVIEW ITEM(S) · ${r.confirmed}/${r.total} OPERATOR CHECKS · NC OUTPUT LOCKED`;});const span=document.createElement('span');span.textContent=desc;label.append(cb,span);checks.append(label);}
+ $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: EXACT FIGURE + OPERATIONS + TOOL REFS.','MOTION IR: EMPTY / NOT VERIFIED.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, X SIGN, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: PATH PLANNER -> KINEMATIC/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
+}
+function textSetupSheet(){
+ const s=normalizeJobSetup(job.setup),report=preflightReport(job);
+ const lines=['MINITURN 0.7.4 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · RPM ${op.rpm} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · XØ${pfValue(op.faceStartX)} TO XØ${pfValue(op.faceEndX)}`:`   P${op.from+1} TO P${op.to+1} · ACCESS: ${op.accessPlan||'review'}`);});
+ lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
+ lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
+}
+function wireJobInfo(){
+ $('jobTab').addEventListener('click',()=>setPage('job'));
+ const machine=$('pfMachine');for(const [id,profile] of Object.entries(MACHINE_PROFILES)){const option=document.createElement('option');option.value=id;option.textContent=profile.label;machine.append(option);}
+ for(const id of ['pfPart','pfRev','pfOrder','pfMaterial','pfProgram','pfMachine','pfFixture','pfDatum','pfGrip','pfStickout','pfSafeX','pfSafeZ','pfMaxRpm','pfSupport','pfNotes']){
+  $(id).addEventListener('input',()=>{pfEditing=true;$('pfSavedMsg').textContent='UNSAVED JOB DATA · PRESS SAVE JOB DATA';});
+  $(id).addEventListener('change',()=>{pfEditing=true;});
+ }
+ $('pfSave').addEventListener('click',saveJobSetup);
+ $('pfEditStep').addEventListener('click',()=>{opSelected=pfSelected;setPage('operations');});
+ $('pfAddStep').addEventListener('click',()=>setPage('operations'));
+ $('pfExportSetup').addEventListener('click',()=>{if(pfEditing&&!saveJobSetup())return;download(textSetupSheet(),safeFilename()+'_setup.txt','text/plain');notify('SETUP SHEET EXPORTED · NOT A CNC PROGRAM');});
+ $('pfExportPlan').addEventListener('click',()=>{if(pfEditing&&!saveJobSetup())return;const plan=buildProcessPlan(job);download(JSON.stringify(plan,null,2),safeFilename()+'_process_plan.json','application/json');notify('PROCESS PLAN EXPORTED · NO CUTTING MOVES');});
+ $('pfExportNC').addEventListener('click',()=>{try{emitNCFromPlan(buildProcessPlan(job));}catch(e){notify(e.message,true);}});
+}
+
+loadLocal();wire();wireTools();wireInspector();wireOperations();wireJobInfo();applyDisplayMode(displayMode,false);$('displayMode').addEventListener('change',e=>applyDisplayMode(e.target.value));update();
 
 
 // TOOL DEFINITIONS SCREEN — a job embeds independent copies of tool geometries.
@@ -2525,13 +2872,14 @@ function setPage(page){
  if(page===activePage)return;
  if(activePage==='tools'&&toolDirty&&!confirm('Discard unsaved tool editor changes?'))return;
  if(activePage==='operations'&&opDirty&&!confirm('Discard unsaved operation edits?'))return;
+ if(activePage==='job'&&pfEditing&&!saveJobSetup())return;
  activePage=page;
- $('figureWorkspace').hidden=page!=='figure';$('toolWorkspace').hidden=page!=='tools';$('inspectWorkspace').hidden=page!=='inspect';$('opWorkspace').hidden=page!=='operations';
+ $('figureWorkspace').hidden=page!=='figure';$('toolWorkspace').hidden=page!=='tools';$('inspectWorkspace').hidden=page!=='inspect';$('opWorkspace').hidden=page!=='operations';$('jobWorkspace').hidden=page!=='job';
  $('figureSoftkeys').hidden=page!=='figure';$('toolSoftkeys').hidden=page!=='tools';$('inspectSoftkeys').hidden=page!=='inspect';$('opSoftkeys').hidden=page!=='operations';
- for(const [tab,key] of [['figureTab','figure'],['toolTab','tools'],['inspectTab','inspect'],['opTab','operations']]){
+ for(const [tab,key] of [['figureTab','figure'],['toolTab','tools'],['inspectTab','inspect'],['opTab','operations'],['jobTab','job']]){
   $(tab).classList.toggle('active',key===page);$(tab).setAttribute('aria-pressed',String(key===page));
  }
- if(page==='tools'){toolDirty=false;refreshToolWorkspace();}if(page==='inspect'){inspectZoom=1;inspectCamera=null;refreshInspector();}if(page==='operations'){opDirty=false;refreshOperations();}
+ if(page==='tools'){toolDirty=false;refreshToolWorkspace();}if(page==='inspect'){inspectZoom=1;inspectCamera=null;refreshInspector();}if(page==='operations'){opDirty=false;refreshOperations();}if(page==='job'){refreshJobInfo();}
 }
 function toolNumber(t){return `T${String(t.station).padStart(2,'0')} H${String(t.offset).padStart(2,'0')}`;}
 function drawToolList(){
