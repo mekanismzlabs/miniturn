@@ -128,6 +128,17 @@
 @media(max-width:870px){.operation-workspace{grid-template-columns:1fr}.operation-preview-panel{grid-column:auto}.operation-list{min-height:0;max-height:260px}}
 @media(max-width:610px){.operation-form-grid{grid-template-columns:1fr 1fr}.operation-workspace{gap:10px}.operation-graph-frame svg{min-height:230px}.operation-row{min-height:54px}}
 
+
+/* v0.7.3 machining-region editor; compact until a specialty feature is selected. */
+.op-step-picker{display:block;margin:0 0 12px}
+.op-step-picker select{width:100%;min-height:44px}
+.op-feature-readout,.op-access-summary{font:12px/1.65 Consolas,monospace;color:#b2d2bf;padding:9px 0;white-space:pre-wrap}
+.op-access-panel{margin-top:15px;border:1px solid #46715c;border-radius:6px;padding:10px 13px}
+.op-access-panel summary{color:#e6c789;cursor:pointer;font:12px/1.5 Consolas,monospace}
+.op-access-panel select{width:100%;min-height:45px}
+.op-feature-readout.warning,.op-access-summary.warning{color:#f5c28d}
+#opGrooveFields .wide{grid-column:1/-1}
+
 /* v0.5.1 browser survival diagnostics; only visible after an error or on request. */
 .runtime-alert{position:fixed;z-index:9999;left:12px;right:12px;top:12px;max-width:850px;margin:auto;border:2px solid #f0a071;border-radius:7px;background:#321f1c;color:#ffe4cf;box-shadow:0 12px 60px #000b;padding:14px;font:12px/1.6 Consolas,monospace}
 .runtime-alert strong{display:block;font-size:14px;color:#ffbf95;margin-bottom:4px}
@@ -319,16 +330,16 @@ body[data-display="daylight"] .p1-start{background:#e4f2ec;border-color:#88a59c}
 body[data-display="daylight"] .p1-start-heading{color:#154b3f}
 body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-color:#829da3}
 @media(max-width:620px){.p1-start{padding:8px;gap:6px}.keypad-label span{font-size:10px!important;max-width:63%}}
-/* v0.7.2: full 8-direction FAPT movement keypad and inline editable P01 */
+/* v0.7.3: full 8-direction FAPT movement keypad and inline editable P01 */
 @media(max-width:380px){.p1-presets button{font-size:10px}.p1-actions button{font-size:12px}}
 .p1-presets button:disabled{opacity:.4;cursor:not-allowed}
 </style>
-  <title>MiniTurn v0.7.2 — SYMBOLIC FIGURE</title>
+  <title>MiniTurn v0.7.3 — SYMBOLIC FIGURE</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.2</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.3</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">GRAPH COLORS <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option></select></label><span class="prototype-tag">NO NC OUTPUT</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -644,9 +655,10 @@ body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-
     </section>
     <section class="panel operation-editor-panel" aria-label="Operation parameter entry">
       <div class="section-header"><h2>11 / MACHINING DATA INPUT</h2><span class="small-chip" id="opEditorTitle">OP 01</span></div>
+      <label class="field op-step-picker">EDIT STEP<select id="opStepSelect" aria-label="Select existing machining step to edit"></select></label>
       <div class="operation-form-grid">
         <label class="field wide">OPERATION DESCRIPTION<input type="text" id="opName" maxlength="65" spellcheck="false" autocomplete="off"></label>
-        <label class="field">TYPE<select id="opKind"><option value="face">FACE</option><option value="od_rough">OD ROUGH</option><option value="od_finish">OD FINISH</option><option value="od_groove">OD GROOVE</option><option value="od_thread">OD THREAD</option></select></label>
+        <label class="field">CHANGE STEP TYPE<select id="opKind"><option value="face">FACE</option><option value="od_rough">OD ROUGH</option><option value="od_finish">OD FINISH</option><option value="od_groove">OD GROOVE</option><option value="od_thread">OD THREAD</option></select></label>
         <label class="field">SELECT TOOL<select id="opTool"></select></label>
         <label class="operation-check wide"><input id="opEnabled" type="checkbox" checked> ENABLED</label>
       </div>
@@ -657,6 +669,14 @@ body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-
           <div class="region-pick"><button type="button" id="pickFrom">TAP START ON GRAPH</button><button type="button" id="pickTo">TAP END ON GRAPH</button></div>
         </div>
         
+      </div>
+      <div id="opGrooveFields" hidden>
+        <div class="section-header second-header"><h2>GROOVE FEATURE</h2><span class="small-chip">FROM FIGURE</span></div>
+        <div class="operation-form-grid">
+          <label class="field wide">DETECTED GROOVE<select id="opGrooveTarget"></select></label>
+          <button class="action-btn primary wide" type="button" id="opUseGroove">USE THIS GROOVE</button>
+        </div>
+        <div class="op-feature-readout" id="opGrooveInfo" aria-live="polite"></div>
       </div>
       <div id="opFaceFields" hidden>
         <div class="section-header second-header"><h2>FACE LIMITS</h2><span class="small-chip">X = DIAMETER</span></div>
@@ -677,6 +697,18 @@ body[data-display="daylight"] .sign-key{background:#e0eaf4;color:#164359;border-
         <label class="field">AXIAL RETRACT <span class="op-unit"></span><input id="opRetract" type="number" step="any" min="0"></label>
       </div>
       
+      <details class="op-access-panel" id="opAccessPanel">
+        <summary>ACCESS REVIEW · MACHINING PLAN</summary>
+        <div class="op-access-summary" id="opAccessSummary" aria-live="polite"></div>
+        <label class="field">OPERATOR PLAN
+          <select id="opAccessPlan">
+            <option value="review">REVIEW TOOL ACCESS</option>
+            <option value="split">SPLIT INTO OPERATIONS</option>
+            <option value="opposite">CONSIDER OPPOSITE-HAND TURNING TOOL</option>
+            <option value="groove">CONSIDER GROOVING TOOL</option>
+          </select>
+        </label>
+      </details>
       <div class="operation-actions op-save-actions"><button id="opSave" class="action-btn primary">F2 · SAVE OPERATION</button><button id="opReset" class="action-btn">RESET CHANGES</button></div>
       <div class="status-box" id="opStatus" role="status" aria-live="polite"></div>
     </section>
@@ -1534,12 +1566,48 @@ function buildToolGeometry(tool){
    start:nose.arc.start+insertAngle*Math.PI/180}:null};
 }
 
+/** Recognition only: a complete sharp, rectangular OD recess (four successive vertices).
+ * Tool access, insert width, and swept clearance remain UNVERIFIED.
+ * Width is physical axial Z distance; depth is physical radial (X diameter delta / 2).
+ */
+function findFigureGrooves(nodes){
+ if(!Array.isArray(nodes))return [];
+ const out=[],eps=1e-7;
+ for(let i=0;i+3<nodes.length;i++){
+  const [a,b,c,d]=nodes.slice(i,i+4);
+  if([a,b,c,d].some(p=>p.corner!=='sharp'))continue;
+  if(Math.abs(a.z-b.z)>eps||Math.abs(b.x-c.x)>eps||Math.abs(c.z-d.z)>eps)continue;
+  if(!(a.x-b.x>eps)||!(d.x-c.x>eps)||Math.abs(b.z-c.z)<=eps)continue;
+  const depth=(Math.min(a.x,d.x)-b.x)/2,width=Math.abs(c.z-b.z);
+  if(depth<=eps||width<=eps)continue;
+  out.push({from:i,to:i+3,width,depth,outerX:a.x,bottomX:b.x,firstId:a.id,lastId:d.id,
+   explicit:b.feature==='groove-start'||d.feature==='groove-end',
+   label:`P${i+1}–P${i+4} · W${width.toFixed(4)} D${depth.toFixed(4)}`});
+ }
+ return out;
+}
+/** Conservative recess review, not a tool accessibility or collision verdict.
+ * A normal monotonic OD step-down is NOT called an undercut.
+ */
+function reviewFigureRegion(nodes,from,to){
+ if(!Array.isArray(nodes)||from<0||to>=nodes.length||from>=to)return {recess:false,reverseZ:false};
+ const section=nodes.slice(from,to+1),eps=1e-7;
+ const reverseZ=section.some((p,i)=>i>0&&p.z>section[i-1].z+eps);
+ let recess=false;
+ for(let i=1;i<section.length-1;i++){
+  const lower=section[i].x;
+  if(section.slice(0,i).some(p=>p.x>lower+eps)&&section.slice(i+1).some(p=>p.x>lower+eps)){
+   recess=true;break;
+  }
+ }
+ return {recess,reverseZ};
+}
 const {OPERATION_VERSION,OP_KINDS,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments} = (() => {
 /** MiniTurn v0.5: operation INTENT only. Never produces a toolpath or NC blocks.
  * X is diameter, Z is axial; DOC, radial finish allowance and radial clearance are PHYSICAL radii.
  * Feed is length/revolution; RPM is revolutions/minute. No G96/CSS in this release.
  */
-const OPERATION_VERSION='0.5.0';
+const OPERATION_VERSION='0.7.3';
 const OP_KINDS={od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',od_thread:'OD THREAD'};
 const finite=v=>typeof v==='number'&&Number.isFinite(v);
 const numberIn=(v,a,b)=>finite(v)&&v>=a&&v<=b;
@@ -1550,8 +1618,11 @@ function makeOperation(kind,job){
  const s=job.units==='mm'?25.4:1;
  const candidateKinds=kind==='face'?['face','od']:kind==='od_groove'?['od_groove']:kind==='od_thread'?['od_thread']:['od'];
  const t=job.tools.find(x=>candidateKinds.includes(x.kind));
+ const region=kind==='od_groove'?findFigureGrooves(job.nodes)[0]:null;
+ const from=region?.from??0,to=region?.to??Math.max(0,job.nodes.length-1);
  return {id:freshId(),name:OP_KINDS[kind],kind,enabled:true,toolId:t?.id||'',
-  from:0,to:Math.max(0,job.nodes.length-1),fromPointId:job.nodes[0]?.id,toPointId:job.nodes.at(-1)?.id,faceZ:0,faceStartX:job.stock.diameter,faceEndX:0,
+  from,to,fromPointId:job.nodes[from]?.id,toPointId:job.nodes[to]?.id,
+  accessPlan:'review',faceZ:0,faceStartX:job.stock.diameter,faceEndX:0,
   doc:round8(.075*s),finishRadial:round8(.01*s),finishAxial:round8(.005*s),
   feed:round8((kind==='od_rough'?.012:.006)*s),rpm:800,
   clearanceRadial:round8(.1*s),retractZ:round8(.1*s)};
@@ -1595,6 +1666,7 @@ function validateOperations(ops,job){
    if(!t.verified)warnings.push(`${label}: tool dimensions are not marked checked.`);
    if(t.tipDirection===0)warnings.push(`${label}: tool-tip direction T0 / none: confirm setup.`);
   }
+  if(op.accessPlan!==undefined&&!['review','split','opposite','groove'].includes(op.accessPlan))errors.push(`${label}: invalid access plan.`);
   if(!numberIn(op.feed,0.0000001,1e6))errors.push(`${label}: feed/rev must be positive.`);
   if(!numberIn(op.rpm,1,100000)||!Number.isInteger(op.rpm))errors.push(`${label}: RPM must be an integer from 1–100000.`);
   if(!numberIn(op.clearanceRadial,0,1e6)||!numberIn(op.retractZ,0,1e6))errors.push(`${label}: clearance/retract must be nonnegative.`);
@@ -1605,9 +1677,30 @@ function validateOperations(ops,job){
     errors.push(`${label}: figure point range must increase (P start to P end).`);
    else {
     if(job.nodes[op.from].corner!=='sharp'||job.nodes[op.to].corner!=='sharp')errors.push(`${label}: range endpoints must be SHARP to avoid splitting a radius/chamfer.`);
-    // v0.5 can select recessed profiles but cannot promise they are machinable.
-    const points=job.nodes.slice(op.from,op.to+1);
-    if(points.some((p,i)=>i>0&&p.x<points[i-1].x-1e-9))warnings.push(`${label}: recessed/undercut section requires special machining review.`);
+    const review=reviewFigureRegion(job.nodes,op.from,op.to);
+    if(review.recess)warnings.push(`${label}: recessed region — check right/left-hand access or a grooving strategy.`);
+    if(review.reverseZ)warnings.push(`${label}: Z reverses within selected region — operator must review cutting sequence.`);
+    if(op.kind==='od_groove'){
+     const grooves=findFigureGrooves(job.nodes).filter(g=>g.from>=op.from&&g.to<=op.to);
+     if(grooves.length!==1)warnings.push(`${label}: select ONE complete rectangular groove using USE THIS GROOVE (found ${grooves.length}).`);
+     if(grooves.length===1){
+      const g=grooves[0];
+      if(op.from!==g.from||op.to!==g.to)warnings.push(`${label}: selected range includes geometry outside the detected groove.`);
+      if(t?.kind==='od_groove'){
+       if(t.width>g.width+1e-7)errors.push(`${label}: groove insert width exceeds selected groove width.`);
+       const maxMM=t.catalog?.limitsMM?.maxGrooveDepth;
+       if(Number.isFinite(maxMM)&&g.depth>(job.units==='inch'?maxMM/25.4:maxMM)+1e-7)
+        warnings.push(`${label}: groove depth exceeds catalog reference maximum; choose a different tool.`);
+       if(Math.abs(t.width-g.width)>1e-7)warnings.push(`${label}: insert narrower than groove — multi-position machining strategy required.`);
+      }
+      warnings.push(`${label}: nominal W${g.width.toFixed(4)} / radial D${g.depth.toFixed(4)} ${job.units}; no plunge toolpath calculated.`);
+     }
+    }
+    if(op.kind==='od_thread'){
+     const marks=job.nodes.slice(op.from,op.to+1).filter(p=>p.feature==='thread');
+     if(!marks.length)warnings.push(`${label}: no thread figure marker in selected region; define pitch/profile separately.`);
+     else warnings.push(`${label}: thread marker present; depth, pitch cycle, and toolpath not yet generated.`);
+    }
    }
   } else {
    if(!numberIn(op.faceStartX,0,job.stock.diameter+1e-8)||!numberIn(op.faceEndX,0,job.stock.diameter+1e-8)||op.faceStartX<=op.faceEndX)
@@ -2019,7 +2112,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.7.2 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.7.3 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -3162,6 +3255,9 @@ function opMsg(title,lines=[],bad=false){
 }
 function refreshOperationList(){
  const list=$('operationList');list.replaceChildren();$('opCount').textContent=`${job.operations.length} OPERATIONS`;
+ const picker=$('opStepSelect');picker.replaceChildren();
+ job.operations.forEach((op,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`${String(i+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||'UNKNOWN'} · ${op.name}`;picker.append(o);});
+ picker.value=job.operations.length?String(Math.max(0,Math.min(opSelected,job.operations.length-1))):'';
  job.operations.forEach((op,i)=>{
   const t=job.tools.find(t=>t.id===op.toolId);
   const b=document.createElement('button');b.type='button';b.className='operation-row';b.setAttribute('role','option');b.setAttribute('aria-selected',String(opSelected===i));
@@ -3184,6 +3280,7 @@ function fillOperationForm(op){
   job.nodes.forEach((pt,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`P${String(i+1).padStart(2,'0')} · X${opFormat(pt.x)} Z${opFormat(pt.z)}${pt.corner==='sharp'?'':' · '+pt.corner.toUpperCase()}`;elField.append(o);});
  }
  $('opFrom').value=String(op.from);$('opTo').value=String(op.to);
+ $('opAccessPlan').value=op.accessPlan||'review';
  chooseCompatibleTool(op.toolId,op.kind);
  showOperationFields();opDirty=false;
 }
@@ -3194,16 +3291,55 @@ function chooseCompatibleTool(preferred,kind){
  sel.value=choice;
  if(!eligible.length){const o=document.createElement('option');o.value='';o.textContent='NO COMPATIBLE TOOL — ADD IN F11';sel.append(o);}
 }
+function refreshGrooveChoices(){
+ const select=$('opGrooveTarget'),grooves=findFigureGrooves(job.nodes),prev=select.value;
+ select.replaceChildren();
+ if(!grooves.length){const o=document.createElement('option');o.value='';o.textContent='NO COMPLETE RECTANGULAR GROOVE IN FIGURE';select.append(o);select.disabled=true;$('opUseGroove').disabled=true;
+  $('opGrooveInfo').textContent='Create a groove in SYMBOLIC FIGURE, or select its full contour manually.';return;}
+ select.disabled=false;$('opUseGroove').disabled=false;
+ grooves.forEach((g,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`G${i+1} · ${g.label} ${job.units.toUpperCase()}`;select.append(o);});
+ const match=grooves.findIndex(g=>Number($('opFrom').value)===g.from&&Number($('opTo').value)===g.to);
+ select.value=match>=0?String(match):grooves[Number(prev)]?prev:'0';
+ refreshGrooveInfo();
+}
+function refreshGrooveInfo(){
+ const g=findFigureGrooves(job.nodes)[Number($('opGrooveTarget').value)];
+ if(!g){$('opGrooveInfo').textContent='NO COMPLETE GROOVE DETECTED';return;}
+ const tool=job.tools.find(t=>t.id===$('opTool').value),width=tool?.width;
+ const fit=Number.isFinite(width)?(width>g.width+1e-7?'TOOL TOO WIDE':width<g.width-1e-7?'NARROWER INSERT · MULTI-POSITION REQUIRED':'NOMINAL WIDTH MATCH ONLY'):'NO GROOVING TOOL';
+ $('opGrooveInfo').textContent=`WIDTH ${opFormat(g.width)}  ·  RADIAL DEPTH ${opFormat(g.depth)} ${job.units.toUpperCase()}
+${fit} · NO PLUNGE / SWEEP CHECK`;
+ $('opGrooveInfo').classList.toggle('warning',fit==='TOOL TOO WIDE');
+}
+function useGrooveRegion(){
+ const g=findFigureGrooves(job.nodes)[Number($('opGrooveTarget').value)];
+ if(!g)return;
+ $('opFrom').value=String(g.from);$('opTo').value=String(g.to);opMarkDirty();
+}
+function refreshAccessReview(op){
+ const out=$('opAccessSummary');
+ if(op.kind==='face'){out.textContent='FACE LIMITS ONLY · CHECK CHUCK AND TOOL REACH';return;}
+ const review=reviewFigureRegion(job.nodes,op.from,op.to);
+ const parts=[];
+ if(review.recess)parts.push('RECESS DETECTED · CONSIDER OPPOSITE-HAND OR GROOVING APPROACH');
+ else parts.push('NO ENCLOSED RECESS FOUND IN SELECTED REGION');
+ if(review.reverseZ)parts.push('REVERSE Z PATH · REVIEW TOOL APPROACH');
+ if(op.kind==='od_groove')parts.push('GROOVE CUTTING PASSES AND WALL CLEARANCE NOT MODELED');
+ parts.push('OPERATOR APPROVES TOOL & STRATEGY · NO NC OUTPUT');
+ out.textContent=parts.join('\n');out.classList.toggle('warning',review.recess||review.reverseZ);
+}
 function showOperationFields(){
  const kind=$('opKind').value,face=kind==='face',rough=kind==='od_rough';
  $('opRangeFields').hidden=face;$('opFaceFields').hidden=!face;
+ $('opGrooveFields').hidden=kind!=='od_groove';
+ refreshGrooveChoices();
  for(const id of ['opDocField','opFinRadField','opFinAxField'])$(id).hidden=!rough;
  document.querySelectorAll('.op-unit').forEach(x=>x.textContent=job.units==='inch'?'(IN)':'(MM)');
 }
 function readOperationForm(){
  if(!job.operations.length)return null;
  const op=structuredClone(job.operations[opSelected]);
- op.name=$('opName').value.trim();op.kind=$('opKind').value;op.toolId=$('opTool').value;op.enabled=$('opEnabled').checked;
+ op.name=$('opName').value.trim();op.kind=$('opKind').value;op.toolId=$('opTool').value;op.enabled=$('opEnabled').checked;op.accessPlan=$('opAccessPlan').value;
  const num=id=>$(id).value.trim()===''?NaN:Number($(id).value);
  for(const [id,key] of [['opDoc','doc'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])op[key]=num(id);
  op.from=Number($('opFrom').value);op.to=Number($('opTo').value);op.fromPointId=job.nodes[op.from]?.id;op.toPointId=job.nodes[op.to]?.id;
@@ -3248,6 +3384,7 @@ function drawOperationGraph(){
  $('opMirror').setAttribute('aria-pressed',String(mirrorZ));$('opMirror').classList.toggle('active',mirrorZ);
  const tool=job.tools.find(t=>t.id===op.toolId);
  $('opReadout').textContent=`${OP_KINDS[op.kind]} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · NO NC OUTPUT`;
+ refreshAccessReview(op);
  opMsg(check.errors.length?'OPERATION INPUT INVALID':'OPERATION DEFINITION VALID · NOT PROVEN',check.errors.length?check.errors:[...check.warnings,'Highlighted line is a selected profile region, NOT a cutting toolpath.'],check.errors.length>0);
 }
 function opMarkDirty(){opDirty=true;drawOperationGraph();}
@@ -3311,8 +3448,27 @@ function wireOperations(){
  for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract']){
   $(id).addEventListener('input',opMarkDirty);$(id).addEventListener('change',opMarkDirty);
  }
- $('opKind').addEventListener('change',()=>{chooseCompatibleTool($('opTool').value,$('opKind').value);showOperationFields();opMarkDirty();});
- $('opTool').addEventListener('change',opMarkDirty);
+ $('opKind').addEventListener('change',()=>{
+  const nextKind=$('opKind').value,previous=job.operations[opSelected];
+  // Only automatic/default descriptions track the selected cycle type.
+  // Operator-written names are never overwritten by a type change.
+  if(previous&&($('opName').value.trim()===previous.name)&&
+     (previous.name===OP_KINDS[previous.kind]||previous.name==='OD ROUGH / ALL FIGURE'||previous.name==='OD FINISH / ALL FIGURE'||previous.name==='FACE / STOCK FRONT'))
+   $('opName').value=OP_KINDS[nextKind];
+  chooseCompatibleTool($('opTool').value,nextKind);showOperationFields();
+  if(nextKind==='od_groove'){
+   const grooves=findFigureGrooves(job.nodes);
+   const prevFrom=Number($('opFrom').value),prevTo=Number($('opTo').value);
+   const preferred=grooves.find(g=>g.from===prevFrom&&g.to===prevTo)||grooves.find(g=>g.from>=prevFrom&&g.to<=prevTo)||grooves[0];
+   if(preferred){$('opFrom').value=String(preferred.from);$('opTo').value=String(preferred.to);refreshGrooveChoices();}
+  }
+  opMarkDirty();
+ });
+ $('opTool').addEventListener('change',()=>{if($('opKind').value==='od_groove')refreshGrooveInfo();opMarkDirty();});
+ $('opStepSelect').addEventListener('change',()=>selectOperation(Number($('opStepSelect').value)));
+ $('opGrooveTarget').addEventListener('change',refreshGrooveInfo);
+ $('opUseGroove').addEventListener('click',useGrooveRegion);
+ $('opAccessPlan').addEventListener('change',opMarkDirty);
  $('opFit').addEventListener('click',drawOperationGraph);
  $('opMirror').addEventListener('click',()=>{doAction('mirror');drawOperationGraph();});
 }
