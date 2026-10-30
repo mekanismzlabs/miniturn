@@ -448,7 +448,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 .motion-table-wrap{max-height:280px;overflow:auto}.motion-table{border-collapse:collapse;width:100%;font-size:11px;white-space:nowrap}.motion-table th,.motion-table td{padding:7px 10px;border-bottom:1px solid var(--panel-border);text-align:left}.motion-table th{position:sticky;top:0;background:var(--surface2);color:var(--mute)}
 .motion-warnings{font:10px/1.65 Consolas,monospace;color:var(--amber);white-space:pre-wrap;margin-top:8px}
 @media(max-width:680px){#opMotionPass{max-width:108px}.operation-preview-panel .inspect-toolbar{flex-wrap:wrap}.motion-toggle{font-size:9px}}
-/* v0.7.6: selected-region paths and stock-envelope visualization */
+/* v0.7.7: selected-region paths and stock-envelope visualization */
 .operation-legend .stock-before{border-color:#ecc06c;border-top-style:dashed}
 .operation-legend .stock-after{border-color:#adcbf7}
 .motion-notice{font:9px/1.45 Consolas,monospace;color:var(--mute);padding-top:7px}
@@ -456,12 +456,12 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 #opMotionPass{max-width:145px}
 @media(max-width:680px){.operation-legend{gap:9px}.motion-toggle{padding:4px 5px}#opMotionPass{max-width:115px}}
 </style>
-  <title>MiniTurn v0.7.6 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+  <title>MiniTurn v0.7.7 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.6</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.7</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -917,7 +917,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.7.6</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.7.7</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -1847,7 +1847,12 @@ function validateOperations(ops,job){
    if(!Number.isInteger(op.from)||!Number.isInteger(op.to)||op.from<0||op.to>=job.nodes.length||op.to<=op.from)
     errors.push(`${label}: figure point range must increase (P start to P end).`);
    else {
-    if(job.nodes[op.from].corner!=='sharp'||job.nodes[op.to].corner!=='sharp')errors.push(`${label}: range endpoints must be SHARP to avoid splitting a radius/chamfer.`);
+    // A selected point identifies a COMPLETE corner feature, not a point
+    // midway through an R/C. FROM starts at the corner EXIT tangent;
+    // TO ends at the corner EXIT tangent after including its full feature.
+    // The actual profile clipping is handled by operationContourSegments.
+    if(job.nodes[op.from].corner!=='sharp')warnings.push(`${label}: P${op.from+1} start uses the ${job.nodes[op.from].corner} EXIT tangent; the incoming corner is not recut.`);
+    if(job.nodes[op.to].corner!=='sharp')warnings.push(`${label}: P${op.to+1} end includes the entire ${job.nodes[op.to].corner} to its EXIT tangent.`);
     const review=reviewFigureRegion(job.nodes,op.from,op.to);
     if(review.recess)warnings.push(`${label}: recessed region — check right/left-hand access or a grooving strategy.`);
     if(review.reverseZ)warnings.push(`${label}: Z reverses within selected region — operator must review cutting sequence.`);
@@ -1886,7 +1891,10 @@ function validateOperations(ops,job){
 function operationContourSegments(profile,op){
  if(op.kind==='face')return [];
  if(!profile||profile.errors?.length)return [];
- return profile.segments.filter(s=>s.from>=op.from&&s.to<=op.to);
+ // Exact feature ownership: an R/C at TO is included as a whole;
+ // an R/C at FROM is excluded and cutting begins at its outgoing tangent.
+ // Never split an exact circle/chamfer merely because the range uses its node.
+ return profile.segments.filter(s=>s.from>=op.from&&s.to<=op.to&&!(s.from===op.from&&s.to===op.from));
 }
 
 return {OPERATION_VERSION,OP_KINDS,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments};
@@ -2710,7 +2718,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.7.6.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.7.7.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -2729,7 +2737,7 @@ const cleanTxt=s=>String(s||'').replace(/[\x00-\x1f\x7f]/g,' ').trim();
 const pfValue=v=>Number.isFinite(v)?(job.units==='inch'?v.toFixed(4):v.toFixed(3)):'NOT ENTERED';
 function pfFingerprintFor(j){return JSON.stringify([j.units,j.stock,j.workSide,j.nodes,j.tools,j.operations,normalizeJobSetup(j.setup)]);}
 
-/** v0.7.6 machine-neutral, NON-EXECUTABLE nominal process-motion preview.
+/** v0.7.7 machine-neutral, NON-EXECUTABLE nominal process-motion preview.
  * Plans selected OD regions, conservative outside-only turning over grooves, OD
  * finish lines/arcs, facing, and simple rectangular grooving. NOT verified motion IR.
  * All proposed paths and stock envelopes are advisory theoretical-point sweeps;
@@ -2823,7 +2831,16 @@ function nominalMotionForOperation(source,op,profileArg=null){
   const region=operationContourSegments(profile,op),sample=motionRegionSample(region);
   if(!region.length||sample.length<2)return blocked('Selected region has no complete contour.');
   const review=reviewFigureRegion(source.nodes,op.from,op.to);
-  if(review.reverseZ||sample.some((p,i)=>i&&p.u<sample[i-1].u-1e-7))return blocked('Reverse-Z / backtracking contour: choose another region or tool approach.');
+  const backward=region.find(s=>{
+   const pts=s.kind==='arc'?Array.from({length:33},(_,i)=>profileArcAt(s,i/32)):[s.start,s.end];
+   return pts.some((p,i)=>i>0&&p.u<pts[i-1].u-1e-7);
+  });
+  if(review.reverseZ||backward){
+   const label=backward?(backward.from===backward.to?`corner P${backward.to+1}`:`P${backward.from+1}→P${backward.to+1}`):'selected region';
+   return blocked(`REVERSE Z AT ${label}: contour travels toward Z0. Review figure point order or use a separately accessible machining strategy.`,[
+    'An R/C endpoint is permitted, but it does not make a reverse-direction cut safe for this OD planner.',
+    'Confirm the entered figure, especially shoulder directions, before planning a feed or retract.']);
+  }
   if(sample.some(p=>!Number.isFinite(p.u)||!Number.isFinite(p.v)||p.v< -1e-8||p.v>stockR+1e-8))return blocked('Nonfinite or out-of-stock geometry.');
   const uStart=sample[0].u,uEnd=sample[sample.length-1].u;
   if(uEnd<=uStart+1e-8)return blocked('Region has no axial extent.');
@@ -3022,7 +3039,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.7.6',status:'NOMINAL_PATH_PREVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.7.7',status:'NOMINAL_PATH_PREVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,workSide:source.workSide,units:source.units},
@@ -3148,7 +3165,7 @@ function refreshJobInfo(){
 }
 function textSetupSheet(){
  const s=normalizeJobSetup(job.setup),report=preflightReport(job);
- const lines=['MINITURN 0.7.6 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ const lines=['MINITURN 0.7.7 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
  job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · RPM ${op.rpm} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · XØ${pfValue(op.faceStartX)} TO XØ${pfValue(op.faceEndX)} · AXIAL STEP ${pfValue(op.faceStep)}`:`   P${op.from+1} TO P${op.to+1} · ACCESS: ${op.accessPlan||'review'}`);});
  lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
  lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
@@ -4025,8 +4042,16 @@ function drawOperationGraph(){
   if(face.every(p=>Number.isFinite(p.u)&&Number.isFinite(p.v)))g.append(el('path',{d:path(face),fill:'none',stroke:'#ffc377','stroke-width':6,'stroke-linecap':'round'}));
  }else{
   const segs=operationContourSegments(profile,op),active=sampleProfile({segments:segs},base);
-  if(active.length)g.append(el('path',{d:path(active),fill:'none',stroke:'#ffc377','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round'}));
-  for(const ix of [op.from,op.to]){const n=job.nodes[ix];if(!n)continue;const q=map({u:-n.z,v:n.x/2});g.append(el('circle',{cx:q.x,cy:q.y,r:6,fill:'#ffe1a7',stroke:'#8c4e25','stroke-width':2}));}
+  if(active.length){
+   g.append(el('path',{d:path(active),fill:'none',stroke:'#ffc377','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round'}));
+   // Bound markers live on the effective trimmed contour, not at a
+   // theoretical sharp vertex that has been rounded or chamfered away.
+   for(const [point,tag] of [[segs[0].start,'START'],[segs[segs.length-1].end,'END']]){
+    const q=map(point);
+    g.append(el('circle',{cx:q.x,cy:q.y,r:6,fill:'#ffe1a7',stroke:'#8c4e25','stroke-width':2}));
+    g.append(el('text',{x:q.x+9,y:q.y+21,fill:'#ffc377','font-size':11,'font-family':'monospace'},tag));
+   }
+  }
  }
  const preview=nominalMotionForOperation(job,op,profile);
  const chosen=$('opMotionPass').value;
@@ -4037,14 +4062,20 @@ function drawOperationGraph(){
  job.nodes.forEach((n,i)=>{const q=map(physicalPoint(n));g.append(el('circle',{cx:q.x,cy:q.y,r:5,fill:'#c6f4d3',stroke:'#224f41','stroke-width':1.5}));text(`P${i+1}`,q.x+9,q.y-9,'#c3dabd',12);});
  text('Z0 FACE',mirrorZ?W-130:30,32);text(mirrorZ?'← -Z CHUCK':'-Z CHUCK →',mirrorZ?30:W-165,32);
  if(op.kind==='face')text(`FACE: XØ${opFormat(op.faceStartX)} → XØ${opFormat(op.faceEndX)} @ Z${opFormat(op.faceZ)}`,20,H-27,'#ffd090',14);
- else text(`REGION: P${String(op.from+1).padStart(2,'0')} → P${String(op.to+1).padStart(2,'0')}`,20,H-27,'#ffd090',14);
+ else{
+  const bounds=operationContourSegments(profile,op),startCorner=job.nodes[op.from]?.corner,endCorner=job.nodes[op.to]?.corner;
+  const suffix=[startCorner!=='sharp'?'START: R/C EXIT':'',endCorner!=='sharp'?'END: FULL R/C':''].filter(Boolean).join(' · ');
+  text(`REGION: P${String(op.from+1).padStart(2,'0')} → P${String(op.to+1).padStart(2,'0')}${bounds.length&&suffix?' · '+suffix:''}`,20,H-27,'#ffd090',12);
+ }
  $('opGraphTitle').textContent=`${op.name.toUpperCase().slice(0,38)} · ${mirrorZ?'MIRRORED Z':'Z0 LEFT'} · NOMINAL PREVIEW ONLY`;
  $('opEditorTitle').textContent=`OP ${String(opSelected+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||'UNKNOWN'}`;
  $('opMirror').setAttribute('aria-pressed',String(mirrorZ));$('opMirror').classList.toggle('active',mirrorZ);
  const tool=job.tools.find(t=>t.id===op.toolId);
  $('opReadout').textContent=`${OP_KINDS[op.kind]} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · ${preview.status==='PREVIEW_ONLY'?preview.count+' PASSES':'PATH BLOCKED'} · NC LOCKED`;
  refreshAccessReview(op);
- opMsg(check.errors.length?'OPERATION INPUT INVALID':'OPERATION DEFINITION VALID · NOT PROVEN',check.errors.length?check.errors:[...check.warnings,'Orange pass lines are theoretical tool-point motions, NOT collision-checked toolpaths. NC is locked.'],check.errors.length>0);
+ opMsg(check.errors.length?'OPERATION INPUT INVALID':preview.status==='BLOCKED'?'OPERATION DEFINED · MOTION PREVIEW BLOCKED':'OPERATION DEFINITION VALID · NOT PROVEN',
+  check.errors.length?check.errors:preview.status==='BLOCKED'?[preview.reason,...check.warnings,...preview.warnings,'NC output is locked.']:
+   [...check.warnings,'Orange pass lines are theoretical tool-point motions, NOT collision-checked toolpaths. NC is locked.'],check.errors.length>0||preview.status==='BLOCKED');
 }
 function opMarkDirty(){opDirty=true;drawOperationGraph();}
 function svgPointerPoint(svg,event){
@@ -4052,7 +4083,7 @@ function svgPointerPoint(svg,event){
  return p.matrixTransform(svg.getScreenCTM().inverse());
 }
 function pickRegionNode(i){if(!opRegionPick||i<0||!job.nodes[i])return;
- if(job.nodes[i].corner!=='sharp')return opMsg('SELECT A SHARP POINT',['Region boundaries must be sharp vertices.'],true);
+ // Fillet/chamfer node selection is legal: its exact entry/exit tangencies govern the operation region.
  const id=opRegionPick==='from'?'opFrom':'opTo';$(id).value=String(i);opMarkDirty();
  if(opRegionPick==='from'){opRegionPick='to';$('pickFrom').classList.remove('picking');$('pickTo').classList.add('picking');}
  else{opRegionPick=null;$('pickTo').classList.remove('picking');}
