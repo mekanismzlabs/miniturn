@@ -1,0 +1,38 @@
+MiniTurn — Source-Available Evaluation Terms
+Copyright (c) 2026 NAHRGANG HOLDINGS LLC. All rights reserved.
+
+1. Ownership
+   MiniTurn, including its original source code, interface, documentation, and
+   related materials, is proprietary to its respective copyright owner(s).
+   Public access to this repository does not make MiniTurn open source.
+
+2. Limited evaluation permission
+   You may view MiniTurn and run an unmodified copy for personal,
+   non-commercial evaluation and testing. You may not use the software to
+   control machinery or rely on its output without independent verification.
+
+3. No other license
+   Except for the limited permission above, rights expressly granted by the
+   GitHub Terms of Service for public repositories, and rights provided by
+   applicable law, no permission is granted to reproduce, modify, publish,
+   distribute, sublicense, sell, incorporate into another product, or use
+   MiniTurn commercially without prior written authorization from the
+   copyright owner.
+
+4. Third-party material
+   Any third-party material included in 
+the project remains subject to its
+   own copyright and license terms. These terms apply only to rights the
+   MiniTurn copyright owner is authorized to grant.
+
+5. No warranty; machining safety
+   MINITURN IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF
+   ANY KIND, EXPRESS OR IMPLIED, TO THE MAXIMUM EXTENT PERMITTED BY LAW.
+   Its calculations, simulations, toolpaths, and outputs may be incomplete
+   or incorrect. The software is not certified for machine control. A
+   qualified operator must independently verify all data, 
+clearances,
+   offsets, programs, and machine-specific safety requirements before use.
+
+For permission beyond these terms, contact the repository owner:
+https://github.com/mekanismzlabs/miniturn
