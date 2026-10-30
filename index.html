@@ -11,10 +11,8 @@
 
 /* MiniTurn v0.1.1: Z view mirror only (not machine coordinates). */
 .zoom-controls{flex-wrap:wrap;justify-content:flex-end}
-.zoom-controls .mirror-toggle{min-width:118px;padding:0 10px;border-color:#598773;color:#c6e9d5;font-weight:700;white-space:nowrap}
-.zoom-controls .mirror-toggle.active{background:#2b7250;border-color:#8cdab1;color:#f0fff4;box-shadow:inset 0 0 0 1px #5fbc8b}
 .view-note{color:#a9cbb9;font-size:9px;letter-spacing:.45px;margin-top:9px;line-height:1.5}
-@media(max-width:620px){.zoom-controls .mirror-toggle{min-width:105px;font-size:10px;padding:0 5px}.view-note{font-size:8px}}
+@media(max-width:620px){.view-note{font-size:8px}}
 /* v0.2 / dedicated tool-table programming screen */
 [hidden]{display:none!important}
 .page-tabs{margin-top:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -203,15 +201,13 @@ body[data-display="daylight"] .text-btn{background:#dceaf2;color:#12334b;border-
 body[data-display="daylight"] .action-btn.primary,
 body[data-display="daylight"] .numeric-pad .enter-key{background:#075c8d;color:#fff;border-color:#075c8d}
 body[data-display="daylight"] .softkeys b{color:#0b5d90}
-body[data-display="daylight"] .zoom-controls .mirror-toggle.active{background:#15597b;color:#fff}
-body[data-display="daylight"] .status-box strong{color:#095e39}
+body[data-display="daylight"] body[data-display="daylight"] .status-box strong{color:#095e39}
 body[data-display="daylight"] .status-box.invalid{background:#fff0ed;color:#812a16}
 body[data-display="daylight"] .status-box.invalid strong{color:#982c15}
 body[data-display="daylight"] .saveState,body[data-display="daylight"] .tab-note{color:#385267}
 body[data-display="daylight"] .row-table tr:hover td{background:#dbeaf3}
 body[data-display="contrast"] .section-header h2,body[data-display="contrast"] .status-box strong,body[data-display="contrast"] .softkeys b{color:#ffff73}
-body[data-display="contrast"] .zoom-controls .mirror-toggle.active{background:#fff;color:#111}
-
+body[data-display="contrast"] 
 /* v0.5.3 insert-angle controls: independent of the old holder-angle advanced menu. */
 .insert-angle-actions {margin:9px 0 6px;flex-wrap:wrap;}
 .insert-angle-actions button:last-child {flex:2 1 200px; color:var(--ink,#defff0);}
@@ -448,7 +444,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 .motion-table-wrap{max-height:280px;overflow:auto}.motion-table{border-collapse:collapse;width:100%;font-size:11px;white-space:nowrap}.motion-table th,.motion-table td{padding:7px 10px;border-bottom:1px solid var(--panel-border);text-align:left}.motion-table th{position:sticky;top:0;background:var(--surface2);color:var(--mute)}
 .motion-warnings{font:10px/1.65 Consolas,monospace;color:var(--amber);white-space:pre-wrap;margin-top:8px}
 @media(max-width:680px){#opMotionPass{max-width:108px}.operation-preview-panel .inspect-toolbar{flex-wrap:wrap}.motion-toggle{font-size:9px}}
-/* v0.8.4: selected-region paths and stock-envelope visualization */
+/* v0.8.5: selected-region paths and stock-envelope visualization */
 .operation-legend .stock-before{border-color:#ecc06c;border-top-style:dashed}
 .operation-legend .stock-after{border-color:#adcbf7}
 .motion-notice{font:9px/1.45 Consolas,monospace;color:var(--mute);padding-top:7px}
@@ -460,7 +456,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 .nose-summary.blocked{color:#ffd0c5;border-color:#9b5950;background:#2e1c1e}
 @media(max-width:680px){.operation-preview-panel .zoom-controls{flex-wrap:wrap;gap:5px}.operation-preview-panel .motion-toggle{min-height:34px} }
 
-/* v0.8.4 · ARC ASSIST lives inside the existing FAPT figure entry. */
+/* v0.8.5 · ARC ASSIST lives inside the existing FAPT figure entry. */
 .feature-keys{grid-template-columns:repeat(5,minmax(0,1fr))}
 .feature-keys button{font-size:20px;min-width:0}
 .feature-keys button small{font-size:9px}
@@ -503,7 +499,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 #opGraph.is-dragging{cursor:grabbing}
 @media(max-width:550px){.motion-inspector{padding:7px 9px}.motion-inspector-hint{font-size:8px}#opScrubTrack{font-size:9px;max-width:58%}}
 </style>
-  <title>MiniTurn v0.8.4 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+  <title>MiniTurn v0.8.5 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -542,7 +538,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.8.4</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.8.5</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -617,6 +613,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
           <div id="arcStatus" class="arc-message" role="status" aria-live="polite">Enter dimensions from the print. No solution is assumed.</div>
           <div id="arcCandidates" class="arc-candidates" role="group" aria-label="Choose an arc by appearance"></div>
           <div id="arcCalculated" class="arc-calculated" hidden></div>
+          <div class="view-note">CW / CCW = P START → END AS SHOWN · CHUCK LEFT · NOT CONTROLLER G02 / G03</div>
         </section>
         <div class="symbolic-actions"><button type="button" id="symApply" class="action-btn primary">ADD ELEMENT</button><button type="button" id="symUndo" class="action-btn">UNDO LAST</button><button type="button" id="goMachining" class="action-btn">MACHINING →</button></div>
         <div id="symbolicMessage" class="symbolic-message" role="status" aria-live="polite"></div>
@@ -637,7 +634,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
     </section>
     <section class="panel graph-panel" aria-label="Measured profile graph">
       <div class="section-header"><h2>03 / FIGURE GRAPH · TAP POINT TO EDIT</h2><span class="small-chip">PHYSICAL 1:1 AXES</span></div>
-      <div class="graph-toolbar"><span id="graphTitle" class="graph-subtitle">OD PROFILE / FACE AT Z0</span><div class="zoom-controls"><button id="mirrorZ" class="mirror-toggle" type="button" aria-pressed="false" title="Mirror Z direction on graph (Z0 right)">F9 · MIRROR Z</button><button id="zoomOut" title="Zoom out">−</button><button id="zoomFit">FIT</button><button id="zoomIn" title="Zoom in">+</button></div></div>
+      <div class="graph-toolbar"><span id="graphTitle" class="graph-subtitle">OD PROFILE / FACE AT Z0</span><div class="zoom-controls"><button id="zoomOut" title="Zoom out">−</button><button id="zoomFit">FIT</button><button id="zoomIn" title="Zoom in">+</button></div></div>
       <div class="graph-frame"><svg id="profileGraph" viewBox="0 0 900 540" role="img" aria-label="True proportional lathe X diameter and Z axial profile, including stock outline"></svg></div>
       
       <div class="legend"><span><i class="legend-line finished"></i> FINISHED CONTOUR</span><span><i class="legend-line stock"></i> STOCK ENVELOPE</span><span><i class="legend-dot"></i> SELECTED POINT</span></div>
@@ -849,7 +846,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
     <section class="panel inspect-graph-panel" aria-label="Placed tool and finished part profile">
       <div class="section-header"><h2>09 / TOOL AGAINST PART</h2><span class="small-chip">TRUE PHYSICAL X:Z SCALE</span></div>
       <div class="inspect-toolbar"><span id="inspectGraphTitle" class="graph-subtitle">STATIC TOOL + PART OVERLAY</span>
-        <div class="zoom-controls"><button id="inspectZoomOut" title="Zoom out">−</button><button id="inspectFit" title="Fit part and tool">FIT</button><button id="inspectZoomIn" title="Zoom in">+</button><button id="inspectMirror" class="mirror-toggle" title="Mirror display Z direction">F9 MIRROR Z</button></div>
+        <div class="zoom-controls"><button id="inspectZoomOut" title="Zoom out">−</button><button id="inspectFit" title="Fit part and tool">FIT</button><button id="inspectZoomIn" title="Zoom in">+</button></div>
       </div>
       <div class="inspect-graph-frame"><svg id="inspectGraph" viewBox="0 0 1000 560" role="img" aria-label="True proportional profile and manually placed tool and holder. Click to position the tool reference."></svg></div>
       <div class="inspect-legend"><span><i class="legend-line finished"></i> FINISHED PROFILE</span><span><i class="legend-line stock"></i> RAW STOCK</span><span><i class="legend-line insert"></i> INSERT</span><span><i class="legend-line holder"></i> EXPOSED HOLDER</span><span><i class="legend-dot datum"></i> REFERENCE</span></div>
@@ -954,7 +951,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
     <section class="panel operation-preview-panel" aria-label="Operation region preview">
       <div class="section-header"><h2>12 / CUTTING MOTION PREVIEW</h2><span class="small-chip">X DIAMETER · Z AXIAL</span></div>
       <div class="inspect-toolbar"><div id="opGraphTitle" class="graph-subtitle">MACHINING REGION</div>
-      <div class="zoom-controls"><label class="motion-toggle"><input id="opShowStock" type="checkbox" checked> STOCK</label><label class="motion-toggle"><input id="opShowMotion" type="checkbox" checked> PATHS</label><label class="motion-toggle" title="Geometric insert-nose centerline for finish contours"><input id="opShowNose" type="checkbox" checked> NOSE</label><label class="motion-toggle" title="Theoretical sharp-reference path derived from tool sketch"><input id="opShowReference" type="checkbox"> TIP REF</label><label class="motion-toggle" title="2D schematic insert and exposed holder at scrubber position; not collision-certified"><input id="opShowToolBody" type="checkbox"> TOOL</label><select id="opMotionPass" aria-label="Highlight a cutting pass"><option value="all">ALL PASSES</option></select><button id="opFit">FIT</button><button id="opMirror" class="mirror-toggle" aria-pressed="false">F9 MIRROR Z</button></div></div>
+      <div class="zoom-controls"><label class="motion-toggle"><input id="opShowStock" type="checkbox" checked> STOCK</label><label class="motion-toggle"><input id="opShowMotion" type="checkbox" checked> PATHS</label><label class="motion-toggle" title="Geometric insert-nose centerline for finish contours"><input id="opShowNose" type="checkbox" checked> NOSE</label><label class="motion-toggle" title="Theoretical sharp-reference path derived from tool sketch"><input id="opShowReference" type="checkbox"> TIP REF</label><label class="motion-toggle" title="2D schematic insert and exposed holder at scrubber position; not collision-certified"><input id="opShowToolBody" type="checkbox"> TOOL</label><select id="opMotionPass" aria-label="Highlight a cutting pass"><option value="all">ALL PASSES</option></select><button id="opFit">FIT</button></div></div>
       <div class="operation-graph-frame"><svg id="opGraph" viewBox="0 0 900 540" role="img" aria-label="Part and planned cutting motions; tap or drag along a drawn path to inspect tool position"></svg></div>
       <div class="motion-inspector" aria-label="Tool path inspection controls">
         <div class="motion-inspector-header"><span>PATH INSPECTION <span class="motion-inspector-hint">TOUCH / DRAG PATH</span></span><select id="opScrubTrack" aria-label="Choose path to follow"><option value="nose">NOSE CENTER · FINISH</option><option value="moves">NOMINAL PASS MOVES</option></select></div>
@@ -1040,7 +1037,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.8.4</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.8.5</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -2090,11 +2087,16 @@ function projectGraphPoint(p,{width,height,scale,centerU,centerV,mirrorZ=false})
   return {x:width/2+direction*(p.u-centerU)*scale, y:height/2-(p.v-centerV)*scale};
 }
 
-/** v0.8.4 ARC ASSIST. Original dimensions + stable choice key are saved on
+/** v0.8.5 ARC ASSIST. Original dimensions + stable choice key are saved on
  * the END node (arcToPrev). X values from the print are diameters; construction
  * is entirely in true physical (U=-Z,V=X/2) space. No guess is committed.
  * A returned candidate is one exact arc; no polygon approximations in the model.
  */
+/** Display direction is viewed on the fixed chuck-left graph from Pstart to Pend.
+ * World U=-Z, V=X/2, plotted x=-U and y-up=+V, so the graphic reverses
+ * mathematical sweep handedness. Neither label nor display is a G02/G03 command.
+ */
+function arcViewDirection(sweep){return sweep>0?'CW':'CCW';}
 function arcAssistCandidates(nodes, startIndex, spec, stock){
  const startNode=nodes[startIndex], start=physicalPoint(startNode), radius=Number(spec.radius), eps=1e-8;
  if(!(Number.isFinite(radius)&&radius>0))return {candidates:[],issue:'Enter a positive radius from the drawing.'};
@@ -2368,7 +2370,7 @@ function describeGeometry(job,profile) {
   job.nodes.forEach((node,i)=>lines.push(`${String(i+1).padStart(2,'0')}  X${f(node.x)}  Z${f(node.z)}  ${node.arcToPrev?'ARC R'+f(node.arcToPrev.radius)+' '+node.arcToPrev.choiceKey:(node.corner||'sharp').toUpperCase()+(node.corner!=='sharp'?' '+f(node.size):'')}`));
   lines.push('','CONSTRUCTED TANGENT ELEMENTS (PHYSICAL COORDINATES)');
   profile.segments.forEach((seg,i)=>lines.push(`${String(i+1).padStart(2,'0')} ${seg.kind.toUpperCase()} FROM X${f(seg.start.v*2)} Z${f(-seg.start.u)} TO X${f(seg.end.v*2)} Z${f(-seg.end.u)}${seg.kind==='arc'?' R'+f(seg.radius):''}`));
-  for(const seg of profile.segments.filter(s=>s.feature==='partial-arc'))lines.push(`ARC CALC · CENTER X${f(seg.center.v*2)} Z${f(-seg.center.u)} · ${seg.sweep>0?'CCW':'CW'} · ${f(Math.abs(seg.sweep)*180/Math.PI)} DEG · R${f(seg.radius)}`);
+  for(const seg of profile.segments.filter(s=>s.feature==='partial-arc'))lines.push(`ARC CALC · CENTER X${f(seg.center.v*2)} Z${f(-seg.center.u)} · VIEW ${arcViewDirection(seg.sweep)} · ${f(Math.abs(seg.sweep)*180/Math.PI)} DEG · R${f(seg.radius)}`);
   return lines.join('\n');
 }
 
@@ -2520,7 +2522,6 @@ const REFERENCE_CARDS={
 };
 
 const KEY='miniturn.v0.1.autosave';
-const VIEW_KEY='miniturn.graph.mirrorZ';
 const TOOL_MIGRATION_BACKUP_KEY='miniturn.toolMigration.original.v0.7.1';
 const LIB_KEY='miniturn.tool.library.v0.2'; // Reuses v0.2 stored library with v0.3 migration.
 const ERROR_KEY='miniturn.runtime.errors.v0.5.1';
@@ -2587,8 +2588,9 @@ let activePage='figure',toolSelected=0,toolDirty=false,toolDraftBase=null,inspec
 const $=id=>document.getElementById(id);
 const svgNS='http://www.w3.org/2000/svg';
 const clone=o=>structuredClone(o);
-let job=upgradeFigureIds({...defaultJob(),name:'NEW TURNING JOB',nodes:[{z:0,x:2.25,corner:'sharp',size:0}],operations:[]}),selected=0,zoom=1,panU=0,panV=0,mirrorZ=true,activeInput=null, lastStatus='', dirty=false;
-try {const saved=localStorage.getItem(VIEW_KEY);if(saved==='true'||saved==='false')mirrorZ=saved==='true';}catch {}
+let job=upgradeFigureIds({...defaultJob(),name:'NEW TURNING JOB',nodes:[{z:0,x:2.25,corner:'sharp',size:0}],operations:[]}),selected=0,zoom=1,panU=0,panV=0,activeInput=null, lastStatus='', dirty=false;
+// v0.8.5: fixed chuck-left view for every graph; no saved mirror preference.
+const mirrorZ=true;
 const fmt=n=>Number.isFinite(n)?Number(n).toFixed(job.units==='inch'?4:3):'—';
 const parseNumeric=s=>s.trim()!==''&&Number.isFinite(Number(s))?Number(s):null;
 // Diagnostic trail is device-local. It contains error messages and app state only, never part dimensions.
@@ -2608,7 +2610,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.7.3 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.8.5 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -2712,12 +2714,18 @@ function arcSolve(preferredKey=null){
   const btn=document.createElement('button');btn.type='button';btn.className='arc-candidate';btn.dataset.arcKey=candidate.key;
   const picture=document.createElementNS(svgNS,'svg');picture.setAttribute('viewBox','0 0 120 80');
   const points=[];for(let k=0;k<=60;k++){const theta=candidate.startAngle+candidate.sweep*k/60;points.push({u:candidate.center.u+candidate.radius*Math.cos(theta),v:candidate.center.v+candidate.radius*Math.sin(theta)});}
-  const xx=p=>60+(p.u-arcMidU)*58/arcSpan,yy=p=>40-(p.v-arcMidV)*58/arcSpan;
+  const xx=p=>60-(p.u-arcMidU)*58/arcSpan,yy=p=>40-(p.v-arcMidV)*58/arcSpan;
   const trace=points.map((p,k)=>`${k?'L':'M'}${xx(p).toFixed(2)},${yy(p).toFixed(2)}`).join(' ');
   const chord=document.createElementNS(svgNS,'line');chord.setAttribute('x1',xx(candidate.start));chord.setAttribute('y1',yy(candidate.start));chord.setAttribute('x2',xx(candidate.end));chord.setAttribute('y2',yy(candidate.end));chord.setAttribute('stroke','#8799a1');chord.setAttribute('stroke-dasharray','3 3');chord.setAttribute('stroke-width','1');picture.append(chord);
   const curve=document.createElementNS(svgNS,'path');curve.setAttribute('d',trace);curve.setAttribute('fill','none');curve.setAttribute('stroke','#5ce9d9');curve.setAttribute('stroke-width','3');picture.append(curve);
   for(const [p,color] of [[candidate.start,'#ffcb81'],[candidate.end,'#f58f77']]){const dot=document.createElementNS(svgNS,'circle');dot.setAttribute('cx',xx(p));dot.setAttribute('cy',yy(p));dot.setAttribute('r','4');dot.setAttribute('fill',color);picture.append(dot);}
-  const label=document.createElement('span');label.className='arc-candidate-label';label.textContent=`${candidate.dir} · ${candidate.angle.toFixed(1)}° · X${fmt(candidate.end.v*2)} Z${fmt(-candidate.end.u)}`;
+  // Small tangent arrow clarifies the point-order direction along the arc.
+  const tail=points[29],nose=points[31],dx=xx(nose)-xx(tail),dy=yy(nose)-yy(tail),mag=Math.hypot(dx,dy);
+  if(mag>1e-9){const ux=dx/mag,uy=dy/mag,cx=xx(nose),cy=yy(nose);
+   const arr=document.createElementNS(svgNS,'path');arr.setAttribute('d',`M${(cx-ux*9-uy*4).toFixed(2)},${(cy-uy*9+ux*4).toFixed(2)} L${cx.toFixed(2)},${cy.toFixed(2)} L${(cx-ux*9+uy*4).toFixed(2)},${(cy-uy*9-ux*4).toFixed(2)}`);
+   arr.setAttribute('stroke','#ffd389');arr.setAttribute('stroke-width','2');arr.setAttribute('fill','none');picture.append(arr);
+  }
+  const label=document.createElement('span');label.className='arc-candidate-label';label.textContent=`VIEW ${arcViewDirection(candidate.sweep)} · ${candidate.angle.toFixed(1)}° · X${fmt(candidate.end.v*2)} Z${fmt(-candidate.end.u)}`;
   btn.append(picture,label);btn.addEventListener('click',()=>arcChoose(candidate.key));$('arcCandidates').append(btn);
  }
  if(preferredKey&&solved.candidates.some(c=>c.key===preferredKey))arcChoose(preferredKey);
@@ -2729,8 +2737,8 @@ function arcChoose(key){
  arcDraft.chosenKey=key;
  for(const btn of $('arcCandidates').children)btn.classList.toggle('selected',btn.dataset.arcKey===key);
  $('arcCommit').disabled=false;
- $('arcStatus').textContent=`SELECTED ${c.dir} ARC · ${(c.angle).toFixed(2)}° (physical U/V view). Select USE SELECTED ARC to add it.`;
- const t=$('arcCalculated');t.hidden=false;t.textContent=`START X${fmt(c.start.v*2)} Z${fmt(-c.start.u)}  →  END X${fmt(c.end.v*2)} Z${fmt(-c.end.u)}\nCENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}   R${fmt(c.radius)}   ${c.dir} ${c.angle.toFixed(3)}°`;
+ $('arcStatus').textContent=`SELECTED VIEW ${arcViewDirection(c.sweep)} ARC · ${(c.angle).toFixed(2)}° · START → END ON CHUCK-LEFT GRAPH. USE SELECTED ARC to add.`;
+ const t=$('arcCalculated');t.hidden=false;t.textContent=`START X${fmt(c.start.v*2)} Z${fmt(-c.start.u)}  →  END X${fmt(c.end.v*2)} Z${fmt(-c.end.u)}\nCENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}   R${fmt(c.radius)}   VIEW ${arcViewDirection(c.sweep)} ${c.angle.toFixed(3)}°`;
  drawGraph();
 }
 function arcCommit(){
@@ -2747,7 +2755,7 @@ function arcCommit(){
   if(!mutate(next,next.nodes.length-1))return;
   symbolicHistory.push({count:1,firstIds:[next.nodes.at(-1).id],previousCorner:'sharp',previousSize:0});
  }
- const message=`ARC R${fmt(c.radius)} · ${c.dir} ${c.angle.toFixed(2)}° · CALCULATED CENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}`;
+ const message=`ARC R${fmt(c.radius)} · VIEW ${arcViewDirection(c.sweep)} ${c.angle.toFixed(2)}° · CALCULATED CENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}`;
  arcClose();$('symbolicMessage').textContent=message;notify('ARC ADDED · NO NC OUTPUT');
 }
 function refreshSymbolic(){
@@ -2952,11 +2960,8 @@ function drawGraph(){
  }
  txt('FRONT / Z0',map({u:0,v:D/2}).x,27,'#a1cab9',13,'middle');
  txt(mirrorZ?'CHUCK ← −Z':'−Z → CHUCK',mirrorZ?115:W-22,27,'#a1cab9',13,mirrorZ?'start':'end');
- $('graphReadout').textContent=`POINT ${String(selected+1).padStart(2,'0')}  ·  X (Ø) ${fmt(job.nodes[selected].x)}  ·  Z ${fmt(job.nodes[selected].z)}  ·  ${job.units.toUpperCase()}  ·  SCALE ${zoom.toFixed(2)}×  ·  ${mirrorZ?'MIRRORED Z VIEW':'NORMAL Z VIEW'}`;
- $('graphTitle').textContent=`${job.name.slice(0,36).toUpperCase()} · ${profile.segments.length} TRUE ELEMENTS · ${mirrorZ?'Z0 RIGHT':'Z0 LEFT'}`;
- $('mirrorZ').setAttribute('aria-pressed',String(mirrorZ));
- $('mirrorZ').classList.toggle('active',mirrorZ);
- $('mirrorZ').title=mirrorZ?'Show normal Z orientation (Z0 left)':'Mirror Z direction on graph (Z0 right)';
+ $('graphReadout').textContent=`POINT ${String(selected+1).padStart(2,'0')}  ·  X (Ø) ${fmt(job.nodes[selected].x)}  ·  Z ${fmt(job.nodes[selected].z)}  ·  ${job.units.toUpperCase()}  ·  SCALE ${zoom.toFixed(2)}×  · CHUCK LEFT / Z0 RIGHT`;
+ $('graphTitle').textContent=`${job.name.slice(0,36).toUpperCase()} · ${profile.segments.length} TRUE ELEMENTS · CHUCK LEFT · Z0 RIGHT`;
 }
 function update(){refreshSetup();selectRow(selected);if(activePage==='tools')refreshToolWorkspace();if(activePage==='inspect')refreshInspector();if(activePage==='operations')refreshOperations();if(activePage==='job')refreshJobInfo();syncTerminalDock();}
 function readEditor(){const x=parseNumeric($('editX').value),z=parseNumeric($('editZ').value),size=parseNumeric($('editSize').value),corner=$('editCorner').value;
@@ -2978,7 +2983,7 @@ function doAction(name){
  else if(name==='prev')selectRow(selected-1);
  else if(name==='next')selectRow(selected+1);
  else if(name==='fit'){zoom=1;panU=0;panV=0;drawGraph();}
- else if(name==='mirror'){mirrorZ=!mirrorZ;try{localStorage.setItem(VIEW_KEY,String(mirrorZ));}catch{}drawGraph();}
+
  else if(name==='save'){autosave();}
  else if(name==='report'){const profile=buildProfile(job);$('reportText').textContent=describeGeometry(job,profile);$('reportDialog').showModal();}
 }
@@ -3066,7 +3071,6 @@ function wire(){
  $('zoomIn').addEventListener('click',()=>{zoom=Math.min(40,zoom*1.5);drawGraph();});
  $('zoomOut').addEventListener('click',()=>{zoom=Math.max(.25,zoom/1.5);drawGraph();});
  $('zoomFit').addEventListener('click',()=>doAction('fit'));
- $('mirrorZ').addEventListener('click',()=>{doAction('mirror');if(activePage==='tools')drawToolPreview();});
  $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job=upgradeFigureIds({schema:6,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6,type:'solid',bore:0},workSide:'front',nodes:[{z:0,x:job.units==='inch'?2.5:63.5,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{},setup:makeJobSetup()});symbolicHistory=[];selected=0;zoom=1;panU=0;panV=0;update();autosave();});
  $('importJob').addEventListener('click',()=>$('fileImport').click());
  $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const upgraded=applyLegacyJob(loaded);const result=buildProfile(upgraded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=upgraded;symbolicHistory=[];opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
@@ -3074,7 +3078,7 @@ function wire(){
  $('reportButton').addEventListener('click',()=>doAction('report'));
  $('closeReport').addEventListener('click',()=>$('reportDialog').close());
  $('downloadReport').addEventListener('click',()=>download($('reportText').textContent,safeFilename()+'_figure.txt','text/plain'));
- window.addEventListener('keydown',e=>{if(e.altKey&&e.key==='1'){e.preventDefault();setPage('figure');return;}if(e.altKey&&e.key==='2'){e.preventDefault();setPage('tools');return;}if(e.altKey&&e.key==='3'){e.preventDefault();setPage('inspect');return;}if(e.altKey&&e.key==='4'){e.preventDefault();setPage('operations');return;}if(e.altKey&&e.key==='5'){e.preventDefault();setPage('job');return;}if(e.key==='F12'){e.preventDefault();setPage('inspect');return;}if(e.key==='F10'){e.preventDefault();setPage('figure');return;}if(e.key==='F11'){e.preventDefault();setPage('tools');return;}if(activePage==='operations'){if(e.key==='F9'){e.preventDefault();doAction('mirror');drawOperationGraph();return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();opAction(['add','save','duplicate','delete','prev','next','up','down'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected-1);return;}return;}if(activePage==='inspect'){if(e.key==='F9'){e.preventDefault();doAction('mirror');refreshInspector();return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();inspectAction(['prev','next','xminus','xplus','zminus','zplus','snap','fit'][Number(e.key.slice(1))-1]);return;}return;}if(activePage==='tools'){if(/^F[1-8]$/.test(e.key)){e.preventDefault();toolAction(['add','save','duplicate','delete','prev','next','libsave','libexport'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected-1);return;}return;}if(e.key==='F9'){e.preventDefault();doAction('mirror');return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();doAction(['insert','replace','delete','prev','next','fit','save','report'][Number(e.key.slice(1))-1]);return;}
+ window.addEventListener('keydown',e=>{if(e.altKey&&e.key==='1'){e.preventDefault();setPage('figure');return;}if(e.altKey&&e.key==='2'){e.preventDefault();setPage('tools');return;}if(e.altKey&&e.key==='3'){e.preventDefault();setPage('inspect');return;}if(e.altKey&&e.key==='4'){e.preventDefault();setPage('operations');return;}if(e.altKey&&e.key==='5'){e.preventDefault();setPage('job');return;}if(e.key==='F12'){e.preventDefault();setPage('inspect');return;}if(e.key==='F10'){e.preventDefault();setPage('figure');return;}if(e.key==='F11'){e.preventDefault();setPage('tools');return;}if(activePage==='operations'){if(/^F[1-8]$/.test(e.key)){e.preventDefault();opAction(['add','save','duplicate','delete','prev','next','up','down'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectOperation(opSelected-1);return;}return;}if(activePage==='inspect'){if(/^F[1-8]$/.test(e.key)){e.preventDefault();inspectAction(['prev','next','xminus','xplus','zminus','zplus','snap','fit'][Number(e.key.slice(1))-1]);return;}return;}if(activePage==='tools'){if(/^F[1-8]$/.test(e.key)){e.preventDefault();toolAction(['add','save','duplicate','delete','prev','next','libsave','libexport'][Number(e.key.slice(1))-1]);return;}if(e.key==='ArrowDown'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected+1);return;}if(e.key==='ArrowUp'&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();selectTool(toolSelected-1);return;}return;}if(/^F[1-8]$/.test(e.key)){e.preventDefault();doAction(['insert','replace','delete','prev','next','fit','save','report'][Number(e.key.slice(1))-1]);return;}
   if(e.key==='Escape'&&$('reportDialog').open){$('reportDialog').close();return;}
   if(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement)return;
   if(e.key==='ArrowDown'){e.preventDefault();doAction('next');}if(e.key==='ArrowUp'){e.preventDefault();doAction('prev');}
@@ -3150,7 +3154,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.8.4.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.8.5.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -4040,10 +4044,10 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.8.4',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.8.5',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
-  coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,workSide:source.workSide,units:source.units},
+  coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,displayOrientation:'CHUCK_LEFT_Z0_RIGHT',displayOrientationNotInCode:true,workSide:source.workSide,units:source.units},
   setup:{...s,stock:structuredClone(source.stock)},
   figures:{nodes:structuredClone(source.nodes),sourceErrors:[...profile.errors],exactSegments:profile.errors.length?[]:structuredClone(profile.segments),regionModel:profile.figRegions?{kind:profile.figRegions.kind,idEndIndex:profile.figRegions.idEndIndex,odStartIndex:profile.figRegions.odStartIndex,summary:profile.figRegions.summary,regions:{id:structuredClone(profile.figRegions.id),face:structuredClone(profile.figRegions.face),od:structuredClone(profile.figRegions.od)}}:null},
   steps:source.operations.map((op,i)=>extractStep(op,i,source,profile)),
@@ -4497,7 +4501,7 @@ function drawToolPreview(){
  // Hiding a marker hides its outer active-reference ring too; datum selection itself is unchanged.
  label('T = SHARP · P = POCKET · C = NOSE',15,H-66,'#ffd08a',12);
  label('⊕ ACTIVE REFERENCE: '+(t.tipReference==='virtual'?'THEORETICAL TIP':'NOSE CENTER'),15,H-47,'#ffb9d4',12);
- label(mirrorZ?'Z+ / CHUCK LEFT →':'Z− / CHUCK RIGHT →',W-15,24,'#aacbb8',12,'end');
+ label('← −Z / CHUCK LEFT · Z0 RIGHT',W-15,24,'#aacbb8',12,'end');
  label(t.mountSide==='front'?'FRONT / X+ ↑':'REAR / X− ↑',15,24,'#aacbb8',12);
  label(`1 DIV = ${step.toFixed(job.units==='inch'?4:3)} ${job.units==='inch'?'IN':'MM'}`,15,H-18,'#77ad94',12);
  const f=v=>v.toFixed(job.units==='inch'?4:3);
@@ -4907,8 +4911,7 @@ function drawInspectorGraph(){
  const face=map({u:0,v:0});label('Z0 FACE',Math.max(60,Math.min(W-80,face.x)),24,'#a5c2ac',13,'middle');
  label(mirrorZ?'CHUCK ← −Z':'−Z → CHUCK',mirrorZ?20:W-20,24,'#b7dfc9',13,mirrorZ?'start':'end');
  if($('inspectSnap').checked)label('PROFILE SNAP ON',W-18,H-45,'#f9d28b',13,'end');
- $('inspectGraphTitle').textContent=`T${t.station} ${t.name.slice(0,25).toUpperCase()} · ${mirrorZ?'MIRROR Z':'NORMAL Z'} · ${inspectZoom.toFixed(2)}×`;
- $('inspectMirror').classList.toggle('active',mirrorZ);$('inspectMirror').setAttribute('aria-pressed',String(mirrorZ));
+ $('inspectGraphTitle').textContent=`T${t.station} ${t.name.slice(0,25).toUpperCase()} · CHUCK LEFT / Z0 RIGHT · ${inspectZoom.toFixed(2)}×`;
  $('inspectReadout').textContent=`X Ø${fmt(p.x)}  Z${fmt(p.z)} ${job.units.toUpperCase()} · TIP GAP ${fmt(result.tipToProfile.distance)} · TAP GRAPH TO POSITION`;
  const metrics=[inspectColorMetric('HOLDER / FINISHED PART',result.holderFinishGap,result.holderFinished,result.holderFinished===null),
   inspectColorMetric('HOLDER / RAW STOCK',result.holderStockGap,result.holderStock,result.holderStock===null),
@@ -4938,7 +4941,6 @@ function wireInspector(){
  $('inspectFit').addEventListener('click',()=>inspectAction('fit'));
  $('inspectZoomIn').addEventListener('click',()=>{inspectZoom=Math.min(35,inspectZoom*1.45);drawInspectorGraph();});
  $('inspectZoomOut').addEventListener('click',()=>{inspectZoom=Math.max(.2,inspectZoom/1.45);drawInspectorGraph();});
- $('inspectMirror').addEventListener('click',()=>{doAction('mirror');if(activePage==='inspect')drawInspectorGraph();});
  document.querySelectorAll('[data-inspect-action]').forEach(btn=>btn.addEventListener('click',()=>inspectAction(btn.dataset.inspectAction)));
  const graph=$('inspectGraph');graph.addEventListener('click',e=>{
   if(!inspectProjection||!inspectionTool())return;
@@ -5134,9 +5136,8 @@ function drawOperationGraph(){
   text(`REGION: P${String(op.from+1).padStart(2,'0')} → P${String(op.to+1).padStart(2,'0')}${bounds.length&&suffix?' · '+suffix:''}`,20,H-27,'#ffd090',12);
  }
  if(profile.figRegions?.kind==='id-face-od'){const rg=profile.figRegions;for(const [region,color] of [[rg.id,'#e8af76'],[rg.face,'#92c4ed']]){const points=sampleProfile({segments:region},base);if(points.length)g.append(el('path',{d:path(points),fill:'none',stroke:color,'stroke-width':3.4,'stroke-opacity':.88}));}}
- $('opGraphTitle').textContent=`${op.name.toUpperCase().slice(0,38)} · ${mirrorZ?'MIRRORED Z':'Z0 LEFT'} · NOMINAL PREVIEW ONLY`;
+ $('opGraphTitle').textContent=`${op.name.toUpperCase().slice(0,38)} · CHUCK LEFT / Z0 RIGHT · NOMINAL PREVIEW ONLY`;
  $('opEditorTitle').textContent=`OP ${String(opSelected+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||'UNKNOWN'}`;
- $('opMirror').setAttribute('aria-pressed',String(mirrorZ));$('opMirror').classList.toggle('active',mirrorZ);
  const tool=job.tools.find(t=>t.id===op.toolId);
  $('opReadout').textContent=`${OP_KINDS[op.kind]} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · ${preview.status==='PREVIEW_ONLY'?preview.count+' PASSES':'PATH BLOCKED'} · NC LOCKED`;
  refreshAccessReview(op);
@@ -5235,7 +5236,6 @@ function wireOperations(){
  $('opUseGroove').addEventListener('click',useGrooveRegion);
  $('opAccessPlan').addEventListener('change',opMarkDirty);
  $('opFit').addEventListener('click',drawOperationGraph);
- $('opMirror').addEventListener('click',()=>{doAction('mirror');drawOperationGraph();});
 }
 
 </script>
