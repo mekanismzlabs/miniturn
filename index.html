@@ -448,7 +448,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 .motion-table-wrap{max-height:280px;overflow:auto}.motion-table{border-collapse:collapse;width:100%;font-size:11px;white-space:nowrap}.motion-table th,.motion-table td{padding:7px 10px;border-bottom:1px solid var(--panel-border);text-align:left}.motion-table th{position:sticky;top:0;background:var(--surface2);color:var(--mute)}
 .motion-warnings{font:10px/1.65 Consolas,monospace;color:var(--amber);white-space:pre-wrap;margin-top:8px}
 @media(max-width:680px){#opMotionPass{max-width:108px}.operation-preview-panel .inspect-toolbar{flex-wrap:wrap}.motion-toggle{font-size:9px}}
-/* v0.7.7: selected-region paths and stock-envelope visualization */
+/* v0.7.8: selected-region paths and stock-envelope visualization */
 .operation-legend .stock-before{border-color:#ecc06c;border-top-style:dashed}
 .operation-legend .stock-after{border-color:#adcbf7}
 .motion-notice{font:9px/1.45 Consolas,monospace;color:var(--mute);padding-top:7px}
@@ -456,12 +456,12 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 #opMotionPass{max-width:145px}
 @media(max-width:680px){.operation-legend{gap:9px}.motion-toggle{padding:4px 5px}#opMotionPass{max-width:115px}}
 </style>
-  <title>MiniTurn v0.7.7 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+  <title>MiniTurn v0.7.8 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.7</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.8</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -768,7 +768,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
       <div class="section-header"><h2>10 / OPERATION SEQUENCE</h2><span class="small-chip" id="opCount">0 OPERATIONS</span></div>
       <div id="operationList" class="operation-list" role="listbox" aria-label="Select machining operation"></div>
       <div class="section-header second-header"><h2>ADD MACHINING OPERATION</h2><span class="small-chip">NO CANNED CYCLES</span></div>
-      <label class="field">OPERATION TYPE<select id="newOpKind"><option value="face">FACING</option><option value="od_rough">OD ROUGHING</option><option value="od_finish">OD FINISHING</option><option value="od_groove">OD GROOVING</option><option value="od_thread">OD THREADING</option></select></label>
+      <label class="field">OPERATION TYPE<select id="newOpKind"><option value="face">FACING</option><option value="od_rough">OD ROUGHING</option><option value="od_finish">OD FINISHING</option><option value="od_groove">OD GROOVING</option><option value="od_thread">OD THREADING</option><option value="id_rough">ID ROUGH BORING</option><option value="id_finish">ID FINISH BORING</option><option value="id_groove">ID GROOVING</option></select></label>
       <button class="action-btn primary inspect-wide" id="opAdd">F1 · ADD OPERATION</button>
       <button class="small-btn muted inspect-wide" id="opDemo">LOAD 3-OP EXAMPLE</button>
       <div class="operation-actions"><button class="action-btn" id="opDuplicate">COPY</button><button class="action-btn warn" id="opDelete">DELETE</button></div>
@@ -781,7 +781,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
       <label class="field op-step-picker" hidden>EDIT STEP<select id="opStepSelect" aria-label="Select existing machining step to edit"></select></label>
       <div class="operation-form-grid">
         <label class="field wide">OPERATION DESCRIPTION<input type="text" id="opName" maxlength="65" spellcheck="false" autocomplete="off"></label>
-        <label class="field">CHANGE STEP TYPE<select id="opKind"><option value="face">FACE</option><option value="od_rough">OD ROUGH</option><option value="od_finish">OD FINISH</option><option value="od_groove">OD GROOVE</option><option value="od_thread">OD THREAD</option></select></label>
+        <label class="field">CHANGE STEP TYPE<select id="opKind"><option value="face">FACE</option><option value="od_rough">OD ROUGH</option><option value="od_finish">OD FINISH</option><option value="od_groove">OD GROOVE</option><option value="od_thread">OD THREAD</option><option value="id_rough">ID ROUGH</option><option value="id_finish">ID FINISH</option><option value="id_groove">ID GROOVE</option></select></label>
         <label class="field">SELECT TOOL<select id="opTool"></select></label>
         <label class="operation-check wide"><input id="opEnabled" type="checkbox" checked> ENABLED</label>
       </div>
@@ -809,6 +809,23 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
           <label class="field">INNER X Ø <span class="op-unit"></span><input id="opFaceEnd" type="number" step="any" min="0"></label>
           <label class="field">FACE STEP · AXIAL <span class="op-unit"></span><input id="opFaceStep" type="number" step="any" min="0.000001"></label>
         </div>
+      </div>
+      <div id="opIdBoreFields" hidden>
+        <div class="section-header second-header"><h2>ID BORING GEOMETRY</h2><span class="small-chip">DIAMETERS / DEPTH FROM Z0</span></div>
+        <div class="operation-form-grid">
+          <label class="field">TARGET BORE X Ø <span class="op-unit"></span><input id="opIdTarget" type="number" step="any" min="0"></label>
+          <label class="field">BORE DEPTH FROM Z0 <span class="op-unit"></span><input id="opIdDepth" type="number" step="any" min="0"></label>
+        </div>
+        <p class="motion-notice">Cylinder-only ID preview. Boring depth is measured from stock front Z0; no blind-bottom profiling or machine-safe tool clearance implied.</p>
+      </div>
+      <div id="opIdGrooveFields" hidden>
+        <div class="section-header second-header"><h2>INTERNAL GROOVE</h2><span class="small-chip">CYLINDRICAL BORE</span></div>
+        <div class="operation-form-grid">
+          <label class="field">GROOVE CENTER Z <span class="op-unit"></span><input id="opIdGrooveZ" type="number" step="any" max="0"></label>
+          <label class="field">GROOVE WIDTH Z <span class="op-unit"></span><input id="opIdGrooveWidth" type="number" step="any" min="0"></label>
+          <label class="field">GROOVE ROOT X Ø <span class="op-unit"></span><input id="opIdGrooveRoot" type="number" step="any" min="0"></label>
+        </div>
+        <p class="motion-notice">Finite insert-width radial plunge at the internal groove. Clearance, neck reach and blind-hole chip control remain unverified.</p>
       </div>
       <div class="section-header second-header"><h2>CUTTING PARAMETERS</h2><span class="small-chip">DEFINITION ONLY</span></div>
       <div class="operation-form-grid">
@@ -844,7 +861,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
       <div class="operation-legend"><span><i class="legend-line finished"></i> FINISHED FIGURE</span><span><i class="legend-line region"></i> SELECTED REGION</span><span><i class="legend-line stock"></i> RAW STOCK</span><span><i class="legend-line motion-cut"></i> FEED CUT</span><span><i class="legend-line stock-before"></i> BEFORE</span><span><i class="legend-line stock-after"></i> AFTER</span><span><i class="legend-line motion-return"></i> FEED RETURN</span><span><i class="legend-line motion-rapid"></i> RAPID LINK</span></div>
       <div id="opReadout" class="readout">SELECT AN OPERATION TO INSPECT ITS REGION</div>
       <div id="opMotionSummary" class="motion-summary" role="status" aria-live="polite">SELECT AN OPERATION TO PLAN PASSES</div>
-      <details class="motion-details motion-scrub"><summary>TIP POSITION / MANUAL SCRUB</summary><input id="opMotionScrub" type="range" min="0" max="100" step="1" value="0" aria-label="Scrub theoretical tool point position"><div id="opTipReadout" class="motion-tipbox">SELECT A PATH</div></details><details class="motion-details"><summary>PASS TABLE / PREVIEW ASSUMPTIONS</summary><div class="motion-table-wrap"><table class="motion-table"><thead><tr><th>PASS</th><th>CUT X Ø</th><th>END Z</th><th>FEED</th><th>PATH TYPE</th></tr></thead><tbody id="opMotionRows"></tbody></table></div><div class="motion-notice">Remaining stock is an approximate axial envelope. Tool nose, insert width outside grooves, swept holder, and fixture geometry are not simulated.</div><div id="opMotionWarnings" class="motion-warnings"></div></details>
+      <details class="motion-details motion-scrub"><summary>TIP POSITION / MANUAL SCRUB</summary><input id="opMotionScrub" type="range" min="0" max="100" step="1" value="0" aria-label="Scrub theoretical tool point position"><div id="opTipReadout" class="motion-tipbox">SELECT A PATH</div></details><details class="motion-details"><summary>PASS TABLE / PREVIEW ASSUMPTIONS</summary><div class="motion-table-wrap"><table class="motion-table"><thead><tr><th>PASS</th><th>CUT X Ø</th><th>END Z</th><th>FEED</th><th>PATH TYPE</th></tr></thead><tbody id="opMotionRows"></tbody></table></div><div class="motion-notice">OD/ID remaining stock is an approximate annular axial envelope. No swept insert, boring-bar holder, spindle jaw, or fixture clearance is proven.</div><div id="opMotionWarnings" class="motion-warnings"></div></details>
       <div class="tool-warning compact-warning">NOMINAL TOOL-POINT PATHS ONLY · NO NOSE COMP, SWEPT HOLDER CLEARANCE, OR MACHINE VERIFICATION · NC LOCKED</div>
     </section>
   </main>
@@ -917,7 +934,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.7.7</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.7.8</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -1444,12 +1461,13 @@ const DEMO_TOOL_PRESETS=Object.freeze([
  'catalog_s20r_sclcr09', // T03: 20 mm catalog boring bar
  'catalog_ghdr25_3',    // T04: 3 mm external grooving holder
  'catalog_ser2525m16',  // T05: 16ER laydown OD thread holder
- 'drill'                  // T06: generic centerline drill
+ 'drill',                 // T06: generic centerline drill
+ 'groove_id'              // T07: generic internal groove (unverified)
 ]);
 const TOOL_TEMPLATE_REVISION='0.6.15';
 // Bump this revision whenever standard-tool pocket, pose, insert or holder
 // defaults change. Browser autosave is NOT the source of truth for presets.
-const DEMO_GENERIC_NAMES={6:'CENTERLINE DRILL · GENERIC'};
+const DEMO_GENERIC_NAMES={6:'CENTERLINE DRILL · GENERIC',7:'ID GROOVE · GENERIC (VERIFY TOOL)'};
 function starterTools(units='inch'){
  return DEMO_TOOL_PRESETS.map((key,i)=>{
   const tool=makeTemplate(key,units,i+1);
@@ -1773,13 +1791,15 @@ function reviewFigureRegion(nodes,from,to){
  }
  return {recess,reverseZ};
 }
-const {OPERATION_VERSION,OP_KINDS,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments} = (() => {
+const {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments} = (() => {
 /** MiniTurn v0.5: operation INTENT only. Never produces a toolpath or NC blocks.
  * X is diameter, Z is axial; DOC, radial finish allowance and radial clearance are PHYSICAL radii.
  * Feed is length/revolution; RPM is revolutions/minute. No G96/CSS in this release.
  */
 const OPERATION_VERSION='0.7.3';
-const OP_KINDS={od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',od_thread:'OD THREAD'};
+const OP_KINDS={od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',od_thread:'OD THREAD',id_rough:'ID ROUGH',id_finish:'ID FINISH',id_groove:'ID GROOVE'};
+const isIdOperation=k=>['id_rough','id_finish','id_groove'].includes(k);
+const isBoreOperation=k=>['id_rough','id_finish'].includes(k);
 const finite=v=>typeof v==='number'&&Number.isFinite(v);
 const numberIn=(v,a,b)=>finite(v)&&v>=a&&v<=b;
 const round8=v=>Math.round(v*1e8)/1e8;
@@ -1787,16 +1807,19 @@ const freshId=()=>`op-${Date.now().toString(36)}-${Math.random().toString(36).sl
 function makeOperation(kind,job){
  if(!OP_KINDS[kind])throw new Error('Unknown operation type.');
  const s=job.units==='mm'?25.4:1;
- const candidateKinds=kind==='face'?['face','od']:kind==='od_groove'?['od_groove']:kind==='od_thread'?['od_thread']:['od'];
+ const candidateKinds=kind==='face'?['face','od']:kind==='od_groove'?['od_groove']:kind==='od_thread'?['od_thread']:kind==='id_groove'?['id_groove']:isBoreOperation(kind)?['id']:['od'];
  const t=job.tools.find(x=>candidateKinds.includes(x.kind));
  const region=kind==='od_groove'?findFigureGrooves(job.nodes)[0]:null;
+ const stockBore=job.stock.type==='tube'?(job.stock.bore||0):0;
  const from=region?.from??0,to=region?.to??Math.max(0,job.nodes.length-1);
  return {id:freshId(),name:OP_KINDS[kind],kind,enabled:true,toolId:t?.id||'',
   from,to,fromPointId:job.nodes[from]?.id,toPointId:job.nodes[to]?.id,
-  accessPlan:'review',faceZ:0,faceStartX:job.stock.diameter,faceEndX:0,faceStep:round8(.025*s),
+  accessPlan:'review',faceZ:0,faceStartX:job.stock.diameter,faceEndX:kind==='face'?stockBore:0,faceStep:round8(.025*s),
   doc:round8(.075*s),finishRadial:round8(.01*s),finishAxial:round8(.005*s),
   feed:round8((kind==='od_rough'?.012:.006)*s),rpm:800,
-  clearanceRadial:round8(.1*s),retractZ:round8(.1*s)};
+  clearanceRadial:round8(.1*s),retractZ:round8(.1*s),
+  idTarget:round8(stockBore+.125*s),idDepth:round8(Math.min(job.stock.length,1.0*s)),
+  idGrooveZ:round8(-Math.min(job.stock.length/2,.6*s)),idGrooveWidth:round8(.125*s),idGrooveRoot:round8(stockBore+.2*s)};
 }
 function defaultOperations(job){
  const rough=makeOperation('od_rough',job),finish=makeOperation('od_finish',job);
@@ -1808,14 +1831,14 @@ function defaultOperations(job){
 function normalizeJobOperations(job){
  const copy=structuredClone(job);
  copy.schema=5;
- copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>({...op,faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*(job.units==='mm'?25.4:1))})):[];
+ copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>{const unit=job.units==='mm'?25.4:1,bore=job.stock?.bore||0;return {...op,faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*unit),idTarget:Number.isFinite(op.idTarget)?op.idTarget:round8(bore+.125*unit),idDepth:Number.isFinite(op.idDepth)?op.idDepth:round8(Math.min(job.stock.length,unit)),idGrooveZ:Number.isFinite(op.idGrooveZ)?op.idGrooveZ:round8(-Math.min(job.stock.length/2,.6*unit)),idGrooveWidth:Number.isFinite(op.idGrooveWidth)?op.idGrooveWidth:round8(.125*unit),idGrooveRoot:Number.isFinite(op.idGrooveRoot)?op.idGrooveRoot:round8(bore+.2*unit)};}):[];
  return copy;
 }
 function convertOperationUnits(ops,from,to){
  if(from===to)return structuredClone(ops);
  if(!['inch','mm'].includes(from)||!['inch','mm'].includes(to))throw Error('Invalid units.');
  const k=from==='inch'?25.4:1/25.4;
- const lengths=['faceZ','faceStartX','faceEndX','faceStep','doc','finishRadial','finishAxial','feed','clearanceRadial','retractZ'];
+ const lengths=['faceZ','faceStartX','faceEndX','faceStep','doc','finishRadial','finishAxial','feed','clearanceRadial','retractZ','idTarget','idDepth','idGrooveZ','idGrooveWidth','idGrooveRoot'];
  return ops.map(op=>{const out=structuredClone(op);for(const f of lengths)if(finite(out[f]))out[f]=round8(out[f]*k);return out;});
 }
 function validateOperations(ops,job){
@@ -1832,7 +1855,7 @@ function validateOperations(ops,job){
   if(typeof op.enabled!=='boolean')errors.push(`${label}: enabled must be true/false.`);
   const t=job.tools?.find(t=>t.id===op.toolId);
   if(!t)errors.push(`${label}: select an existing tool.`);
-  else if(op.kind==='face'?!['od','face'].includes(t.kind):op.kind==='od_groove'?t.kind!=='od_groove':op.kind==='od_thread'?t.kind!=='od_thread':t.kind!=='od')errors.push(`${label}: ${t.name} is not a compatible ${OP_KINDS[op.kind]} tool.`);
+  else if(op.kind==='face'?!['od','face'].includes(t.kind):op.kind==='od_groove'?t.kind!=='od_groove':op.kind==='od_thread'?t.kind!=='od_thread':op.kind==='id_groove'?t.kind!=='id_groove':isBoreOperation(op.kind)?t.kind!=='id':t.kind!=='od')errors.push(`${label}: ${t.name} is not a compatible ${OP_KINDS[op.kind]} tool.`);
   else {
    if(!t.verified)warnings.push(`${label}: tool dimensions are not marked checked.`);
    if(t.tipDirection===0)warnings.push(`${label}: tool-tip direction T0 / none: confirm setup.`);
@@ -1843,7 +1866,19 @@ function validateOperations(ops,job){
   if(!numberIn(op.clearanceRadial,0,1e6)||!numberIn(op.retractZ,0,1e6))errors.push(`${label}: clearance/retract must be nonnegative.`);
   if(!numberIn(op.doc,0.0000001,1e6))errors.push(`${label}: radial depth of cut must be positive.`);
   if(!numberIn(op.finishRadial,0,1e6)||!numberIn(op.finishAxial,0,1e6))errors.push(`${label}: finish allowance must be nonnegative.`);
-  if(op.kind!=='face'){
+  if(isIdOperation(op.kind)){
+   if(job.stock?.type!=='tube')errors.push(`${label}: ID preview requires TUBE stock with a known pre-existing bore.`);
+   if(isBoreOperation(op.kind)){
+    if(!numberIn(op.idTarget,(job.stock?.bore||0)+1e-7,job.stock?.diameter||0))errors.push(`${label}: target bore diameter must exceed the raw bore and not exceed stock OD.`);
+    if(!numberIn(op.idDepth,1e-7,job.stock?.length||0))errors.push(`${label}: bore depth must be within stock length, measured from Z0.`);
+   } else {
+    if(!numberIn(op.idGrooveWidth,1e-7,job.stock?.length||0))errors.push(`${label}: groove width must be positive.`);
+    if(!numberIn(op.idGrooveZ,-(job.stock?.length||0),0)||-op.idGrooveZ-op.idGrooveWidth/2<0||-op.idGrooveZ+op.idGrooveWidth/2>(job.stock?.length||0)+1e-8)errors.push(`${label}: groove must fit fully within tube length from Z0.`);
+    if(!numberIn(op.idGrooveRoot,(job.stock?.bore||0)+1e-7,job.stock?.diameter||0))errors.push(`${label}: ID groove root must exceed raw bore and be below stock OD.`);
+    if(t?.kind==='id_groove'&&(!numberIn(t.width,1e-7,1e6)||t.width>op.idGrooveWidth+1e-8))errors.push(`${label}: ID groove tool width exceeds requested groove width.`);
+   }
+   warnings.push(`${label}: ID is a cylinder/rectangular-groove definition, not an independent freeform internal contour.`);
+  }else if(op.kind!=='face'){
    if(!Number.isInteger(op.from)||!Number.isInteger(op.to)||op.from<0||op.to>=job.nodes.length||op.to<=op.from)
     errors.push(`${label}: figure point range must increase (P start to P end).`);
    else {
@@ -1889,7 +1924,7 @@ function validateOperations(ops,job){
 }
 /** Exact source primitives are returned; no tessellation until graph rendering. */
 function operationContourSegments(profile,op){
- if(op.kind==='face')return [];
+ if(op.kind==='face'||isIdOperation(op.kind))return [];
  if(!profile||profile.errors?.length)return [];
  // Exact feature ownership: an R/C at TO is included as a whole;
  // an R/C at FROM is excluded and cutting begins at its outgoing tangent.
@@ -1897,7 +1932,7 @@ function operationContourSegments(profile,op){
  return profile.segments.filter(s=>s.from>=op.from&&s.to<=op.to&&!(s.from===op.from&&s.to===op.from));
 }
 
-return {OPERATION_VERSION,OP_KINDS,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments};
+return {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments};
 })();
 /** MiniTurn Core v0.1 — no dependencies.
  * Coordinates: input X is DIAMETER, Z is axial. Calculation plane (u,v) = (-Z, X/2).
@@ -1968,7 +2003,7 @@ function validateJob(job) {
   if(nodes.some((p,i)=>i>0&&p.z>nodes[i-1].z+EPS))warnings.push('REVERSE Z CONTOUR · CHECK MACHINING REGIONS; AUTOMATIC NC NOT AVAILABLE.');
   if(nodes.length===1)warnings.push('FIGURE STARTED · ADD AT LEAST ONE MOVEMENT BEFORE MACHINING.');
   if(job.stock?.type==='special')warnings.push('Special blank is an envelope only until a blank contour editor is added.');
-  if(job.stock?.type==='tube')warnings.push('Tube bore is reference geometry only; ID wall and bore collision are not certified.');
+  if(job.stock?.type==='tube')warnings.push('Tube stock nominal annular removal is supported; insert/holder and bore swept-clearance are NOT certified.');
   if(job.workSide==='back')warnings.push('Back setup labels the starting face only; figure still progresses from Z0 toward −Z.');
   if (nodes.some((n,i)=>i>0 && finite(n.x) && finite(nodes[i-1].x) && n.x+EPS<nodes[i-1].x)) warnings.push('Recessed/undercut profile: drawing supported, but automatic roughing will require additional safety logic.');
   if(job.operations!==undefined){const check=validateOperations(job.operations,job);errors.push(...check.errors);warnings.push(...check.warnings);}
@@ -2173,7 +2208,7 @@ function inspectToolPosition(job,tool,position){
   warnings:[]};
  if(!tool.verified)result.warnings.push('Tool geometry not verified against the physical assembly.');
  if(!holder.length)result.warnings.push('No holder envelope entered — holder interference unknown.');
- if(['id','id_groove','id_thread','drill'].includes(tool.kind))result.warnings.push('No bore or hole geometry is modeled; ID/drill interference indications are incomplete.');
+ if(['id','id_groove','id_thread','drill'].includes(tool.kind))result.warnings.push('STATIC TOOL INSPECTOR does not subtract tube bore from the solid-part silhouette; ID overlap indications can be false positives. Motion preview models nominal bore stock but does NOT certify swept holder clearance.');
  if(result.holderFinished)result.warnings.push('HOLDER OVERLAPS FINISHED-PART SILHOUETTE in nominal 2D view.');
  if(result.holderStock)result.warnings.push('EXPOSED HOLDER OVERLAPS RAW STOCK ENVELOPE; material may be removed before this position.');
  if(result.insertFinished)result.warnings.push('Insert overlaps finished-part silhouette; possible intentional contact, inspect manually.');
@@ -2718,7 +2753,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.7.7.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.7.8.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -2737,14 +2772,14 @@ const cleanTxt=s=>String(s||'').replace(/[\x00-\x1f\x7f]/g,' ').trim();
 const pfValue=v=>Number.isFinite(v)?(job.units==='inch'?v.toFixed(4):v.toFixed(3)):'NOT ENTERED';
 function pfFingerprintFor(j){return JSON.stringify([j.units,j.stock,j.workSide,j.nodes,j.tools,j.operations,normalizeJobSetup(j.setup)]);}
 
-/** v0.7.7 machine-neutral, NON-EXECUTABLE nominal process-motion preview.
+/** v0.7.8 machine-neutral, NON-EXECUTABLE nominal process-motion preview.
  * Plans selected OD regions, conservative outside-only turning over grooves, OD
  * finish lines/arcs, facing, and simple rectangular grooving. NOT verified motion IR.
  * All proposed paths and stock envelopes are advisory theoretical-point sweeps;
  * neither radius compensation nor machine geometry/physical insert swept clearances
  * are represented.  emitNCFromPlan is a separate, locked-only boundary.
  */
-const MOTION_PREVIEW_SCHEMA='miniturn.motion-preview/2';
+const MOTION_PREVIEW_SCHEMA='miniturn.motion-preview/3';
 const MOTION_PREVIEW_MAX_PASSES=120;
 const mpRound=n=>Math.round(n*1e7)/1e7;
 const mpXY=(x,z)=>({x:mpRound(x),z:mpRound(z)});
@@ -2758,11 +2793,41 @@ function motionRegionSample(segs){
  }
  return result;
 }
+/** Existing through-bore at an axial position, from previously planned ID boring.
+ * No stock is assumed removed by later operations. Unverified paths are ignored.
+ */
+function precedingBoreAt(source,op,u,profileArg=null){
+ let d=source.stock.type==='tube'?source.stock.bore:0;
+ const idx=source.operations.findIndex(x=>x.id===op.id);
+ if(idx<0)return d;
+ for(let j=0;j<idx;j++){
+  const prev=source.operations[j];
+  if(!prev.enabled||!isBoreOperation(prev.kind)||!(prev.idDepth>=u-1e-7))continue;
+  // Never credit stock removal merely because a previous operation is defined.
+  // Its OWN theoretical pass planner must have accepted the operation.
+  const p=nominalMotionForOperation(source,prev,profileArg);
+  if(p.status==='PREVIEW_ONLY'&&p.passes.length)d=Math.max(d,p.passes.at(-1).xDiameter);
+ }
+ return d;
+}
+function nominalWallMinimum(source,profile,minU,maxU){
+ // Protect every modeled outer span; uncovered stock retains full raw OD.
+ let minimum=source.stock.diameter;
+ for(const seg of profile.segments||[]){
+  const n=seg.kind==='arc'?96:12;
+  for(let k=0;k<=n;k++){
+   const t=k/n,q=seg.kind==='arc'?profileArcAt(seg,t):{u:seg.start.u+(seg.end.u-seg.start.u)*t,v:seg.start.v+(seg.end.v-seg.start.v)*t};
+   if(q.u>=minU-1e-7&&q.u<=maxU+1e-7)minimum=Math.min(minimum,2*q.v);
+  }
+ }
+ return minimum;
+}
 function nominalMotionForOperation(source,op,profileArg=null){
  const blocked=(reason,warnings=[])=>({schema:MOTION_PREVIEW_SCHEMA,status:'BLOCKED',reason,passes:[],warnings,moves:[],assurance:'NONE'});
  if(!op?.enabled)return blocked('Operation disabled.');
- if(!['od_rough','od_finish','face','od_groove'].includes(op.kind))return blocked('Threading and other special cycles still need a dedicated cutting-motion planner.');
- if(source.stock?.type!=='solid')return blocked('Only solid round bar is represented in the current stock model.');
+ if(!['od_rough','od_finish','face','od_groove','id_rough','id_finish','id_groove'].includes(op.kind))return blocked('Threading and other special cycles still need a dedicated cutting-motion planner.');
+ if(!['solid','tube'].includes(source.stock?.type))return blocked('Special blank has no supported raw-stock model.');
+ if(isIdOperation(op.kind)&&source.stock.type!=='tube')return blocked('ID cutting requires TUBE stock with a modeled through-bore.');
  if(source.workSide!=='front')return blocked('Back/reverse work setup not yet planned.');
  const profile=profileArg||buildProfile({...source,operations:[]});
  if(profile.errors?.length)return blocked('Figure must be valid.',profile.errors);
@@ -2774,7 +2839,8 @@ function nominalMotionForOperation(source,op,profileArg=null){
  const warnings=['UNVERIFIED TOOL-POINT PREVIEW: NO nose compensation, insert/holder swept collision, chuck, clamping, machine travel, or qualified post.',
   'Feeds, spindle direction, offset and physical cutting-corner accessibility have not been proved. Feed returns are NOT validated against the installed insert.'];
  if(!tool.verified)warnings.push('Tool dimensions are not marked checked.');
- const stockD=source.stock.diameter,stockR=stockD/2;
+ const stockD=source.stock.diameter,stockR=stockD/2,rawBore=source.stock.type==='tube'?source.stock.bore:0;
+ if(source.stock.type==='tube')warnings.push('ANNULAR STOCK: tube ID is empty, not solid material; tool and holder swept clearance remain unchecked.');
  const travelX=mpRound(stockD+2*Math.max(op.clearanceRadial,source.units==='inch'?.01:.25));
  const safeFront=mpRound(op.retractZ),passes=[];
  function addPass(cutX,endZ,stages,detail=''){
@@ -2788,7 +2854,56 @@ function nominalMotionForOperation(source,op,profileArg=null){
    ['feed','lead',xCut,zStart],['feed','cut',xCut,zEnd],['feed','return',xCut,safeFront],
    ['rapid','clear',travelX,safeFront]],detail);
  }
- if(op.kind==='face'){
+ if(isBoreOperation(op.kind)){
+  const target=op.idTarget,depth=op.idDepth,finish=op.kind==='id_rough'?op.finishRadial:0;
+  const existing=precedingBoreAt(source,op,depth,profile),limit=nominalWallMinimum(source,profile,0,depth);
+  if(target>=limit-1e-7)return blocked(`ID target Ø${mpRound(target)} reaches/exceeds modeled finished OD Ø${mpRound(limit)} within bore depth.`);
+  if(target<=existing+1e-8)return blocked(`No remaining bore stock: modeled through-hole is already Ø${mpRound(existing)} at depth.`);
+  if(finish*2>=target-existing)return blocked('ID radial finish allowance consumes the available boring stock.');
+  const minHole=source.stock.bore;
+  const bar=Number(tool.holder?.barDiameter)||Number(tool.catalog?.barDiameter)||0;
+  if(bar>0&&bar>=minHole-1e-8)return blocked(`Selected boring bar Ø${mpRound(bar)} does not fit initial tube bore Ø${mpRound(minHole)}.`,['Check actual holder/head clearance, not just cutting-tip diameter.']);
+  if(bar>0)warnings.push(`Boring bar nominal Ø${mpRound(bar)} / raw hole Ø${mpRound(minHole)}: only diametral fit tested; shoulder, bar flex, nose, reach and wall clearance not verified.`);
+  const innerX=Math.max(0,minHole-2*op.clearanceRadial),safeX=mpRound(innerX);
+  let levels=[];
+  if(op.kind==='id_finish')levels=[target];
+  else{
+   const finishTarget=target-2*finish;
+   const n=Math.ceil((finishTarget-existing)/(2*op.doc)-1e-10);
+   if(n>MOTION_PREVIEW_MAX_PASSES)return blocked('Too many radial ID rough passes; increase DOC or divide the operation.');
+   for(let i=1;i<=n;i++)levels.push(Math.min(finishTarget,existing+2*i*op.doc));
+  }
+  for(const d of levels){
+   addPass(d,-depth,[['rapid','start',safeX,safeFront],['rapid','hole-entry',d,safeFront],
+    ['feed','lead',d,0],['feed','cut',d,-depth],['feed','return',d,safeFront],
+    ['rapid','clear',safeX,safeFront]],'ID '+(op.kind==='id_finish'?'FINISH':'ROUGH')+' / radial DOC');
+  }
+  warnings.push('ID boring is a nominal cylinder: no swept boring-bar clearance, controlled bottom breakout, chip evacuation, deflection, nose comp, or machine-safe return.');
+ }else if(op.kind==='id_groove'){
+  const centerU=-op.idGrooveZ,w=tool.width,gWidth=op.idGrooveWidth,root=op.idGrooveRoot;
+  const firstU=centerU-gWidth/2,lastU=centerU+gWidth/2;
+  const clearanceHole=precedingBoreAt(source,op,lastU,profile);
+  const wall=nominalWallMinimum(source,profile,firstU,lastU);
+  if(root>=wall-1e-7)return blocked(`ID groove root Ø${mpRound(root)} reaches/exceeds modeled finished OD Ø${mpRound(wall)}.`);
+  if(root<=clearanceHole+1e-8)return blocked(`No ID groove stock at this depth: current modeled bore Ø${mpRound(clearanceHole)} is already larger than groove root.`);
+  if(!(tool.width>0&&tool.width<=gWidth+1e-8))return blocked('Valid ID grooving insert width must fit groove width.');
+  const bar=Number(tool.holder?.barDiameter)||0;
+  if(bar&&bar>=source.stock.bore-1e-8)return blocked('ID grooving bar exceeds raw bore entry diameter.');
+  const accessX=Math.max(0,source.stock.bore-2*op.clearanceRadial);
+  const centers=[];
+  for(let u=firstU+w/2;u<=lastU-w/2+1e-9;u+=Math.max(w*.8,source.units==='inch'?.001:.025)){
+   centers.push(Math.min(lastU-w/2,u));if(centers.length>MOTION_PREVIEW_MAX_PASSES)return blocked('Too many ID groove plunges.');
+  }
+  if(!centers.length||centers.at(-1)<lastU-w/2-1e-8)centers.push(lastU-w/2);
+  if(centers.length>MOTION_PREVIEW_MAX_PASSES)return blocked('Too many ID groove plunges.');
+  // Every plunge travels inside the modeled through-hole before feeding outward.
+  for(const u of centers){const z=-u;
+   addPass(root,z,[['rapid','start',accessX,safeFront],['rapid','inside-bore',accessX,z],
+    ['feed','plunge',root,z],['feed','return',accessX,z],['rapid','clear',accessX,safeFront]],`ID GROOVE / insert W${mpRound(w)}`);
+  }
+  warnings.push(`Nominal prior bore Ø${mpRound(clearanceHole)} at groove depth. Grooving tool entry/retract is INSIDE the through-bore; no actual holder/groove-neck sweep check.`);
+  warnings.push('ID grooving plunges are full-depth theoretical strokes; intermediate radial steps, chip evacuation, lateral wall finish and tool travel NOT verified.');
+ }else if(op.kind==='face'){
   const frontZ=Math.max(...source.nodes.map(n=>n.z));
   if(op.faceZ<frontZ-1e-8)return blocked('Facing target is behind the finished figure front (P01). Update the figure front or FACE Z.');
   if(!(op.faceZ<=0&&op.faceStep>0))return blocked('Facing requires nonpositive face Z and positive axial step.');
@@ -2797,10 +2912,12 @@ function nominalMotionForOperation(source,op,profileArg=null){
   if(op.faceStartX>stockD+1e-8||op.faceEndX<0||op.faceStartX<=op.faceEndX)return blocked('Facing X extents invalid.');
   if(op.faceStartX<stockD-1e-8)warnings.push('Partial face from inside original OD; first entry can engage stock immediately.');
   if(total<1e-9)warnings.push('Zero face stock removal: graphic shows nominal skim path only.');
+  const faceInner=source.stock.type==='tube'?Math.max(op.faceEndX,rawBore):op.faceEndX;
+  if(faceInner!==op.faceEndX)warnings.push(`Tube bore is empty: facing stops at raw bore XØ${mpRound(faceInner)}, not spindle center.`);
   for(let i=1;i<=n;i++){
    const cutZ=mpRound(-Math.min(total,i*op.faceStep));
-   addPass(op.faceEndX,cutZ,[['rapid','start',travelX,safeFront],['rapid','outside-stock',travelX,cutZ],
-    ['feed','entry',op.faceStartX,cutZ],['feed','cut',op.faceEndX,cutZ],
+   addPass(faceInner,cutZ,[['rapid','start',travelX,safeFront],['rapid','outside-stock',travelX,cutZ],
+    ['feed','entry',op.faceStartX,cutZ],['feed','cut',faceInner,cutZ],
     ['feed','return',op.faceEndX,safeFront],['rapid','clear',travelX,safeFront]],'FACE / axial step');
   }
  }else if(op.kind==='od_groove'){
@@ -2818,6 +2935,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
   if(!zCenters.length||zCenters[zCenters.length-1]<right-w/2-1e-8)zCenters.push(right-w/2);
   const outerX=Math.min(first.x,last.x),floorX=groove.bottomX;
   if(floorX+1e-8>=outerX)return blocked('Invalid groove radial depth.');
+  if(source.stock.type==='tube'&&floorX<=rawBore+1e-7)return blocked(`OD groove floor Ø${mpRound(floorX)} cuts into/through the tube bore Ø${mpRound(rawBore)}. Wall breakthrough needs an explicit approved strategy.`);
   if(zCenters.length>MOTION_PREVIEW_MAX_PASSES)return blocked('Groove path count exceeded.');
   // Multi-position plunges do not assert safe entry through a still-uncut OD.
   const entryX=mpRound(Math.max(outerX+2*op.clearanceRadial,stockD+2*op.clearanceRadial));
@@ -2842,6 +2960,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
     'Confirm the entered figure, especially shoulder directions, before planning a feed or retract.']);
   }
   if(sample.some(p=>!Number.isFinite(p.u)||!Number.isFinite(p.v)||p.v< -1e-8||p.v>stockR+1e-8))return blocked('Nonfinite or out-of-stock geometry.');
+  if(source.stock.type==='tube'&&sample.some(p=>p.v*2<=rawBore+1e-7))return blocked(`Selected OD figure reaches/passes raw bore Ø${mpRound(rawBore)}: wall breakthrough or parting is not supported by this OD operation.`);
   const uStart=sample[0].u,uEnd=sample[sample.length-1].u;
   if(uEnd<=uStart+1e-8)return blocked('Region has no axial extent.');
   if(review.recess&&op.kind==='od_rough')warnings.push('Recess/groove within range: OD passes use the OUTSIDE obstruction envelope and LEAVE the groove for a separate grooving operation.');
@@ -2909,37 +3028,44 @@ function nominalMotionForOperation(source,op,profileArg=null){
  */
 function nominalStockStages(source,op,profile,plan,limit='all'){
  const N=640,L=source.stock.length,dx=L/N,rawR=source.stock.diameter/2;
- const initial=()=>Array(N+1).fill(rawR);
- let radii=initial(),front=0;
+ let outer=Array(N+1).fill(rawR),inner=Array(N+1).fill(source.stock.type==='tube'?source.stock.bore/2:0),front=0;
+ const sampleState=()=>({outer:outer.slice(),inner:inner.slice(),front});
  function apply(operation,proposal){
   if(proposal.status!=='PREVIEW_ONLY')return;
   const t=source.tools.find(x=>x.id===operation.toolId);
   const passes=limit==='all'||operation.id!==op.id?proposal.passes:proposal.passes.slice(0,Math.max(0,Number(limit)));
   if(operation.kind==='face'){
-   if(operation.faceEndX<=1e-8 && operation.faceStartX>=source.stock.diameter-1e-8){
-    for(const p of passes){const cutU=-p.endZ;front=Math.max(front,cutU);for(let i=0;i<=N;i++)if(i*dx<front-1e-7)radii[i]=0;}
+   const minFaceX=source.stock.type==='tube'?source.stock.bore:0;
+   if(operation.faceEndX<=minFaceX+1e-8&&operation.faceStartX>=source.stock.diameter-1e-8){
+    for(const p of passes){front=Math.max(front,-p.endZ);}
    }
    return;
   }
-  for(const p of passes){
-   if(operation.kind==='od_groove'){
-    const z=-p.endZ,r=p.xDiameter/2,w=Number(t?.width)||0;
-    for(let i=0;i<=N;i++){const u=i*dx;if(u>=front&&Math.abs(u-z)<=w/2+dx/2)radii[i]=Math.min(radii[i],r);}
+  for(const pass of passes){
+   if(operation.kind==='od_groove'||operation.kind==='id_groove'){
+    const u=-pass.endZ,r=pass.xDiameter/2,w=Number(t?.width)||0;
+    for(let i=0;i<=N;i++)if(i*dx>=front&&Math.abs(i*dx-u)<=w/2+dx/2){
+     if(operation.kind==='od_groove')outer[i]=Math.max(inner[i],Math.min(outer[i],r));
+     else inner[i]=Math.min(outer[i],Math.max(inner[i],r));
+    }
     continue;
    }
-   let previous=p.moves[0];
-   for(let j=1;j<p.moves.length;j++){
-    const next=p.moves[j];
+   if(isBoreOperation(operation.kind)){
+    const end=-pass.endZ;
+    for(let i=0;i<=N;i++)if(i*dx>=front&&i*dx<=end+1e-8)inner[i]=Math.min(outer[i],Math.max(inner[i],pass.xDiameter/2));
+    continue;
+   }
+   let previous=pass.moves[0];
+   for(let j=1;j<pass.moves.length;j++){
+    const next=pass.moves[j];
     if(next.kind==='feed'&&['cut','lead'].includes(next.role)){
      const a=-previous.z,b=-next.z,min=Math.min(a,b),max=Math.max(a,b);
-     if(max>=front&&min<=L){
-      const first=Math.max(0,Math.ceil((min-1e-9)/dx)),last=Math.min(N,Math.floor((max+1e-9)/dx));
-      for(let i=first;i<=last;i++){
-       const u=i*dx;if(u<front-1e-8)continue;
-       const f=Math.abs(b-a)<1e-10?1:Math.max(0,Math.min(1,(u-a)/(b-a)));
-       const r=(previous.x+(next.x-previous.x)*f)/2;
-       radii[i]=Math.max(0,Math.min(radii[i],r));
-      }
+     const first=Math.max(0,Math.ceil((min-1e-9)/dx)),last=Math.min(N,Math.floor((max+1e-9)/dx));
+     for(let i=first;i<=last;i++){
+      const u=i*dx;if(u<front-1e-8)continue;
+      const f=Math.abs(b-a)<1e-10?1:Math.max(0,Math.min(1,(u-a)/(b-a)));
+      const r=(previous.x+(next.x-previous.x)*f)/2;
+      outer[i]=Math.max(inner[i],Math.min(outer[i],Math.max(0,r)));
      }
     }
     previous=next;
@@ -2952,15 +3078,15 @@ function nominalStockStages(source,op,profile,plan,limit='all'){
   const p=nominalMotionForOperation(source,prior,profile);
   if(p.status==='PREVIEW_ONLY')apply(prior,p);
  }
- const before=radii.slice(),beforeFront=front;
- apply(op,plan);
- const after=radii,afterFront=front;
- function volume(rs,f){let sum=0;for(let i=0;i<N;i++){
-  if(i*dx<f)continue;
-  const r=(rs[i]+rs[i+1])/2;sum+=Math.PI*r*r*dx;
+ const before=sampleState();apply(op,plan);const after=sampleState();
+ function volume(state){let sum=0;for(let i=0;i<N;i++){
+  if((i+.5)*dx<state.front)continue;
+  const ro=(state.outer[i]+state.outer[i+1])/2,ri=(state.inner[i]+state.inner[i+1])/2;
+  sum+=Math.PI*Math.max(0,ro*ro-ri*ri)*dx;
  }return sum;}
- const removed=Math.max(0,volume(before,beforeFront)-volume(after,afterFront));
- return {N,L,before,after,beforeFront,afterFront,removed,unit:source.units==='inch'?'in³':'mm³'};
+ const removed=Math.max(0,volume(before)-volume(after));
+ return {N,L,before:before.outer,after:after.outer,beforeInner:before.inner,afterInner:after.inner,
+  beforeFront:before.front,afterFront:after.front,removed,unit:source.units==='inch'?'in³':'mm³'};
 }
 function renderMotionPreview(plan,stock){
  const message=$('opMotionSummary'),tbody=$('opMotionRows'),warnings=$('opMotionWarnings'),sel=$('opMotionPass');
@@ -2990,6 +3116,8 @@ function drawStockEnvelope(g,stage,map){
  const pre=poly(stage.before,stage.beforeFront),post=poly(stage.after,stage.afterFront);
  if(pre)g.append(el('path',{d:pre,fill:'none',stroke:'#ecc06c','stroke-width':2.4,'stroke-dasharray':'5 4','stroke-opacity':.88}));
  if(post)g.append(el('path',{d:post,fill:'none',stroke:'#adcbf7','stroke-width':3.1,'stroke-opacity':.95}));
+ if(stage.beforeInner?.some(r=>r>1e-9)){const q=poly(stage.beforeInner,stage.beforeFront);if(q)g.append(el('path',{d:q,fill:'none',stroke:'#ecc06c','stroke-width':2.4,'stroke-dasharray':'5 4'}));}
+ if(stage.afterInner?.some(r=>r>1e-9)){const q=poly(stage.afterInner,stage.afterFront);if(q)g.append(el('path',{d:q,fill:'none',stroke:'#adcbf7','stroke-width':3.1}));}
 }
 function drawMotionOverlay(g,plan,map){
  if(!$('opShowMotion').checked||plan.status!=='PREVIEW_ONLY')return;
@@ -3031,7 +3159,7 @@ function extractStep(op,index,source,profileOverride=null){
  const preview=nominalMotionForOperation(source,op,profile);
  return {sequence:index+1,id:op.id,enabled:op.enabled,kind:op.kind,label:op.name,
    tool:t?{id:t.id,station:t.station,offset:t.offset,name:t.name,kind:t.kind,shape:t.shape,tipDirection:t.tipDirection,hand:t.hand??null,insertNoseRadius:t.noseRadius??null,insertWidth:t.width??null,verified:!!t.verified,mountAxis:t.mountAxis??null,mountSide:t.mountSide??null}:null,
-   geometry:op.kind==='face'?{type:'face-envelope',z:op.faceZ,outerXDiameter:op.faceStartX,innerXDiameter:op.faceEndX}:
+   geometry:op.kind==='face'?{type:'face-envelope',z:op.faceZ,outerXDiameter:op.faceStartX,innerXDiameter:op.faceEndX}:isIdOperation(op.kind)?{type:op.kind==='id_groove'?'internal-rectangular-groove':'internal-cylinder',targetDiameter:op.idTarget,depthFromZ0:op.idDepth,centerZ:op.idGrooveZ,width:op.idGrooveWidth,rootDiameter:op.idGrooveRoot,rawBore:source.stock.bore}:
     {type:'profile-interval',fromIndex:op.from,toIndex:op.to,fromPointId:fromPt?.id??null,toPointId:toPt?.id??null,
      primitives:operationContourSegments(profile,op).map(s=>structuredClone(s))},
    machining:{feedPerRev:op.feed,rpm:op.rpm,faceStepAxial:op.faceStep,depthOfCutRadial:op.doc,finishRadial:op.finishRadial,finishAxial:op.finishAxial,clearanceRadial:op.clearanceRadial,retractZ:op.retractZ,accessPlan:op.accessPlan??'review'},
@@ -3039,7 +3167,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.7.7',status:'NOMINAL_PATH_PREVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.7.8',status:'NOMINAL_PATH_PREVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,workSide:source.workSide,units:source.units},
@@ -3107,7 +3235,9 @@ function renderStepDetail(){
  addDetail(fields,'CLEARANCE (RADIAL / Z)',`${pfValue(op.clearanceRadial)} / ${pfValue(op.retractZ)}`);
  if(op.kind==='face')addDetail(fields,'FACE AXIAL STEP',pfValue(op.faceStep));
  if(op.kind==='face')addDetail(fields,'FACE EXTENTS',`XØ${pfValue(op.faceStartX)} → XØ${pfValue(op.faceEndX)} @ Z${pfValue(op.faceZ)}`);
- else addDetail(fields,'FIGURE REGION',`P${op.from+1} → P${op.to+1} · ${p.geometry.primitives.length} primitives`);
+ else if(!isIdOperation(op.kind))addDetail(fields,'FIGURE REGION',`P${op.from+1} → P${op.to+1} · ${p.geometry.primitives.length} primitives`);
+ if(isBoreOperation(op.kind))addDetail(fields,'ID CYLINDER',`TARGET XØ${pfValue(op.idTarget)} · DEPTH ${pfValue(op.idDepth)} FROM Z0`);
+ if(op.kind==='id_groove')addDetail(fields,'ID GROOVE',`CENTER Z${pfValue(op.idGrooveZ)} · W${pfValue(op.idGrooveWidth)} · ROOT XØ${pfValue(op.idGrooveRoot)}`);
  if(op.kind==='od_groove'){const groove=findFigureGrooves(job.nodes).find(g=>g.from===op.from&&g.to===op.to);addDetail(fields,'GROOVE',groove?`WIDTH ${pfValue(groove.width)} · DEPTH R ${pfValue(groove.depth)}`:'INCOMPLETE / NOT MATCHED');}
  addDetail(fields,'ACCESS STRATEGY',op.accessPlan||'review');
  addDetail(fields,'PATH PLANNING',p.pathStatus==='PREVIEW_ONLY'?`${p.planningPreview.count} NOMINAL PASSES · PREVIEW ONLY`:p.planningPreview.reason);
@@ -3161,11 +3291,11 @@ function refreshJobInfo(){
  show('NC','VERIFIED TOOLPATH, COLLISION CHECK & MACHINE POST NOT IMPLEMENTED — CODE EMISSION DISABLED.',true);
  const checks=$('pfChecks');checks.replaceChildren();
  for(const [key,desc] of PRECHECK_ITEMS){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=pfSessionChecks.has(key);cb.addEventListener('change',()=>{if(cb.checked)pfSessionChecks.add(key);else pfSessionChecks.delete(key);const r=preflightReport(job);head.textContent=`${r.blockers.length} SETUP BLOCKER(S) · ${r.reviews.length} REVIEW ITEM(S) · ${r.confirmed}/${r.total} OPERATOR CHECKS · NC OUTPUT LOCKED`;});const span=document.createElement('span');span.textContent=desc;label.append(cb,span);checks.append(label);}
- $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: EXACT FIGURE + OPERATION INTENT + NOMINAL PASS PREVIEWS.','MOTION IR: EMPTY / NOT VERIFIED. PREVIEWS ARE NOT NC BLOCKS.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, X SIGN, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: TOOL NOSE OFFSET + SWEEP CHECK -> KINEMATIC/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
+ $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: EXACT OD FIGURE + OD/ID INTENT + ANNULAR STOCK PREVIEWS.','MOTION IR: EMPTY / NOT VERIFIED. PREVIEWS ARE NOT NC BLOCKS.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, X SIGN, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: TOOL NOSE OFFSET + SWEEP CHECK -> KINEMATIC/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
 }
 function textSetupSheet(){
  const s=normalizeJobSetup(job.setup),report=preflightReport(job);
- const lines=['MINITURN 0.7.7 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ const lines=['MINITURN 0.7.8 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
  job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · RPM ${op.rpm} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · XØ${pfValue(op.faceStartX)} TO XØ${pfValue(op.faceEndX)} · AXIAL STEP ${pfValue(op.faceStep)}`:`   P${op.from+1} TO P${op.to+1} · ACCESS: ${op.accessPlan||'review'}`);});
  lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
  lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
@@ -3917,7 +4047,7 @@ function wireInspector(){
 }
 
 // v0.5 — Operations describe machining INTENT ONLY. No passes, offset moves or NC output.
-function operationToolEligible(t,kind){return kind==='face'?['face','od'].includes(t.kind):kind==='od_groove'?t.kind==='od_groove':kind==='od_thread'?t.kind==='od_thread':t.kind==='od';}
+function operationToolEligible(t,kind){return kind==='face'?['face','od'].includes(t.kind):kind==='od_groove'?t.kind==='od_groove':kind==='od_thread'?t.kind==='od_thread':kind==='id_groove'?t.kind==='id_groove':isBoreOperation(kind)?t.kind==='id':t.kind==='od';}
 function opFormat(n){return Number.isFinite(n)?n.toFixed(job.units==='inch'?4:3):'—';}
 function opMsg(title,lines=[],bad=false){
  const box=$('opStatus');box.replaceChildren();box.className='status-box '+(bad?'invalid':'ok');
@@ -3945,7 +4075,7 @@ function selectOperation(i){
 }
 function fillOperationForm(op){
  $('opName').value=op.name;$('opKind').value=op.kind;$('opEnabled').checked=op.enabled;
- for(const [id,key] of [['opDoc','doc'],['opFaceStep','faceStep'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])$(id).value=String(op[key]);
+ for(const [id,key] of [['opDoc','doc'],['opFaceStep','faceStep'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX'],['opIdTarget','idTarget'],['opIdDepth','idDepth'],['opIdGrooveZ','idGrooveZ'],['opIdGrooveWidth','idGrooveWidth'],['opIdGrooveRoot','idGrooveRoot']])$(id).value=String(op[key]);
  for(const field of ['opFrom','opTo']){
   const elField=$(field);elField.replaceChildren();
   job.nodes.forEach((pt,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`P${String(i+1).padStart(2,'0')} · X${opFormat(pt.x)} Z${opFormat(pt.z)}${pt.corner==='sharp'?'':' · '+pt.corner.toUpperCase()}`;elField.append(o);});
@@ -3990,6 +4120,7 @@ function useGrooveRegion(){
 function refreshAccessReview(op){
  const out=$('opAccessSummary');
  if(op.kind==='face'){out.textContent='FACE LIMITS ONLY · CHECK CHUCK AND TOOL REACH';return;}
+ if(isIdOperation(op.kind)){out.textContent='ID TOOL REACH AND BORE ENTRY ARE NOT VERIFIED · CHECK BAR Ø, OVERHANG, INSERT CORNER, CLAMP AND GROOVE NECK BEFORE CUTTING';out.classList.add('warning');return;}
  const review=reviewFigureRegion(job.nodes,op.from,op.to);
  const parts=[];
  if(review.recess)parts.push('RECESS DETECTED · CONSIDER OPPOSITE-HAND OR GROOVING APPROACH');
@@ -4001,10 +4132,11 @@ function refreshAccessReview(op){
 }
 function showOperationFields(){
  const kind=$('opKind').value,face=kind==='face',rough=kind==='od_rough';
- $('opRangeFields').hidden=face;$('opFaceFields').hidden=!face;
+ $('opRangeFields').hidden=face||isIdOperation(kind);$('opFaceFields').hidden=!face;
+ $('opIdBoreFields').hidden=!isBoreOperation(kind);$('opIdGrooveFields').hidden=kind!=='id_groove';
  $('opGrooveFields').hidden=kind!=='od_groove';
  refreshGrooveChoices();
- for(const id of ['opDocField','opFinRadField','opFinAxField'])$(id).hidden=!rough;
+ for(const id of ['opDocField','opFinRadField','opFinAxField'])$(id).hidden=!(rough||kind==='id_rough');
  document.querySelectorAll('.op-unit').forEach(x=>x.textContent=job.units==='inch'?'(IN)':'(MM)');
 }
 function readOperationForm(){
@@ -4012,7 +4144,7 @@ function readOperationForm(){
  const op=structuredClone(job.operations[opSelected]);
  op.name=$('opName').value.trim();op.kind=$('opKind').value;op.toolId=$('opTool').value;op.enabled=$('opEnabled').checked;op.accessPlan=$('opAccessPlan').value;
  const num=id=>$(id).value.trim()===''?NaN:Number($(id).value);
- for(const [id,key] of [['opDoc','doc'],['opFaceStep','faceStep'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])op[key]=num(id);
+ for(const [id,key] of [['opDoc','doc'],['opFaceStep','faceStep'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX'],['opIdTarget','idTarget'],['opIdDepth','idDepth'],['opIdGrooveZ','idGrooveZ'],['opIdGrooveWidth','idGrooveWidth'],['opIdGrooveRoot','idGrooveRoot']])op[key]=num(id);
  op.from=Number($('opFrom').value);op.to=Number($('opTo').value);op.fromPointId=job.nodes[op.from]?.id;op.toPointId=job.nodes[op.to]?.id;
  return op;
 }
@@ -4053,15 +4185,25 @@ function drawOperationGraph(){
    }
   }
  }
+ if(job.stock.type==='tube'&&job.stock.bore>0){
+  // Mask the center as air instead of displaying tube stock as solid.
+  // Boring/groove paths and updated inner stock curves are drawn afterward.
+  const r=job.stock.bore/2;
+  g.append(el('path',{d:path([{u:0,v:r},{u:L,v:r},{u:L,v:-r},{u:0,v:-r}],true),fill:'#081713','fill-opacity':.96,stroke:'none'}));
+  for(const sign of [-1,1])g.append(el('path',{d:path([{u:0,v:sign*r},{u:L,v:sign*r}]),fill:'none',stroke:'#d6a265','stroke-width':1.5,'stroke-dasharray':'5 4'}));
+ }
  const preview=nominalMotionForOperation(job,op,profile);
  const chosen=$('opMotionPass').value;
  const safeChoice=preview.passes.some(p=>String(p.number)===chosen)?chosen:'all';
  const stockStages=preview.status==='PREVIEW_ONLY'?nominalStockStages(job,op,profile,preview,safeChoice):null;
  renderMotionPreview(preview,stockStages);drawStockEnvelope(g,stockStages,map);drawMotionOverlay(g,preview,map);drawMotionCursor(g,preview,map);
+ if(isBoreOperation(op.kind)){g.append(el('path',{d:path([{u:0,v:op.idTarget/2},{u:op.idDepth,v:op.idTarget/2}]),fill:'none',stroke:'#ffc377','stroke-width':2.4,'stroke-dasharray':'3 4'}));}
+ if(op.kind==='id_groove'){const a=-op.idGrooveZ-op.idGrooveWidth/2,b=-op.idGrooveZ+op.idGrooveWidth/2,r=op.idGrooveRoot/2;g.append(el('path',{d:path([{u:a,v:r},{u:b,v:r}]),fill:'none',stroke:'#ffc377','stroke-width':3.2,'stroke-dasharray':'3 3'}));}
  const text=(str,x,y,color='#a6c7b1',size=14)=>g.append(el('text',{x,y,fill:color,'font-size':size,'font-family':'monospace'},str));
  job.nodes.forEach((n,i)=>{const q=map(physicalPoint(n));g.append(el('circle',{cx:q.x,cy:q.y,r:5,fill:'#c6f4d3',stroke:'#224f41','stroke-width':1.5}));text(`P${i+1}`,q.x+9,q.y-9,'#c3dabd',12);});
  text('Z0 FACE',mirrorZ?W-130:30,32);text(mirrorZ?'← -Z CHUCK':'-Z CHUCK →',mirrorZ?30:W-165,32);
  if(op.kind==='face')text(`FACE: XØ${opFormat(op.faceStartX)} → XØ${opFormat(op.faceEndX)} @ Z${opFormat(op.faceZ)}`,20,H-27,'#ffd090',14);
+ else if(isIdOperation(op.kind))text(isBoreOperation(op.kind)?`ID: XØ${opFormat(op.idTarget)} · Z0 TO Z${opFormat(-op.idDepth)}`:`ID GROOVE: Z${opFormat(op.idGrooveZ)} · W${opFormat(op.idGrooveWidth)} · ROOT Ø${opFormat(op.idGrooveRoot)}`,20,H-27,'#ffd090',12);
  else{
   const bounds=operationContourSegments(profile,op),startCorner=job.nodes[op.from]?.corner,endCorner=job.nodes[op.to]?.corner;
   const suffix=[startCorner!=='sharp'?'START: R/C EXIT':'',endCorner!=='sharp'?'END: FULL R/C':''].filter(Boolean).join(' · ');
@@ -4139,7 +4281,7 @@ function wireOperations(){
  $('opShowStock').addEventListener('change',drawOperationGraph);
  $('opMotionScrub').addEventListener('input',drawOperationGraph);
  $('opMotionPass').addEventListener('change',()=>{const pass=$('opMotionPass').value;drawOperationGraph();$('opMotionPass').value=pass;});
- for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opFaceStep','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract']){
+ for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opFaceStep','opIdTarget','opIdDepth','opIdGrooveZ','opIdGrooveWidth','opIdGrooveRoot','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract']){
   $(id).addEventListener('input',opMarkDirty);$(id).addEventListener('change',opMarkDirty);
  }
  $('opKind').addEventListener('change',()=>{
