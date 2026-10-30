@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b1715">
-  <meta name="description" content="MiniTurn: offline-first conversational lathe geometry entry and precision X/Z profile graphing and reusable tool geometry definitions.">
+  <meta name="description" content="MiniTurn: offline conversational lathe planner with X/Z profile geometry, tool definitions and nominal non-executable motion preview.">
   
   
   <style>:root{color-scheme:dark;--bg:#07110f;--surface:#101f1c;--surface2:#142822;--panel-border:#29463c;--teal:#68dcc0;--mint:#b6f4d0;--ink:#d8eddf;--mute:#8eaea1;--amber:#f2bf71;--red:#ec8d7c}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);font-family:Consolas,'Roboto Mono','Courier New',monospace;color:var(--ink)}body{background-image:radial-gradient(circle at 85% -10%,#17453866,transparent 42%)}button,input,select{font:inherit}button{cursor:pointer;user-select:none}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber);outline-offset:1px}.app-shell{max-width:1700px;margin:auto;padding:14px 20px 20px}.masthead{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 14px;border-bottom:1px solid var(--panel-border);gap:12px}.brand-line{display:flex;align-items:center;gap:12px}.brand-mark{height:45px;width:45px;border:2px solid #7cdbc2;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#c2ffe1;background:#174035;letter-spacing:-2px;font-size:20px}h1{font-size:26px;letter-spacing:2px;margin:0;color:#d7ffdf}.version{font-size:11px;border:1px solid #416e5a;padding:3px 6px;vertical-align:middle;letter-spacing:0;border-radius:3px;color:var(--teal)}.tagline{font-size:11px;letter-spacing:1.4px;color:#88ad9b;margin-top:6px}.header-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.prototype-tag,.saved-tag{font-size:11px;letter-spacing:.35px;padding:9px 11px;border:1px solid #4b715d;border-radius:5px;background:#1e3929;color:#e8d0a0}.saved-tag{color:var(--mint);background:#122a23;border-color:#275c46}.saved-tag.bad{color:#ffc0b1;border-color:#7a4e3f}.workspace{display:grid;grid-template-columns:minmax(370px,.88fr) minmax(480px,1.15fr);gap:14px;margin-top:15px}.panel{background:linear-gradient(170deg,#12231e,#101b19);border:1px solid var(--panel-border);border-radius:10px;padding:14px;min-width:0}.section-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.section-header h2{color:#89daba;font-size:13px;margin:0;letter-spacing:1.4px}.small-chip{font-size:10px;color:#95c9b7;background:#162e24;border:1px solid #33594b;border-radius:3px;padding:5px 7px;white-space:nowrap}.setup-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.field{display:flex;flex-direction:column;gap:5px;color:#8daf9f;font-size:10px;letter-spacing:.8px;min-width:0}.name-field{grid-column:span 3}.field input,.field select{width:100%;height:38px;background:#071613;border:1px solid #375348;color:#d9ffe4;border-radius:5px;padding:8px 10px;outline:none;font-size:15px;font-variant-numeric:tabular-nums}.field input:disabled{opacity:.4}.field input:focus,.field select:focus{border-color:#8be0b7;box-shadow:0 0 0 2px #356a4a55}.small-btn{grid-column:span 2;color:#c9f5d8;min-height:38px;border:1px solid #4d846b;background:#184733;border-radius:5px;font-size:12px;letter-spacing:.5px}.small-btn.muted{background:#1c2e27;border-color:#3c5548}.second-header{margin-top:23px}.rows-wrap{border:1px solid #355647;background:#0a1613;border-radius:5px;min-height:184px;max-height:255px;overflow-y:auto;overflow-x:hidden}.row-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}.row-table th{position:sticky;top:0;background:#203d30;color:#a5c7ae;text-align:left;font-weight:normal;padding:9px 9px;letter-spacing:1px;font-size:11px}.row-table td{padding:9px 9px;border-bottom:1px solid #22352b;color:#d4ecdf;cursor:pointer}.row-table tr:hover td{background:#274336}.row-table tr.active-row td{background:#296b4e;color:white;border-color:#296b4e}.row-table th:first-child,.row-table td:first-child{width:52px;text-align:center;color:#9cc1ac}.edit-caption{font-size:9px;color:#7eada1;letter-spacing:.35px;margin:12px 0 10px}.editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.editor-grid .field input,.editor-grid .field select{height:42px;font-size:17px}.row{display:flex;gap:8px}.edit-actions{margin-top:12px}.action-btn{flex:1;border:1px solid #427c64;border-radius:5px;background:#17372a;color:#d4f4dd;font-size:12px;font-weight:bold;min-height:43px;padding:8px 10px}.action-btn:hover,.small-btn:hover{filter:brightness(1.18)}.action-btn.primary{background:#246c4c;border-color:#68ab77}.action-btn.warn{border-color:#66554b;background:#32271f;color:#f2c9a4}.status-box{border:1px solid #34584b;border-radius:6px;padding:12px;margin-top:15px;background:#0b241b;line-height:1.55;color:#96c6af;font-size:10px;min-height:62px}.status-box strong{font-size:12px;display:block;margin-bottom:3px;letter-spacing:.6px;color:#93e8bb}.status-box.invalid{background:#361d1a;border-color:#8e5346;color:#ffc8b8}.status-box.invalid strong{color:#ffb6a8}.graph-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.graph-subtitle{color:#9eb9ab;font-size:11px;letter-spacing:1px}.zoom-controls{display:flex;gap:4px}.zoom-controls button{border:1px solid #3e6756;background:#152d24;color:#c9f1dd;border-radius:4px;height:30px;min-width:36px}.graph-frame{border:1px solid #375447;border-radius:5px;overflow:hidden;background:#091714}.graph-frame svg{display:block;width:100%;height:auto;aspect-ratio:900/540;touch-action:none;cursor:grab}.legend{display:flex;flex-wrap:wrap;gap:15px;margin:11px 0 10px;color:#92b5a6;font-size:9px;letter-spacing:.5px}.legend-line{display:inline-block;width:21px;margin-right:5px;vertical-align:middle;border-top:2px solid}.legend-line.finished{border-color:#5ce9d9}.legend-line.stock{border-color:#7f9988;border-top-style:dashed}.legend-dot{display:inline-block;width:8px;height:8px;background:#ffc46e;border-radius:50%;margin-right:6px}.readout{border:1px solid #274c3b;border-radius:4px;background:#0a241a;color:#b8e4c4;font-size:12px;letter-spacing:.5px;padding:12px 10px;min-height:40px}.keypad-wrap{margin-top:16px}.keypad-label{display:flex;justify-content:space-between;gap:10px;color:#a0c9b2;font-size:11px;letter-spacing:.9px;padding-bottom:9px}.keypad-label span{font-size:9px;color:#678e7d;letter-spacing:0}.numeric-pad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.numeric-pad button{border:1px solid #385c4b;border-radius:5px;min-height:42px;background:#20362c;color:#c1ebd4;font-size:18px}.numeric-pad button:active{background:#347b57}.numeric-pad .enter-key{background:#245a42;color:#e0ffe9;font-size:12px;font-weight:800}.footer-bar{margin-top:14px}.softkeys{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.softkeys button{background:#213b2d;border:1px solid #446951;border-radius:6px;color:#d8efde;min-height:53px;padding:6px 2px;font-size:10px;letter-spacing:.2px}.softkeys b{display:block;color:#83e6b0;margin-bottom:4px;font-size:14px}.softkeys button:active{background:#2d6b4a}.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;color:#658c7a;font-size:10px;letter-spacing:.3px}.footer-bottom>div{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}.text-btn{border:1px solid #355143;background:#18281f;border-radius:4px;color:#aecfb8;min-height:33px;font-size:10px;padding:5px 9px}dialog{width:min(800px,94vw);max-height:86vh;background:#11231d;color:#cee9da;border:1px solid #4f7963;border-radius:10px;box-shadow:0 20px 100px #000d;padding:18px}dialog::backdrop{background:#000a}dialog pre{white-space:pre-wrap;overflow:auto;background:#081713;border:1px solid #315340;padding:14px;font:12px/1.65 Consolas,monospace;max-height:58vh}.dialog-title{display:flex;justify-content:space-between;align-items:center}.dialog-title strong{letter-spacing:1px;color:#a8edc4}.dialog-title button{font-size:25px;background:transparent;border:0;color:#cadacc}dialog p{font-size:12px;color:#a8bfb1}@media(max-width:1160px){.workspace{grid-template-columns:1fr}.rows-wrap{max-height:215px}.graph-panel{order:2}.entry-panel{order:1}.numeric-pad{grid-template-columns:repeat(5,1fr)}.numeric-pad button{min-height:46px}.softkeys button{min-height:54px}.app-shell{padding:10px 12px}}@media(max-width:620px){.brand-mark{height:39px;width:39px;font-size:17px}.masthead{align-items:flex-start;flex-wrap:wrap}h1{font-size:21px}.tagline{font-size:9px;letter-spacing:.5px}.header-right{justify-content:flex-start}.prototype-tag,.saved-tag{font-size:9px;padding:6px}.workspace{gap:10px;margin-top:10px}.panel{padding:10px}.setup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.name-field{grid-column:span 2}.row-table{font-size:11px}.row-table td,.row-table th{padding:8px 5px}.section-header h2{font-size:11px}.graph-subtitle{font-size:9px}.legend{font-size:8px}.softkeys{grid-template-columns:repeat(4,minmax(0,1fr))}.softkeys button{min-height:42px}.footer-bottom{align-items:flex-start;flex-direction:column}.keypad-label{font-size:10px}.keypad-label span{display:none}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
@@ -436,14 +436,33 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 @media(max-width:390px){.job-setup-grid{grid-template-columns:1fr}.job-detail-grid,.pf-checks{grid-template-columns:1fr}}
 @media print{.masthead .header-right,.page-tabs,.footer-bar,.job-savebar,.job-export-buttons,.runtime-alert{display:none!important}.app-shell{max-width:none}.job-workspace{display:block!important}.job-workspace .panel{break-inside:avoid;margin-bottom:14px}body{color:#111!important;background:white!important}}
 
+/* v0.7.5 path planning overlay (machine neutral, never postable) */
+.motion-toggle{display:flex;align-items:center;gap:4px;border:1px solid var(--panel-border);border-radius:4px;padding:4px 7px;color:var(--ink);font-size:10px;white-space:nowrap;min-height:30px}
+.motion-toggle input{accent-color:var(--amber)}
+#opMotionPass{background:var(--surface2);border:1px solid var(--panel-border);color:var(--ink);border-radius:4px;font-size:10px;max-width:132px;min-height:30px}
+.operation-legend .motion-cut{border-color:#9cf783}.operation-legend .motion-return{border-color:#8bc7ff;border-top-style:dashed}.operation-legend .motion-rapid{border-color:#eaa0e0;border-top-style:dashed}
+.motion-summary{font:11px/1.55 Consolas,monospace;color:var(--ink);border:1px solid var(--panel-border);background:var(--surface2);border-radius:6px;padding:10px;margin-top:9px;white-space:pre-wrap;overflow-wrap:anywhere}
+.motion-summary.blocked{border-color:#9b5950;color:#ffd0c5}.motion-summary.ready{border-color:#547963}
+.motion-details{margin-top:9px;border:1px solid var(--panel-border);padding:9px;border-radius:5px;background:var(--surface)}
+.motion-details summary{font-size:11px;color:var(--amber);cursor:pointer;min-height:26px}
+.motion-table-wrap{max-height:280px;overflow:auto}.motion-table{border-collapse:collapse;width:100%;font-size:11px;white-space:nowrap}.motion-table th,.motion-table td{padding:7px 10px;border-bottom:1px solid var(--panel-border);text-align:left}.motion-table th{position:sticky;top:0;background:var(--surface2);color:var(--mute)}
+.motion-warnings{font:10px/1.65 Consolas,monospace;color:var(--amber);white-space:pre-wrap;margin-top:8px}
+@media(max-width:680px){#opMotionPass{max-width:108px}.operation-preview-panel .inspect-toolbar{flex-wrap:wrap}.motion-toggle{font-size:9px}}
+/* v0.7.6: selected-region paths and stock-envelope visualization */
+.operation-legend .stock-before{border-color:#ecc06c;border-top-style:dashed}
+.operation-legend .stock-after{border-color:#adcbf7}
+.motion-notice{font:9px/1.45 Consolas,monospace;color:var(--mute);padding-top:7px}
+.motion-scrub input{width:100%;accent-color:#ffbb71;min-height:30px;margin:4px 0}.motion-tipbox{font:11px/1.5 Consolas,monospace;color:var(--ink);white-space:pre-wrap}
+#opMotionPass{max-width:145px}
+@media(max-width:680px){.operation-legend{gap:9px}.motion-toggle{padding:4px 5px}#opMotionPass{max-width:115px}}
 </style>
-  <title>MiniTurn v0.7.4 — CONVERSATIONAL LATHE / JOB PREFLIGHT</title>
+  <title>MiniTurn v0.7.6 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.4</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
-    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">POST PIPELINE · NC BLOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.7.6</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
     <button id="figureTab" class="page-tab active" aria-pressed="true">F10 · FIGURE</button>
@@ -788,6 +807,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
           <label class="field">FACE Z <span class="op-unit"></span><input id="opFaceZ" type="text" inputmode="text" step="any"></label>
           <label class="field">OUTER X Ø <span class="op-unit"></span><input id="opFaceStart" type="number" step="any" min="0"></label>
           <label class="field">INNER X Ø <span class="op-unit"></span><input id="opFaceEnd" type="number" step="any" min="0"></label>
+          <label class="field">FACE STEP · AXIAL <span class="op-unit"></span><input id="opFaceStep" type="number" step="any" min="0.000001"></label>
         </div>
       </div>
       <div class="section-header second-header"><h2>CUTTING PARAMETERS</h2><span class="small-chip">DEFINITION ONLY</span></div>
@@ -817,13 +837,15 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
       <div class="status-box" id="opStatus" role="status" aria-live="polite"></div>
     </section>
     <section class="panel operation-preview-panel" aria-label="Operation region preview">
-      <div class="section-header"><h2>12 / OPERATION REGION GRAPH</h2><span class="small-chip">TRUE X/Z SCALE</span></div>
+      <div class="section-header"><h2>12 / CUTTING MOTION PREVIEW</h2><span class="small-chip">X DIAMETER · Z AXIAL</span></div>
       <div class="inspect-toolbar"><div id="opGraphTitle" class="graph-subtitle">MACHINING REGION</div>
-      <div class="zoom-controls"><button id="opFit">FIT</button><button id="opMirror" class="mirror-toggle" aria-pressed="false">F9 MIRROR Z</button></div></div>
+      <div class="zoom-controls"><label class="motion-toggle"><input id="opShowStock" type="checkbox" checked> STOCK</label><label class="motion-toggle"><input id="opShowMotion" type="checkbox" checked> PATHS</label><select id="opMotionPass" aria-label="Highlight a cutting pass"><option value="all">ALL PASSES</option></select><button id="opFit">FIT</button><button id="opMirror" class="mirror-toggle" aria-pressed="false">F9 MIRROR Z</button></div></div>
       <div class="operation-graph-frame"><svg id="opGraph" viewBox="0 0 900 540" role="img" aria-label="Part profile with exact selected operation region highlighted"></svg></div>
-      <div class="operation-legend"><span><i class="legend-line finished"></i> COMPLETE FIGURE</span><span><i class="legend-line region"></i> SELECTED OPERATION</span><span><i class="legend-line stock"></i> RAW STOCK</span></div>
+      <div class="operation-legend"><span><i class="legend-line finished"></i> FINISHED FIGURE</span><span><i class="legend-line region"></i> SELECTED REGION</span><span><i class="legend-line stock"></i> RAW STOCK</span><span><i class="legend-line motion-cut"></i> FEED CUT</span><span><i class="legend-line stock-before"></i> BEFORE</span><span><i class="legend-line stock-after"></i> AFTER</span><span><i class="legend-line motion-return"></i> FEED RETURN</span><span><i class="legend-line motion-rapid"></i> RAPID LINK</span></div>
       <div id="opReadout" class="readout">SELECT AN OPERATION TO INSPECT ITS REGION</div>
-      <div class="tool-warning compact-warning">REGION PREVIEW ONLY · NO TOOLPATH / G-CODE</div>
+      <div id="opMotionSummary" class="motion-summary" role="status" aria-live="polite">SELECT AN OPERATION TO PLAN PASSES</div>
+      <details class="motion-details motion-scrub"><summary>TIP POSITION / MANUAL SCRUB</summary><input id="opMotionScrub" type="range" min="0" max="100" step="1" value="0" aria-label="Scrub theoretical tool point position"><div id="opTipReadout" class="motion-tipbox">SELECT A PATH</div></details><details class="motion-details"><summary>PASS TABLE / PREVIEW ASSUMPTIONS</summary><div class="motion-table-wrap"><table class="motion-table"><thead><tr><th>PASS</th><th>CUT X Ø</th><th>END Z</th><th>FEED</th><th>PATH TYPE</th></tr></thead><tbody id="opMotionRows"></tbody></table></div><div class="motion-notice">Remaining stock is an approximate axial envelope. Tool nose, insert width outside grooves, swept holder, and fixture geometry are not simulated.</div><div id="opMotionWarnings" class="motion-warnings"></div></details>
+      <div class="tool-warning compact-warning">NOMINAL TOOL-POINT PATHS ONLY · NO NOSE COMP, SWEPT HOLDER CLEARANCE, OR MACHINE VERIFICATION · NC LOCKED</div>
     </section>
   </main>
   <main class="job-workspace" id="jobWorkspace" hidden>
@@ -895,7 +917,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.5.5</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.7.6</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -1771,7 +1793,7 @@ function makeOperation(kind,job){
  const from=region?.from??0,to=region?.to??Math.max(0,job.nodes.length-1);
  return {id:freshId(),name:OP_KINDS[kind],kind,enabled:true,toolId:t?.id||'',
   from,to,fromPointId:job.nodes[from]?.id,toPointId:job.nodes[to]?.id,
-  accessPlan:'review',faceZ:0,faceStartX:job.stock.diameter,faceEndX:0,
+  accessPlan:'review',faceZ:0,faceStartX:job.stock.diameter,faceEndX:0,faceStep:round8(.025*s),
   doc:round8(.075*s),finishRadial:round8(.01*s),finishAxial:round8(.005*s),
   feed:round8((kind==='od_rough'?.012:.006)*s),rpm:800,
   clearanceRadial:round8(.1*s),retractZ:round8(.1*s)};
@@ -1786,14 +1808,14 @@ function defaultOperations(job){
 function normalizeJobOperations(job){
  const copy=structuredClone(job);
  copy.schema=5;
- copy.operations=Array.isArray(job.operations)?structuredClone(job.operations):[];
+ copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>({...op,faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*(job.units==='mm'?25.4:1))})):[];
  return copy;
 }
 function convertOperationUnits(ops,from,to){
  if(from===to)return structuredClone(ops);
  if(!['inch','mm'].includes(from)||!['inch','mm'].includes(to))throw Error('Invalid units.');
  const k=from==='inch'?25.4:1/25.4;
- const lengths=['faceZ','faceStartX','faceEndX','doc','finishRadial','finishAxial','feed','clearanceRadial','retractZ'];
+ const lengths=['faceZ','faceStartX','faceEndX','faceStep','doc','finishRadial','finishAxial','feed','clearanceRadial','retractZ'];
  return ops.map(op=>{const out=structuredClone(op);for(const f of lengths)if(finite(out[f]))out[f]=round8(out[f]*k);return out;});
 }
 function validateOperations(ops,job){
@@ -1842,7 +1864,7 @@ function validateOperations(ops,job){
         warnings.push(`${label}: groove depth exceeds catalog reference maximum; choose a different tool.`);
        if(Math.abs(t.width-g.width)>1e-7)warnings.push(`${label}: insert narrower than groove — multi-position machining strategy required.`);
       }
-      warnings.push(`${label}: nominal W${g.width.toFixed(4)} / radial D${g.depth.toFixed(4)} ${job.units}; no plunge toolpath calculated.`);
+      warnings.push(`${label}: nominal W${g.width.toFixed(4)} / radial D${g.depth.toFixed(4)} ${job.units}; no verified plunge toolpath or tool clearance.`);
      }
     }
     if(op.kind==='od_thread'){
@@ -1852,6 +1874,7 @@ function validateOperations(ops,job){
     }
    }
   } else {
+   if(!numberIn(op.faceStep,0.0000001,1e6))errors.push(`${label}: axial facing step must be positive.`);
    if(!numberIn(op.faceStartX,0,job.stock.diameter+1e-8)||!numberIn(op.faceEndX,0,job.stock.diameter+1e-8)||op.faceStartX<=op.faceEndX)
     errors.push(`${label}: FACE needs an outer X diameter greater than inner X (within stock).`);
    if(!finite(op.faceZ)||op.faceZ>1e-8||op.faceZ< -job.stock.length-1e-8)errors.push(`${label}: face Z must be inside stock.`);
@@ -2606,7 +2629,7 @@ function wire(){
  $('mirrorZ').addEventListener('click',()=>{doAction('mirror');if(activePage==='tools')drawToolPreview();});
  $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job=upgradeFigureIds({schema:5,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6,type:'solid',bore:0},workSide:'front',nodes:[{z:0,x:job.units==='inch'?2.5:63.5,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{},setup:makeJobSetup()});symbolicHistory=[];selected=0;zoom=1;panU=0;panV=0;update();autosave();});
  $('importJob').addEventListener('click',()=>$('fileImport').click());
- $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const result=buildProfile(loaded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=applyLegacyJob(loaded);symbolicHistory=[];opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
+ $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const upgraded=applyLegacyJob(loaded);const result=buildProfile(upgraded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=upgraded;symbolicHistory=[];opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
  $('exportJob').addEventListener('click',()=>{const check=buildProfile(job);if(check.errors.length){notify(check.errors[0],true);return;}download(JSON.stringify(job,null,2),safeFilename()+'.miniturn.json','application/json');notify('JOB FILE EXPORTED');});
  $('reportButton').addEventListener('click',()=>doAction('report'));
  $('closeReport').addEventListener('click',()=>$('reportDialog').close());
@@ -2687,7 +2710,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, full collision clearance, or qualified controller post exists in v0.7.4.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.7.6.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -2705,21 +2728,301 @@ function convertSetupUnits(setup,from,to){const s=normalizeJobSetup(setup);if(fr
 const cleanTxt=s=>String(s||'').replace(/[\x00-\x1f\x7f]/g,' ').trim();
 const pfValue=v=>Number.isFinite(v)?(job.units==='inch'?v.toFixed(4):v.toFixed(3)):'NOT ENTERED';
 function pfFingerprintFor(j){return JSON.stringify([j.units,j.stock,j.workSide,j.nodes,j.tools,j.operations,normalizeJobSetup(j.setup)]);}
+
+/** v0.7.6 machine-neutral, NON-EXECUTABLE nominal process-motion preview.
+ * Plans selected OD regions, conservative outside-only turning over grooves, OD
+ * finish lines/arcs, facing, and simple rectangular grooving. NOT verified motion IR.
+ * All proposed paths and stock envelopes are advisory theoretical-point sweeps;
+ * neither radius compensation nor machine geometry/physical insert swept clearances
+ * are represented.  emitNCFromPlan is a separate, locked-only boundary.
+ */
+const MOTION_PREVIEW_SCHEMA='miniturn.motion-preview/2';
+const MOTION_PREVIEW_MAX_PASSES=120;
+const mpRound=n=>Math.round(n*1e7)/1e7;
+const mpXY=(x,z)=>({x:mpRound(x),z:mpRound(z)});
+function profileArcAt(s,t){const theta=s.startAngle+s.sweep*t;return {u:s.center.u+s.radius*Math.cos(theta),v:s.center.v+s.radius*Math.sin(theta)};}
+function motionRegionSample(segs){
+ const result=[];
+ for(const seg of segs){const n=seg.kind==='arc'?Math.max(12,Math.ceil(Math.abs(seg.sweep)*140)):1;
+  for(let i=0;i<=n;i++){if(result.length&&i===0)continue;const t=i/n;
+   result.push(seg.kind==='arc'?profileArcAt(seg,t):{u:seg.start.u+(seg.end.u-seg.start.u)*t,v:seg.start.v+(seg.end.v-seg.start.v)*t});
+  }
+ }
+ return result;
+}
+function nominalMotionForOperation(source,op,profileArg=null){
+ const blocked=(reason,warnings=[])=>({schema:MOTION_PREVIEW_SCHEMA,status:'BLOCKED',reason,passes:[],warnings,moves:[],assurance:'NONE'});
+ if(!op?.enabled)return blocked('Operation disabled.');
+ if(!['od_rough','od_finish','face','od_groove'].includes(op.kind))return blocked('Threading and other special cycles still need a dedicated cutting-motion planner.');
+ if(source.stock?.type!=='solid')return blocked('Only solid round bar is represented in the current stock model.');
+ if(source.workSide!=='front')return blocked('Back/reverse work setup not yet planned.');
+ const profile=profileArg||buildProfile({...source,operations:[]});
+ if(profile.errors?.length)return blocked('Figure must be valid.',profile.errors);
+ const check=validateOperations([op],source);
+ if(check.errors.length)return blocked('Invalid operation parameters.',check.errors);
+ const tool=source.tools?.find(t=>t.id===op.toolId);
+ if(!tool)return blocked('Select a tool.');
+ if(!(op.clearanceRadial>0&&op.retractZ>0))return blocked('Positive radial clearance and Z retract are required.');
+ const warnings=['UNVERIFIED TOOL-POINT PREVIEW: NO nose compensation, insert/holder swept collision, chuck, clamping, machine travel, or qualified post.',
+  'Feeds, spindle direction, offset and physical cutting-corner accessibility have not been proved. Feed returns are NOT validated against the installed insert.'];
+ if(!tool.verified)warnings.push('Tool dimensions are not marked checked.');
+ const stockD=source.stock.diameter,stockR=stockD/2;
+ const travelX=mpRound(stockD+2*Math.max(op.clearanceRadial,source.units==='inch'?.01:.25));
+ const safeFront=mpRound(op.retractZ),passes=[];
+ function addPass(cutX,endZ,stages,detail=''){
+  const moves=stages.map(([kind,role,x,z])=>({kind,role,...mpXY(x,z)}));
+  passes.push({number:passes.length+1,xDiameter:mpRound(cutX),endZ:mpRound(endZ),feedPerRev:op.feed,moves,detail});
+ }
+ function axialPass(xCut,zStart,zEnd,detail){
+  // All X approach happens OUTSIDE the uncut front face (Z>0).  Axial entry
+  // is explicitly FEED, not a rapid through uncut upstream stock.
+  addPass(xCut,zEnd,[['rapid','start',travelX,safeFront],['rapid','approach',xCut,safeFront],
+   ['feed','lead',xCut,zStart],['feed','cut',xCut,zEnd],['feed','return',xCut,safeFront],
+   ['rapid','clear',travelX,safeFront]],detail);
+ }
+ if(op.kind==='face'){
+  const frontZ=Math.max(...source.nodes.map(n=>n.z));
+  if(op.faceZ<frontZ-1e-8)return blocked('Facing target is behind the finished figure front (P01). Update the figure front or FACE Z.');
+  if(!(op.faceZ<=0&&op.faceStep>0))return blocked('Facing requires nonpositive face Z and positive axial step.');
+  const total=-op.faceZ, n=total<1e-9?1:Math.ceil(total/op.faceStep-1e-10);
+  if(n>MOTION_PREVIEW_MAX_PASSES)return blocked('Facing pass limit exceeded.');
+  if(op.faceStartX>stockD+1e-8||op.faceEndX<0||op.faceStartX<=op.faceEndX)return blocked('Facing X extents invalid.');
+  if(op.faceStartX<stockD-1e-8)warnings.push('Partial face from inside original OD; first entry can engage stock immediately.');
+  if(total<1e-9)warnings.push('Zero face stock removal: graphic shows nominal skim path only.');
+  for(let i=1;i<=n;i++){
+   const cutZ=mpRound(-Math.min(total,i*op.faceStep));
+   addPass(op.faceEndX,cutZ,[['rapid','start',travelX,safeFront],['rapid','outside-stock',travelX,cutZ],
+    ['feed','entry',op.faceStartX,cutZ],['feed','cut',op.faceEndX,cutZ],
+    ['feed','return',op.faceEndX,safeFront],['rapid','clear',travelX,safeFront]],'FACE / axial step');
+  }
+ }else if(op.kind==='od_groove'){
+  const matches=findFigureGrooves(source.nodes).filter(g=>g.from===op.from&&g.to===op.to);
+  if(matches.length!==1)return blocked('Select exactly one complete rectangular groove with USE THIS GROOVE.');
+  const groove=matches[0];
+  if(!(tool.kind==='od_groove'&&tool.width>0))return blocked('Grooving tool with positive insert width is required.');
+  const first=source.nodes[groove.from],last=source.nodes[groove.to];
+  const left=Math.min(-first.z,-last.z),right=Math.max(-first.z,-last.z),w=tool.width;
+  if(w>groove.width+1e-7)return blocked('Insert width exceeds groove.');
+  const zCenters=[];
+  for(let u=left+w/2;u<=right-w/2+1e-9;u+=Math.max(w*.8,source.units==='inch'?.001:.025)){
+   zCenters.push(Math.min(right-w/2,u));if(zCenters.length>MOTION_PREVIEW_MAX_PASSES)return blocked('Groove needs too many nominal plunges.');
+  }
+  if(!zCenters.length||zCenters[zCenters.length-1]<right-w/2-1e-8)zCenters.push(right-w/2);
+  const outerX=Math.min(first.x,last.x),floorX=groove.bottomX;
+  if(floorX+1e-8>=outerX)return blocked('Invalid groove radial depth.');
+  if(zCenters.length>MOTION_PREVIEW_MAX_PASSES)return blocked('Groove path count exceeded.');
+  // Multi-position plunges do not assert safe entry through a still-uncut OD.
+  const entryX=mpRound(Math.max(outerX+2*op.clearanceRadial,stockD+2*op.clearanceRadial));
+  for(const c of zCenters){const zz=-c;
+   addPass(floorX,zz,[['rapid','start',travelX,safeFront],['rapid','outside-stock',entryX,zz],
+    ['feed','plunge',floorX,zz],['feed','return',entryX,zz],['rapid','clear',travelX,safeFront]],`GROOVE / insert W${mpRound(w)}`);
+  }
+  warnings.push('Groove plunge has simplified finite insert-width removal; chip control, side clearance, plunge depth stages, and insert/holder interference NOT solved.');
+  warnings.push('Groove tool entry is marked FEED to the bottom: this is not a qualified radial step-down cycle.');
+ }else{
+  const region=operationContourSegments(profile,op),sample=motionRegionSample(region);
+  if(!region.length||sample.length<2)return blocked('Selected region has no complete contour.');
+  const review=reviewFigureRegion(source.nodes,op.from,op.to);
+  if(review.reverseZ||sample.some((p,i)=>i&&p.u<sample[i-1].u-1e-7))return blocked('Reverse-Z / backtracking contour: choose another region or tool approach.');
+  if(sample.some(p=>!Number.isFinite(p.u)||!Number.isFinite(p.v)||p.v< -1e-8||p.v>stockR+1e-8))return blocked('Nonfinite or out-of-stock geometry.');
+  const uStart=sample[0].u,uEnd=sample[sample.length-1].u;
+  if(uEnd<=uStart+1e-8)return blocked('Region has no axial extent.');
+  if(review.recess&&op.kind==='od_rough')warnings.push('Recess/groove within range: OD passes use the OUTSIDE obstruction envelope and LEAVE the groove for a separate grooving operation.');
+  if(review.recess&&op.kind==='od_finish')return blocked('Recess in finish region: split the contour and use an explicit groove/appropriate finish strategy.');
+  // The axial preview starts at the raw face, even for later P ranges. Feed entry
+  // across upstream stock is shown, never rapid, and depends on preceding work.
+  if(uStart>1e-7)warnings.push(`Selected region begins at P${op.from+1} (Z${mpRound(-uStart)}): FEED entry travels from Z0 across earlier geometry. Verify preceding operations cleared that access corridor.`);
+  if(op.kind==='od_rough'){
+   const finishR=op.finishRadial,finishZ=op.finishAxial;
+   const rFirst=sample[0].v,lowest=rFirst+finishR;
+   const count=Math.ceil((stockR-lowest)/op.doc-1e-10);
+   if(count<=0)return blocked('No OD rough stock exists at the starting-region diameter with this finish allowance.');
+   if(count>MOTION_PREVIEW_MAX_PASSES)return blocked('Excessive roughing passes: increase radial DOC or split the operation.');
+   function firstCrossing(r){const threshold=r-finishR;
+    for(const seg of region){
+     if(seg.start.v>threshold+1e-8)return seg.start.u;
+     if(seg.end.v<threshold-1e-9){
+      // Arc could arch above the threshold despite low endpoints. Sample conservatively.
+      if(seg.kind!=='arc'||!Array.from({length:33},(_,i)=>profileArcAt(seg,i/32)).some(q=>q.v>=threshold-1e-9))continue;
+     }
+     if(seg.kind==='line'){
+      const dv=seg.end.v-seg.start.v;
+      if(dv<=1e-12)continue;
+      return seg.start.u+(seg.end.u-seg.start.u)*Math.max(0,Math.min(1,(threshold-seg.start.v)/dv));
+     }
+     let prev=profileArcAt(seg,0);
+     for(let i=1;i<=120;i++){const q=profileArcAt(seg,i/120);
+      if(q.v>=threshold-1e-9){let a=(i-1)/120,b=i/120;
+       for(let k=0;k<38;k++){const m=(a+b)/2;if(profileArcAt(seg,m).v>=threshold)b=m;else a=m;}
+       return profileArcAt(seg,b).u;
+      }prev=q;}
+    }
+    return uEnd;
+   }
+   if(op.finishAxial>=uEnd-uStart)return blocked('Axial allowance consumes the selected region.');
+   for(let i=1;i<=count;i++){
+    const r=Math.max(lowest,stockR-i*op.doc),endU=Math.min(uEnd,firstCrossing(r))-finishZ;
+    if(endU<=uStart+1e-8)continue;
+    axialPass(mpRound(2*r),mpRound(-uStart),mpRound(-endU),'OD ROUGH / radial DOC');
+   }
+   if(!passes.length)return blocked('No available roughing pass stops with current allowances.');
+   warnings.push('Stops follow actual line/arc first obstructions, but they are NOT nose-offset or holder-safe stops.');
+  }else{
+   // OD finish: sampled geometry for display only; no exact G02/G03 output here.
+   if(review.recess)return blocked('Finish undercut requires explicit tool-side accessibility.');
+   const first=sample[0],last=sample[sample.length-1];
+   const stages=[['rapid','start',travelX,safeFront],['rapid','approach',2*first.v,safeFront],
+    ['feed','lead',2*first.v,-first.u]];
+   for(let i=1;i<sample.length;i++)stages.push(['feed','cut',2*sample[i].v,-sample[i].u]);
+   // Return along finished trace at FEED, not a rapid through an unknown shoulder.
+   for(let i=sample.length-2;i>=0;i--)stages.push(['feed','return',2*sample[i].v,-sample[i].u]);
+   stages.push(['feed','return',2*first.v,safeFront],['rapid','clear',travelX,safeFront]);
+   addPass(2*last.v,-last.u,stages,'OD FINISH / sampled lines and exact-arc graphic');
+   warnings.push('Finish contour is linearized for display; the chosen single pass assumes roughing stock was already reduced. Neither finish engagement nor exact G02/G03 is verified.');
+  }
+ }
+ const moves=passes.flatMap(p=>p.moves.map(m=>({pass:p.number,...m})));
+ return {schema:MOTION_PREVIEW_SCHEMA,status:'PREVIEW_ONLY',reason:'Theoretical planning preview only; not postable',
+  units:source.units,convention:'X_DIAMETER_Z_AXIAL',toolReference:'THEORETICAL_CUTTING_POINT_NO_NOSE_COMP',
+  passes,moves,count:passes.length,warnings,assurance:'NONE',stockDiameter:stockD};
+}
+/** Axial stock-envelope estimate (not collision detection or actual cutter engagement).
+ * Prior operations are applied in their job sequence.  The rendered after-stock
+ * reflects all passes, or only passes through the selected pass for inspection.
+ */
+function nominalStockStages(source,op,profile,plan,limit='all'){
+ const N=640,L=source.stock.length,dx=L/N,rawR=source.stock.diameter/2;
+ const initial=()=>Array(N+1).fill(rawR);
+ let radii=initial(),front=0;
+ function apply(operation,proposal){
+  if(proposal.status!=='PREVIEW_ONLY')return;
+  const t=source.tools.find(x=>x.id===operation.toolId);
+  const passes=limit==='all'||operation.id!==op.id?proposal.passes:proposal.passes.slice(0,Math.max(0,Number(limit)));
+  if(operation.kind==='face'){
+   if(operation.faceEndX<=1e-8 && operation.faceStartX>=source.stock.diameter-1e-8){
+    for(const p of passes){const cutU=-p.endZ;front=Math.max(front,cutU);for(let i=0;i<=N;i++)if(i*dx<front-1e-7)radii[i]=0;}
+   }
+   return;
+  }
+  for(const p of passes){
+   if(operation.kind==='od_groove'){
+    const z=-p.endZ,r=p.xDiameter/2,w=Number(t?.width)||0;
+    for(let i=0;i<=N;i++){const u=i*dx;if(u>=front&&Math.abs(u-z)<=w/2+dx/2)radii[i]=Math.min(radii[i],r);}
+    continue;
+   }
+   let previous=p.moves[0];
+   for(let j=1;j<p.moves.length;j++){
+    const next=p.moves[j];
+    if(next.kind==='feed'&&['cut','lead'].includes(next.role)){
+     const a=-previous.z,b=-next.z,min=Math.min(a,b),max=Math.max(a,b);
+     if(max>=front&&min<=L){
+      const first=Math.max(0,Math.ceil((min-1e-9)/dx)),last=Math.min(N,Math.floor((max+1e-9)/dx));
+      for(let i=first;i<=last;i++){
+       const u=i*dx;if(u<front-1e-8)continue;
+       const f=Math.abs(b-a)<1e-10?1:Math.max(0,Math.min(1,(u-a)/(b-a)));
+       const r=(previous.x+(next.x-previous.x)*f)/2;
+       radii[i]=Math.max(0,Math.min(radii[i],r));
+      }
+     }
+    }
+    previous=next;
+   }
+  }
+ }
+ const idx=source.operations.findIndex(q=>q.id===op.id);
+ for(let j=0;j<idx;j++){
+  const prior=source.operations[j];if(!prior.enabled)continue;
+  const p=nominalMotionForOperation(source,prior,profile);
+  if(p.status==='PREVIEW_ONLY')apply(prior,p);
+ }
+ const before=radii.slice(),beforeFront=front;
+ apply(op,plan);
+ const after=radii,afterFront=front;
+ function volume(rs,f){let sum=0;for(let i=0;i<N;i++){
+  if(i*dx<f)continue;
+  const r=(rs[i]+rs[i+1])/2;sum+=Math.PI*r*r*dx;
+ }return sum;}
+ const removed=Math.max(0,volume(before,beforeFront)-volume(after,afterFront));
+ return {N,L,before,after,beforeFront,afterFront,removed,unit:source.units==='inch'?'in³':'mm³'};
+}
+function renderMotionPreview(plan,stock){
+ const message=$('opMotionSummary'),tbody=$('opMotionRows'),warnings=$('opMotionWarnings'),sel=$('opMotionPass');
+ if(!message||!tbody||!sel)return;
+ const prev=sel.value||'all';sel.replaceChildren();
+ const all=document.createElement('option');all.value='all';all.textContent='ALL PASSES';sel.append(all);
+ for(const p of plan.passes){const o=document.createElement('option');o.value=String(p.number);o.textContent=`PASS ${String(p.number).padStart(2,'0')}`;sel.append(o);}
+ sel.value=plan.passes.some(x=>String(x.number)===prev)?prev:'all';sel.disabled=!plan.passes.length;
+ const ready=plan.status==='PREVIEW_ONLY';message.classList.toggle('blocked',!ready);message.classList.toggle('ready',ready);
+ const nr=stock?stock.removed:0;
+ message.textContent=ready?`UNVERIFIED PREVIEW · ${plan.count} ${plan.count===1?'PASS':'PASSES'} · ${plan.moves.length} POINTS · NC LOCKED\n`+
+  `STOCK ENVELOPE · ~${nr.toFixed(nr<1?4:2)} ${stock?.unit||''} NOMINAL REMOVAL · INCLUDES PREVIOUS STEPS`:`NO MOTION PREVIEW · ${plan.reason}`;
+ tbody.replaceChildren();
+ for(const p of plan.passes){const tr=document.createElement('tr');
+  for(const val of [String(p.number).padStart(2,'0'),opFormat(p.xDiameter),opFormat(p.endZ),opFormat(p.feedPerRev),p.detail||'—']){
+   const td=document.createElement('td');td.textContent=val;tr.append(td);}
+  tr.style.cursor='pointer';tr.addEventListener('click',()=>{sel.value=String(p.number);drawOperationGraph();});tbody.append(tr);
+ }
+ warnings.textContent=plan.warnings.map(x=>'• '+x).join('\n')||'• Special-case toolpath unavailable.';
+}
+function drawStockEnvelope(g,stage,map){
+ if(!stage||!$('opShowStock').checked)return;
+ function poly(arr,front){const coords=[];const N=stage.N,L=stage.L;
+  for(let i=Math.max(0,Math.ceil(front/L*N));i<=N;i++){const q=map({u:i*L/N,v:arr[i]});coords.push(`${coords.length?'L':'M'}${q.x.toFixed(2)},${q.y.toFixed(2)}`);}
+  return coords.join(' ');
+ }
+ const pre=poly(stage.before,stage.beforeFront),post=poly(stage.after,stage.afterFront);
+ if(pre)g.append(el('path',{d:pre,fill:'none',stroke:'#ecc06c','stroke-width':2.4,'stroke-dasharray':'5 4','stroke-opacity':.88}));
+ if(post)g.append(el('path',{d:post,fill:'none',stroke:'#adcbf7','stroke-width':3.1,'stroke-opacity':.95}));
+}
+function drawMotionOverlay(g,plan,map){
+ if(!$('opShowMotion').checked||plan.status!=='PREVIEW_ONLY')return;
+ const selected=$('opMotionPass').value;
+ for(const p of plan.passes){
+  if(selected!=='all'&&String(p.number)!==selected)continue;
+  for(let i=1;i<p.moves.length;i++){
+   const a=p.moves[i-1],b=p.moves[i],point=q=>map({u:-q.z,v:q.x/2});
+   const s=point(a),e=point(b),rapid=b.kind==='rapid',ret=b.role==='return',cut=b.role==='cut'||b.role==='plunge';
+   const color=rapid?'#d29cd5':ret?'#91d1ff':cut?'#9cf783':'#ceb875';
+   g.append(el('line',{x1:s.x,y1:s.y,x2:e.x,y2:e.y,stroke:color,'stroke-width':cut?2.6:1.5,
+    'stroke-linecap':'round',...(!cut?{'stroke-dasharray':rapid?'7 6':'4 5'}:{}),'stroke-opacity':selected==='all'?(cut?.84:.4):1}));
+  }
+ }
+}
+
+function drawMotionCursor(g,plan,map){
+ const scrub=$('opMotionScrub'),out=$('opTipReadout');
+ if(!scrub||!out)return;
+ if(plan.status!=='PREVIEW_ONLY'||!plan.passes.length){scrub.disabled=true;out.textContent='NO PATH TO INSPECT';return;}
+ scrub.disabled=false;
+ const passSel=$('opMotionPass').value;
+ const chosen=passSel==='all'?plan.passes:plan.passes.filter(p=>String(p.number)===passSel);
+ const items=chosen.flatMap(p=>p.moves.map(m=>({...m,pass:p.number})));
+ if(items.length<2){out.textContent='INSUFFICIENT MOTION POINTS';return;}
+ const t=Number(scrub.value)/100*(items.length-1),ix=Math.min(items.length-2,Math.floor(t)),f=t-ix;
+ const a=items[ix],b=items[ix+1];
+ const x=a.x+(b.x-a.x)*f,z=a.z+(b.z-a.z)*f,p=map({u:-z,v:x/2});
+ g.append(el('circle',{cx:p.x,cy:p.y,r:9,fill:'#fbac59','fill-opacity':.2,stroke:'#fff3d8','stroke-width':1.3}));
+ g.append(el('line',{x1:p.x-13,y1:p.y,x2:p.x+13,y2:p.y,stroke:'#ffcf83','stroke-width':2}));
+ g.append(el('line',{x1:p.x,y1:p.y-13,x2:p.x,y2:p.y+13,stroke:'#ffcf83','stroke-width':2}));
+ out.textContent=`PASS ${String(b.pass).padStart(2,'0')} · MOVE ${ix+2}/${items.length} · ${b.kind.toUpperCase()} / ${b.role.toUpperCase()} · XØ ${opFormat(x)} · Z ${opFormat(z)} · NOMINAL TIP ONLY`;
+}
+
 function extractStep(op,index,source,profileOverride=null){
  const t=source.tools.find(x=>x.id===op.toolId)||null;
  const profile=profileOverride||buildProfile({...source,operations:[]});
  const fromPt=source.nodes[op.from],toPt=source.nodes[op.to];
+ const preview=nominalMotionForOperation(source,op,profile);
  return {sequence:index+1,id:op.id,enabled:op.enabled,kind:op.kind,label:op.name,
    tool:t?{id:t.id,station:t.station,offset:t.offset,name:t.name,kind:t.kind,shape:t.shape,tipDirection:t.tipDirection,hand:t.hand??null,insertNoseRadius:t.noseRadius??null,insertWidth:t.width??null,verified:!!t.verified,mountAxis:t.mountAxis??null,mountSide:t.mountSide??null}:null,
    geometry:op.kind==='face'?{type:'face-envelope',z:op.faceZ,outerXDiameter:op.faceStartX,innerXDiameter:op.faceEndX}:
     {type:'profile-interval',fromIndex:op.from,toIndex:op.to,fromPointId:fromPt?.id??null,toPointId:toPt?.id??null,
      primitives:operationContourSegments(profile,op).map(s=>structuredClone(s))},
-   machining:{feedPerRev:op.feed,rpm:op.rpm,depthOfCutRadial:op.doc,finishRadial:op.finishRadial,finishAxial:op.finishAxial,clearanceRadial:op.clearanceRadial,retractZ:op.retractZ,accessPlan:op.accessPlan??'review'},
-   pathStatus:'NOT_GENERATED',verifiedMotions:[]};
+   machining:{feedPerRev:op.feed,rpm:op.rpm,faceStepAxial:op.faceStep,depthOfCutRadial:op.doc,finishRadial:op.finishRadial,finishAxial:op.finishAxial,clearanceRadial:op.clearanceRadial,retractZ:op.retractZ,accessPlan:op.accessPlan??'review'},
+   pathStatus:preview.status,planningPreview:preview,verifiedMotions:[]};
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.7.4',status:'INTENT_ONLY_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.7.6',status:'NOMINAL_PATH_PREVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,workSide:source.workSide,units:source.units},
@@ -2727,7 +3030,7 @@ function buildProcessPlan(source){
   figures:{nodes:structuredClone(source.nodes),sourceErrors:[...profile.errors],exactSegments:profile.errors.length?[]:structuredClone(profile.segments)},
   steps:source.operations.map((op,i)=>extractStep(op,i,source,profile)),
   preflight:(()=>{const r=preflightReport(source);return {...r,operatorChecks:PRECHECK_ITEMS.map(([id,label])=>({id,label,confirmedInThisSession:pfSessionChecks.has(id)})),sessionOnly:true};})(),
-  motionIR:{version:1,units:source.units,modalState:null,verified:false,blocks:[],cuttingPathsGenerated:false},
+  motionIR:{version:1,units:source.units,modalState:null,verified:false,blocks:[],cuttingPathsGenerated:false,previewOnly:true,previewFormat:MOTION_PREVIEW_SCHEMA},
   verification:{toolpath:false,collision:false,holderClearance:false,kinematics:false,controllerPost:false},
   post:{available:false,driver:null,artifact:null,reason:NC_EXPORT_DISABLED_REASON}};
 }
@@ -2760,6 +3063,7 @@ function preflightReport(source){
  if(!s.material.trim())add(reviews,'Material / grade has not been entered.');
  if(!s.program.trim())add(reviews,'Program ID has not been assigned.');
  for(const w of [...geometry.warnings,...operation.warnings])add(reviews,w);
+ for(const [i,op] of source.operations.entries()){if(!op.enabled)continue;const motion=nominalMotionForOperation(source,op,geometry);if(motion.status==='BLOCKED')add(reviews,`Step ${i+1} path preview: ${motion.reason}`);}
  const ids=new Map();for(const op of source.operations.filter(x=>x.enabled)){const t=source.tools.find(t=>t.id===op.toolId);if(!t)continue;const key=`${t.station}/${t.offset}`;if(ids.has(key)&&ids.get(key)!==t.id)add(blockers,`Tool station/offset ${key} is assigned to multiple different tools.`);else ids.set(key,t.id);}
  return {blockers,reviews,confirmed:PRECHECK_ITEMS.filter(([k])=>pfSessionChecks.has(k)).length,
           total:PRECHECK_ITEMS.length,postBlocked:NC_EXPORT_DISABLED_REASON};
@@ -2784,11 +3088,13 @@ function renderStepDetail(){
  addDetail(fields,'DOC / RADIAL',`${pfValue(op.doc)} ${job.units}`);
  addDetail(fields,'FINISH STOCK (R / Z)',`${pfValue(op.finishRadial)} / ${pfValue(op.finishAxial)}`);
  addDetail(fields,'CLEARANCE (RADIAL / Z)',`${pfValue(op.clearanceRadial)} / ${pfValue(op.retractZ)}`);
+ if(op.kind==='face')addDetail(fields,'FACE AXIAL STEP',pfValue(op.faceStep));
  if(op.kind==='face')addDetail(fields,'FACE EXTENTS',`XØ${pfValue(op.faceStartX)} → XØ${pfValue(op.faceEndX)} @ Z${pfValue(op.faceZ)}`);
  else addDetail(fields,'FIGURE REGION',`P${op.from+1} → P${op.to+1} · ${p.geometry.primitives.length} primitives`);
  if(op.kind==='od_groove'){const groove=findFigureGrooves(job.nodes).find(g=>g.from===op.from&&g.to===op.to);addDetail(fields,'GROOVE',groove?`WIDTH ${pfValue(groove.width)} · DEPTH R ${pfValue(groove.depth)}`:'INCOMPLETE / NOT MATCHED');}
  addDetail(fields,'ACCESS STRATEGY',op.accessPlan||'review');
- addDetail(fields,'MOTION / POST','INTENT ONLY · PATH NOT GENERATED');
+ addDetail(fields,'PATH PLANNING',p.pathStatus==='PREVIEW_ONLY'?`${p.planningPreview.count} NOMINAL PASSES · PREVIEW ONLY`:p.planningPreview.reason);
+ addDetail(fields,'MOTION / POST','NO VERIFIED MOTION · NC LOCKED');
 }
 function fillJobSetupForm(){
  const s=normalizeJobSetup(job.setup);
@@ -2826,7 +3132,7 @@ function refreshJobInfo(){
  job.operations.forEach((op,i)=>{const tr=document.createElement('tr');tr.setAttribute('aria-selected',String(i===pfSelected));tr.tabIndex=0;
    const t=job.tools.find(x=>x.id===op.toolId);createTextCell(tr,String(i+1).padStart(2,'0'));
    createTextCell(tr,`${OP_KINDS[op.kind]||op.kind} · ${op.name}`);createTextCell(tr,t?`T${t.station} H${t.offset}`:'—');
-   createTextCell(tr,pfValue(op.feed));createTextCell(tr,String(op.rpm));createTextCell(tr,op.enabled?'DEFINED':'OFF','op-disabled');
+   createTextCell(tr,pfValue(op.feed));createTextCell(tr,String(op.rpm));const state=op.enabled?nominalMotionForOperation(job,op,buildProfile({...job,operations:[]})).status:'DISABLED';createTextCell(tr,op.enabled?(state==='PREVIEW_ONLY'?'PREVIEW':'NO PATH'):'OFF','op-disabled');
    tr.addEventListener('click',()=>{pfSelected=i;refreshJobInfo();});tr.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();pfSelected=i;refreshJobInfo();}});tbody.append(tr);
  });renderStepDetail();
  const report=preflightReport(job),issue=$('pfIssues');issue.replaceChildren();
@@ -2838,12 +3144,12 @@ function refreshJobInfo(){
  show('NC','VERIFIED TOOLPATH, COLLISION CHECK & MACHINE POST NOT IMPLEMENTED — CODE EMISSION DISABLED.',true);
  const checks=$('pfChecks');checks.replaceChildren();
  for(const [key,desc] of PRECHECK_ITEMS){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=pfSessionChecks.has(key);cb.addEventListener('change',()=>{if(cb.checked)pfSessionChecks.add(key);else pfSessionChecks.delete(key);const r=preflightReport(job);head.textContent=`${r.blockers.length} SETUP BLOCKER(S) · ${r.reviews.length} REVIEW ITEM(S) · ${r.confirmed}/${r.total} OPERATOR CHECKS · NC OUTPUT LOCKED`;});const span=document.createElement('span');span.textContent=desc;label.append(cb,span);checks.append(label);}
- $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: EXACT FIGURE + OPERATIONS + TOOL REFS.','MOTION IR: EMPTY / NOT VERIFIED.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, X SIGN, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: PATH PLANNER -> KINEMATIC/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
+ $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: EXACT FIGURE + OPERATION INTENT + NOMINAL PASS PREVIEWS.','MOTION IR: EMPTY / NOT VERIFIED. PREVIEWS ARE NOT NC BLOCKS.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, X SIGN, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: TOOL NOSE OFFSET + SWEEP CHECK -> KINEMATIC/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
 }
 function textSetupSheet(){
  const s=normalizeJobSetup(job.setup),report=preflightReport(job);
- const lines=['MINITURN 0.7.4 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
- job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · RPM ${op.rpm} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · XØ${pfValue(op.faceStartX)} TO XØ${pfValue(op.faceEndX)}`:`   P${op.from+1} TO P${op.to+1} · ACCESS: ${op.accessPlan||'review'}`);});
+ const lines=['MINITURN 0.7.6 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · RPM ${op.rpm} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · XØ${pfValue(op.faceStartX)} TO XØ${pfValue(op.faceEndX)} · AXIAL STEP ${pfValue(op.faceStep)}`:`   P${op.from+1} TO P${op.to+1} · ACCESS: ${op.accessPlan||'review'}`);});
  lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
  lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
 }
@@ -2858,7 +3164,7 @@ function wireJobInfo(){
  $('pfEditStep').addEventListener('click',()=>{opSelected=pfSelected;setPage('operations');});
  $('pfAddStep').addEventListener('click',()=>setPage('operations'));
  $('pfExportSetup').addEventListener('click',()=>{if(pfEditing&&!saveJobSetup())return;download(textSetupSheet(),safeFilename()+'_setup.txt','text/plain');notify('SETUP SHEET EXPORTED · NOT A CNC PROGRAM');});
- $('pfExportPlan').addEventListener('click',()=>{if(pfEditing&&!saveJobSetup())return;const plan=buildProcessPlan(job);download(JSON.stringify(plan,null,2),safeFilename()+'_process_plan.json','application/json');notify('PROCESS PLAN EXPORTED · NO CUTTING MOVES');});
+ $('pfExportPlan').addEventListener('click',()=>{if(pfEditing&&!saveJobSetup())return;const plan=buildProcessPlan(job);download(JSON.stringify(plan,null,2),safeFilename()+'_process_plan.json','application/json');notify('PROCESS PLAN EXPORTED · NOMINAL PASSES ONLY · NC LOCKED');});
  $('pfExportNC').addEventListener('click',()=>{try{emitNCFromPlan(buildProcessPlan(job));}catch(e){notify(e.message,true);}});
 }
 
@@ -3622,7 +3928,7 @@ function selectOperation(i){
 }
 function fillOperationForm(op){
  $('opName').value=op.name;$('opKind').value=op.kind;$('opEnabled').checked=op.enabled;
- for(const [id,key] of [['opDoc','doc'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])$(id).value=String(op[key]);
+ for(const [id,key] of [['opDoc','doc'],['opFaceStep','faceStep'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])$(id).value=String(op[key]);
  for(const field of ['opFrom','opTo']){
   const elField=$(field);elField.replaceChildren();
   job.nodes.forEach((pt,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`P${String(i+1).padStart(2,'0')} · X${opFormat(pt.x)} Z${opFormat(pt.z)}${pt.corner==='sharp'?'':' · '+pt.corner.toUpperCase()}`;elField.append(o);});
@@ -3672,7 +3978,7 @@ function refreshAccessReview(op){
  if(review.recess)parts.push('RECESS DETECTED · CONSIDER OPPOSITE-HAND OR GROOVING APPROACH');
  else parts.push('NO ENCLOSED RECESS FOUND IN SELECTED REGION');
  if(review.reverseZ)parts.push('REVERSE Z PATH · REVIEW TOOL APPROACH');
- if(op.kind==='od_groove')parts.push('GROOVE CUTTING PASSES AND WALL CLEARANCE NOT MODELED');
+ if(op.kind==='od_groove')parts.push('GROOVE PLUNGE PREVIEW ONLY · WALL CLEARANCE NOT VERIFIED');
  parts.push('OPERATOR APPROVES TOOL & STRATEGY · NO NC OUTPUT');
  out.textContent=parts.join('\n');out.classList.toggle('warning',review.recess||review.reverseZ);
 }
@@ -3689,7 +3995,7 @@ function readOperationForm(){
  const op=structuredClone(job.operations[opSelected]);
  op.name=$('opName').value.trim();op.kind=$('opKind').value;op.toolId=$('opTool').value;op.enabled=$('opEnabled').checked;op.accessPlan=$('opAccessPlan').value;
  const num=id=>$(id).value.trim()===''?NaN:Number($(id).value);
- for(const [id,key] of [['opDoc','doc'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])op[key]=num(id);
+ for(const [id,key] of [['opDoc','doc'],['opFaceStep','faceStep'],['opFinRad','finishRadial'],['opFinAx','finishAxial'],['opFeed','feed'],['opRPM','rpm'],['opClearance','clearanceRadial'],['opRetract','retractZ'],['opFaceZ','faceZ'],['opFaceStart','faceStartX'],['opFaceEnd','faceEndX']])op[key]=num(id);
  op.from=Number($('opFrom').value);op.to=Number($('opTo').value);op.fromPointId=job.nodes[op.from]?.id;op.toPointId=job.nodes[op.to]?.id;
  return op;
 }
@@ -3722,18 +4028,23 @@ function drawOperationGraph(){
   if(active.length)g.append(el('path',{d:path(active),fill:'none',stroke:'#ffc377','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round'}));
   for(const ix of [op.from,op.to]){const n=job.nodes[ix];if(!n)continue;const q=map({u:-n.z,v:n.x/2});g.append(el('circle',{cx:q.x,cy:q.y,r:6,fill:'#ffe1a7',stroke:'#8c4e25','stroke-width':2}));}
  }
+ const preview=nominalMotionForOperation(job,op,profile);
+ const chosen=$('opMotionPass').value;
+ const safeChoice=preview.passes.some(p=>String(p.number)===chosen)?chosen:'all';
+ const stockStages=preview.status==='PREVIEW_ONLY'?nominalStockStages(job,op,profile,preview,safeChoice):null;
+ renderMotionPreview(preview,stockStages);drawStockEnvelope(g,stockStages,map);drawMotionOverlay(g,preview,map);drawMotionCursor(g,preview,map);
  const text=(str,x,y,color='#a6c7b1',size=14)=>g.append(el('text',{x,y,fill:color,'font-size':size,'font-family':'monospace'},str));
  job.nodes.forEach((n,i)=>{const q=map(physicalPoint(n));g.append(el('circle',{cx:q.x,cy:q.y,r:5,fill:'#c6f4d3',stroke:'#224f41','stroke-width':1.5}));text(`P${i+1}`,q.x+9,q.y-9,'#c3dabd',12);});
  text('Z0 FACE',mirrorZ?W-130:30,32);text(mirrorZ?'← -Z CHUCK':'-Z CHUCK →',mirrorZ?30:W-165,32);
  if(op.kind==='face')text(`FACE: XØ${opFormat(op.faceStartX)} → XØ${opFormat(op.faceEndX)} @ Z${opFormat(op.faceZ)}`,20,H-27,'#ffd090',14);
  else text(`REGION: P${String(op.from+1).padStart(2,'0')} → P${String(op.to+1).padStart(2,'0')}`,20,H-27,'#ffd090',14);
- $('opGraphTitle').textContent=`${op.name.toUpperCase().slice(0,38)} · ${mirrorZ?'MIRRORED Z':'Z0 LEFT'} · PROFILE REGION ONLY`;
+ $('opGraphTitle').textContent=`${op.name.toUpperCase().slice(0,38)} · ${mirrorZ?'MIRRORED Z':'Z0 LEFT'} · NOMINAL PREVIEW ONLY`;
  $('opEditorTitle').textContent=`OP ${String(opSelected+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||'UNKNOWN'}`;
  $('opMirror').setAttribute('aria-pressed',String(mirrorZ));$('opMirror').classList.toggle('active',mirrorZ);
  const tool=job.tools.find(t=>t.id===op.toolId);
- $('opReadout').textContent=`${OP_KINDS[op.kind]} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · NO NC OUTPUT`;
+ $('opReadout').textContent=`${OP_KINDS[op.kind]} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · ${preview.status==='PREVIEW_ONLY'?preview.count+' PASSES':'PATH BLOCKED'} · NC LOCKED`;
  refreshAccessReview(op);
- opMsg(check.errors.length?'OPERATION INPUT INVALID':'OPERATION DEFINITION VALID · NOT PROVEN',check.errors.length?check.errors:[...check.warnings,'Highlighted line is a selected profile region, NOT a cutting toolpath.'],check.errors.length>0);
+ opMsg(check.errors.length?'OPERATION INPUT INVALID':'OPERATION DEFINITION VALID · NOT PROVEN',check.errors.length?check.errors:[...check.warnings,'Orange pass lines are theoretical tool-point motions, NOT collision-checked toolpaths. NC is locked.'],check.errors.length>0);
 }
 function opMarkDirty(){opDirty=true;drawOperationGraph();}
 function svgPointerPoint(svg,event){
@@ -3793,7 +4104,11 @@ function wireOperations(){
  $('opReset').addEventListener('click',()=>{opDirty=false;refreshOperations();});
  $('opDemo').addEventListener('click',()=>{if(opDirty&&!confirm('Discard unsaved operation edits?'))return;if(job.operations.length&&!confirm('Replace all current operations with a 3-op example sequence?'))return;const demo=defaultOperations(job);const checked=validateOperations(demo,{...job,operations:demo});if(checked.errors.length){notify(checked.errors[0],true);return;}job.operations=demo;opSelected=0;opDirty=false;refreshOperations();autosave();});
  document.querySelectorAll('#opSoftkeys button').forEach(btn=>btn.addEventListener('click',()=>opAction(btn.dataset.opAction)));
- for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract']){
+ $('opShowMotion').addEventListener('change',drawOperationGraph);
+ $('opShowStock').addEventListener('change',drawOperationGraph);
+ $('opMotionScrub').addEventListener('input',drawOperationGraph);
+ $('opMotionPass').addEventListener('change',()=>{const pass=$('opMotionPass').value;drawOperationGraph();$('opMotionPass').value=pass;});
+ for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opFaceStep','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract']){
   $(id).addEventListener('input',opMarkDirty);$(id).addEventListener('change',opMarkDirty);
  }
  $('opKind').addEventListener('change',()=>{
