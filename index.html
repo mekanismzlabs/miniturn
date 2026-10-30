@@ -448,7 +448,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 .motion-table-wrap{max-height:280px;overflow:auto}.motion-table{border-collapse:collapse;width:100%;font-size:11px;white-space:nowrap}.motion-table th,.motion-table td{padding:7px 10px;border-bottom:1px solid var(--panel-border);text-align:left}.motion-table th{position:sticky;top:0;background:var(--surface2);color:var(--mute)}
 .motion-warnings{font:10px/1.65 Consolas,monospace;color:var(--amber);white-space:pre-wrap;margin-top:8px}
 @media(max-width:680px){#opMotionPass{max-width:108px}.operation-preview-panel .inspect-toolbar{flex-wrap:wrap}.motion-toggle{font-size:9px}}
-/* v0.8.3: selected-region paths and stock-envelope visualization */
+/* v0.8.4: selected-region paths and stock-envelope visualization */
 .operation-legend .stock-before{border-color:#ecc06c;border-top-style:dashed}
 .operation-legend .stock-after{border-color:#adcbf7}
 .motion-notice{font:9px/1.45 Consolas,monospace;color:var(--mute);padding-top:7px}
@@ -459,6 +459,30 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 .nose-summary{font:10px/1.5 Consolas,monospace;color:#f7c4e5;background:#181a2c;border:1px solid #855b88;border-radius:6px;padding:9px 10px;margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere}
 .nose-summary.blocked{color:#ffd0c5;border-color:#9b5950;background:#2e1c1e}
 @media(max-width:680px){.operation-preview-panel .zoom-controls{flex-wrap:wrap;gap:5px}.operation-preview-panel .motion-toggle{min-height:34px} }
+
+/* v0.8.4 · ARC ASSIST lives inside the existing FAPT figure entry. */
+.feature-keys{grid-template-columns:repeat(5,minmax(0,1fr))}
+.feature-keys button{font-size:20px;min-width:0}
+.feature-keys button small{font-size:9px}
+.arc-assist{margin:12px 0 5px;padding:11px;border:1px solid #6d7751;border-radius:7px;background:linear-gradient(150deg,#172d2b,#202c25);color:#dae9dc}
+.arc-header{display:flex;justify-content:space-between;align-items:center;gap:5px;margin-bottom:10px;color:#ffc88c;font-size:11px;letter-spacing:.4px}
+.arc-header .small-chip{font-size:8px;white-space:normal;text-align:right}
+.arc-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.arc-fields input,.arc-fields select{font-size:13px}
+.arc-actions{display:flex;gap:6px;margin:10px 0}
+.arc-actions .action-btn{min-width:0;font-size:10px}
+.arc-actions button:disabled{opacity:.38}
+.arc-message{color:#eac99a;font-size:11px;line-height:1.55;min-height:27px}
+.arc-candidates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:7px}
+.arc-candidate{border:1px solid #556b64;border-radius:6px;background:#0d2225;color:#d5dfe2;text-align:left;padding:6px;min-width:0;font:10px/1.4 monospace;min-height:116px}
+.arc-candidate.selected{border:2px solid #f6c47b;background:#354035;color:#fff2d5}
+.arc-candidate svg{display:block;width:100%;height:74px;max-width:180px;margin:auto}
+.arc-candidate .arc-candidate-label{display:block;text-align:center;font-size:9px;font-weight:700}
+.arc-calculated{font:10px/1.6 monospace;border-top:1px solid #53645b;margin-top:8px;padding-top:7px;color:#bce8d7;white-space:pre-line}
+body[data-display="mazatrol"] .arc-assist{background:#182638;border-color:#9b6845}
+body[data-display="mazatrol"] .arc-candidate{background:#142b3f;border-color:#53728a}
+body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
+@media(max-width:500px){.feature-keys{gap:4px}.feature-keys button{min-height:49px;font-size:17px;padding:5px 1px}.feature-keys button small{font-size:8px}.arc-fields{gap:6px}.arc-header{font-size:10px}.arc-candidates{gap:5px}}
 </style>
 <style>
 /* v0.8.3 concise physical tool review */
@@ -479,7 +503,7 @@ body[data-display="contrast"] .job-step-detail,body[data-display="contrast"] .pr
 #opGraph.is-dragging{cursor:grabbing}
 @media(max-width:550px){.motion-inspector{padding:7px 9px}.motion-inspector-hint{font-size:8px}#opScrubTrack{font-size:9px;max-width:58%}}
 </style>
-  <title>MiniTurn v0.8.3 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+  <title>MiniTurn v0.8.4 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -518,7 +542,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.8.3</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.8.4</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -569,7 +593,8 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
           <button type="button" data-symbol="se">↘<small>3 · X− Z+</small></button>
         </div>
         <div class="feature-keys" aria-label="Figure features">
-          <button type="button" data-symbol="radius">R <small>RADIUS</small></button>
+          <button type="button" data-symbol="radius">R <small>CORNER R</small></button>
+          <button type="button" data-symbol="arc">A <small>ARC ASSIST</small></button>
           <button type="button" data-symbol="chamfer">C <small>CHAMFER</small></button>
           <button type="button" data-symbol="groove">G <small>GROOVE</small></button>
           <button type="button" data-symbol="thread">T <small>THREAD</small></button>
@@ -580,6 +605,19 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
           <label class="field" id="symWidthField" hidden>GROOVE WIDTH / THREAD LENGTH<input id="symWidth" type="text" inputmode="decimal" autocomplete="off"></label>
           <label class="field" id="symSizeField" hidden>R / C / GROOVE DEPTH / THREAD PITCH<input id="symSize" type="text" inputmode="decimal" autocomplete="off"></label>
         </div>
+        <section class="arc-assist" id="arcAssistPanel" hidden aria-label="Partial arc calculation">
+          <div class="arc-header"><b>ARC ASSIST · PARTIAL CIRCLE</b><span class="small-chip" id="arcEntryTag">NEW FIGURE ELEMENT</span></div>
+          <div class="arc-fields">
+            <label class="field">RADIUS <input id="arcRadius" type="text" inputmode="decimal" autocomplete="off" placeholder="R from print"></label>
+            <label class="field">KNOWN DIMENSIONS <select id="arcMode"><option value="endpoints">END X AND Z</option><option value="tangentX">TANGENT + END X Ø</option><option value="tangentZ">TANGENT + END Z</option></select></label>
+            <label class="field" id="arcXField">END X Ø<input id="arcEndX" type="text" inputmode="decimal" autocomplete="off" placeholder="X diameter"></label>
+            <label class="field" id="arcZField">END Z<input id="arcEndZ" type="text" inputmode="decimal" autocomplete="off" placeholder="Z position"></label>
+          </div>
+          <div class="arc-actions"><button id="arcSolve" type="button" class="action-btn">SOLVE / SHOW CHOICES</button><button id="arcCommit" type="button" class="action-btn primary" disabled>USE SELECTED ARC</button></div>
+          <div id="arcStatus" class="arc-message" role="status" aria-live="polite">Enter dimensions from the print. No solution is assumed.</div>
+          <div id="arcCandidates" class="arc-candidates" role="group" aria-label="Choose an arc by appearance"></div>
+          <div id="arcCalculated" class="arc-calculated" hidden></div>
+        </section>
         <div class="symbolic-actions"><button type="button" id="symApply" class="action-btn primary">ADD ELEMENT</button><button type="button" id="symUndo" class="action-btn">UNDO LAST</button><button type="button" id="goMachining" class="action-btn">MACHINING →</button></div>
         <div id="symbolicMessage" class="symbolic-message" role="status" aria-live="polite"></div>
       </div>
@@ -592,6 +630,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
         <label class="field">CORNER<select id="editCorner"><option value="sharp">SHARP</option><option value="fillet">RADIUS (R)</option><option value="chamfer">CHAMFER (C)</option></select></label>
         <label class="field">R / C SIZE<input id="editSize" type="text" inputmode="decimal" autocomplete="off"></label>
       </div>
+      <div class="row edit-actions"><button type="button" id="editPartialArc" class="action-btn" hidden>EDIT THIS ARC</button></div>
       <div class="row edit-actions"><button id="insertBtn" class="action-btn">F1 · INSERT</button><button id="replaceBtn" class="action-btn primary">F2 · REPLACE</button><button id="deleteBtn" class="action-btn warn">F3 · DELETE</button></div>
       </details>
       <div class="status-box" id="geometryStatus" role="status" aria-live="polite"></div>
@@ -1001,7 +1040,7 @@ body[data-display="contrast"] .softkey-dock{background:rgba(0,0,0,.98);border-co
   </footer>
 </div>
 <aside id="runtimeAlert" class="runtime-alert" hidden role="alert"><strong>DISPLAY ISSUE DETECTED</strong><span id="runtimeAlertText"></span><div><button id="runtimeRetry" type="button">REDRAW DISPLAY</button><button id="runtimeDiagnostics" type="button">DIAGNOSTICS</button><button id="diagnosticDismiss" type="button">DISMISS</button></div></aside>
-<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.8.3</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
+<dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.8.4</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
 <script type="module">
@@ -2050,6 +2089,78 @@ function projectGraphPoint(p,{width,height,scale,centerU,centerV,mirrorZ=false})
   const direction=mirrorZ?-1:1;
   return {x:width/2+direction*(p.u-centerU)*scale, y:height/2-(p.v-centerV)*scale};
 }
+
+/** v0.8.4 ARC ASSIST. Original dimensions + stable choice key are saved on
+ * the END node (arcToPrev). X values from the print are diameters; construction
+ * is entirely in true physical (U=-Z,V=X/2) space. No guess is committed.
+ * A returned candidate is one exact arc; no polygon approximations in the model.
+ */
+function arcAssistCandidates(nodes, startIndex, spec, stock){
+ const startNode=nodes[startIndex], start=physicalPoint(startNode), radius=Number(spec.radius), eps=1e-8;
+ if(!(Number.isFinite(radius)&&radius>0))return {candidates:[],issue:'Enter a positive radius from the drawing.'};
+ if(!startNode)return {candidates:[],issue:'Select an existing start point first.'};
+ if(startNode.corner!=='sharp')return {candidates:[],issue:'The ARC start must be a resolved sharp point; complete its preceding R/C feature first.'};
+ const out=[];
+ const put=(center,end,key,forceSweep=null)=>{
+  if(!Number.isFinite(end.u)||!Number.isFinite(end.v)||norm(sub(end,start))<eps)return;
+  const theta=Math.atan2(start.v-center.v,start.u-center.u),endTheta=Math.atan2(end.v-center.v,end.u-center.u);
+  let sweep=endTheta-theta;
+  if(forceSweep==='ccw'){while(sweep<=1e-8)sweep+=Math.PI*2;}
+  else if(forceSweep==='cw'){while(sweep>=-1e-8)sweep-=Math.PI*2;}
+  else throw Error('Missing direction');
+  if(Math.abs(sweep)<eps||Math.abs(sweep)>Math.PI*2+eps)return;
+  const steps=Math.max(12,Math.ceil(Math.abs(sweep)/(.08)));
+  for(let k=0;k<=steps;k++){
+   const a=theta+sweep*k/steps,u=center.u+radius*Math.cos(a),v=center.v+radius*Math.sin(a);
+   if(u< -1e-7||u>stock.length+1e-7||v< -1e-7||v>stock.diameter/2+1e-7)return;
+  }
+  out.push({key,center,start,end,radius,startAngle:theta,sweep,dir:sweep>0?'CCW':'CW',angle:Math.abs(sweep)*180/Math.PI});
+ };
+ if(spec.mode==='endpoints'){
+  if(!Number.isFinite(spec.endX)||!Number.isFinite(spec.endZ))return {candidates:[],issue:'Need both end X diameter and end Z, or switch to tangent + one coordinate.'};
+  const end={u:-spec.endZ,v:spec.endX/2},chord=norm(sub(end,start));
+  if(chord<eps)return {candidates:[],issue:'Start and end coincide. A full circle is not defined by this operation.'};
+  if(chord>2*radius+eps)return {candidates:[],issue:`R${radius} is too small for the specified chord (${chord.toFixed(5)}). Minimum radius is ${(chord/2).toFixed(5)}.`};
+  const middle=mul(add(start,end),.5),perp={u:-(end.v-start.v)/chord,v:(end.u-start.u)/chord},height=Math.sqrt(Math.max(0,radius*radius-chord*chord/4));
+  for(const side of (height<eps?[1]:[1,-1])){
+   const center=add(middle,mul(perp,side*height));
+   for(const direction of ['cw','ccw'])put(center,end,`E:${side}:${direction}`,direction);
+  }
+ }else if(spec.mode==='tangentX'||spec.mode==='tangentZ'){
+  if(startIndex<1)return {candidates:[],issue:'Tangent mode needs a preceding straight segment to define the start direction.'};
+  if(nodes[startIndex].arcToPrev||nodes[startIndex-1].corner!=='sharp')return {candidates:[],issue:'This tangent-start solver needs a preceding straight line without a corner feature at its start.'};
+  const a=physicalPoint(nodes[startIndex-1]),t=vec(a,start),length=norm(t);
+  if(length<eps)return {candidates:[],issue:'Previous line has zero length.'};
+  const dir=mul(t,1/length),normal={u:-dir.v,v:dir.u};
+  const known=spec.mode==='tangentX'?spec.endX:spec.endZ;
+  if(!Number.isFinite(known))return {candidates:[],issue:spec.mode==='tangentX'?'Need the end X diameter.':'Need the end Z coordinate.'};
+  for(const side of [1,-1]){
+   const center=add(start,mul(normal,side*radius));
+   const fixed=spec.mode==='tangentX'?known/2:-known;
+   const delta=spec.mode==='tangentX'?fixed-center.v:fixed-center.u;
+   if(Math.abs(delta)>radius+eps)continue;
+   const root=Math.sqrt(Math.max(0,radius*radius-delta*delta));
+   for(const sign of (root<eps?[1]:[1,-1])){
+    const end=spec.mode==='tangentX'?{u:center.u+sign*root,v:fixed}:{u:fixed,v:center.v+sign*root};
+    put(center,end,`${spec.mode}:${side}:${sign}`,side===1?'ccw':'cw');
+   }
+  }
+ }else return {candidates:[],issue:'Select a supported arc definition.'};
+ // De-duplicate numerically identical candidates. Retain keyed identities for re-solving.
+ return {candidates:out,issue:out.length?'':`The supplied dimensions have no valid arc inside the stock envelope. Check the radius, X diameter, Z position, and tangent direction.`};
+}
+function reSolveSavedArcs(source){
+ // Rebuild from print constraints, in point order. Never mutate the caller's job.
+ const nodes=source.nodes.map(n=>({...n,arcToPrev:n.arcToPrev?{...n.arcToPrev}:undefined}));
+ for(let i=1;i<nodes.length;i++){
+  const spec=nodes[i].arcToPrev;if(!spec)continue;
+  const found=arcAssistCandidates(nodes,i-1,spec,source.stock);
+  const choice=found.candidates.find(c=>c.key===spec.choiceKey);
+  if(!choice)throw Error(`P${String(i+1).padStart(2,'0')} ARC: ${found.issue||'selected solution no longer fits edited dimensions. Reopen ARC ASSIST.'}`);
+  nodes[i].x=round(choice.end.v*2,9);nodes[i].z=round(-choice.end.u,9);
+ }
+ return nodes;
+}
 function validateJob(job) {
   const errors=[], warnings=[];
   if (!job || typeof job !== 'object') return {errors:['Job must be an object.'],warnings};
@@ -2075,6 +2186,11 @@ function validateJob(job) {
       if (near(node.z,nodes[i-1].z) && near(node.x,nodes[i-1].x)) errors.push(`Rows ${i}–${i+1}: duplicate vertices.`);
     }
   });
+  for(let i=1;i<nodes.length;i++)if(nodes[i].arcToPrev){
+   const spec=nodes[i].arcToPrev,found=arcAssistCandidates(nodes,i-1,spec,job.stock),chosen=found.candidates.find(c=>c.key===spec.choiceKey);
+   if(!chosen)errors.push(`P${i+1} ARC: ${found.issue||'saved solution is no longer valid.'}`);
+   else if(Math.abs(nodes[i].x-2*chosen.end.v)>1e-5||Math.abs(nodes[i].z+chosen.end.u)>1e-5)errors.push(`P${i+1} ARC: stored endpoint does not match its drawing constraints.`);
+  }
   if ((nodes[0].corner||'sharp')!=='sharp' || (nodes.at(-1).corner||'sharp')!=='sharp') errors.push('First and last vertices must be SHARP.');
   const section=detectContinuousIdFaceOd(job);
   if(nodes.some((p,i)=>i>0&&p.z>nodes[i-1].z+EPS)){
@@ -2128,7 +2244,14 @@ function buildProfile(job) {
   const segments=[];
   for (let i=0;i<n-1;i++) {
     const start=corners[i].exit,end=corners[i+1].entry;
-    if (norm(vec(start,end))>EPS) segments.push({kind:'line',start,end,from:i,to:i+1});
+    if(job.nodes[i+1].arcToPrev){
+      if(corners[i].trim>EPS||corners[i+1].trim>EPS){errors.push(`Rows ${i+1}–${i+2}: ARC cannot share a trimmed R/C endpoint.`);}
+      else{
+       const spec=job.nodes[i+1].arcToPrev,match=arcAssistCandidates(job.nodes,i,spec,job.stock).candidates.find(c=>c.key===spec.choiceKey);
+       if(!match)errors.push(`P${i+2}: ARC solution unavailable.`);
+       else segments.push({kind:'arc',start,end,center:match.center,radius:match.radius,startAngle:match.startAngle,sweep:match.sweep,from:i,to:i+1,feature:'partial-arc',arcChoice:match.key});
+      }
+    }else if (norm(vec(start,end))>EPS) segments.push({kind:'line',start,end,from:i,to:i+1});
     const c=corners[i+1];
     if (c.kind==='chamfer') segments.push({kind:'line',start:c.entry,end:c.exit,from:i+1,to:i+1,feature:'chamfer'});
     if (c.kind==='fillet') {
@@ -2139,6 +2262,7 @@ function buildProfile(job) {
       segments.push({kind:'arc',start:c.entry,end:c.exit,center:c.center,radius:c.radius, startAngle, sweep:endAngle-startAngle, from:i+1,to:i+1});
     }
   }
+  if(errors.length)return {errors,warnings:validation.warnings,segments:[],vertices:p};
   const profile={errors:[],warnings:validation.warnings,segments,vertices:p,corners};
   profile.figRegions=classifyMasterFigure(job,profile);
   return profile;
@@ -2235,15 +2359,16 @@ function convertJobUnits(job, target) {
   if (job.units===target) return structuredClone(job);
   const factor=job.units==='inch'?25.4:1/25.4;
   const convert=v=>round(v*factor,7);
-  return {...structuredClone(job),units:target,stock:{...job.stock,diameter:convert(job.stock.diameter),length:convert(job.stock.length),bore:convert(job.stock.bore||0)},nodes:job.nodes.map(p=>({...p,x:convert(p.x),z:convert(p.z),size:convert(p.size||0),...(p.threadPitch?{threadPitch:convert(p.threadPitch)}:{}),...(p.grooveWidth?{grooveWidth:convert(p.grooveWidth)}:{})})),tools:Array.isArray(job.tools)?convertToolUnits(job.tools,job.units,target):undefined,inspectionPositions:Object.fromEntries(Object.entries(job.inspectionPositions||{}).filter(([,p])=>p&&finite(p.x)&&finite(p.z)).map(([id,p])=>[id,{x:convert(p.x),z:convert(p.z)}])),operations:convertOperationUnits(job.operations||[],job.units,target),setup:convertSetupUnits(job.setup,job.units,target)};
+  return {...structuredClone(job),units:target,stock:{...job.stock,diameter:convert(job.stock.diameter),length:convert(job.stock.length),bore:convert(job.stock.bore||0)},nodes:job.nodes.map(p=>({...p,x:convert(p.x),z:convert(p.z),size:convert(p.size||0),...(p.arcToPrev?{arcToPrev:{...p.arcToPrev,radius:convert(p.arcToPrev.radius),...(Number.isFinite(p.arcToPrev.endX)?{endX:convert(p.arcToPrev.endX)}:{}),...(Number.isFinite(p.arcToPrev.endZ)?{endZ:convert(p.arcToPrev.endZ)}:{})}}:{}),...(p.threadPitch?{threadPitch:convert(p.threadPitch)}:{}),...(p.grooveWidth?{grooveWidth:convert(p.grooveWidth)}:{})})),tools:Array.isArray(job.tools)?convertToolUnits(job.tools,job.units,target):undefined,inspectionPositions:Object.fromEntries(Object.entries(job.inspectionPositions||{}).filter(([,p])=>p&&finite(p.x)&&finite(p.z)).map(([id,p])=>[id,{x:convert(p.x),z:convert(p.z)}])),operations:convertOperationUnits(job.operations||[],job.units,target),setup:convertSetupUnits(job.setup,job.units,target)};
 }
 function describeGeometry(job,profile) {
   if (profile.errors.length) return 'GEOMETRY INVALID: '+profile.errors.join(' | ');
   const f=job.units==='inch' ? v=>v.toFixed(4) : v=>v.toFixed(3);
   let lines=[`MINITURN FIGURE REPORT v${CORE_VERSION}`,'NOT A CNC PROGRAM — NO TOOLPATH GENERATED',`JOB: ${job.name}`,`UNITS: ${job.units.toUpperCase()}`,`STOCK: ${(job.stock.type||'solid').toUpperCase()} DIA ${f(job.stock.diameter)}  LENGTH ${f(job.stock.length)}${job.stock.type==='tube'?' BORE '+f(job.stock.bore):''}`,'','VERTICES (X IS DIAMETER; Z AXIAL)'];
-  job.nodes.forEach((node,i)=>lines.push(`${String(i+1).padStart(2,'0')}  X${f(node.x)}  Z${f(node.z)}  ${(node.corner||'sharp').toUpperCase()}${node.corner!=='sharp'?' '+f(node.size):''}`));
+  job.nodes.forEach((node,i)=>lines.push(`${String(i+1).padStart(2,'0')}  X${f(node.x)}  Z${f(node.z)}  ${node.arcToPrev?'ARC R'+f(node.arcToPrev.radius)+' '+node.arcToPrev.choiceKey:(node.corner||'sharp').toUpperCase()+(node.corner!=='sharp'?' '+f(node.size):'')}`));
   lines.push('','CONSTRUCTED TANGENT ELEMENTS (PHYSICAL COORDINATES)');
   profile.segments.forEach((seg,i)=>lines.push(`${String(i+1).padStart(2,'0')} ${seg.kind.toUpperCase()} FROM X${f(seg.start.v*2)} Z${f(-seg.start.u)} TO X${f(seg.end.v*2)} Z${f(-seg.end.u)}${seg.kind==='arc'?' R'+f(seg.radius):''}`));
+  for(const seg of profile.segments.filter(s=>s.feature==='partial-arc'))lines.push(`ARC CALC · CENTER X${f(seg.center.v*2)} Z${f(-seg.center.u)} · ${seg.sweep>0?'CCW':'CW'} · ${f(Math.abs(seg.sweep)*180/Math.PI)} DEG · R${f(seg.radius)}`);
   return lines.join('\n');
 }
 
@@ -2521,7 +2646,9 @@ function upgradeFigureIds(j){
   if(!op.fromPointId&&r.nodes?.[op.from])op.fromPointId=r.nodes[op.from].id;
   if(!op.toPointId&&r.nodes?.[op.to])op.toPointId=r.nodes[op.to].id;
  }
- r.stock={type:'solid',bore:0,...r.stock};r.workSide=r.workSide||'front';return r;
+ r.stock={type:'solid',bore:0,...r.stock};r.workSide=r.workSide||'front';
+ try{if(r.nodes?.some(n=>n.arcToPrev))r.nodes=reSolveSavedArcs(r);}catch(e){r.arcImportError=e.message;}
+ return r;
 }
 /** Stable node IDs protect operation-region endpoints during insertion/replacement. */
 function bindOperationRegions(next){
@@ -2539,6 +2666,90 @@ function refreshBlankFields(){
  $('blankType').value=job.stock.type||'solid';$('workSide').value=job.workSide||'front';
  $('blankBoreField').hidden=job.stock.type!=='tube';$('blankBore').value=fmt(job.stock.bore||0);
 }
+
+let arcDraft=null,arcEditIndex=-1;
+function arcFormSpec(){
+ const mode=$('arcMode').value,radius=parseNumeric($('arcRadius').value),x=parseNumeric($('arcEndX').value),z=parseNumeric($('arcEndZ').value);
+ return {mode,radius,endX:mode==='endpoints'||mode==='tangentX'?x:null,endZ:mode==='endpoints'||mode==='tangentZ'?z:null};
+}
+function arcSyncFields(){
+ const m=$('arcMode').value;
+ $('arcXField').hidden=m==='tangentZ';$('arcZField').hidden=m==='tangentX';
+}
+function arcOpen(editIndex=-1){
+ arcEditIndex=editIndex;symbolicChoice='arc';arcDraft=null;
+ const existing=editIndex>0?job.nodes[editIndex].arcToPrev:null;
+ $('arcRadius').value=existing?fmt(existing.radius):'';
+ $('arcMode').value=existing?.mode||'endpoints';
+ $('arcEndX').value=Number.isFinite(existing?.endX)?fmt(existing.endX):'';
+ $('arcEndZ').value=Number.isFinite(existing?.endZ)?fmt(existing.endZ):'';
+ $('arcEntryTag').textContent=editIndex>0?`EDIT P${String(editIndex+1).padStart(2,'0')}`:`FROM P${String(job.nodes.length).padStart(2,'0')}`;
+ $('arcAssistPanel').hidden=false;arcSyncFields();
+ $('arcStatus').textContent='Enter the known print dimensions, then SOLVE. Tap the arc that matches the drawing.';
+ $('arcCandidates').replaceChildren();$('arcCalculated').hidden=true;$('arcCommit').disabled=true;
+ refreshSymbolic();drawGraph();
+ if(existing)arcSolve(existing.choiceKey);
+}
+function arcClose(){arcDraft=null;arcEditIndex=-1;$('arcAssistPanel').hidden=true;if(symbolicChoice==='arc')symbolicChoice='left';refreshSymbolic();drawGraph();}
+function arcSolve(preferredKey=null){
+ const spec=arcFormSpec(),index=arcEditIndex>0?arcEditIndex-1:job.nodes.length-1;
+ const solved=arcAssistCandidates(job.nodes,index,spec,job.stock);
+ arcDraft={spec,index,candidates:solved.candidates,chosenKey:null};
+ $('arcCandidates').replaceChildren();$('arcCalculated').hidden=true;$('arcCommit').disabled=true;
+ $('arcStatus').textContent=solved.issue||`${solved.candidates.length} geometric solution(s) within the stock. Tap the matching arc.`;
+ // All thumbnails share ONE world-space scale and center so competing arcs
+ // cannot look misleadingly identical after independent auto-fit.
+ const allArcPoints=[];
+ for(const c of solved.candidates)for(let k=0;k<=80;k++){
+  const a=c.startAngle+c.sweep*k/80;
+  allArcPoints.push({u:c.center.u+c.radius*Math.cos(a),v:c.center.v+c.radius*Math.sin(a)});
+ }
+ const arcUs=allArcPoints.map(p=>p.u),arcVs=allArcPoints.map(p=>p.v);
+ const arcMidU=(Math.min(...arcUs)+Math.max(...arcUs))/2;
+ const arcMidV=(Math.min(...arcVs)+Math.max(...arcVs))/2;
+ const arcSpan=Math.max(Math.max(...arcUs)-Math.min(...arcUs),Math.max(...arcVs)-Math.min(...arcVs),.00001);
+ for(const candidate of solved.candidates){
+  const btn=document.createElement('button');btn.type='button';btn.className='arc-candidate';btn.dataset.arcKey=candidate.key;
+  const picture=document.createElementNS(svgNS,'svg');picture.setAttribute('viewBox','0 0 120 80');
+  const points=[];for(let k=0;k<=60;k++){const theta=candidate.startAngle+candidate.sweep*k/60;points.push({u:candidate.center.u+candidate.radius*Math.cos(theta),v:candidate.center.v+candidate.radius*Math.sin(theta)});}
+  const xx=p=>60+(p.u-arcMidU)*58/arcSpan,yy=p=>40-(p.v-arcMidV)*58/arcSpan;
+  const trace=points.map((p,k)=>`${k?'L':'M'}${xx(p).toFixed(2)},${yy(p).toFixed(2)}`).join(' ');
+  const chord=document.createElementNS(svgNS,'line');chord.setAttribute('x1',xx(candidate.start));chord.setAttribute('y1',yy(candidate.start));chord.setAttribute('x2',xx(candidate.end));chord.setAttribute('y2',yy(candidate.end));chord.setAttribute('stroke','#8799a1');chord.setAttribute('stroke-dasharray','3 3');chord.setAttribute('stroke-width','1');picture.append(chord);
+  const curve=document.createElementNS(svgNS,'path');curve.setAttribute('d',trace);curve.setAttribute('fill','none');curve.setAttribute('stroke','#5ce9d9');curve.setAttribute('stroke-width','3');picture.append(curve);
+  for(const [p,color] of [[candidate.start,'#ffcb81'],[candidate.end,'#f58f77']]){const dot=document.createElementNS(svgNS,'circle');dot.setAttribute('cx',xx(p));dot.setAttribute('cy',yy(p));dot.setAttribute('r','4');dot.setAttribute('fill',color);picture.append(dot);}
+  const label=document.createElement('span');label.className='arc-candidate-label';label.textContent=`${candidate.dir} · ${candidate.angle.toFixed(1)}° · X${fmt(candidate.end.v*2)} Z${fmt(-candidate.end.u)}`;
+  btn.append(picture,label);btn.addEventListener('click',()=>arcChoose(candidate.key));$('arcCandidates').append(btn);
+ }
+ if(preferredKey&&solved.candidates.some(c=>c.key===preferredKey))arcChoose(preferredKey);
+ drawGraph();
+}
+function arcChoose(key){
+ if(!arcDraft)return;
+ const c=arcDraft.candidates.find(c=>c.key===key);if(!c)return;
+ arcDraft.chosenKey=key;
+ for(const btn of $('arcCandidates').children)btn.classList.toggle('selected',btn.dataset.arcKey===key);
+ $('arcCommit').disabled=false;
+ $('arcStatus').textContent=`SELECTED ${c.dir} ARC · ${(c.angle).toFixed(2)}° (physical U/V view). Select USE SELECTED ARC to add it.`;
+ const t=$('arcCalculated');t.hidden=false;t.textContent=`START X${fmt(c.start.v*2)} Z${fmt(-c.start.u)}  →  END X${fmt(c.end.v*2)} Z${fmt(-c.end.u)}\nCENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}   R${fmt(c.radius)}   ${c.dir} ${c.angle.toFixed(3)}°`;
+ drawGraph();
+}
+function arcCommit(){
+ if(!arcDraft||!arcDraft.chosenKey)return notify('CHOOSE AN ARC FIRST',true);
+ const c=arcDraft.candidates.find(c=>c.key===arcDraft.chosenKey);if(!c)return;
+ const next=clone(job),oldIndex=arcEditIndex,spec={...arcDraft.spec,choiceKey:c.key};
+ if(oldIndex>0){
+  next.nodes[oldIndex].arcToPrev=spec;next.nodes[oldIndex].x=round(c.end.v*2,9);next.nodes[oldIndex].z=round(-c.end.u,9);
+  if(!mutate(next,oldIndex))return;
+ }else{
+  if(next.nodes.length>=120)return notify('120 ROW MAXIMUM',true);
+  if(pendingSymbolicCorner)return notify('COMPLETE OR CANCEL THE PENDING CORNER BEFORE ARC',true);
+  next.nodes.push({id:nodeId(),x:round(c.end.v*2,9),z:round(-c.end.u,9),corner:'sharp',size:0,arcToPrev:spec});
+  if(!mutate(next,next.nodes.length-1))return;
+  symbolicHistory.push({count:1,firstIds:[next.nodes.at(-1).id],previousCorner:'sharp',previousSize:0});
+ }
+ const message=`ARC R${fmt(c.radius)} · ${c.dir} ${c.angle.toFixed(2)}° · CALCULATED CENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}`;
+ arcClose();$('symbolicMessage').textContent=message;notify('ARC ADDED · NO NC OUTPUT');
+}
 function refreshSymbolic(){
  if(!$('symbolicStatus'))return;
  const p=job.nodes.at(-1),last=job.nodes.length;
@@ -2549,11 +2760,14 @@ function refreshSymbolic(){
  $('symXField').hidden=!direction?.x;
  $('symZField').hidden=!direction?.z;
  $('symWidthField').hidden=!dim;$('symSizeField').hidden=!(dim||corner);
- $('symApply').textContent=corner?`SET ${symbolicChoice.toUpperCase()}`:dim?`ADD ${symbolicChoice.toUpperCase()}`:'ADD MOVE';
+ $('symApply').textContent=symbolicChoice==='arc'?'SOLVE ARC':corner?`SET ${symbolicChoice.toUpperCase()}`:dim?`ADD ${symbolicChoice.toUpperCase()}`:'ADD MOVE';
+ if(symbolicChoice==='arc'){$('symXField').hidden=true;$('symZField').hidden=true;$('symWidthField').hidden=true;$('symSizeField').hidden=true;}
  if(!$('symZ').value||!Number.isFinite(+$('symZ').value))$('symZ').value=fmt(p.z-Math.min(job.stock.length*.1,job.units==='inch'?.2:5));
  if(!$('symX').value||!Number.isFinite(+$('symX').value))$('symX').value=fmt(p.x);
 }
-function chooseSymbolic(choice){symbolicChoice=choice;
+function chooseSymbolic(choice){
+ if(choice==='arc'){arcOpen(-1);return;}
+ arcDraft=null;arcEditIndex=-1;$('arcAssistPanel').hidden=true;symbolicChoice=choice;
  const last=job.nodes.at(-1),move=SYMBOLIC_MOVES[choice];
  const dx=Math.min(job.stock.diameter*.10,job.units==='inch'?.25:6);
  const dz=Math.min(job.stock.length*.10,job.units==='inch'?.25:6);
@@ -2567,6 +2781,7 @@ function symbolicApply(){
  try{
   const p=job.nodes.at(-1),n=job.nodes.length;
   if(n+(symbolicChoice==='groove'?3:1)>120)throw Error('PROFILE POINT LIMIT');
+  if(symbolicChoice==='arc'){arcSolve();return;}
   const next=clone(job),val=id=>parseNumeric($(id).value),corner=['radius','chamfer'].includes(symbolicChoice);
   if(corner){if(n<2)throw Error('ADD A SEGMENT BEFORE A RADIUS OR CHAMFER');const size=val('symSize');if(!(size>0))throw Error('ENTER POSITIVE R / C SIZE');
     // A corner is held until the following move; last endpoint must remain sharp.
@@ -2634,7 +2849,7 @@ function newSymbolicFigure(){
  const x=$('startX').value.trim()===''?d:parseNumeric($('startX').value);
  const z=$('startZ').value.trim()===''?0:parseNumeric($('startZ').value);
  if(x===null||z===null||x<0||x>d+1e-8||z>1e-8||z< -l-1e-8)return notify('P01: ENTER X FROM 0 TO STOCK Ø, Z FROM −LENGTH TO 0',true);
- t.nodes=[{id:nodeId(),x,z,corner:'sharp',size:0}];t.operations=[];opSelected=0;symbolicHistory=[];pendingSymbolicCorner=null;
+ t.nodes=[{id:nodeId(),x,z,corner:'sharp',size:0}];t.operations=[];opSelected=0;symbolicHistory=[];pendingSymbolicCorner=null;arcDraft=null;arcEditIndex=-1;$('arcAssistPanel').hidden=true;
  if(mutate(t,0)){$('startX').value=fmt(x);$('startZ').value=fmt(z);chooseSymbolic('left');$('symbolicMessage').textContent=`P01 XØ${fmt(x)} Z${fmt(z)} · CHOOSE NEXT MOVEMENT`;}
 }
 function wireSymbolic(){
@@ -2643,6 +2858,11 @@ function wireSymbolic(){
  document.querySelectorAll('[data-p1-preset]').forEach(btn=>btn.addEventListener('click',()=>setP1Preset(btn.dataset.p1Preset)));
  $('setP1').addEventListener('click',setFirstPoint);
  $('symApply').addEventListener('click',symbolicApply);$('symUndo').addEventListener('click',symbolicUndo);
+ $('arcSolve').addEventListener('click',()=>arcSolve());$('arcCommit').addEventListener('click',arcCommit);
+ const arcInvalidate=()=>{arcDraft=null;$('arcCommit').disabled=true;$('arcCandidates').replaceChildren();$('arcCalculated').hidden=true;$('arcStatus').textContent='Dimensions changed — SOLVE again to review the valid alternatives.';drawGraph();};
+ $('arcMode').addEventListener('change',()=>{arcSyncFields();arcInvalidate();});
+ for(const arcField of ['arcRadius','arcEndX','arcEndZ'])$(arcField).addEventListener('input',arcInvalidate);
+ $('editPartialArc').addEventListener('click',()=>arcOpen(selected));
  $('beginFigure').addEventListener('click',newSymbolicFigure);$('goMachining').addEventListener('click',()=>{if(job.nodes.length<2){notify('ADD AT LEAST TWO FIGURE POINTS',true);return;}setPage('operations');});
  $('blankType').addEventListener('change',()=>{$('blankBoreField').hidden=$('blankType').value!=='tube';});
 }
@@ -2669,8 +2889,8 @@ function loadLocal(){
 }
 function autosave(){try{if(!validateJob(job).errors.length){localStorage.setItem(KEY,JSON.stringify(job));dirty=false;notify('SAVED ON DEVICE');}else notify('FIX GEOMETRY TO SAVE',true);}catch{notify('LOCAL STORAGE UNAVAILABLE — EXPORT JOB',true);}}
 function refreshSetup(){ $('jobName').value=job.name||''; $('unitSelect').value=job.units; $('unitTag').textContent=job.units==='inch'?'INCH':'MM'; $('stockDiameter').value=fmt(job.stock.diameter); $('stockLength').value=fmt(job.stock.length);$('startX').value=fmt(job.nodes[0].x);$('startZ').value=fmt(job.nodes[0].z);refreshBlankFields();refreshSymbolic();}
-function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1); const n=job.nodes[selected];$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();syncTerminalDock();}
-function drawRows(){const tbody=$('vertexRows');tbody.replaceChildren();job.nodes.forEach((node,i)=>{const tr=document.createElement('tr');tr.className=i===selected?'active-row':'';const vals=[String(i+1).padStart(2,'0'),fmt(node.x),fmt(node.z),node.corner==='fillet'?'R'+fmt(node.size):node.corner==='chamfer'?'C'+fmt(node.size):node.feature==='thread'?'THREAD P'+fmt(node.threadPitch):node.feature==='groove-end'?'GROOVE':'SHARP'];vals.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});tr.addEventListener('click',()=>selectRow(i));tbody.append(tr);});const active=tbody.children[selected];if(active && !active.getBoundingClientRect().height) return;active?.scrollIntoView({block:'nearest',behavior:'instant'});}
+function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1); const n=job.nodes[selected];$('editPartialArc').hidden=!n.arcToPrev;$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();syncTerminalDock();}
+function drawRows(){const tbody=$('vertexRows');tbody.replaceChildren();job.nodes.forEach((node,i)=>{const tr=document.createElement('tr');tr.className=i===selected?'active-row':'';const vals=[String(i+1).padStart(2,'0'),fmt(node.x),fmt(node.z),node.arcToPrev?'ARC R'+fmt(node.arcToPrev.radius):node.corner==='fillet'?'R'+fmt(node.size):node.corner==='chamfer'?'C'+fmt(node.size):node.feature==='thread'?'THREAD P'+fmt(node.threadPitch):node.feature==='groove-end'?'GROOVE':'SHARP'];vals.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});tr.addEventListener('click',()=>selectRow(i));tbody.append(tr);});const active=tbody.children[selected];if(active && !active.getBoundingClientRect().height) return;active?.scrollIntoView({block:'nearest',behavior:'instant'});}
 function graphAlert(profile){let valid=profile.errors.length===0;const status=$('geometryStatus');status.replaceChildren();status.className='status-box '+(valid?'ok':'invalid'); const strong=document.createElement('strong');strong.textContent=valid?(job.nodes.length===1?'FIGURE STARTED · SELECT A MOVEMENT':`GEOMETRY VALID · ${profile.segments.length} ELEMENTS`):`GEOMETRY INVALID · ${profile.errors.length} ISSUE(S)`;status.append(strong);for(const item of [...profile.errors,...profile.warnings].slice(0,5)){const line=document.createElement('div');line.textContent=item;status.append(line);}}
 function el(type,attributes={},content=''){const e=document.createElementNS(svgNS,type);for(const [k,v] of Object.entries(attributes))e.setAttribute(k,String(k==='fill'||k==='stroke'?graphColor(v):v));if(content)e.textContent=content;return e;}
 function drawGraph(){
@@ -2708,6 +2928,21 @@ function drawGraph(){
  if(up.length>=2){layer.append(el('path',{d:trace([...up,...down])+' Z',fill:'#278d8a','fill-opacity':'.20',stroke:'none'}));
  layer.append(el('path',{d:trace(up),fill:'none',stroke:'#5ce9d9','stroke-width':'3','stroke-linecap':'round','stroke-linejoin':'round'}));
  layer.append(el('path',{d:trace(down),fill:'none',stroke:'#5ce9d9','stroke-width':'2','stroke-opacity':'.55','stroke-linecap':'round','stroke-linejoin':'round'}));}
+ // Arc Assist ghost solutions: exact curves sampled only for display. Tap any
+ // colored candidate or its thumbnail. No branch is selected automatically.
+ if(symbolicChoice==='arc'&&arcDraft?.candidates?.length){
+  arcDraft.candidates.forEach((c,index)=>{
+   const pts=[];for(let k=0;k<=Math.max(20,Math.ceil(Math.abs(c.sweep)*42));k++){
+    const count=Math.max(20,Math.ceil(Math.abs(c.sweep)*42));const a=c.startAngle+c.sweep*k/count;
+    pts.push(map({u:c.center.u+c.radius*Math.cos(a),v:c.center.v+c.radius*Math.sin(a)}));
+   }
+   const d=pts.map((pt,k)=>`${k?'L':'M'}${pt.x.toFixed(2)},${pt.y.toFixed(2)}`).join(' ');
+   const chosen=arcDraft.chosenKey===c.key,stroke=chosen?'#ffd28a':index%2?'#eaac77':'#6fc7e8';
+   layer.append(el('path',{d,fill:'none',stroke,'stroke-width':chosen?5:2.5,'stroke-dasharray':chosen?'':'7 5','stroke-opacity':chosen?1:.84}));
+   const hit=el('path',{d,fill:'none',stroke:'#ffffff','stroke-opacity':'.001','stroke-width':17,'pointer-events':'stroke',cursor:'pointer'});
+   hit.addEventListener('pointerdown',e=>e.stopPropagation());hit.addEventListener('click',e=>{e.stopPropagation();arcChoose(c.key);});layer.append(hit);
+  });
+ }
  for(let i=0;i<job.nodes.length;i++){
   const p=map({u:-job.nodes[i].z,v:job.nodes[i].x/2}),on=i===selected;
   layer.append(el('circle',{cx:p.x,cy:p.y,r:on?7:3.5,fill:on?'#ffc46e':'#d6ffeb',stroke:on?'#fff0c4':'#183a32','stroke-width':2}));
@@ -2727,12 +2962,18 @@ function update(){refreshSetup();selectRow(selected);if(activePage==='tools')ref
 function readEditor(){const x=parseNumeric($('editX').value),z=parseNumeric($('editZ').value),size=parseNumeric($('editSize').value),corner=$('editCorner').value;
  if(x===null||z===null||((corner!=='sharp')&&(size===null||size<=0))){notify('ENTER VALID NUMERIC X/Z AND CORNER SIZE',true);return null;}
  return {x,z,corner,size:corner==='sharp'?0:size};}
-function mutate(next, newSelected){next=upgradeFigureIds(next);const regionError=bindOperationRegions(next);if(regionError){notify(regionError,true);return false;}const validation=validateJob(next);if(validation.errors.length){notify(validation.errors[0],true);return false;}
+function mutate(next, newSelected){next=upgradeFigureIds(next);try{next.nodes=reSolveSavedArcs(next);}catch(e){notify(e.message,true);return false;}const regionError=bindOperationRegions(next);if(regionError){notify(regionError,true);return false;}const validation=validateJob(next);if(validation.errors.length){notify(validation.errors[0],true);return false;}
  const geom=buildProfile(next);if(geom.errors.length){notify(geom.errors[0],true);return false;}
  job=next;selected=newSelected;dirty=true;inspectCamera=null;update();autosave();return true;}
 function doAction(name){
  if(name==='insert') {if(job.nodes.length>=120){notify('120 ROW MAXIMUM',true);return;}const row=readEditor();if(!row)return;const temp=clone(job);temp.nodes.splice(selected+1,0,row);mutate(temp,selected+1);}
- else if(name==='replace'){const row=readEditor();if(!row)return;const temp=clone(job);temp.nodes[selected]={...temp.nodes[selected],...row};mutate(temp,selected);}
+ else if(name==='replace'){const row=readEditor();if(!row)return;const temp=clone(job);const previous=temp.nodes[selected];
+  if(previous.arcToPrev){
+   if(previous.arcToPrev.mode==='endpoints'){previous.arcToPrev.endX=row.x;previous.arcToPrev.endZ=row.z;}
+   else if(previous.arcToPrev.mode==='tangentX')previous.arcToPrev.endX=row.x;
+   else previous.arcToPrev.endZ=row.z;
+  }
+  temp.nodes[selected]={...previous,...row};mutate(temp,selected);}
  else if(name==='delete'){if(job.nodes.length<=1){notify('AT LEAST ONE ROW REQUIRED',true);return;}const temp=clone(job);temp.nodes.splice(selected,1);mutate(temp,Math.min(selected,temp.nodes.length-1));}
  else if(name==='prev')selectRow(selected-1);
  else if(name==='next')selectRow(selected+1);
@@ -2746,9 +2987,9 @@ function download(text,name,type){const blob=new Blob([text],{type}),url=URL.cre
 /** Custom keypad never focuses an input. Android would otherwise scroll to the
  * old editor / reopen its soft keyboard on every press. The selected numeric
  * target is remembered across keypad touches, with a live readout near keys. */
-const figureNumericFields=['startX','startZ','symX','symZ','symWidth','symSize','editX','editZ','editSize','stockDiameter','stockLength','blankBore'];
+const figureNumericFields=['startX','startZ','symX','symZ','symWidth','symSize','editX','editZ','editSize','arcRadius','arcEndX','arcEndZ','stockDiameter','stockLength','blankBore'];
 function padName(el){
- const names={startX:'P01 X',startZ:'P01 Z',symX:'NEXT X',symZ:'NEXT Z',symWidth:'WIDTH / LENGTH',symSize:'R / C / DEPTH / PITCH',editX:'EDIT X',editZ:'EDIT Z',editSize:'EDIT R / C',stockDiameter:'STOCK Ø',stockLength:'STOCK LENGTH',blankBore:'START BORE Ø'};
+ const names={startX:'P01 X',startZ:'P01 Z',symX:'NEXT X',symZ:'NEXT Z',symWidth:'WIDTH / LENGTH',symSize:'R / C / DEPTH / PITCH',editX:'EDIT X',editZ:'EDIT Z',editSize:'EDIT R / C',arcRadius:'ARC R',arcEndX:'ARC END X',arcEndZ:'ARC END Z',stockDiameter:'STOCK Ø',stockLength:'STOCK LENGTH',blankBore:'START BORE Ø'};
  return names[el.id]||el.id.toUpperCase();
 }
 let padCaret=null;
@@ -2766,7 +3007,8 @@ function padWrite(key){
  let start=padCaret?.el===el?padCaret.start:value.length;
  let end=padCaret?.el===el?padCaret.end:value.length;
  if(key==='ENTER'){
-  if(el===$('symZ')||el===$('symX')||el===$('symWidth')||el===$('symSize'))symbolicApply();
+  if(['arcRadius','arcEndX','arcEndZ'].includes(el.id))arcSolve();
+  else if(el===$('symZ')||el===$('symX')||el===$('symWidth')||el===$('symSize'))symbolicApply();
   else if(['editX','editZ','editSize'].includes(el.id))doAction('replace');
   else if(el===$('startX'))setPadTarget($('startZ'));
   else if(el===$('startZ'))setFirstPoint();
@@ -2908,7 +3150,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.8.3.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.8.4.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -3798,7 +4040,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.8.2',status:'INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.8.4',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,workSide:source.workSide,units:source.units},
