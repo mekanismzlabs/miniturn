@@ -479,6 +479,17 @@ body[data-display="mazatrol"] .arc-assist{background:#182638;border-color:#9b684
 body[data-display="mazatrol"] .arc-candidate{background:#142b3f;border-color:#53728a}
 body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 @media(max-width:500px){.feature-keys{gap:4px}.feature-keys button{min-height:49px;font-size:17px;padding:5px 1px}.feature-keys button small{font-size:8px}.arc-fields{gap:6px}.arc-header{font-size:10px}.arc-candidates{gap:5px}}
+
+/* v0.9.24: compact strategy + peck control without narrow-Android overflow. */
+.form-quick-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:8px;align-items:center;width:100%}
+.form-quick-row label{font-size:11px;letter-spacing:.04em;line-height:1.35}
+.form-quick-row select{width:100%;min-width:0;max-width:100%;font-size:12px;min-height:38px;padding:5px 8px}
+.form-quick-hint{font-size:11px;line-height:1.4;opacity:.84}
+@media(max-width:390px){.form-quick-row{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}.form-quick-row select{font-size:11px;padding:4px}}
+/* v0.9.24 · close inspection polish: never alter real geometry. */
+#opGraph path,#opGraph line,#opGraph circle{vector-effect:none}
+#opGraph [data-mt-inspection-layer="active"]{filter:none}
+#opGraph [data-mt-inspection-layer="holder"],#opGraph [data-mt-inspection-layer="point-label"]{pointer-events:none}
 </style>
 <style>
 /* v0.8.3 concise physical tool review */
@@ -516,7 +527,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .op-zoom-hint{font:10px monospace;color:var(--mute);margin-right:auto}
 @media(max-width:620px){.mt-mini-figure{width:216px;left:8px;right:auto;bottom:calc(var(--mt-dock-height,146px) + var(--mt-input-height,0px) + 18px)}.op-zoom-hint{width:100%;font-size:9px}.mt-mini-caption{font-size:9px}}
 </style>
-<title>MiniTurn v0.9.21 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.24 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -675,7 +686,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.21</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.24</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -1122,6 +1133,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <summary>FORM TOOL · STAGED RADIAL ENGAGEMENT (WORK Z / PREVIEW ONLY)</summary>
         <div class="operation-form-grid">
           <label class="field">STRATEGY<select id="opFormStrategy"><option value="staged">STAGED RADIAL · NOMINAL EDGE PLUNGE</option><option value="finish">FINAL FORM ONLY · REQUIRES PRE-CLEARED STOCK</option></select></label>
+          <label class="field">INFEED DIRECTION<select id="opFormInfeed"><option value="flank_chuck">FLANK BIAS · TOWARD CHUCK (Z−)</option><option value="flank_face">FLANK BIAS · TOWARD FACE (Z+)</option><option value="radial">RADIAL · X ONLY</option></select></label>
+          <label class="field">FLANK INFEED ANGLE FROM X · DEGREES<input id="opFormFlankAngle" type="number" min="0.1" max="55" step="0.5"></label>
           <label class="field">BETWEEN STAGES<select id="opFormMotionMode"><option value="continuous">CONTINUOUS FEED · NO INTERMEDIATE X RETRACT</option><option value="peck">SHORT X BACKOFF · RETURN / PECK</option><option value="full">FULL CLEARANCE · PREVIOUS BEHAVIOR</option></select></label>
           <label class="field" id="opFormPeckRow">SHORT X BACKOFF · RADIAL <span class="op-unit"></span><input id="opFormPeckBackoff" type="number" min="0.000001" step="any"></label>
           <label class="field">MAX RADIAL STEP <span class="op-unit"></span><input id="opFormStep" type="number" min="0.000001" step="any"></label>
@@ -1133,7 +1146,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <label class="operation-check wide"><input id="opFormReviewed" type="checkbox"> FORM TOOL ORIENTATION / STOCK / FORCE REVIEWED BY OPERATOR (DOES NOT CERTIFY SAFETY)</label>
         </div>
         <p class="motion-notice">STOCK-AWARE REVIEW: earlier nominal OD rough/finish/groove passes contribute to an axial remaining-stock envelope. Sample the whole form edge at each X position; report estimated contact width and radial engagement, and optionally skip initial clear stages. This is model evidence only, NOT measured stock or approved cutting forces. The pre-form limit controls REVIEW status; it is not an automatic feed/speed recommendation.</p>
-        <p class="motion-notice">Model is an IDEAL RADIAL form edge. The preview stages X only at a fixed Z reference. SHORT BACKOFF is default for NEW form operations (old saved modes retained); CONTINUOUS FEED stays at Z and feeds deeper without intermediate retract; SHORT BACKOFF briefly moves X outward (diameter mode uses twice the radial value); FULL CLEARANCE repeats the old return. None models chip breaking, flank relief, lateral side-feed or actual cutting force. It does NOT establish complete cutting-edge engagement, rake/relief, peak cutting force, chip control, holder clearance, a valid finish pass, or NC suitability. A wide edge can require roughing by another tool first.</p>
+        <p class="motion-notice">FLANK-BIASED INFEED: synchronized X/Z stages offset the full form edge toward Z− or Z+, converging to the exact finished form location. The complete edge is tested against the finished profile at each stage. An unavailable or gouging bias is BLOCKED, not automatically treated as safe. The contact-width estimate is compared with a radial baseline; it does NOT prove cutting forces, flank relief, or tool mounting.</p>
+        <p class="motion-notice">Model is an IDEAL RADIAL form edge. For RADIAL mode, the preview stages X only at a fixed Z reference. SHORT BACKOFF is default for NEW form operations (old saved modes retained); CONTINUOUS FEED stays at Z and feeds deeper without intermediate retract; SHORT BACKOFF briefly moves X outward (diameter mode uses twice the radial value); FULL CLEARANCE repeats the old return. None models chip breaking, flank relief, lateral side-feed or actual cutting force. It does NOT establish complete cutting-edge engagement, rake/relief, peak cutting force, chip control, holder clearance, a valid finish pass, or NC suitability. A wide edge can require roughing by another tool first.</p>
       </details>
       <details class="op-access-panel" id="opSpecialPanel" hidden>
         <summary>SPECIAL CONTOUR · SINGLE-FLANK TOOL TRACE</summary>
@@ -1265,7 +1279,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <div class="op-zoom-bar" aria-label="Cutting motion zoom and pan"><span class="op-zoom-hint">TOUCH PATH TO SCRUB · PAN TO DRAG VIEW</span><button type="button" id="opZoomOut" aria-label="Zoom cutting graph out">−</button><span id="opZoomLabel">1.0×</span><button type="button" id="opZoomIn" aria-label="Zoom cutting graph in">+</button><button type="button" id="opZoomFit">FIT</button><button type="button" id="opZoomPan" aria-pressed="false">PAN</button></div>
       <div class="operation-graph-frame"><svg id="opGraph" viewBox="0 0 900 540" role="img" aria-label="Part and planned cutting motions; tap or drag along a drawn path to inspect tool position"></svg></div>
       <div class="motion-inspector" aria-label="Tool path inspection controls">
-        <div id="opFormQuickModeRow" class="motion-notice" hidden style="display:none;align-items:center;gap:8px;justify-content:space-between;padding:7px 10px;margin:0 0 8px;flex-wrap:wrap"><label for="opFormQuickMode">FORM FEED MODE</label><select id="opFormQuickMode" aria-label="Form tool peck or continuous feed"><option value="peck">SHORT X PECK · BACKOFF</option><option value="continuous">CONTINUOUS X FEED</option><option value="full">FULL WITHDRAWAL</option></select></div>
+        <div id="opFormQuickModeRow" class="motion-notice" hidden style="display:none;padding:10px;margin:0 0 8px;gap:8px;flex-direction:column">
+          <div class="form-quick-row"><label for="opFormQuickStrategy">FORM CUT STRATEGY</label><select id="opFormQuickStrategy" aria-label="Form tool staged cutting or final form only"><option value="staged">STAGED · RADIAL CUTS</option><option value="finish">FINAL ONLY · PRE-CLEARED</option></select></div>
+          <div class="form-quick-row"><label for="opFormQuickInfeed">INFEED</label><select id="opFormQuickInfeed" aria-label="Radial or flank-biased infeed"><option value="flank_chuck">FLANK · Z− CHUCK</option><option value="flank_face">FLANK · Z+ FACE</option><option value="radial">RADIAL · X ONLY</option></select></div>
+          <div class="form-quick-row"><label for="opFormQuickMode">BETWEEN STAGES</label><select id="opFormQuickMode" aria-label="Form tool peck or continuous feed"><option value="peck">SHORT X PECK · BACKOFF</option><option value="continuous">CONTINUOUS X FEED</option><option value="full">FULL WITHDRAWAL</option></select></div>
+          <div id="opFormQuickHint" class="form-quick-hint">STAGED cuts nominal passes. FINAL ONLY needs modeled preparation; feed mode does not change that requirement.</div>
+        </div>
       <div class="motion-inspector-header"><span>PATH INSPECTION <span class="motion-inspector-hint">TOUCH / DRAG PATH</span></span><select id="opScrubTrack" aria-label="Choose path to follow"><option value="nose">NOSE · ALL MOVES</option><option value="moves">PLANNED MOVES (NOSE FOR FINISH)</option><option value="fade">FADE + FINISH · ACTIVE NOSE</option></select></div>
         <input id="opMotionScrub" type="range" min="0" max="1000" step="1" value="0" aria-label="Move the tool along the selected proposed path">
         <div id="opTipReadout" class="motion-tipbox" aria-live="off">SELECT A PATH</div>
@@ -2337,7 +2356,7 @@ const {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,de
  * X is diameter, Z is axial; DOC, radial finish allowance and radial clearance are PHYSICAL radii.
  * Feed is length/revolution; RPM is revolutions/minute. No G96/CSS in this release.
  */
-const OPERATION_VERSION='0.9.20';
+const OPERATION_VERSION='0.9.24';
 const OP_KINDS={form_profile:'FORM TOOL · RADIAL',od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',special_profile:'SPECIAL CONTOUR',od_thread:'OD THREAD',id_rough:'ID ROUGH',id_finish:'ID FINISH',id_groove:'ID GROOVE',id_thread:'ID THREAD',drill:'DRILL / PECK'};
 const isIdOperation=k=>['id_rough','id_finish','id_groove','id_thread'].includes(k);
 const isBoreOperation=k=>['id_rough','id_finish'].includes(k);
@@ -2355,7 +2374,7 @@ function makeOperation(kind,job){
  const from=region?.from??0,to=region?.to??Math.max(0,job.nodes.length-1);
  return {id:freshId(),name:OP_KINDS[kind],kind,enabled:true,toolId:t?.id||'',idGeometrySource:'auto',
   from,to,cutDirection:'forward',fromPointId:job.nodes[from]?.id,toPointId:job.nodes[to]?.id,
-  accessPlan:'review',specialLift:round8(.05*s),specialReviewed:false,formStrategy:'staged',formMotionMode:'peck',formPeckBackoff:round8(.002*s),formStep:round8(.015*s),formLeave:round8(.005*s),formWidthReview:round8(.25*s),formPrepAllowance:round8(.025*s),formSkipAir:true,formPassCap:60,formReviewed:false,faceZ:0,faceLeave:0,faceStartX:job.stock.diameter,faceEndX:kind==='face'?stockBore:0,faceStep:round8(.025*s),
+  accessPlan:'review',specialLift:round8(.05*s),specialReviewed:false,formStrategy:'staged',formInfeed:'flank_chuck',formFlankAngle:20,formMotionMode:'peck',formPeckBackoff:round8(.002*s),formStep:round8(.015*s),formLeave:round8(.005*s),formWidthReview:round8(.25*s),formPrepAllowance:round8(.025*s),formSkipAir:true,formPassCap:60,formReviewed:false,faceZ:0,faceLeave:0,faceStartX:job.stock.diameter,faceEndX:kind==='face'?stockBore:0,faceStep:round8(.025*s),
   doc:round8(.075*s),finishRadial:round8(.01*s),finishAxial:round8(.005*s),
   feed:round8((kind==='od_rough'?.012:.006)*s),rpm:800,
   clearanceRadial:round8(.1*s),retractZ:round8(.1*s),rearEntryMode:'review',rearEntryZ:null,rearPocketWidth:round8(.125*s),rearPocketClearance:round8(.02*s),rearJawClearance:round8(.1*s),rearEdgeReviewed:false,leadInMode:'axial',leadOutMode:'radial',leadInLength:round8(.1*s),leadOutLength:round8(.1*s),exitMode:'auto',exitAxial:round8(.05*s),exitRadial:round8(.05*s),exitCorridorReviewed:false,fadeInMode:'off',fadeOutMode:'off',fadeInLength:round8(.15*s),fadeOutLength:round8(.15*s),fadeInLift:round8(.006*s),fadeOutLift:round8(.006*s),fadeInAngle:5,fadeOutAngle:5,fadeInMargin:round8(.005*s),fadeOutMargin:round8(.005*s),overlapMode:'inspect',overlapLength:round8(.15*s),overlapAllowance:round8(.015*s),overlapPriorOD:0,overlapPriorZ1:0,overlapPriorZ2:0,overlapPriorReviewed:false,
@@ -2374,7 +2393,7 @@ function defaultOperations(job){
 function normalizeJobOperations(job){
  const copy=structuredClone(job);
  copy.schema=6;
- copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>{const unit=job.units==='mm'?25.4:1,bore=job.stock?.bore||0;return {...op,formStrategy:['staged','finish'].includes(op.formStrategy)?op.formStrategy:'staged',formMotionMode:['continuous','peck','full'].includes(op.formMotionMode)?op.formMotionMode:'peck',formPeckBackoff:Number.isFinite(op.formPeckBackoff)&&op.formPeckBackoff>0?op.formPeckBackoff:round8(.002*unit),formStep:Number.isFinite(op.formStep)&&op.formStep>0?op.formStep:round8(.015*unit),formLeave:Number.isFinite(op.formLeave)&&op.formLeave>=0?op.formLeave:round8(.005*unit),formWidthReview:Number.isFinite(op.formWidthReview)&&op.formWidthReview>0?op.formWidthReview:round8(.25*unit),formPrepAllowance:Number.isFinite(op.formPrepAllowance)&&op.formPrepAllowance>=0?op.formPrepAllowance:round8(.025*unit),formSkipAir:op.formSkipAir!==false,formPassCap:Number.isInteger(op.formPassCap)&&op.formPassCap>=1&&op.formPassCap<=120?op.formPassCap:60,formReviewed:op.formReviewed===true,specialLift:Number.isFinite(op.specialLift)&&op.specialLift>0?op.specialLift:round8(.05*unit),specialReviewed:op.specialReviewed===true,cutDirection:op.cutDirection==='reverse'?'reverse':'forward',rearEntryMode:op.rearEntryMode==='precleared'?'precleared':'review',rearEntryZ:Number.isFinite(op.rearEntryZ)?op.rearEntryZ:null,rearPocketWidth:Number.isFinite(op.rearPocketWidth)&&op.rearPocketWidth>0?op.rearPocketWidth:round8(.125*unit),rearPocketClearance:Number.isFinite(op.rearPocketClearance)&&op.rearPocketClearance>0?op.rearPocketClearance:round8(.02*unit),rearJawClearance:Number.isFinite(op.rearJawClearance)&&op.rearJawClearance>0?op.rearJawClearance:round8(.1*unit),rearEdgeReviewed:op.rearEdgeReviewed===true,leadInMode:['axial','radial','tangent','angle'].includes(op.leadInMode)?op.leadInMode:'axial',leadOutMode:['axial','radial','tangent','angle'].includes(op.leadOutMode)?op.leadOutMode:'radial',leadInLength:Number.isFinite(op.leadInLength)&&op.leadInLength>0?op.leadInLength:round8(.1*unit),leadOutLength:Number.isFinite(op.leadOutLength)&&op.leadOutLength>0?op.leadOutLength:round8(.1*unit),exitMode:['auto','direct','axial','radial','relief'].includes(op.exitMode)?op.exitMode:'auto',exitAxial:Number.isFinite(op.exitAxial)&&op.exitAxial>=0?op.exitAxial:round8(.05*unit),exitRadial:Number.isFinite(op.exitRadial)&&op.exitRadial>=0?op.exitRadial:round8(.05*unit),exitCorridorReviewed:op.exitCorridorReviewed===true,fadeInMode:['off','linear','smooth','andrews'].includes(op.fadeInMode)?op.fadeInMode:'off',fadeOutMode:['off','linear','smooth','andrews'].includes(op.fadeOutMode)?op.fadeOutMode:'off',fadeInLength:Number.isFinite(op.fadeInLength)&&op.fadeInLength>=0?op.fadeInLength:round8(.15*unit),fadeOutLength:Number.isFinite(op.fadeOutLength)&&op.fadeOutLength>=0?op.fadeOutLength:round8(.15*unit),fadeInLift:Number.isFinite(op.fadeInLift)&&op.fadeInLift>=0?op.fadeInLift:round8(.006*unit),fadeOutLift:Number.isFinite(op.fadeOutLift)&&op.fadeOutLift>=0?op.fadeOutLift:round8(.006*unit),fadeInAngle:Number.isFinite(op.fadeInAngle)?op.fadeInAngle:5,fadeOutAngle:Number.isFinite(op.fadeOutAngle)?op.fadeOutAngle:5,fadeInMargin:Number.isFinite(op.fadeInMargin)?op.fadeInMargin:round8(.005*unit),fadeOutMargin:Number.isFinite(op.fadeOutMargin)?op.fadeOutMargin:round8(.005*unit),overlapMode:['off','inspect','extend','prior','manual'].includes(op.overlapMode)?op.overlapMode:'inspect',overlapLength:Number.isFinite(op.overlapLength)&&op.overlapLength>0?op.overlapLength:round8(.15*unit),overlapAllowance:Number.isFinite(op.overlapAllowance)&&op.overlapAllowance>=0?op.overlapAllowance:round8(.015*unit),overlapPriorOD:Number.isFinite(op.overlapPriorOD)?op.overlapPriorOD:0,overlapPriorZ1:Number.isFinite(op.overlapPriorZ1)?op.overlapPriorZ1:0,overlapPriorZ2:Number.isFinite(op.overlapPriorZ2)?op.overlapPriorZ2:0,overlapPriorReviewed:op.overlapPriorReviewed===true,idGeometrySource:['auto','figure','manual'].includes(op.idGeometrySource)?op.idGeometrySource:'auto',faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*unit),faceLeave:Number.isFinite(op.faceLeave)&&op.faceLeave>=0?op.faceLeave:0,idTarget:Number.isFinite(op.idTarget)?op.idTarget:round8(bore+.125*unit),idDepth:Number.isFinite(op.idDepth)?op.idDepth:round8(Math.min(job.stock.length,unit)),idGrooveZ:Number.isFinite(op.idGrooveZ)?op.idGrooveZ:round8(-Math.min(job.stock.length/2,.6*unit)),idGrooveWidth:Number.isFinite(op.idGrooveWidth)?op.idGrooveWidth:round8(.125*unit),idGrooveRoot:Number.isFinite(op.idGrooveRoot)?op.idGrooveRoot:round8(bore+.2*unit),drillDiameter:Number.isFinite(op.drillDiameter)?op.drillDiameter:round8(.375*unit),drillDepth:Number.isFinite(op.drillDepth)?op.drillDepth:round8(Math.min(job.stock.length,.75*unit)),drillPeck:Number.isFinite(op.drillPeck)?op.drillPeck:round8(.125*unit),threadZStart:Number.isFinite(op.threadZStart)?op.threadZStart:0,threadZEnd:Number.isFinite(op.threadZEnd)?op.threadZEnd:round8(-Math.min(job.stock.length,unit)),threadMajor:Number.isFinite(op.threadMajor)?op.threadMajor:round8(op.kind==='id_thread'?bore+.075*unit:job.stock.diameter),threadMinor:Number.isFinite(op.threadMinor)?op.threadMinor:round8(op.kind==='id_thread'?bore:Math.max(.01*unit,job.stock.diameter-.075*unit)),threadPitch:Number.isFinite(op.threadPitch)?op.threadPitch:round8(.0625*unit),threadPasses:Number.isInteger(op.threadPasses)&&op.threadPasses>0?op.threadPasses:6};}):[];
+ copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>{const unit=job.units==='mm'?25.4:1,bore=job.stock?.bore||0;return {...op,formStrategy:['staged','finish'].includes(op.formStrategy)?op.formStrategy:'staged',formInfeed:['radial','flank_chuck','flank_face'].includes(op.formInfeed)?op.formInfeed:'radial',formFlankAngle:Number.isFinite(op.formFlankAngle)&&op.formFlankAngle>0&&op.formFlankAngle<=55?op.formFlankAngle:20,formMotionMode:['continuous','peck','full'].includes(op.formMotionMode)?op.formMotionMode:'peck',formPeckBackoff:Number.isFinite(op.formPeckBackoff)&&op.formPeckBackoff>0?op.formPeckBackoff:round8(.002*unit),formStep:Number.isFinite(op.formStep)&&op.formStep>0?op.formStep:round8(.015*unit),formLeave:Number.isFinite(op.formLeave)&&op.formLeave>=0?op.formLeave:round8(.005*unit),formWidthReview:Number.isFinite(op.formWidthReview)&&op.formWidthReview>0?op.formWidthReview:round8(.25*unit),formPrepAllowance:Number.isFinite(op.formPrepAllowance)&&op.formPrepAllowance>=0?op.formPrepAllowance:round8(.025*unit),formSkipAir:op.formSkipAir!==false,formPassCap:Number.isInteger(op.formPassCap)&&op.formPassCap>=1&&op.formPassCap<=120?op.formPassCap:60,formReviewed:op.formReviewed===true,specialLift:Number.isFinite(op.specialLift)&&op.specialLift>0?op.specialLift:round8(.05*unit),specialReviewed:op.specialReviewed===true,cutDirection:op.cutDirection==='reverse'?'reverse':'forward',rearEntryMode:op.rearEntryMode==='precleared'?'precleared':'review',rearEntryZ:Number.isFinite(op.rearEntryZ)?op.rearEntryZ:null,rearPocketWidth:Number.isFinite(op.rearPocketWidth)&&op.rearPocketWidth>0?op.rearPocketWidth:round8(.125*unit),rearPocketClearance:Number.isFinite(op.rearPocketClearance)&&op.rearPocketClearance>0?op.rearPocketClearance:round8(.02*unit),rearJawClearance:Number.isFinite(op.rearJawClearance)&&op.rearJawClearance>0?op.rearJawClearance:round8(.1*unit),rearEdgeReviewed:op.rearEdgeReviewed===true,leadInMode:['axial','radial','tangent','angle'].includes(op.leadInMode)?op.leadInMode:'axial',leadOutMode:['axial','radial','tangent','angle'].includes(op.leadOutMode)?op.leadOutMode:'radial',leadInLength:Number.isFinite(op.leadInLength)&&op.leadInLength>0?op.leadInLength:round8(.1*unit),leadOutLength:Number.isFinite(op.leadOutLength)&&op.leadOutLength>0?op.leadOutLength:round8(.1*unit),exitMode:['auto','direct','axial','radial','relief'].includes(op.exitMode)?op.exitMode:'auto',exitAxial:Number.isFinite(op.exitAxial)&&op.exitAxial>=0?op.exitAxial:round8(.05*unit),exitRadial:Number.isFinite(op.exitRadial)&&op.exitRadial>=0?op.exitRadial:round8(.05*unit),exitCorridorReviewed:op.exitCorridorReviewed===true,fadeInMode:['off','linear','smooth','andrews'].includes(op.fadeInMode)?op.fadeInMode:'off',fadeOutMode:['off','linear','smooth','andrews'].includes(op.fadeOutMode)?op.fadeOutMode:'off',fadeInLength:Number.isFinite(op.fadeInLength)&&op.fadeInLength>=0?op.fadeInLength:round8(.15*unit),fadeOutLength:Number.isFinite(op.fadeOutLength)&&op.fadeOutLength>=0?op.fadeOutLength:round8(.15*unit),fadeInLift:Number.isFinite(op.fadeInLift)&&op.fadeInLift>=0?op.fadeInLift:round8(.006*unit),fadeOutLift:Number.isFinite(op.fadeOutLift)&&op.fadeOutLift>=0?op.fadeOutLift:round8(.006*unit),fadeInAngle:Number.isFinite(op.fadeInAngle)?op.fadeInAngle:5,fadeOutAngle:Number.isFinite(op.fadeOutAngle)?op.fadeOutAngle:5,fadeInMargin:Number.isFinite(op.fadeInMargin)?op.fadeInMargin:round8(.005*unit),fadeOutMargin:Number.isFinite(op.fadeOutMargin)?op.fadeOutMargin:round8(.005*unit),overlapMode:['off','inspect','extend','prior','manual'].includes(op.overlapMode)?op.overlapMode:'inspect',overlapLength:Number.isFinite(op.overlapLength)&&op.overlapLength>0?op.overlapLength:round8(.15*unit),overlapAllowance:Number.isFinite(op.overlapAllowance)&&op.overlapAllowance>=0?op.overlapAllowance:round8(.015*unit),overlapPriorOD:Number.isFinite(op.overlapPriorOD)?op.overlapPriorOD:0,overlapPriorZ1:Number.isFinite(op.overlapPriorZ1)?op.overlapPriorZ1:0,overlapPriorZ2:Number.isFinite(op.overlapPriorZ2)?op.overlapPriorZ2:0,overlapPriorReviewed:op.overlapPriorReviewed===true,idGeometrySource:['auto','figure','manual'].includes(op.idGeometrySource)?op.idGeometrySource:'auto',faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*unit),faceLeave:Number.isFinite(op.faceLeave)&&op.faceLeave>=0?op.faceLeave:0,idTarget:Number.isFinite(op.idTarget)?op.idTarget:round8(bore+.125*unit),idDepth:Number.isFinite(op.idDepth)?op.idDepth:round8(Math.min(job.stock.length,unit)),idGrooveZ:Number.isFinite(op.idGrooveZ)?op.idGrooveZ:round8(-Math.min(job.stock.length/2,.6*unit)),idGrooveWidth:Number.isFinite(op.idGrooveWidth)?op.idGrooveWidth:round8(.125*unit),idGrooveRoot:Number.isFinite(op.idGrooveRoot)?op.idGrooveRoot:round8(bore+.2*unit),drillDiameter:Number.isFinite(op.drillDiameter)?op.drillDiameter:round8(.375*unit),drillDepth:Number.isFinite(op.drillDepth)?op.drillDepth:round8(Math.min(job.stock.length,.75*unit)),drillPeck:Number.isFinite(op.drillPeck)?op.drillPeck:round8(.125*unit),threadZStart:Number.isFinite(op.threadZStart)?op.threadZStart:0,threadZEnd:Number.isFinite(op.threadZEnd)?op.threadZEnd:round8(-Math.min(job.stock.length,unit)),threadMajor:Number.isFinite(op.threadMajor)?op.threadMajor:round8(op.kind==='id_thread'?bore+.075*unit:job.stock.diameter),threadMinor:Number.isFinite(op.threadMinor)?op.threadMinor:round8(op.kind==='id_thread'?bore:Math.max(.01*unit,job.stock.diameter-.075*unit)),threadPitch:Number.isFinite(op.threadPitch)?op.threadPitch:round8(.0625*unit),threadPasses:Number.isInteger(op.threadPasses)&&op.threadPasses>0?op.threadPasses:6};}):[];
  return copy;
 }
 function convertOperationUnits(ops,from,to){
@@ -2428,6 +2447,7 @@ function validateOperations(ops,job){
   if(op.kind==='form_profile'){
    if(!numberIn(op.formStep,1e-8,1e6)||!numberIn(op.formWidthReview,1e-8,1e6)||!numberIn(op.formPrepAllowance,0,1e6)||!numberIn(op.formLeave,0,1e6)||!Number.isInteger(op.formPassCap)||op.formPassCap<1||op.formPassCap>120)errors.push(`${label}: invalid form stage, leave, width review or pass cap.`);
    if(!['staged','finish'].includes(op.formStrategy))errors.push(`${label}: invalid form strategy.`);
+   if(!['radial','flank_chuck','flank_face'].includes(op.formInfeed)||!(op.formFlankAngle>0&&op.formFlankAngle<=55))errors.push(`${label}: invalid form infeed direction or flank angle (0–55°).`);
    if(!['continuous','peck','full'].includes(op.formMotionMode))errors.push(`${label}: invalid form motion mode.`);
    if(!numberIn(op.formPeckBackoff,1e-8,1e6))errors.push(`${label}: short radial backoff must be positive.`);
    if(op.formMotionMode==='peck'&&op.formPeckBackoff>=op.formStep&&op.formStrategy==='staged')warnings.push(`${label}: peck backoff is as large as or greater than radial stage size; chip control and load are unverified.`);
@@ -2531,6 +2551,17 @@ function operationContourSegments(profile,op){
 
 return {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,defaultOperations,normalizeJobOperations,convertOperationUnits,validateOperations,operationContourSegments};
 })();
+function displayOperationKind(op){
+ if(!op)return 'UNKNOWN';
+ if(op.kind==='form_profile')return op.formStrategy==='finish'?'FORM · FINAL ONLY':op.formInfeed==='flank_chuck'?'FORM · FLANK Z−':op.formInfeed==='flank_face'?'FORM · FLANK Z+':'FORM · STAGED RADIAL';
+ return OP_KINDS[op.kind]||'UNKNOWN';
+}
+function syncFormAutoName(op,nextStrategy){
+ if(!op||op.kind!=='form_profile')return;
+ if(['FORM · STAGED RADIAL','FORM · FLANK Z−','FORM · FLANK Z+','FORM · FINAL ONLY','FORM TOOL · RADIAL'].includes(op.name))
+  op.name=nextStrategy==='finish'?'FORM · FINAL ONLY':displayOperationKind({...op,formStrategy:'staged'});
+}
+
 /** MiniTurn Core v0.1 — no dependencies.
  * Coordinates: input X is DIAMETER, Z is axial. Calculation plane (u,v) = (-Z, X/2).
  * All fillets/chamfers operate in physical distances, NEVER in diameter coordinates.
@@ -3822,7 +3853,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.21.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.24.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -4192,15 +4223,26 @@ function drawBodyAtCursor(g,plan,map,source,op,trackedPosition,pointMode='nose')
  const anchor=pointMode==='nose'?(tg.noseCenter||tg.tip||tg.referencePoint):(tg.tip||tg.referencePoint||tg.noseCenter);
  if(!anchor)return;
  const delta=cSub(trackedPosition,anchor);
- const drawPoly=(poly,fill,stroke,width)=>{
+ // v0.9.24: high-zoom holder is a context sketch; the actual outline of
+ // the insert, tool tip and current nose center must take visual priority.
+ const px=opInspectionPixelUnits(),close=opViewZoom>=3;
+ const drawPoly=(poly,fill,stroke,width,layer)=>{
   if(!poly?.length)return;
   const path=poly.map((p,i)=>{const a=map(cAdd(p,delta));return `${i?'L':'M'}${a.x.toFixed(2)},${a.y.toFixed(2)}`;}).join(' ')+' Z';
-  g.append(el('path',{d:path,fill,'fill-opacity':.18,stroke,'stroke-opacity':.85,'stroke-width':width,'stroke-dasharray':width<2?'5 4':'none','stroke-linejoin':'round','pointer-events':'none'}));
+  const holder=layer==='holder';
+  g.append(el('path',{d:path,fill,'fill-opacity':holder?(close?.065:.14):(close?.075:.14),stroke,
+    'stroke-opacity':holder?(close?.25:.65):(close?.78:.9),'stroke-width':width,
+    'stroke-dasharray':holder?'4 4':'none','stroke-linejoin':'round','pointer-events':'none',
+    'data-mt-inspection-layer':layer}));
  };
- drawPoly(tg.mountedHolderOutline?.length?tg.mountedHolderOutline:tg.holderOutline,'#f0b15c','#e9ab64',1.35);
- drawPoly(tg.outline,'#7ad7fb','#8dd8ff',1.8);
+ drawPoly(tg.mountedHolderOutline?.length?tg.mountedHolderOutline:tg.holderOutline,'#f0b15c','#e9ab64',1.35,'holder');
+ drawPoly(tg.outline,'#7ad7fb','#8dd8ff',1.8,'insert');
+ const tip=tg.tip?map(cAdd(tg.tip,delta)):null;
+ if(tip)g.append(el('circle',{cx:tip.x,cy:tip.y,r:close?2.1*px:1.8*px,
+   fill:'#e5faff',stroke:'#294e56','stroke-width':.7*px,'pointer-events':'none','data-mt-inspection-layer':'tip'}));
  const nose=tg.noseCenter?map(cAdd(tg.noseCenter,delta)):null;
- if(nose)g.append(el('circle',{cx:nose.x,cy:nose.y,r:2.7,fill:'#ff78c7',stroke:'#ffffff','stroke-width':.8,'pointer-events':'none'}));
+ if(nose)g.append(el('circle',{cx:nose.x,cy:nose.y,r:close?2.7*px:2.8*px,
+   fill:'#ff78c7',stroke:'#ffe1f5','stroke-width':.9*px,'pointer-events':'none','data-mt-inspection-layer':'nose'}));
 }
 
 /** Preview-only leads: physical 2D tool NOSE-center candidates, never verified controller motion. */
@@ -4771,7 +4813,7 @@ function specialToolEdgeAudit(source,op,profile,tool,trace,usingNose){
  if(!result.suspected.length)result.limitations.push('No sampled flag is NOT evidence of safety; physical tool approval is still required.');
  return result;
 }
-/** v0.9.21 · Conservative axial-envelope / full-form-edge CONTACT ESTIMATE.
+/** v0.9.24 · Conservative axial-envelope / full-form-edge CONTACT ESTIMATE.
  * This is NOT a tool force, chip or clearance calculation. Inputs are the
  * nominal stock envelope AFTER earlier operations only. Special/form/thread
  * moves do not gain stock credit simply from preview existence.
@@ -4848,6 +4890,7 @@ function formFullEdgeEngagement(source,op,d,minU,stageXs){
  const allowance=Number.isFinite(op.formPrepAllowance)?Math.max(0,op.formPrepAllowance):(source.units==='inch'?.025:.635);
  const status=minimumStockAboveFinished< -tol?'MODELED_UNDERSIZE':maxRadialRemaining<=allowance+tol?'MODELED_PREPARED':'NEEDS_PRE_ROUGHING';
  const tooWide=peakContactWidth>op.formWidthReview+tol;
+ const worst=stages.reduce((b,a)=>a.meridianAreaProxy>b.meridianAreaProxy?a:b,stages[0]||{stage:0,meridianAreaProxy:0});
  return {schema:'miniturn.form-stock-engagement/1',verified:false,status,priorOperations:prior.prior,
   earlierModeledOperations:prepared,fullEdgeWidth:mpRound(d.width),
   excludedPriorOperations:prior.excluded,
@@ -4855,10 +4898,118 @@ function formFullEdgeEngagement(source,op,d,minU,stageXs){
   minimumStockAboveFinishedRadial:mpRound(minimumStockAboveFinished),
   reviewAllowanceRadial:mpRound(allowance),widthLimit:mpRound(op.formWidthReview),
   peakContactWidth:mpRound(peakContactWidth),peakStageRadial:mpRound(peakStageRadial),
-  peakMeridianAreaProxy:mpRound(peakArea),widthLimitExceeded:tooWide,
+  peakMeridianAreaProxy:mpRound(peakArea),peakStageIndex:worst.stage,widthLimitExceeded:tooWide,
   noContact:firstContact<0,skipLeading:firstContact<0?stageXs.length:firstContact,
   stages,limitations:['Nominal 2D axial stock envelope, not measured stock','Prior operation motion and tool engagement are not independently verified','Form multi-edge engagement is an estimate; force, rake, relief, chip evacuation and 3D clearance unknown','No automatic feed/speed approval or NC output']};
 }
+
+/** v0.9.24: true X/Z staged infeed for custom form tools.
+ * Form datum X is diameter; biased approach Z differs from the finished form's
+ * datum Z and MUST converge to zero bias on the final stage. At every proposed
+ * stage the complete edge is checked against the finished profile. Nominal
+ * stock contact uses a sampled axial envelope and remains unverified.
+ */
+function formFlankOffsets(source,op,d,minU,stageXs,finishV,profile){
+ const mode=op.formInfeed||'radial';
+ if(mode==='radial'||op.formStrategy==='finish')return {offsets:stageXs.map(()=>0),adjustments:0,mode:'radial'};
+ const sign=mode==='flank_face'?1:-1,angle=Number(op.formFlankAngle)||20;
+ const slope=Math.tan(angle*Math.PI/180),width=d.width,tol=source.units==='inch'?0.000005:0.000127;
+ const rawFront=Number(source.stock.frontZ)||0,rawRear=rawFront-source.stock.length;
+ const edge=[...d.edge].sort((a,b)=>a.axial-b.axial);
+ function projection(a){let k=0;while(k<edge.length-2&&edge[k+1].axial<a)k++;
+  const p=edge[k],q=edge[k+1],f=Math.max(0,Math.min(1,(a-p.axial)/Math.max(1e-12,q.axial-p.axial)));
+  return p.projection+(q.projection-p.projection)*f;}
+ function valid(x,zShift){
+  for(let i=0;i<=160;i++){
+   const a=width*i/160,u=minU+a-zShift,z=-u;
+   if(z>rawFront+tol||z<rawRear-tol)return false;
+   const finished=outerDiameterAtU(source,profile,u)/2;
+   if(!Number.isFinite(finished)||x/2-projection(a)<finished-tol)return false;
+  }
+  return true;
+ }
+ let adjustments=0;
+ const offsets=stageXs.map((x,i)=>{
+  if(i===stageXs.length-1)return 0;
+  const excess=Math.max(0,x/2-finishV);
+  const desired=sign*Math.min(width*.4,excess*slope);
+  if(Math.abs(desired)<tol)return 0;
+  if(!valid(x,0))return NaN;
+  if(valid(x,desired))return mpRound(desired);
+  let lo=0,hi=1;for(let j=0;j<24;j++){const mid=(lo+hi)/2;if(valid(x,desired*mid))lo=mid;else hi=mid;}
+  adjustments++;
+  return mpRound(desired*lo);
+ });
+ if(offsets.some(v=>!Number.isFinite(v)))return {error:'FORM FLANK: proposed radial baseline already violates finished geometry; source cutter profile or setup must be reviewed.'};
+ if(offsets.slice(0,-1).every(v=>Math.abs(v)<=tol))return {error:`FORM FLANK ${mode==='flank_face'?'Z+':'Z−'}: no non-gouging Z bias is possible with selected tool, stock and finished contour. Choose RADIAL or review tool/form geometry.`};
+ // Sample the interpolated full edge during every X/Z transition, not only at its endpoints.
+ for(let i=1;i<stageXs.length;i++)for(let j=1;j<10;j++){
+  const t=j/10,x=stageXs[i-1]+(stageXs[i]-stageXs[i-1])*t,z=offsets[i-1]+(offsets[i]-offsets[i-1])*t;
+  if(!valid(x,z))return {error:`FORM FLANK: X/Z transition entering stage ${i+1} would cross the finished profile. Reduce flank angle, adjust tool geometry, or use RADIAL.`};
+ }
+ return {mode,offsets,adjustments};
+}
+function formFlankStockEngagement(source,op,d,minU,stageXs,offsets,profile){
+ const prior=formPriorStockEnvelope(source,op);
+ if(prior.error)return {status:'UNKNOWN',verified:false,reason:prior.error,stages:[],skipLeading:0};
+ const count=401,edge=[...d.edge].sort((a,b)=>a.axial-b.axial);
+ const minShift=Math.min(...offsets),maxShift=Math.max(...offsets);
+ const u0=minU-maxShift,u1=minU+d.width-minShift;
+ const gridStep=(u1-u0)/(count-1),tol=source.units==='inch'?0.000005:0.000127;
+ let k=0;
+ const bins=Array.from({length:count},(_,i)=>{const u=u0+i*gridStep;return {u,stock:prior.radialAtU(u),bore:prior.innerAtU(u)};});
+ if(bins.some(p=>!Number.isFinite(p.stock)||!Number.isFinite(p.bore)))return {status:'UNKNOWN',verified:false,reason:'Flank Z offsets extend outside the modeled stock envelope.',stages:[],skipLeading:0};
+ function projection(a){while(k<edge.length-2&&edge[k+1].axial<a)k++;
+  while(k>0&&edge[k].axial>a)k--;
+  const p=edge[k],q=edge[k+1],f=Math.max(0,Math.min(1,(a-p.axial)/Math.max(1e-12,q.axial-p.axial)));
+  return p.projection+(q.projection-p.projection)*f;}
+ const maxRadialRemaining=Math.max(0,...bins.map(b=>b.stock-outerDiameterAtU(source,profile,b.u)/2));
+ const minimumStockAboveFinished=Math.min(...bins.map(b=>b.stock-outerDiameterAtU(source,profile,b.u)/2));
+ let firstContact=-1,peakWidth=0,peakDepth=0,peakArea=0;
+ const stages=[],mode=op.formMotionMode||'peck';
+ const finishedByU=bins.map(b=>outerDiameterAtU(source,profile,b.u)/2);
+ for(let j=0;j<stageXs.length;j++){
+  const shift=offsets[j],datumR=stageXs[j]/2;
+  // Sample the actual DIAGONAL entry between radial depths, not only its
+  // end pose. Estimate the contact at each intermediate whole-edge pose.
+  // This is still 2D nominal stock, not a force/relief/contact solver.
+  const startR=j===0||mode==='full'
+    ? Math.max(source.stock.diameter/2+d.depth+op.clearanceRadial,datumR)
+    : stageXs[j-1]/2+(mode==='peck'?op.formPeckBackoff:0);
+  const startZ=j===0||mode==='full'?shift:offsets[j-1];
+  let stageWidth=0,stageDepth=0,stageArea=0,anyContact=false;
+  for(let sub=1;sub<=10;sub++){
+   const t=sub/10,actualR=startR+(datumR-startR)*t,actualZ=startZ+(shift-startZ)*t;
+   let k=0,width=0,depth=0,area=0,contacts=0;
+   for(let bi=0;bi<bins.length;bi++){
+    const b=bins[bi],a=b.u-minU+actualZ;
+    if(a<-tol||a>d.width+tol)continue;
+    const toolRadius=actualR-projection(Math.max(0,Math.min(d.width,a)));
+    if(toolRadius<finishedByU[bi]-tol)
+     return {status:'UNKNOWN',verified:false,reason:`Flank stage ${j+1} crosses the finished surface during its X/Z feed. Bias rejected.`,stages:[],skipLeading:0};
+    const newRadius=Math.max(b.bore,toolRadius),removal=Math.max(0,b.stock-newRadius);
+    if(removal>tol){contacts++;width+=gridStep;depth=Math.max(depth,removal);area+=removal*gridStep;}
+    b.stock=Math.max(b.bore,Math.min(b.stock,newRadius));
+   }
+   if(contacts)anyContact=true;
+   stageWidth=Math.max(stageWidth,width);stageDepth=Math.max(stageDepth,depth);stageArea+=area;
+  }
+  if(anyContact&&firstContact<0)firstContact=j;
+  peakWidth=Math.max(peakWidth,stageWidth);peakDepth=Math.max(peakDepth,stageDepth);peakArea=Math.max(peakArea,stageArea);
+  stages.push({stage:j+1,xDiameter:mpRound(stageXs[j]),zDatumShift:mpRound(shift),contactWidth:mpRound(Math.min(d.width,stageWidth)),maxRadialEngagement:mpRound(stageDepth),meridianAreaProxy:mpRound(stageArea),contact:anyContact});
+ }
+ const allowance=Number.isFinite(op.formPrepAllowance)?op.formPrepAllowance:(source.units==='inch'?.025:.635);
+ const status=minimumStockAboveFinished< -tol?'MODELED_UNDERSIZE':maxRadialRemaining<=allowance+tol?'MODELED_PREPARED':'NEEDS_PRE_ROUGHING';
+ const worst=stages.reduce((b,a)=>a.meridianAreaProxy>b.meridianAreaProxy?a:b,stages[0]||{stage:0});
+ return {schema:'miniturn.form-flank-engagement/1',verified:false,status,priorOperations:prior.prior,earlierModeledOperations:prior.prior.length,
+  excludedPriorOperations:prior.excluded,fullEdgeWidth:mpRound(d.width),maxRemainingRadial:mpRound(maxRadialRemaining),
+  minimumStockAboveFinishedRadial:mpRound(minimumStockAboveFinished),reviewAllowanceRadial:mpRound(allowance),widthLimit:mpRound(op.formWidthReview),
+  peakContactWidth:mpRound(Math.min(d.width,peakWidth)),peakStageRadial:mpRound(peakDepth),peakMeridianAreaProxy:mpRound(peakArea),
+  peakStageIndex:worst.stage,widthLimitExceeded:peakWidth>op.formWidthReview+tol,noContact:firstContact<0,skipLeading:firstContact<0?stageXs.length:firstContact,
+  stages,flankMode:op.formInfeed,flankAngle:op.formFlankAngle,
+  limitations:['Ten subposes per X/Z stage, sampled 2D nominal stock only','No actual cutting-force or chip-thickness solution','No rake, edge relief, holder/chuck clearance, or machine validation','No NC generated']};
+}
+
 function nominalMotionForOperation(source,op,profileArg=null){
  const blocked=(reason,warnings=[])=>({schema:MOTION_PREVIEW_SCHEMA,status:'BLOCKED',reason,passes:[],warnings,moves:[],assurance:'NONE'});
  if(!op?.enabled)return blocked('Operation disabled.');
@@ -4958,13 +5109,23 @@ function nominalMotionForOperation(source,op,profileArg=null){
   if(formMode==='peck')warnings.push(`FORM SHORT PECK: ${Math.max(0,n-1)} real X-backoff feed moves, ${mpRound(op.formPeckBackoff)} ${source.units} RADIAL each (XØ change ${mpRound(2*op.formPeckBackoff)}). Stay at cutting Z; no full withdrawal between stages. NOT verified chip breaking.`);
   if(formMode==='full')warnings.push('FORM FULL WITHDRAWAL: each stage returns completely outside the OD; previous conservative preview behavior.');
   const stageXs=Array.from({length:n},(_,j)=>mpRound(2*(op.formStrategy==='finish'?finishV:Math.max(finishV,startV-Math.min((j+1)*op.formStep,total)))));
-  const formStock=formFullEdgeEngagement(source,op,d,minU,stageXs);
+  const flank=formFlankOffsets(source,op,d,minU,stageXs,finishV,profile);
+  if(flank.error)return blocked(flank.error);
+  const stageZs=flank.offsets.map(dz=>mpRound(zRef+dz));
+  const radialBaseline=flank.mode==='radial'?formFullEdgeEngagement(source,op,d,minU,stageXs):formFlankStockEngagement(source,op,d,minU,stageXs,stageXs.map(()=>0),profile);
+  const formStock=flank.mode==='radial'?radialBaseline:formFlankStockEngagement(source,op,d,minU,stageXs,flank.offsets,profile);
   formStockReview=formStock;
+  if(op.formStrategy==='finish'&&op.formInfeed!=='radial')warnings.push('FORM FINAL ONLY: no progressive X/Z infeed stages; flank direction applies to staged machining only.');
+  if(flank.mode!=='radial'){
+   formStockReview.radialBaselinePeakWidth=radialBaseline.peakContactWidth;
+   warnings.push(`FORM FLANK ${flank.mode==='flank_face'?'Z+ TOWARD FACE':'Z− TOWARD CHUCK'}: ${op.formFlankAngle}° from radial X, full-edge X/Z staged path. ${flank.adjustments} stage(s) reduced bias to avoid finished-profile crossing. MODEL ONLY.`);
+   warnings.push(`FORM ENGAGEMENT COMPARISON: flank peak sampled width ${mpRound(formStock.peakContactWidth)} vs radial-only ${mpRound(radialBaseline.peakContactWidth)} ${source.units}. Estimates only; neither is a cutting-force prediction.`);
+  }
   if(formStock.status==='UNKNOWN')return blocked(formStock.reason||'FORM: stock model is unavailable; no stage pruning.');
-  if(formStock.status==='MODELED_UNDERSIZE')return blocked(`FORM STOCK CONFLICT: a preceding nominal operation removes more than the finished form surface at some Z locations (minimum modeled radial margin ${mpRound(formStock.minimumStockAboveFinishedRadial)} ${source.units}). Check earlier operation geometry, stock setup and cutter profile; this material cannot be restored by the form tool.`,['The prior stock envelope is simulated, not measured.']);
+  if(formStock.status==='MODELED_UNDERSIZE')return {...blocked(`FORM STOCK CONFLICT: a preceding nominal operation removes more than the finished form surface at some Z locations (minimum modeled radial margin ${mpRound(formStock.minimumStockAboveFinishedRadial)} ${source.units}). Check earlier operation geometry, stock setup and cutter profile; this material cannot be restored by the form tool.`,['The prior stock envelope is simulated, not measured.']),formStockReview:formStock};
   if(formStock.excludedPriorOperations?.length)warnings.push(`FORM STOCK REVIEW: ${formStock.excludedPriorOperations.length} preceding operation(s) were BLOCKED/unsupported and were NOT credited as material removal. Check preflight.`);
-  if(formStock.noContact&&op.formSkipAir)return blocked('FORM: earlier modeled operations have already cleared the whole selected form to the requested edge position. No material contact is predicted. Check stock model and operation sequence; no phantom cutting passes.');
-  if(op.formStrategy==='finish'&&formStock.status!=='MODELED_PREPARED')return blocked(`FORM FINAL ONLY: modeled maximum radial stock ${mpRound(formStock.maxRemainingRadial)} exceeds the editable review limit ${mpRound(op.formPrepAllowance)} ${source.units}. Add preceding roughing, select STAGED, or review stock settings.`,[`Modeled contact max width ${mpRound(formStock.peakContactWidth)} ${source.units}; not a force or safety certification.`]);
+  if(formStock.noContact&&op.formSkipAir)return {...blocked('FORM: earlier modeled operations have already cleared the whole selected form to the requested edge position. No material contact is predicted. Check stock model and operation sequence; no phantom cutting passes.'),formStockReview:formStock};
+  if(op.formStrategy==='finish'&&formStock.status!=='MODELED_PREPARED')return {...blocked(`FORM FINAL ONLY: modeled maximum radial stock ${mpRound(formStock.maxRemainingRadial)} exceeds the editable review limit ${mpRound(op.formPrepAllowance)} ${source.units}. Add preceding roughing, select STAGED, or review stock settings.`,[`Full-edge sampled contact width ${mpRound(formStock.peakContactWidth)} ${source.units}; not a force or safety certification.`]),formStockReview:formStock};
   const skip=(op.formSkipAir&&op.formStrategy!=='finish')?formStock.skipLeading:0;
   if(skip>0)warnings.push(`STOCK-AWARE START: ${skip} leading radial stages have no modeled contact and are omitted from preview. Based ONLY on earlier nominal operation envelopes; inspect actual stock.`);
   warnings.push(`FORM STOCK ENGAGEMENT: ${formStock.status.replace(/_/g,' ')} · earlier credited stages from ${formStock.earlierModeledOperations} supported operation(s); max remaining radial ${mpRound(formStock.maxRemainingRadial)} ${source.units}, limit ${mpRound(op.formPrepAllowance)}. Max sampled contact width ${mpRound(formStock.peakContactWidth)} ${source.units}, peak stage radial contact ${mpRound(formStock.peakStageRadial)} ${source.units}.`);
@@ -4972,27 +5133,27 @@ function nominalMotionForOperation(source,op,profileArg=null){
   if(!formStock.earlierModeledOperations)warnings.push('FORM STOCK BASELINE: no earlier eligible material-removing operations. Entire RAW stock is assumed present; this is not an actual measurement.');
   for(let i=1;i<=n;i++){
    if(i<=skip)continue;
-   const x=stageXs[i-1];
+   const x=stageXs[i-1],zStage=stageZs[i-1];
    const first=i===1+skip,last=i===n;
    const stages=[];
    if(first||formMode==='full'){
     stages.push(['rapid','form-full-edge-safe-front',xOutside,formSafeFront],
-      ['feed','form-z-position-with-entire-edge-clear-candidate',xOutside,zRef]);
+      ['feed','form-z-position-with-entire-edge-clear-candidate',xOutside,zStage]);
     previousX=xOutside;
    }else{
     // This is a real segment start, not an unconnected cross-pass teleport.
-    stages.push(['feed','form-stage-start-previous-pose',previousX,zRef]);
+    stages.push(['feed','form-stage-start-previous-pose',previousX,stageZs[i-2]]);
    }
-   stages.push(['feed','form-incremental-radial-cut-candidate',x,zRef]);
+   stages.push(['feed',flank.mode==='radial'?'form-incremental-radial-cut-candidate':'form-biased-flank-XZ-cut-candidate',x,zStage]);
    if(formMode==='peck'&&!last){
     // X uses diameter coordinates: radial backoff doubles in X.
     const backoffX=mpRound(Math.min(xOutside,x+2*op.formPeckBackoff));
-    stages.push(['feed','form-short-radial-peck-backoff-candidate',backoffX,zRef]);
+    stages.push(['feed','form-short-radial-peck-backoff-candidate',backoffX,zStage]);
     previousX=backoffX;
    }else previousX=x;
-   if(last||formMode==='full')stages.push(...edgeSafeReturn);
+   if(last||formMode==='full')stages.push(['feed','form-full-edge-radial-out-candidate',xOutside,zStage],['rapid','form-full-edge-safe-front-return',xOutside,formSafeFront]);
    const engagement=formStock.stages[i-1];
-   addPass(x,zRef,stages,`FORM ${op.formStrategy==='finish'?'FINAL':'STAGE '+i+'/'+n} · ${formMode.toUpperCase()} · EDGE W${mpRound(engagement.contactWidth)} · RADIAL ${mpRound(engagement.maxRadialEngagement)} ${source.units} · UNVERIFIED`);
+   addPass(x,zStage,stages,`FORM ${op.formStrategy==='finish'?'FINAL':'STAGE '+i+'/'+n} · ${formMode.toUpperCase()} · EDGE W${mpRound(engagement.contactWidth)} · RADIAL ${mpRound(engagement.maxRadialEngagement)} ${source.units} · UNVERIFIED`);
    const pass=passes.at(-1);
    pass.noStockCredit=true;
    pass.motionReference='FORM_TOOL_NOMINAL_DATUM';
@@ -5003,7 +5164,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
    pass.formFullEdgeSpanZ=[mpRound(formRearZ),mpRound(formFrontZ)];
    pass.formRawFrontZ=mpRound(rawFrontZ);
    pass.formClearanceDiameter=mpRound(xOutside);
-   pass.formMotionMode=formMode;
+   pass.formMotionMode=formMode;pass.formInfeed=flank.mode;pass.formFlankAngle=op.formFlankAngle;pass.formStageZ=zStage;pass.flankStageShift=flank.offsets[i-1];
    pass.formPeckRadial=formMode==='peck'?mpRound(op.formPeckBackoff):null;
    pass.formStageFeedStartX=mpRound(stages.find(m=>m[1]==='form-stage-start-previous-pose')?.[2]??xOutside);
    pass.stockEngagement=formStock.stages[i-1];
@@ -5627,7 +5788,9 @@ function renderMotionPreview(plan,stock){
   if(f)formBox.textContent=`FORM STOCK · ${String(f.status).replace(/_/g,' ')} · MODELED, NOT MEASURED\n`+
    `EARLIER MODELED: ${f.priorOperations?.map(o=>o.name||o.kind).join(', ')||'NONE'}${f.excludedPriorOperations?.length?' · '+f.excludedPriorOperations.length+' BLOCKED/EXCLUDED':''}\n`+
    `MAX RADIAL STOCK ${opFormat(f.maxRemainingRadial)} / REVIEW LIMIT ${opFormat(f.reviewAllowanceRadial)} ${job.units}\n`+
-   `PEAK ENGAGED WIDTH ${opFormat(f.peakContactWidth)} / LIMIT ${opFormat(f.widthLimit)} · MAX STAGE CONTACT DEPTH ${opFormat(f.peakStageRadial)}\n`+
+   `PEAK ENGAGED WIDTH ${opFormat(f.peakContactWidth)} / LIMIT ${opFormat(f.widthLimit)} · MAX STAGE RADIAL CONTACT ${opFormat(f.peakStageRadial)}\n`+
+   `STAGE REVIEW: ${f.stages?.length||0} sampled X/Z stages · ${f.flankMode?'401 axial stations for flank sweep':'161 stations across form edge'} · peak sampled contact ${f.peakStageIndex||'N/A'}\n`+
+   (f.flankMode?`FLANK ${f.flankMode==='flank_face'?'Z+':'Z−'} · ${f.flankAngle}° · PEAK WIDTH ${opFormat(f.peakContactWidth)} vs RADIAL ${opFormat(f.radialBaselinePeakWidth)} ${job.units} (ESTIMATE)\n`:'')+
    `CLEAR LEADING STAGES: ${f.skipLeading} ${f.widthLimitExceeded?'· WIDE-EDGE LOAD REVIEW REQUIRED':''} · NO VERIFIED STOCK REMOVAL OR MACHINE CLEARANCE`;
  }
  const ready=plan.status==='PREVIEW_ONLY';message.classList.toggle('blocked',!ready);message.classList.toggle('ready',ready);
@@ -5692,15 +5855,16 @@ function drawMotionOverlay(g,plan,map){
    if(fade&&!$('opShowFade').checked)continue;
    const formPeck=b.role==='form-short-radial-peck-backoff-candidate';
    g.append(el('line',{x1:s.x,y1:s.y,x2:e.x,y2:e.y,stroke:formPeck?'#ffc56c':color,'stroke-width':formPeck?2.0:fade?1.6:bridge?1.55:cut?1.4:exit?1.25:(rapid?.85:1.05),
+    'data-mt-inspection-layer':'motion','data-mt-motion-kind':formPeck?'peck':fade?'fade':bridge?'bridge':rapid?'rapid':ret?'return':cut?'cut':'guide',
     'stroke-linecap':'round',...(!cut?{'stroke-dasharray':rapid?'6 6':bridge?'3 3':exit?'4 3':'3 5'}:{}),'stroke-opacity':formPeck?.9:selected==='all'?(cut?.9:.58):1}));
    // The real 0.002-inch radial backoff may be subpixel at FIT zoom. Give
    // its end a small marker; never exaggerate the actual segment coordinates.
-   if(formPeck)g.append(el('circle',{cx:e.x,cy:e.y,r:2.5,fill:'#ffc56c',stroke:'#1b261e','stroke-width':.65,'fill-opacity':.88,'pointer-events':'none'}));
+   if(formPeck)g.append(el('circle',{cx:e.x,cy:e.y,r:2.5,fill:'#ffc56c',stroke:'#1b261e','stroke-width':.65,'fill-opacity':.88,'pointer-events':'none','data-mt-inspection-layer':'peck-marker'}));
   }
  }
  if(plan.passes.some(p=>p.formMotionMode==='peck')){
   const n=plan.passes.reduce((a,p)=>a+p.moves.filter(m=>m.role==='form-short-radial-peck-backoff-candidate').length,0);
-  const label=el('text',{x:14,y:20,fill:'#ffc56c','font-size':13,'font-family':'monospace','pointer-events':'none'});
+  const label=el('text',{x:14,y:20,fill:'#ffc56c','font-size':13,'font-family':'monospace','pointer-events':'none','data-mt-inspection-layer':'annotation'});
   label.textContent=`FORM SHORT PECK · ${n} BACKOFF MOVES`;g.append(label);
  }
  if(plan.fadePreview?.status==='CANDIDATE'&&!plan.fadePreview.integratedInFeedMoves&&$('opShowFade')?.checked){
@@ -5807,9 +5971,21 @@ function updateMotionCursor(){
  const position=inspectionPoint(path,Number(scrub.value)/Number(scrub.max));
  if(!position){out.textContent=plan.status==='BLOCKED'?`MOTION BLOCKED · ${plan.reason}`:'NO PATH TO INSPECT';return;}
  const {seg,pos,ref}=position,q=map(pos),fadeMode=path.mode==='fade',noseMode=path.mode==='nose'||fadeMode;
- container.append(el('circle',{cx:q.x,cy:q.y,r:7,fill:'#ffca75','fill-opacity':.10,stroke:noseMode?'#ff78c7':'#fff0d3','stroke-width':2}));
- for(const [x1,y1,x2,y2] of [[q.x-10,q.y,q.x+10,q.y],[q.x,q.y-10,q.x,q.y+10]])
-  container.append(el('line',{x1,y1,x2,y2,stroke:'#ffcf83','stroke-width':1.4}));
+ const px=opInspectionPixelUnits(),close=opViewZoom>=3;
+ // A fine, highlighted active segment replaces the giant yellow bullseye.
+ // The segment endpoints are genuine path coordinates, never exaggerated.
+ const activeA=map(seg.a),activeB=map(seg.b);
+ container.append(el('line',{x1:activeA.x,y1:activeA.y,x2:activeB.x,y2:activeB.y,
+   stroke:seg.kind==='rapid'?'#d5b0e9':'#b3ffbf','stroke-width':1.65*px,
+   'stroke-opacity':.90,'stroke-linecap':'round','pointer-events':'none',
+   'data-mt-inspection-layer':'active'}));
+ const radius=(close?3:4.5)*px,tick=(close?5.4:8)*px;
+ container.append(el('circle',{cx:q.x,cy:q.y,r:radius,fill:'#ffca75','fill-opacity':.08,
+   stroke:noseMode?'#ff8dce':'#ffe0a6','stroke-width':.95*px,
+   'pointer-events':'none','data-mt-inspection-layer':'crosshair'}));
+ for(const [x1,y1,x2,y2] of [[q.x-tick,q.y,q.x+tick,q.y],[q.x,q.y-tick,q.x,q.y+tick]])
+  container.append(el('line',{x1,y1,x2,y2,stroke:'#ffe2b7','stroke-opacity':close?.48:.68,
+    'stroke-width':.7*px,'pointer-events':'none','data-mt-inspection-layer':'crosshair'}));
  const percent=(100*Number(scrub.value)/Number(scrub.max)).toFixed(1);
  if(noseMode){
   const segmentLabel=seg.role?`PASS ${String(seg.pass).padStart(2,'0')} · ${(seg.kind||'FEED').toUpperCase()} / ${seg.role.replaceAll('-',' ').toUpperCase()}`:(plan.fadePreview?.integratedInFeedMoves?'FINISH + INTEGRATED FADE':fadeMode?'FADE CANDIDATE':'FINISH / NOSE');
@@ -5817,13 +5993,14 @@ function updateMotionCursor(){
     (ref?`\nVIRTUAL TIP · XØ ${opFormat(ref.v*2)} · Z ${opFormat(-ref.u)} · REFERENCE ONLY`:'');
   if(ref&&$('opShowReference')?.checked){const p=map(ref);container.append(el('line',{x1:q.x,y1:q.y,x2:p.x,y2:p.y,stroke:'#fbe48c','stroke-width':1.3}));}
   const rad=plan.compensation?.radius;
-  if(rad>0&&!fadeMode&&$('opShowNose')?.checked){const off=map({u:pos.u,v:pos.v+rad});const radius=Math.abs(off.y-q.y);container.append(el('circle',{cx:q.x,cy:q.y,r:radius,fill:'none',stroke:'#ff78c7','stroke-dasharray':'3 3','stroke-width':1.4}));}
+  if(rad>0&&!fadeMode&&$('opShowNose')?.checked){const off=map({u:pos.u,v:pos.v+rad});const radius=Math.abs(off.y-q.y);container.append(el('circle',{cx:q.x,cy:q.y,r:radius,fill:'none',stroke:'#ff78c7','stroke-opacity':close?.25:.56,'stroke-dasharray':'2 4','stroke-width':.8*px,'pointer-events':'none','data-mt-inspection-layer':'nose-guide'}));}
   drawBodyAtCursor(container,plan,map,job,op,pos,'nose');
  }else{
   out.textContent=`PASS ${String(seg.pass).padStart(2,'0')} · ${(seg.kind||'move').toUpperCase()} / ${(seg.role||'path').toUpperCase()} · ${percent}%`+
     `\nNOMINAL TOOL POINT · XØ ${opFormat(pos.v*2)} · Z ${opFormat(-pos.u)} · NOT COMPENSATED · TOOL SKETCH ONLY`;
   drawBodyAtCursor(container,plan,map,job,op,pos,'tip');
  }
+ applyOpInspectionPolish(container);
 }
 function refreshMotionCursor(){updateMotionCursor();}
 function closestInspectionPosition(svg,event,track,map){
@@ -5840,6 +6017,64 @@ function closestInspectionPosition(svg,event,track,map){
 }
 
 /* v0.8.9 visual-only viewBox zoom: never modifies X/Z, preview moves, stock, or export. */
+/* v0.9.24 · INSPECTION RENDERING ONLY.
+   Zoom is a viewBox transformation. Stroke widths, labels and cursor glyphs
+   are screen-space artifacts, NOT machine/stock/tool dimensions. No motion data
+   or collision geometry is changed by any of the adjustments below. */
+function opInspectionPixelUnits(){
+ const svg=$('opGraph');return 900/(Math.max(1,svg?.getBoundingClientRect()?.width||900)*Math.max(1,opViewZoom));
+}
+function applyOpInspectionPolish(root=$('opGraph')){
+ if(!root)return;
+ const z=Math.max(1,opViewZoom),close=z>=3,px=opInspectionPixelUnits();
+ // Store each geometry element's authored stroke once; avoid accumulating
+ // divisors when dragging/zooming repeatedly.
+ const all=root.querySelectorAll('[stroke-width]');
+ for(const e of all){
+  if(!e.dataset.mtOriginalStroke)e.dataset.mtOriginalStroke=e.getAttribute('stroke-width');
+  const initial=Number(e.dataset.mtOriginalStroke);
+  if(!(initial>0))continue;
+  const role=e.getAttribute('data-mt-inspection-layer')||'';
+  if(['active','nose','tip','crosshair','nose-guide'].includes(role))continue; // already pixel-normalized
+  const min=role==='insert'?.95:role==='motion'?.70:role==='point'?.55:.65;
+  const max=role==='insert'?1.4:role==='motion'?1.15:1.1;
+  const width=z<=1?initial:Math.min(max*px,Math.max(min*px,initial/z));
+  e.setAttribute('stroke-width',String(Number(width.toFixed(4))));
+ }
+ // Dash intervals live in viewBox units too. Keep stock/rapid/compensation
+ // dashes short and readable at 8–20× instead of giant bars.
+ for(const e of root.querySelectorAll('[stroke-dasharray]')){
+  if(!e.dataset.mtOriginalDash)e.dataset.mtOriginalDash=e.getAttribute('stroke-dasharray');
+  const original=e.dataset.mtOriginalDash;
+  if(!original||original==='none')continue;
+  const pieces=original.trim().split(/[\s,]+/).map(Number);
+  if(pieces.some(v=>!Number.isFinite(v)))continue;
+  e.setAttribute('stroke-dasharray',pieces.map(v=>Number((v/z).toFixed(4))).join(' '));
+ }
+ // Distinguish the CURRENT motion from historical/anticipated paths at zoom.
+ for(const e of root.querySelectorAll('[data-mt-motion-kind]')){
+  const kind=e.getAttribute('data-mt-motion-kind');
+  const emphasis=kind==='cut'?.52:kind==='bridge'?.42:kind==='peck'?.72:kind==='fade'?.42:.25;
+  e.style.opacity=close?String(emphasis):'';
+ }
+ for(const e of root.querySelectorAll('[data-mt-inspection-layer="point"]')){
+  if(!e.dataset.mtOriginalRadius)e.dataset.mtOriginalRadius=e.getAttribute('r');
+  const base=Number(e.dataset.mtOriginalRadius)||2;
+  e.setAttribute('r',String(Number((close?1.6*px:base/Math.max(1,z*.8)).toFixed(4))));
+  e.style.opacity=close?'.32':'';
+ }
+ // Font sizes and marker labels should not balloon into giant glyphs.
+ for(const e of root.querySelectorAll('text[font-size]')){
+  if(!e.dataset.mtOriginalFont)e.dataset.mtOriginalFont=e.getAttribute('font-size');
+  const base=Number(e.dataset.mtOriginalFont)||10;
+  e.setAttribute('font-size',String(Number((close?Math.min(11*px,Math.max(8*px,base/z)):base/Math.max(1,z*.87)).toFixed(4))));
+ }
+ const detail=$('opPointDetail')?.value||'minimal';
+ for(const e of root.querySelectorAll('[data-mt-inspection-layer="point-label"]'))
+  e.style.opacity=close&&detail!=='full'?'0':'';
+ for(const e of root.querySelectorAll('[data-mt-inspection-layer="region-tag"],[data-mt-inspection-layer="annotation"]'))
+  e.style.opacity=close?'.18':'';
+}
 let opViewZoom=1,opViewCenter={x:450,y:270},opPanMode=false,opPanPointer=null;
 function applyOpView(){
  const svg=$('opGraph'),w=900/opViewZoom,h=540/opViewZoom;
@@ -5848,9 +6083,10 @@ function applyOpView(){
  svg.setAttribute('viewBox',`${opViewCenter.x-w/2} ${opViewCenter.y-h/2} ${w} ${h}`);
  $('opZoomLabel').textContent=opViewZoom.toFixed(1)+'×';
  $('opZoomPan').setAttribute('aria-pressed',String(opPanMode));
+ applyOpInspectionPolish(svg);
 }
-function setOpZoom(value){opViewZoom=Math.min(24,Math.max(1,value));applyOpView();}
-function resetOpView(){opViewZoom=1;opViewCenter={x:450,y:270};opPanMode=false;applyOpView();}
+function setOpZoom(value){opViewZoom=Math.min(24,Math.max(1,value));applyOpView();if(motionInspection)updateMotionCursor();}
+function resetOpView(){opViewZoom=1;opViewCenter={x:450,y:270};opPanMode=false;applyOpView();if(motionInspection)updateMotionCursor();}
 function initOpZoom(){
  $('opZoomIn').addEventListener('click',()=>setOpZoom(opViewZoom*1.5));
  $('opZoomOut').addEventListener('click',()=>setOpZoom(opViewZoom/1.5));
@@ -5920,13 +6156,13 @@ function extractStep(op,index,source,profileOverride=null){
     {type:'profile-interval',fromIndex:op.from,toIndex:op.to,cutDirection:op.cutDirection||'forward',fromPointId:fromPt?.id??null,toPointId:toPt?.id??null,
      primitives:operationContourSegments(profile,op).map(s=>structuredClone(s))},
    machining:{feedPerRev:op.feed,rpm:op.rpm,faceStepAxial:op.faceStep,faceStockLeaveAxial:op.faceLeave||0,depthOfCutRadial:op.doc,finishRadial:op.finishRadial,finishAxial:op.finishAxial,clearanceRadial:op.clearanceRadial,retractZ:op.retractZ,approach:{leadInMode:op.leadInMode||'axial',leadOutMode:op.leadOutMode||'radial',leadInLength:op.leadInLength,leadOutLength:op.leadOutLength,fadeInMode:op.fadeInMode||'off',fadeOutMode:op.fadeOutMode||'off',fadeInLength:op.fadeInLength,fadeOutLength:op.fadeOutLength,fadeInLiftRadial:op.fadeInLift,fadeOutLiftRadial:op.fadeOutLift,fadeInAngleDegrees:op.fadeInAngle,fadeOutAngleDegrees:op.fadeOutAngle,fadeInArcMarginRadial:op.fadeInMargin,fadeOutArcMarginRadial:op.fadeOutMargin,verified:false},accessPlan:op.accessPlan??'review',roughExit:{mode:op.exitMode||'auto',axialBreakout:op.exitAxial,radialLift:op.exitRadial,exitCorridorReviewed:!!op.exitCorridorReviewed,verified:false},rearEntry:{mode:op.rearEntryMode||'review',centerZ:op.rearEntryZ,clearPocketWidth:op.rearPocketWidth,radialAirGap:op.rearPocketClearance,minJawPlaneGap:op.rearJawClearance,operatorEdgeReview:!!op.rearEdgeReviewed,verified:false}},
-   formStockSettings:op.kind==='form_profile'?{reviewAllowanceRadial:op.formPrepAllowance,skipLeadingModeledAirStages:op.formSkipAir!==false,radialStageStep:op.formStep,peckMode:op.formMotionMode,engagedWidthReview:op.formWidthReview,verified:false}:null,
+   formStockSettings:op.kind==='form_profile'?{infeed:op.formInfeed,flankAngleDegrees:op.formFlankAngle,reviewAllowanceRadial:op.formPrepAllowance,skipLeadingModeledAirStages:op.formSkipAir!==false,radialStageStep:op.formStep,peckMode:op.formMotionMode,engagedWidthReview:op.formWidthReview,verified:false}:null,
    overlapPreparation:preview.overlapPreparation,overlapSettings:{mode:op.overlapMode||'inspect',length:op.overlapLength,radialAllowance:op.overlapAllowance,priorOD:op.overlapPriorOD,priorZStart:op.overlapPriorZ1,priorZEnd:op.overlapPriorZ2,operatorReviewed:!!op.overlapPriorReviewed,verified:false},
    pathStatus:preview.status,planningPreview:preview,verifiedMotions:[]};
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.9.21',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.9.24',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,displayOrientation:'CHUCK_LEFT_Z0_RIGHT',displayOrientationNotInCode:true,workSide:source.workSide,units:source.units},
@@ -6901,13 +7137,13 @@ function opMsg(title,lines=[],bad=false){
 function refreshOperationList(){
  const list=$('operationList');list.replaceChildren();$('opCount').textContent=`${job.operations.length} OPERATIONS`;
  const picker=$('opStepSelect');picker.replaceChildren();
- job.operations.forEach((op,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`${String(i+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||'UNKNOWN'} · ${op.name}`;picker.append(o);});
+ job.operations.forEach((op,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=`${String(i+1).padStart(2,'0')} · ${displayOperationKind(op)} · ${op.name}`;picker.append(o);});
  picker.value=job.operations.length?String(Math.max(0,Math.min(opSelected,job.operations.length-1))):'';
  job.operations.forEach((op,i)=>{
   const t=job.tools.find(t=>t.id===op.toolId);
   const b=document.createElement('button');b.type='button';b.className='operation-row';b.setAttribute('role','option');b.setAttribute('aria-selected',String(opSelected===i));
   const line=document.createElement('span');const title=document.createElement('strong');title.textContent=`${String(i+1).padStart(2,'0')} · ${op.name}`;
-  const sub=document.createElement('small');sub.textContent=`${OP_KINDS[op.kind]||'UNKNOWN'} · ${t?'T'+String(t.station).padStart(2,'0'):'NO TOOL'}`;
+  const sub=document.createElement('small');sub.textContent=`${displayOperationKind(op)} · ${t?'T'+String(t.station).padStart(2,'0'):'NO TOOL'}`;
   line.append(title,sub);const status=document.createElement('small');status.textContent=op.enabled?'ON':'OFF';if(!op.enabled)status.className='op-disabled';b.append(line,status);
   b.addEventListener('click',()=>selectOperation(i));list.append(b);
  });
@@ -6920,7 +7156,7 @@ function selectOperation(i){
  mtScheduleDockRepair();
 }
 function fillOperationForm(op){
- $('opRearMode').value=op.rearEntryMode||'review';$('opRearEntryZ').value=Number.isFinite(op.rearEntryZ)?op.rearEntryZ:'';$('opRearPocketWidth').value=op.rearPocketWidth??'';$('opRearPocketClearance').value=op.rearPocketClearance??'';$('opRearJawClearance').value=op.rearJawClearance??'';$('opRearEdgeReview').checked=!!op.rearEdgeReviewed; $('opName').value=op.name;$('opKind').value=op.kind;$('opFormStrategy').value=op.formStrategy||'staged';$('opFormMotionMode').value=op.formMotionMode||'continuous';$('opFormPeckBackoff').value=op.formPeckBackoff??(job.units==='inch'?.002:.0508);$('opFormStep').value=op.formStep??(job.units==='inch'?.015:.381);$('opFormLeave').value=op.formLeave??(job.units==='inch'?.005:.127);$('opFormWidthReview').value=op.formWidthReview??(job.units==='inch'?.25:6.35);$('opFormPrepAllowance').value=op.formPrepAllowance??(job.units==='inch'?.025:.635);$('opFormSkipAir').checked=op.formSkipAir!==false;$('opFormPassCap').value=op.formPassCap??60;$('opFormReviewed').checked=!!op.formReviewed;$('opSpecialLift').value=op.specialLift??(job.units==='inch'?.05:1.27);$('opSpecialReviewed').checked=!!op.specialReviewed;$('opLeadIn').value=op.leadInMode||'axial';$('opLeadOut').value=op.leadOutMode||'radial';$('opLeadInLength').value=op.leadInLength;$('opLeadOutLength').value=op.leadOutLength;$('opExitMode').value=op.exitMode||'auto';$('opExitAxial').value=op.exitAxial??0;$('opExitRadial').value=op.exitRadial??0;$('opExitCorridorReviewed').checked=!!op.exitCorridorReviewed;
+ $('opRearMode').value=op.rearEntryMode||'review';$('opRearEntryZ').value=Number.isFinite(op.rearEntryZ)?op.rearEntryZ:'';$('opRearPocketWidth').value=op.rearPocketWidth??'';$('opRearPocketClearance').value=op.rearPocketClearance??'';$('opRearJawClearance').value=op.rearJawClearance??'';$('opRearEdgeReview').checked=!!op.rearEdgeReviewed; $('opName').value=op.name;$('opKind').value=op.kind;$('opFormStrategy').value=op.formStrategy||'staged';$('opFormInfeed').value=op.formInfeed||'radial';$('opFormFlankAngle').value=op.formFlankAngle||20;$('opFormMotionMode').value=op.formMotionMode||'continuous';$('opFormPeckBackoff').value=op.formPeckBackoff??(job.units==='inch'?.002:.0508);$('opFormStep').value=op.formStep??(job.units==='inch'?.015:.381);$('opFormLeave').value=op.formLeave??(job.units==='inch'?.005:.127);$('opFormWidthReview').value=op.formWidthReview??(job.units==='inch'?.25:6.35);$('opFormPrepAllowance').value=op.formPrepAllowance??(job.units==='inch'?.025:.635);$('opFormSkipAir').checked=op.formSkipAir!==false;$('opFormPassCap').value=op.formPassCap??60;$('opFormReviewed').checked=!!op.formReviewed;$('opSpecialLift').value=op.specialLift??(job.units==='inch'?.05:1.27);$('opSpecialReviewed').checked=!!op.specialReviewed;$('opLeadIn').value=op.leadInMode||'axial';$('opLeadOut').value=op.leadOutMode||'radial';$('opLeadInLength').value=op.leadInLength;$('opLeadOutLength').value=op.leadOutLength;$('opExitMode').value=op.exitMode||'auto';$('opExitAxial').value=op.exitAxial??0;$('opExitRadial').value=op.exitRadial??0;$('opExitCorridorReviewed').checked=!!op.exitCorridorReviewed;
  $('opFadeInMode').value=op.fadeInMode||'off';$('opFadeOutMode').value=op.fadeOutMode||'off';$('opFadeInLength').value=op.fadeInLength??0;$('opFadeOutLength').value=op.fadeOutLength??0;$('opFadeInLift').value=op.fadeInLift??0;$('opFadeOutLift').value=op.fadeOutLift??0;$('opFadeInAngle').value=op.fadeInAngle??5;$('opFadeOutAngle').value=op.fadeOutAngle??5;$('opFadeInMargin').value=op.fadeInMargin??(job.units==='inch'?.005:.127);$('opFadeOutMargin').value=op.fadeOutMargin??(job.units==='inch'?.005:.127);refreshFadeFields();
  $('opOverlapMode').value=op.overlapMode||'inspect';$('opOverlapLength').value=op.overlapLength??(job.units==='inch'?.15:3.81);$('opOverlapAllowance').value=op.overlapAllowance??(job.units==='inch'?.015:.381);$('opOverlapPriorOD').value=op.overlapPriorOD??0;$('opOverlapPriorZ1').value=op.overlapPriorZ1??0;$('opOverlapPriorZ2').value=op.overlapPriorZ2??0;$('opOverlapPriorReviewed').checked=!!op.overlapPriorReviewed;refreshOverlapForm();
  $('opEnabled').checked=op.enabled;$('opIdSource').value=op.idGeometrySource||'auto';
@@ -7030,7 +7266,7 @@ function refreshOverlapForm(){const el=$('opOverlapMode');if(!el)return;const mo
 function readOperationForm(){
  if(!job.operations.length)return null;
  const op=structuredClone(job.operations[opSelected]);
- op.rearEntryMode=$('opRearMode').value;op.rearEntryZ=$('opRearEntryZ').value.trim()===''?null:Number($('opRearEntryZ').value);op.rearPocketWidth=Number($('opRearPocketWidth').value);op.rearPocketClearance=Number($('opRearPocketClearance').value);op.rearJawClearance=Number($('opRearJawClearance').value);op.rearEdgeReviewed=$('opRearEdgeReview').checked;op.name=$('opName').value.trim();op.kind=$('opKind').value;op.formStrategy=$('opFormStrategy').value;op.formMotionMode=$('opFormMotionMode').value;op.formPeckBackoff=Number($('opFormPeckBackoff').value);op.formStep=Number($('opFormStep').value);op.formLeave=Number($('opFormLeave').value);op.formWidthReview=Number($('opFormWidthReview').value);op.formPrepAllowance=Number($('opFormPrepAllowance').value);op.formSkipAir=$('opFormSkipAir').checked;op.formPassCap=Number($('opFormPassCap').value);op.formReviewed=$('opFormReviewed').checked;op.specialLift=Number($('opSpecialLift').value);op.specialReviewed=$('opSpecialReviewed').checked;op.leadInMode=$('opLeadIn').value;op.leadOutMode=$('opLeadOut').value;op.leadInLength=Number($('opLeadInLength').value);op.leadOutLength=Number($('opLeadOutLength').value);
+ op.rearEntryMode=$('opRearMode').value;op.rearEntryZ=$('opRearEntryZ').value.trim()===''?null:Number($('opRearEntryZ').value);op.rearPocketWidth=Number($('opRearPocketWidth').value);op.rearPocketClearance=Number($('opRearPocketClearance').value);op.rearJawClearance=Number($('opRearJawClearance').value);op.rearEdgeReviewed=$('opRearEdgeReview').checked;op.name=$('opName').value.trim();op.kind=$('opKind').value;op.formStrategy=$('opFormStrategy').value;op.formInfeed=$('opFormInfeed').value;op.formFlankAngle=Number($('opFormFlankAngle').value);op.formMotionMode=$('opFormMotionMode').value;op.formPeckBackoff=Number($('opFormPeckBackoff').value);op.formStep=Number($('opFormStep').value);op.formLeave=Number($('opFormLeave').value);op.formWidthReview=Number($('opFormWidthReview').value);op.formPrepAllowance=Number($('opFormPrepAllowance').value);op.formSkipAir=$('opFormSkipAir').checked;op.formPassCap=Number($('opFormPassCap').value);op.formReviewed=$('opFormReviewed').checked;op.specialLift=Number($('opSpecialLift').value);op.specialReviewed=$('opSpecialReviewed').checked;op.leadInMode=$('opLeadIn').value;op.leadOutMode=$('opLeadOut').value;op.leadInLength=Number($('opLeadInLength').value);op.leadOutLength=Number($('opLeadOutLength').value);
  op.overlapMode=$('opOverlapMode').value;for(const [id,key] of [['opOverlapLength','overlapLength'],['opOverlapAllowance','overlapAllowance'],['opOverlapPriorOD','overlapPriorOD'],['opOverlapPriorZ1','overlapPriorZ1'],['opOverlapPriorZ2','overlapPriorZ2']])op[key]=Number($(id).value);op.overlapPriorReviewed=$('opOverlapPriorReviewed').checked;
  op.exitMode=$('opExitMode').value;op.exitAxial=Number($('opExitAxial').value);op.exitRadial=Number($('opExitRadial').value);op.exitCorridorReviewed=$('opExitCorridorReviewed').checked;
  for(const [id,key] of [['opFadeInMode','fadeInMode'],['opFadeOutMode','fadeOutMode']])op[key]=$(id).value;
@@ -7056,7 +7292,15 @@ function drawOperationGraph(){
  if(!op){opMsg('NO OPERATION SELECTED');return;}
  const quickRow=$('opFormQuickModeRow');
  if(quickRow){quickRow.hidden=op.kind!=='form_profile';quickRow.style.display=op.kind==='form_profile'?'flex':'none';
-  if(op.kind==='form_profile')$('opFormQuickMode').value=op.formMotionMode||'peck';}
+  if(op.kind==='form_profile'){
+   $('opFormQuickMode').value=op.formMotionMode||'peck';$('opFormQuickInfeed').value=op.formInfeed||'radial';
+   $('opFormQuickStrategy').value=op.formStrategy==='finish'?'finish':'staged';
+   $('opFormQuickHint').textContent=op.formStrategy==='finish'?
+    'FINAL ONLY: single finish position. Prior stock across the FULL edge must be within the review allowance; otherwise preview is BLOCKED.':
+    'STAGED: radial X or flank-biased X/Z stages; modeled contact is estimated from the entire cutter edge. No force or clearance certification.';
+   $('opFormPanel').querySelector('summary').textContent=op.formStrategy==='finish'?'FORM TOOL · FINAL ONLY (PRE-CLEARED STOCK REQUIRED)':'FORM TOOL · STAGED RADIAL ENGAGEMENT (WORK Z / PREVIEW ONLY)';
+  }
+ }
  const check=validateOperations([op],job);
  const L=job.stock.length,D=job.stock.diameter,rawFrontU=-(job.stock.frontZ||0),base=Math.min((W-150)/L,(H-140)/D);
  const map=p=>projectGraphPoint(p,{width:W,height:H,scale:base,centerU:L/2+rawFrontU,centerV:0,mirrorZ});
@@ -7080,7 +7324,7 @@ function drawOperationGraph(){
    for(const [point,tag] of (reversed?[[segs[0].start,'END'],[segs[segs.length-1].end,'START']]:[[segs[0].start,'START'],[segs[segs.length-1].end,'END']])){
     const q=map(point);
     g.append(el('circle',{cx:q.x,cy:q.y,r:2.9,fill:'#ffe1a7','fill-opacity':.65,stroke:'#8c4e25','stroke-width':.7}));
-    g.append(el('text',{x:q.x+6,y:q.y+15,fill:'#ffc377','fill-opacity':.7,'font-size':9,'font-family':'monospace'},tag));
+    g.append(el('text',{x:q.x+6,y:q.y+15,fill:'#ffc377','fill-opacity':.7,'font-size':9,'font-family':'monospace','data-mt-inspection-layer':'region-tag'},tag));
    }
   }
  }
@@ -7101,11 +7345,11 @@ function drawOperationGraph(){
  preview.physicalReview=toolBodyReview(job,op,profile,preview,stockStages);
  // Reference points below toolpaths, rather than obscuring the cutting edge.
  const seePoints=$('opPointDetail')?.value||'minimal';
- if(seePoints!=='off')job.nodes.forEach((n,i)=>{const q=map(physicalPoint(n));g.append(el('circle',{cx:q.x,cy:q.y,r:seePoints==='full'?3.2:2.1,fill:'#bce6ca','fill-opacity':seePoints==='full'?.7:.36,stroke:'#224f41','stroke-opacity':.3,'stroke-width':.55,'pointer-events':'none'}));});
+ if(seePoints!=='off')job.nodes.forEach((n,i)=>{const q=map(physicalPoint(n));g.append(el('circle',{cx:q.x,cy:q.y,r:seePoints==='full'?3.2:2.1,fill:'#bce6ca','fill-opacity':seePoints==='full'?.7:.36,stroke:'#224f41','stroke-opacity':.3,'stroke-width':.55,'pointer-events':'none','data-mt-inspection-layer':'point'}));});
  const overlapBox=$('opOverlapMotion');if(overlapBox){const o=preview.overlapPreparation;overlapBox.hidden=!o||['OFF','NO_FADE'].includes(o.status);if(!overlapBox.hidden)overlapBox.textContent=`BLEND / OVERLAP · ${o.status} · PREP ${o.counts.prepared} / NEED ROUGH ${o.counts.needsRough} / UNKNOWN ${o.counts.unknown} · ${o.reason||''}\n${(o.roughExtensions||[]).map(x=>x.status+': '+x.reason).join(' / ')}\nFADE POSITION: ${o.fadeBoundaryAdjustment?JSON.stringify(o.fadeBoundaryAdjustment):'no inboard adjustment'}\nGREEN prepared · AMBER roughing required · RED unmodeled · BLUE declared prior setup. Planning review only; NC LOCKED.`;}
  renderMotionPreview(preview,stockStages);drawStockEnvelope(g,stockStages,map);drawOverlapPreparation(g,preview.overlapPreparation,map);drawMotionOverlay(g,preview,map);
  prepareMotionInspection(preview,map,op);
- g.append(el('g',{id:'opCursorLayer'}));updateMotionCursor();
+ // Keep the moving cutting tool ABOVE labels/stock/geometry. Added below at end.
  if(isBoreOperation(op.kind)){
   const r=resolveBoreOperation(job,op,profile);
   const trace=r.available&&r.finishTrace?.length?r.finishTrace:(r.available?[{u:0,v:r.diameter/2},{u:r.depth,v:r.diameter/2}]:[]);
@@ -7115,7 +7359,7 @@ function drawOperationGraph(){
  const text=(str,x,y,color='#a6c7b1',size=14)=>g.append(el('text',{x,y,fill:color,'font-size':size,'font-family':'monospace'},str));
  if(seePoints!=='off')job.nodes.forEach((n,i)=>{
   if(seePoints==='full'||i===op.from||i===op.to){const q=map(physicalPoint(n));
-   g.append(el('text',{x:q.x+4,y:q.y-7,fill:'#b8d6c3','fill-opacity':seePoints==='full'?.8:.48,'font-size':seePoints==='full'?10:9,'font-family':'monospace','pointer-events':'none'},`P${i+1}`));}
+   g.append(el('text',{x:q.x+4,y:q.y-7,fill:'#b8d6c3','fill-opacity':seePoints==='full'?.8:.48,'font-size':seePoints==='full'?10:9,'font-family':'monospace','pointer-events':'none','data-mt-inspection-layer':'point-label'},`P${i+1}`));}
  });
  text('Z0 FACE',mirrorZ?W-130:30,32);text(mirrorZ?'← -Z CHUCK':'-Z CHUCK →',mirrorZ?30:W-165,32);
  if(op.kind==='face')text(`FACE: XØ${opFormat(op.faceStartX)} → XØ${opFormat(op.faceEndX)} @ Z${opFormat(op.faceZ)}`,20,H-27,'#ffd090',14);
@@ -7126,10 +7370,12 @@ function drawOperationGraph(){
   text(`REGION: P${String((op.cutDirection==='reverse'?op.to:op.from)+1).padStart(2,'0')} → P${String((op.cutDirection==='reverse'?op.from:op.to)+1).padStart(2,'0')}${bounds.length&&suffix?' · '+suffix:''}`,20,H-27,'#ffd090',12);
  }
  if(profile.figRegions?.kind==='id-face-od'){const rg=profile.figRegions;for(const [region,color] of [[rg.id,'#e8af76'],[rg.face,'#92c4ed']]){const points=sampleProfile({segments:region},base);if(points.length)g.append(el('path',{d:path(points),fill:'none',stroke:color,'stroke-width':1.65,'stroke-opacity':.84}));}}
- $('opGraphTitle').textContent=`${op.name.toUpperCase().slice(0,38)} · CHUCK LEFT / Z0 RIGHT · ${preview.passes[0]?.motionReference==='PHYSICAL_NOSE_CENTER'?'NOSE-CENTER FEED · UNVERIFIED':'NOMINAL PREVIEW ONLY'}`;
- $('opEditorTitle').textContent=`OP ${String(opSelected+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||'UNKNOWN'}`;
+ $('opGraphTitle').textContent=`${(op.kind==='form_profile'?displayOperationKind(op):op.name.toUpperCase()).slice(0,38)} · CHUCK LEFT / Z0 RIGHT · ${preview.passes[0]?.motionReference==='PHYSICAL_NOSE_CENTER'?'NOSE-CENTER FEED · UNVERIFIED':'NOMINAL PREVIEW ONLY'}`;
+ $('opEditorTitle').textContent=`OP ${String(opSelected+1).padStart(2,'0')} · ${displayOperationKind(op)}`;
  const tool=job.tools.find(t=>t.id===op.toolId);
- $('opReadout').textContent=`${OP_KINDS[op.kind]} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · ${preview.status==='PREVIEW_ONLY'?(preview.warnings?.some(w=>w.includes('RECESS ACCESS REVIEW'))?'SPLIT FINISH / ACCESS REVIEW · ':'')+preview.count+(preview.count===1?' PASS':' PASSES'):'PATH BLOCKED'} · NC LOCKED`;
+ g.append(el('g',{id:'opCursorLayer'}));updateMotionCursor();
+ applyOpInspectionPolish(g);
+ $('opReadout').textContent=`${displayOperationKind(op)} · ${tool?'T'+tool.station+' '+tool.name:'NO TOOL'} · F${opFormat(op.feed)}/${job.units==='inch'?'REV (IN)':'REV (MM)'} · S${op.rpm} RPM · ${op.enabled?'ENABLED':'DISABLED'} · ${preview.status==='PREVIEW_ONLY'?(preview.warnings?.some(w=>w.includes('RECESS ACCESS REVIEW'))?'SPLIT FINISH / ACCESS REVIEW · ':'')+preview.count+(preview.count===1?' PASS':' PASSES'):'PATH BLOCKED'} · NC LOCKED`;
  refreshAccessReview(op);
  opMsg(check.errors.length?'OPERATION INPUT INVALID':preview.status==='BLOCKED'?'OPERATION DEFINED · MOTION PREVIEW BLOCKED':'OPERATION DEFINITION VALID · NOT PROVEN',
   check.errors.length?check.errors:preview.status==='BLOCKED'?[preview.reason,...check.warnings,...preview.warnings,'NC output is locked.']:
@@ -7341,7 +7587,7 @@ function wireFormToolStudy(){
    const t=job.tools.findLast(x=>x.formDesign&&x.formDesign.fromIndex===d.fromIndex&&x.formDesign.toIndex===d.toIndex);
    if(!t)throw Error('Save the candidate as a custom tool first.');
    if(job.operations.length>=100)throw Error('Operation table is full.');
-   const op=makeOperation('form_profile',job);op.toolId=t.id;op.from=d.fromIndex;op.to=d.toIndex;op.fromPointId=job.nodes[op.from]?.id;op.toPointId=job.nodes[op.to]?.id;op.name='FORM · STAGED RADIAL';
+   const op=makeOperation('form_profile',job);op.toolId=t.id;op.from=d.fromIndex;op.to=d.toIndex;op.fromPointId=job.nodes[op.from]?.id;op.toPointId=job.nodes[op.to]?.id;op.name=displayOperationKind(op);
    const next=[...job.operations,op];const val=validateOperations(next,{...job,operations:next});if(val.errors.length)throw Error(val.errors[0]);
    job.operations=next;opSelected=next.length-1;opDirty=false;autosave();refreshOperations();$('formReport').textContent=`FORM OPERATION CREATED · OP ${next.length} / ${op.name} · T${t.station}. Switch to ALT+4 MACHINING to inspect editable staged plunges. REVIEW ONLY · NC LOCKED.`;notify('FORM OPERATION ADDED · OPEN ALT+4 TO REVIEW');
   }catch(e){$('formReport').textContent='FORM OPERATION NOT ADDED · '+e.message;notify(e.message,true);}
@@ -7353,8 +7599,30 @@ function wireFormToolStudy(){
  document.getElementById('toolTab').addEventListener('click',()=>{mtFormSelectors();});
 }
 wireFormToolStudy();
+$('opFormStrategy').addEventListener('change',()=>{
+ const existing=job.operations?.[opSelected];
+ if(existing?.kind==='form_profile'&&['FORM · STAGED RADIAL','FORM · FLANK Z−','FORM · FLANK Z+','FORM · FINAL ONLY','FORM TOOL · RADIAL'].includes($('opName').value))
+  $('opName').value=$('opFormStrategy').value==='finish'?'FORM · FINAL ONLY':displayOperationKind({...existing,formInfeed:$('opFormInfeed').value,formStrategy:'staged'});
+ opMarkDirty();
+});
 $('opFormMotionMode').addEventListener('change',()=>{$('opFormPeckRow').hidden=$('opFormMotionMode').value!=='peck';opMarkDirty();});
-$('opFormQuickMode').addEventListener('change',()=>{
+$('opFormQuickStrategy').addEventListener('change',()=>{
+ const strategy=$('opFormQuickStrategy').value,op=job.operations?.[opSelected];
+ if(!op||op.kind!=='form_profile')return;
+ $('opFormStrategy').value=strategy;
+ syncFormAutoName(op,strategy);
+ $('opName').value=op.name;
+ op.formStrategy=strategy;
+ autosave();refreshOperationList();drawOperationGraph();syncTerminalDock();
+ notify(strategy==='finish'?'FORM FINAL ONLY · MODEL PREPARATION REQUIRED':'FORM STAGED RADIAL · STOCK-AWARE PASSES');
+});
+$('opFormQuickInfeed').addEventListener('change',()=>{
+ const mode=$('opFormQuickInfeed').value,op=job.operations?.[opSelected];
+ if(!op||op.kind!=='form_profile')return;
+ $('opFormInfeed').value=mode;op.formInfeed=mode;syncFormAutoName(op,op.formStrategy);$('opName').value=op.name;autosave();refreshOperationList();drawOperationGraph();
+ notify(mode==='radial'?'FORM RADIAL X-ONLY INFEED':'FORM FLANK-BIASED X/Z PREVIEW · CHECK FULL-EDGE ENGAGEMENT');
+});
+$('opFormQuickMode').addEventListener('change',()=>{ 
  const m=$('opFormQuickMode').value,op=job.operations?.[opSelected];
  if(!op||op.kind!=='form_profile')return;
  $('opFormMotionMode').value=m;$('opFormPeckRow').hidden=m!=='peck';
