@@ -480,13 +480,13 @@ body[data-display="mazatrol"] .arc-candidate{background:#142b3f;border-color:#53
 body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 @media(max-width:500px){.feature-keys{gap:4px}.feature-keys button{min-height:49px;font-size:17px;padding:5px 1px}.feature-keys button small{font-size:8px}.arc-fields{gap:6px}.arc-header{font-size:10px}.arc-candidates{gap:5px}}
 
-/* v0.9.24: compact strategy + peck control without narrow-Android overflow. */
+/* v0.9.29: compact strategy + peck control without narrow-Android overflow. */
 .form-quick-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:8px;align-items:center;width:100%}
 .form-quick-row label{font-size:11px;letter-spacing:.04em;line-height:1.35}
 .form-quick-row select{width:100%;min-width:0;max-width:100%;font-size:12px;min-height:38px;padding:5px 8px}
 .form-quick-hint{font-size:11px;line-height:1.4;opacity:.84}
 @media(max-width:390px){.form-quick-row{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}.form-quick-row select{font-size:11px;padding:4px}}
-/* v0.9.24 · close inspection polish: never alter real geometry. */
+/* v0.9.29 · close inspection polish: never alter real geometry. */
 #opGraph path,#opGraph line,#opGraph circle{vector-effect:none}
 #opGraph [data-mt-inspection-layer="active"]{filter:none}
 #opGraph [data-mt-inspection-layer="holder"],#opGraph [data-mt-inspection-layer="point-label"]{pointer-events:none}
@@ -527,7 +527,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .op-zoom-hint{font:10px monospace;color:var(--mute);margin-right:auto}
 @media(max-width:620px){.mt-mini-figure{width:216px;left:8px;right:auto;bottom:calc(var(--mt-dock-height,146px) + var(--mt-input-height,0px) + 18px)}.op-zoom-hint{width:100%;font-size:9px}.mt-mini-caption{font-size:9px}}
 </style>
-<title>MiniTurn v0.9.24 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.29 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -686,7 +686,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.24</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.29</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -1044,7 +1044,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <div class="section-header"><h2>10 / OPERATION SEQUENCE</h2><span class="small-chip" id="opCount">0 OPERATIONS</span></div>
       <div id="operationList" class="operation-list" role="listbox" aria-label="Select machining operation"></div>
       <div class="section-header second-header"><h2>ADD MACHINING OPERATION</h2><span class="small-chip">NO CANNED CYCLES</span></div>
-      <label class="field">OPERATION TYPE<select id="newOpKind"><option value="face">FACING</option><option value="od_rough">OD ROUGHING</option><option value="od_finish">OD FINISHING</option><option value="od_groove">OD GROOVING</option><option value="special_profile">SPECIAL CONTOUR · SINGLE FLANK</option><option value="form_profile">FORM TOOL · STAGED RADIAL</option><option value="od_thread">OD THREADING</option><option value="id_thread">ID THREADING</option><option value="drill">DRILL / PECK</option><option value="id_rough">ID ROUGH BORING</option><option value="id_finish">ID FINISH BORING</option><option value="id_groove">ID GROOVING</option></select></label>
+      <label class="field">OPERATION TYPE<select id="newOpKind"><option value="face">FACING</option><option value="od_rough">OD ROUGHING</option><option value="od_finish">OD FINISHING</option><option value="od_groove">OD GROOVING</option><option value="special_profile">SPECIAL CONTOUR · ROUGH + FINISH</option><option value="form_profile">FORM TOOL · STAGED RADIAL</option><option value="od_thread">OD THREADING</option><option value="id_thread">ID THREADING</option><option value="drill">DRILL / PECK</option><option value="id_rough">ID ROUGH BORING</option><option value="id_finish">ID FINISH BORING</option><option value="id_groove">ID GROOVING</option></select></label>
       <button class="action-btn primary inspect-wide" id="opAdd">F1 · ADD OPERATION</button>
       <button class="small-btn muted inspect-wide" id="opDemo">LOAD 3-OP EXAMPLE</button>
       <div class="operation-actions"><button class="action-btn" id="opDuplicate">COPY</button><button class="action-btn warn" id="opDelete">DELETE</button></div>
@@ -1150,12 +1150,22 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <p class="motion-notice">Model is an IDEAL RADIAL form edge. For RADIAL mode, the preview stages X only at a fixed Z reference. SHORT BACKOFF is default for NEW form operations (old saved modes retained); CONTINUOUS FEED stays at Z and feeds deeper without intermediate retract; SHORT BACKOFF briefly moves X outward (diameter mode uses twice the radial value); FULL CLEARANCE repeats the old return. None models chip breaking, flank relief, lateral side-feed or actual cutting force. It does NOT establish complete cutting-edge engagement, rake/relief, peak cutting force, chip control, holder clearance, a valid finish pass, or NC suitability. A wide edge can require roughing by another tool first.</p>
       </details>
       <details class="op-access-panel" id="opSpecialPanel" hidden>
-        <summary>SPECIAL CONTOUR · SINGLE-FLANK TOOL TRACE</summary>
+        <summary>SPECIAL CONTOUR · FLANK ROUGH + FINISH</summary>
         <div class="operation-form-grid">
-          <label class="field">OUTWARD X FEED-OUT · RADIAL <span class="op-unit"></span><input id="opSpecialLift" type="number" min="0.000001" step="any"></label>
+          <label class="field wide">CONTOUR SWEEP<select id="opSpecialSweepMode"><option value="whole_groove">WHOLE GROOVE ROUGH · FINAL TO MIDPOINT</option><option value="single_flank">ONE FLANK · LEGACY / EXPERIMENTAL</option></select></label>
+          <label class="field">CUT STRATEGY<select id="opSpecialStrategy"><option value="rough_finish">ROUGH X DEPTHS + FINAL FLANK FINISH</option><option value="finish_only">FINISH FLANK ONLY · PREPARED STOCK</option></select></label>
+          <label class="field">MAX RADIAL DEPTH PER PASS <span class="op-unit"></span><input id="opSpecialStep" type="number" min="0.000001" step="any"></label>
+          <label class="field">LEAVE FOR FINAL FLANK · RADIAL <span class="op-unit"></span><input id="opSpecialLeave" type="number" min="0" step="any"></label>
+          <label class="field">FINAL PASS FEED / REV <span class="op-unit"></span><input id="opSpecialFinishFeed" type="number" min="0.000001" step="any"></label>
+          <label class="field">MIDPOINT DWELL · SPINDLE REVS<input id="opSpecialDwellRevs" type="number" min="0" max="5" step="0.5" inputmode="decimal" value="0"></label>
+          <label class="field">PASS LIMIT<input id="opSpecialPassCap" type="number" min="1" max="120" step="1"></label>
+          <label class="field wide" id="opSpecialArcLimitRow">SINGLE-FLANK FINISH STOP · LEGACY<select id="opSpecialArcLimit"><option value="tangent">END AT FLANK TANGENT · CONSERVATIVE</option><option value="arc_midpoint">EXTEND TO BOTTOM ARC MIDPOINT · REVIEW</option></select></label>
+          <label class="field" id="opSpecialMotionModeRow">LEGACY FLANK RETURN<select id="opSpecialMotionMode"><option value="short">SHORT X BACKOFF · RETRACE FLANK</option><option value="full">FULL OUTSIDE RETURN · LEGACY</option></select></label>
+          <label class="field" id="opSpecialPeckBackoffRow">LEGACY BACKOFF · RADIAL <span class="op-unit"></span><input id="opSpecialPeckBackoff" type="number" min="0.000001" step="any"></label>
+          <label class="field">FINAL OUTWARD X FEED-OUT · RADIAL <span class="op-unit"></span><input id="opSpecialLift" type="number" min="0.000001" step="any"></label>
           <label class="operation-check wide"><input type="checkbox" id="opSpecialReviewed"> I WILL REVIEW INSERT HAND / FLANK ANGLES, POCKET ACCESS, HOLDER SWEEP AND CLEARANCE BEFORE CUTTING</label>
         </div>
-        <p class="motion-notice">Use a threading or other narrow tool on ONE selected OD contour flank (for example P02→P03, then P03→P04 in a separate operation). One tentative compensated nose trace is displayed; no automatic stock removal, side-flank roughing, multi-pass engagement, or spindle synchronization is implied. An R0 thread tool uses nominal tip coordinates only (no fictional nose compensation). A 60° threading insert does NOT automatically qualify for a V-groove. NC LOCKED.</p>
+        <p class="motion-notice">WHOLE GROOVE: select BOTH shoulder points (for example P02→P04) around a single valley. Each rough pass follows the FULL groove from the front/Z+ shoulder down through the bottom and out the rear shoulder at its successive X depth. After the far shoulder, X withdraws straight outward to an outside-stock diameter, and Z returns above stock to the entrance for the next rough pass; no midpoint-first pass or reverse flank recut. The final pass starts at the FRONT shoulder and stops at the groove bottom midpoint, can optionally dwell for 0–5 spindle revolutions (PREVIEW ANNOTATION ONLY), then retracts straight outward in X. Do NOT use this for NC without proving the cutting-edge engagement, shoulder entry, tool body sweep, holder access, and return. SINGLE FLANK retains the older experimental path. Use a threading or other narrow tool on ONE selected OD contour flank (for example P02→P03, then P03→P04 in a separate operation). A rough+finish candidate uses successive X depth steps along the selected flank, leaving an editable radial finish allowance, then traces the final flank. END AT TANGENT is the conservative default. ARC MIDPOINT includes only HALF of an adjacent end fillet, never the complete opposite flank. For ARC MIDPOINT the cut travels from the selected OUTER shoulder toward the fillet midpoint, regardless of the source arc ordering. SHORT X BACKOFF feeds a small radial distance outward and retraces the preceding offset flank back to its outer entry without returning to safe-front or full X clearance between roughing passes; this retrace is NOT a verified clear return. FULL OUTSIDE RETURN preserves the former plan. The final pass withdraws to full clearance. For an F11 form tool, the tool-datum trace is derived from the selected cutting lip and the full-edge finished-surface envelope; the limiting edge may lift the cutter off the selected flank. Candidate paths still require a separately reviewed center cleanup. The same F11 custom form tool can be assigned here or to Form Radial; its whole-edge engagement is NOT certified. No stock removal or spindle synchronization is proven. An R0 thread tool uses nominal tip coordinates only (no fictional nose compensation). A 60° threading insert does NOT automatically qualify for a V-groove. NC LOCKED.</p>
       </details>
       <div class="section-header second-header"><h2>CUTTING PARAMETERS</h2><span class="small-chip">DEFINITION ONLY</span></div>
       <div class="operation-form-grid">
@@ -2356,7 +2366,7 @@ const {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,de
  * X is diameter, Z is axial; DOC, radial finish allowance and radial clearance are PHYSICAL radii.
  * Feed is length/revolution; RPM is revolutions/minute. No G96/CSS in this release.
  */
-const OPERATION_VERSION='0.9.24';
+const OPERATION_VERSION='0.9.29';
 const OP_KINDS={form_profile:'FORM TOOL · RADIAL',od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',special_profile:'SPECIAL CONTOUR',od_thread:'OD THREAD',id_rough:'ID ROUGH',id_finish:'ID FINISH',id_groove:'ID GROOVE',id_thread:'ID THREAD',drill:'DRILL / PECK'};
 const isIdOperation=k=>['id_rough','id_finish','id_groove','id_thread'].includes(k);
 const isBoreOperation=k=>['id_rough','id_finish'].includes(k);
@@ -2367,14 +2377,14 @@ const freshId=()=>`op-${Date.now().toString(36)}-${Math.random().toString(36).sl
 function makeOperation(kind,job){
  if(!OP_KINDS[kind])throw new Error('Unknown operation type.');
  const s=job.units==='mm'?25.4:1;
- const candidateKinds=kind==='form_profile'?['custom']:kind==='face'?['face','od']:kind==='od_groove'?['od_groove']:kind==='special_profile'?['od_thread','od_groove','od']:kind==='od_thread'?['od_thread']:kind==='id_thread'?['id_thread']:kind==='drill'?['drill']:kind==='id_groove'?['id_groove']:isBoreOperation(kind)?['id']:['od'];
- const t=kind==='form_profile'?(job.tools.find(x=>x.kind==='custom'&&x.formDesign)||job.tools.find(x=>x.kind==='custom')):kind==='special_profile'?(job.tools.find(x=>x.kind==='od_thread')||job.tools.find(x=>candidateKinds.includes(x.kind))):job.tools.find(x=>candidateKinds.includes(x.kind));
- const region=kind==='od_groove'?findFigureGrooves(job.nodes)[0]:null;
+ const candidateKinds=kind==='form_profile'?['custom']:kind==='face'?['face','od']:kind==='od_groove'?['od_groove']:kind==='special_profile'?['od_thread','od_groove','od','custom']:kind==='od_thread'?['od_thread']:kind==='id_thread'?['id_thread']:kind==='drill'?['drill']:kind==='id_groove'?['id_groove']:isBoreOperation(kind)?['id']:['od'];
+ const t=kind==='form_profile'?(job.tools.find(x=>x.kind==='custom'&&x.formDesign)||job.tools.find(x=>x.kind==='custom')):kind==='special_profile'?(job.tools.find(x=>x.kind==='od_thread')||job.tools.find(x=>x.kind==='custom'&&x.formDesign)||job.tools.find(x=>candidateKinds.includes(x.kind))):job.tools.find(x=>candidateKinds.includes(x.kind));
+ const region=['od_groove','special_profile'].includes(kind)?findFigureGrooves(job.nodes)[0]:null;
  const stockBore=job.stock.type==='tube'?(job.stock.bore||0):0;
  const from=region?.from??0,to=region?.to??Math.max(0,job.nodes.length-1);
  return {id:freshId(),name:OP_KINDS[kind],kind,enabled:true,toolId:t?.id||'',idGeometrySource:'auto',
   from,to,cutDirection:'forward',fromPointId:job.nodes[from]?.id,toPointId:job.nodes[to]?.id,
-  accessPlan:'review',specialLift:round8(.05*s),specialReviewed:false,formStrategy:'staged',formInfeed:'flank_chuck',formFlankAngle:20,formMotionMode:'peck',formPeckBackoff:round8(.002*s),formStep:round8(.015*s),formLeave:round8(.005*s),formWidthReview:round8(.25*s),formPrepAllowance:round8(.025*s),formSkipAir:true,formPassCap:60,formReviewed:false,faceZ:0,faceLeave:0,faceStartX:job.stock.diameter,faceEndX:kind==='face'?stockBore:0,faceStep:round8(.025*s),
+  accessPlan:'review',specialLift:round8(.05*s),specialMotionMode:'short',specialSweepMode:'whole_groove',specialDwellRevs:0,specialPeckBackoff:round8(.002*s),specialArcLimit:'tangent',specialStrategy:'rough_finish',specialStep:round8(.025*s),specialLeave:round8(.005*s),specialFinishFeed:round8(.004*s),specialPassCap:60,specialReviewed:false,formStrategy:'staged',formInfeed:'flank_chuck',formFlankAngle:20,formMotionMode:'peck',formPeckBackoff:round8(.002*s),formStep:round8(.015*s),formLeave:round8(.005*s),formWidthReview:round8(.25*s),formPrepAllowance:round8(.025*s),formSkipAir:true,formPassCap:60,formReviewed:false,faceZ:0,faceLeave:0,faceStartX:job.stock.diameter,faceEndX:kind==='face'?stockBore:0,faceStep:round8(.025*s),
   doc:round8(.075*s),finishRadial:round8(.01*s),finishAxial:round8(.005*s),
   feed:round8((kind==='od_rough'?.012:.006)*s),rpm:800,
   clearanceRadial:round8(.1*s),retractZ:round8(.1*s),rearEntryMode:'review',rearEntryZ:null,rearPocketWidth:round8(.125*s),rearPocketClearance:round8(.02*s),rearJawClearance:round8(.1*s),rearEdgeReviewed:false,leadInMode:'axial',leadOutMode:'radial',leadInLength:round8(.1*s),leadOutLength:round8(.1*s),exitMode:'auto',exitAxial:round8(.05*s),exitRadial:round8(.05*s),exitCorridorReviewed:false,fadeInMode:'off',fadeOutMode:'off',fadeInLength:round8(.15*s),fadeOutLength:round8(.15*s),fadeInLift:round8(.006*s),fadeOutLift:round8(.006*s),fadeInAngle:5,fadeOutAngle:5,fadeInMargin:round8(.005*s),fadeOutMargin:round8(.005*s),overlapMode:'inspect',overlapLength:round8(.15*s),overlapAllowance:round8(.015*s),overlapPriorOD:0,overlapPriorZ1:0,overlapPriorZ2:0,overlapPriorReviewed:false,
@@ -2393,14 +2403,14 @@ function defaultOperations(job){
 function normalizeJobOperations(job){
  const copy=structuredClone(job);
  copy.schema=6;
- copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>{const unit=job.units==='mm'?25.4:1,bore=job.stock?.bore||0;return {...op,formStrategy:['staged','finish'].includes(op.formStrategy)?op.formStrategy:'staged',formInfeed:['radial','flank_chuck','flank_face'].includes(op.formInfeed)?op.formInfeed:'radial',formFlankAngle:Number.isFinite(op.formFlankAngle)&&op.formFlankAngle>0&&op.formFlankAngle<=55?op.formFlankAngle:20,formMotionMode:['continuous','peck','full'].includes(op.formMotionMode)?op.formMotionMode:'peck',formPeckBackoff:Number.isFinite(op.formPeckBackoff)&&op.formPeckBackoff>0?op.formPeckBackoff:round8(.002*unit),formStep:Number.isFinite(op.formStep)&&op.formStep>0?op.formStep:round8(.015*unit),formLeave:Number.isFinite(op.formLeave)&&op.formLeave>=0?op.formLeave:round8(.005*unit),formWidthReview:Number.isFinite(op.formWidthReview)&&op.formWidthReview>0?op.formWidthReview:round8(.25*unit),formPrepAllowance:Number.isFinite(op.formPrepAllowance)&&op.formPrepAllowance>=0?op.formPrepAllowance:round8(.025*unit),formSkipAir:op.formSkipAir!==false,formPassCap:Number.isInteger(op.formPassCap)&&op.formPassCap>=1&&op.formPassCap<=120?op.formPassCap:60,formReviewed:op.formReviewed===true,specialLift:Number.isFinite(op.specialLift)&&op.specialLift>0?op.specialLift:round8(.05*unit),specialReviewed:op.specialReviewed===true,cutDirection:op.cutDirection==='reverse'?'reverse':'forward',rearEntryMode:op.rearEntryMode==='precleared'?'precleared':'review',rearEntryZ:Number.isFinite(op.rearEntryZ)?op.rearEntryZ:null,rearPocketWidth:Number.isFinite(op.rearPocketWidth)&&op.rearPocketWidth>0?op.rearPocketWidth:round8(.125*unit),rearPocketClearance:Number.isFinite(op.rearPocketClearance)&&op.rearPocketClearance>0?op.rearPocketClearance:round8(.02*unit),rearJawClearance:Number.isFinite(op.rearJawClearance)&&op.rearJawClearance>0?op.rearJawClearance:round8(.1*unit),rearEdgeReviewed:op.rearEdgeReviewed===true,leadInMode:['axial','radial','tangent','angle'].includes(op.leadInMode)?op.leadInMode:'axial',leadOutMode:['axial','radial','tangent','angle'].includes(op.leadOutMode)?op.leadOutMode:'radial',leadInLength:Number.isFinite(op.leadInLength)&&op.leadInLength>0?op.leadInLength:round8(.1*unit),leadOutLength:Number.isFinite(op.leadOutLength)&&op.leadOutLength>0?op.leadOutLength:round8(.1*unit),exitMode:['auto','direct','axial','radial','relief'].includes(op.exitMode)?op.exitMode:'auto',exitAxial:Number.isFinite(op.exitAxial)&&op.exitAxial>=0?op.exitAxial:round8(.05*unit),exitRadial:Number.isFinite(op.exitRadial)&&op.exitRadial>=0?op.exitRadial:round8(.05*unit),exitCorridorReviewed:op.exitCorridorReviewed===true,fadeInMode:['off','linear','smooth','andrews'].includes(op.fadeInMode)?op.fadeInMode:'off',fadeOutMode:['off','linear','smooth','andrews'].includes(op.fadeOutMode)?op.fadeOutMode:'off',fadeInLength:Number.isFinite(op.fadeInLength)&&op.fadeInLength>=0?op.fadeInLength:round8(.15*unit),fadeOutLength:Number.isFinite(op.fadeOutLength)&&op.fadeOutLength>=0?op.fadeOutLength:round8(.15*unit),fadeInLift:Number.isFinite(op.fadeInLift)&&op.fadeInLift>=0?op.fadeInLift:round8(.006*unit),fadeOutLift:Number.isFinite(op.fadeOutLift)&&op.fadeOutLift>=0?op.fadeOutLift:round8(.006*unit),fadeInAngle:Number.isFinite(op.fadeInAngle)?op.fadeInAngle:5,fadeOutAngle:Number.isFinite(op.fadeOutAngle)?op.fadeOutAngle:5,fadeInMargin:Number.isFinite(op.fadeInMargin)?op.fadeInMargin:round8(.005*unit),fadeOutMargin:Number.isFinite(op.fadeOutMargin)?op.fadeOutMargin:round8(.005*unit),overlapMode:['off','inspect','extend','prior','manual'].includes(op.overlapMode)?op.overlapMode:'inspect',overlapLength:Number.isFinite(op.overlapLength)&&op.overlapLength>0?op.overlapLength:round8(.15*unit),overlapAllowance:Number.isFinite(op.overlapAllowance)&&op.overlapAllowance>=0?op.overlapAllowance:round8(.015*unit),overlapPriorOD:Number.isFinite(op.overlapPriorOD)?op.overlapPriorOD:0,overlapPriorZ1:Number.isFinite(op.overlapPriorZ1)?op.overlapPriorZ1:0,overlapPriorZ2:Number.isFinite(op.overlapPriorZ2)?op.overlapPriorZ2:0,overlapPriorReviewed:op.overlapPriorReviewed===true,idGeometrySource:['auto','figure','manual'].includes(op.idGeometrySource)?op.idGeometrySource:'auto',faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*unit),faceLeave:Number.isFinite(op.faceLeave)&&op.faceLeave>=0?op.faceLeave:0,idTarget:Number.isFinite(op.idTarget)?op.idTarget:round8(bore+.125*unit),idDepth:Number.isFinite(op.idDepth)?op.idDepth:round8(Math.min(job.stock.length,unit)),idGrooveZ:Number.isFinite(op.idGrooveZ)?op.idGrooveZ:round8(-Math.min(job.stock.length/2,.6*unit)),idGrooveWidth:Number.isFinite(op.idGrooveWidth)?op.idGrooveWidth:round8(.125*unit),idGrooveRoot:Number.isFinite(op.idGrooveRoot)?op.idGrooveRoot:round8(bore+.2*unit),drillDiameter:Number.isFinite(op.drillDiameter)?op.drillDiameter:round8(.375*unit),drillDepth:Number.isFinite(op.drillDepth)?op.drillDepth:round8(Math.min(job.stock.length,.75*unit)),drillPeck:Number.isFinite(op.drillPeck)?op.drillPeck:round8(.125*unit),threadZStart:Number.isFinite(op.threadZStart)?op.threadZStart:0,threadZEnd:Number.isFinite(op.threadZEnd)?op.threadZEnd:round8(-Math.min(job.stock.length,unit)),threadMajor:Number.isFinite(op.threadMajor)?op.threadMajor:round8(op.kind==='id_thread'?bore+.075*unit:job.stock.diameter),threadMinor:Number.isFinite(op.threadMinor)?op.threadMinor:round8(op.kind==='id_thread'?bore:Math.max(.01*unit,job.stock.diameter-.075*unit)),threadPitch:Number.isFinite(op.threadPitch)?op.threadPitch:round8(.0625*unit),threadPasses:Number.isInteger(op.threadPasses)&&op.threadPasses>0?op.threadPasses:6};}):[];
+ copy.operations=Array.isArray(job.operations)?structuredClone(job.operations).map(op=>{const unit=job.units==='mm'?25.4:1,bore=job.stock?.bore||0;return {...op,formStrategy:['staged','finish'].includes(op.formStrategy)?op.formStrategy:'staged',formInfeed:['radial','flank_chuck','flank_face'].includes(op.formInfeed)?op.formInfeed:'radial',formFlankAngle:Number.isFinite(op.formFlankAngle)&&op.formFlankAngle>0&&op.formFlankAngle<=55?op.formFlankAngle:20,formMotionMode:['continuous','peck','full'].includes(op.formMotionMode)?op.formMotionMode:'peck',formPeckBackoff:Number.isFinite(op.formPeckBackoff)&&op.formPeckBackoff>0?op.formPeckBackoff:round8(.002*unit),formStep:Number.isFinite(op.formStep)&&op.formStep>0?op.formStep:round8(.015*unit),formLeave:Number.isFinite(op.formLeave)&&op.formLeave>=0?op.formLeave:round8(.005*unit),formWidthReview:Number.isFinite(op.formWidthReview)&&op.formWidthReview>0?op.formWidthReview:round8(.25*unit),formPrepAllowance:Number.isFinite(op.formPrepAllowance)&&op.formPrepAllowance>=0?op.formPrepAllowance:round8(.025*unit),formSkipAir:op.formSkipAir!==false,formPassCap:Number.isInteger(op.formPassCap)&&op.formPassCap>=1&&op.formPassCap<=120?op.formPassCap:60,formReviewed:op.formReviewed===true,specialLift:Number.isFinite(op.specialLift)&&op.specialLift>0?op.specialLift:round8(.05*unit),specialMotionMode:op.specialMotionMode==='full'?'full':'short',specialSweepMode:op.specialSweepMode==='single_flank'?'single_flank':op.specialSweepMode==='whole_groove'?'whole_groove':(op.to-op.from>=2?'whole_groove':'single_flank'),specialDwellRevs:Number.isFinite(op.specialDwellRevs)&&op.specialDwellRevs>=0&&op.specialDwellRevs<=5?op.specialDwellRevs:0,specialPeckBackoff:Number.isFinite(op.specialPeckBackoff)&&op.specialPeckBackoff>0?op.specialPeckBackoff:round8(.002*unit),specialArcLimit:op.specialArcLimit==='arc_midpoint'?'arc_midpoint':'tangent',specialReviewed:op.specialReviewed===true,specialStrategy:['rough_finish','finish_only'].includes(op.specialStrategy)?op.specialStrategy:'rough_finish',specialStep:Number.isFinite(op.specialStep)&&op.specialStep>0?op.specialStep:round8(.025*unit),specialLeave:Number.isFinite(op.specialLeave)&&op.specialLeave>=0?op.specialLeave:round8(.005*unit),specialFinishFeed:Number.isFinite(op.specialFinishFeed)&&op.specialFinishFeed>0?op.specialFinishFeed:round8(.004*unit),specialPassCap:Number.isInteger(op.specialPassCap)&&op.specialPassCap>=1&&op.specialPassCap<=120?op.specialPassCap:60,cutDirection:op.cutDirection==='reverse'?'reverse':'forward',rearEntryMode:op.rearEntryMode==='precleared'?'precleared':'review',rearEntryZ:Number.isFinite(op.rearEntryZ)?op.rearEntryZ:null,rearPocketWidth:Number.isFinite(op.rearPocketWidth)&&op.rearPocketWidth>0?op.rearPocketWidth:round8(.125*unit),rearPocketClearance:Number.isFinite(op.rearPocketClearance)&&op.rearPocketClearance>0?op.rearPocketClearance:round8(.02*unit),rearJawClearance:Number.isFinite(op.rearJawClearance)&&op.rearJawClearance>0?op.rearJawClearance:round8(.1*unit),rearEdgeReviewed:op.rearEdgeReviewed===true,leadInMode:['axial','radial','tangent','angle'].includes(op.leadInMode)?op.leadInMode:'axial',leadOutMode:['axial','radial','tangent','angle'].includes(op.leadOutMode)?op.leadOutMode:'radial',leadInLength:Number.isFinite(op.leadInLength)&&op.leadInLength>0?op.leadInLength:round8(.1*unit),leadOutLength:Number.isFinite(op.leadOutLength)&&op.leadOutLength>0?op.leadOutLength:round8(.1*unit),exitMode:['auto','direct','axial','radial','relief'].includes(op.exitMode)?op.exitMode:'auto',exitAxial:Number.isFinite(op.exitAxial)&&op.exitAxial>=0?op.exitAxial:round8(.05*unit),exitRadial:Number.isFinite(op.exitRadial)&&op.exitRadial>=0?op.exitRadial:round8(.05*unit),exitCorridorReviewed:op.exitCorridorReviewed===true,fadeInMode:['off','linear','smooth','andrews'].includes(op.fadeInMode)?op.fadeInMode:'off',fadeOutMode:['off','linear','smooth','andrews'].includes(op.fadeOutMode)?op.fadeOutMode:'off',fadeInLength:Number.isFinite(op.fadeInLength)&&op.fadeInLength>=0?op.fadeInLength:round8(.15*unit),fadeOutLength:Number.isFinite(op.fadeOutLength)&&op.fadeOutLength>=0?op.fadeOutLength:round8(.15*unit),fadeInLift:Number.isFinite(op.fadeInLift)&&op.fadeInLift>=0?op.fadeInLift:round8(.006*unit),fadeOutLift:Number.isFinite(op.fadeOutLift)&&op.fadeOutLift>=0?op.fadeOutLift:round8(.006*unit),fadeInAngle:Number.isFinite(op.fadeInAngle)?op.fadeInAngle:5,fadeOutAngle:Number.isFinite(op.fadeOutAngle)?op.fadeOutAngle:5,fadeInMargin:Number.isFinite(op.fadeInMargin)?op.fadeInMargin:round8(.005*unit),fadeOutMargin:Number.isFinite(op.fadeOutMargin)?op.fadeOutMargin:round8(.005*unit),overlapMode:['off','inspect','extend','prior','manual'].includes(op.overlapMode)?op.overlapMode:'inspect',overlapLength:Number.isFinite(op.overlapLength)&&op.overlapLength>0?op.overlapLength:round8(.15*unit),overlapAllowance:Number.isFinite(op.overlapAllowance)&&op.overlapAllowance>=0?op.overlapAllowance:round8(.015*unit),overlapPriorOD:Number.isFinite(op.overlapPriorOD)?op.overlapPriorOD:0,overlapPriorZ1:Number.isFinite(op.overlapPriorZ1)?op.overlapPriorZ1:0,overlapPriorZ2:Number.isFinite(op.overlapPriorZ2)?op.overlapPriorZ2:0,overlapPriorReviewed:op.overlapPriorReviewed===true,idGeometrySource:['auto','figure','manual'].includes(op.idGeometrySource)?op.idGeometrySource:'auto',faceStep:Number.isFinite(op.faceStep)&&op.faceStep>0?op.faceStep:round8(.025*unit),faceLeave:Number.isFinite(op.faceLeave)&&op.faceLeave>=0?op.faceLeave:0,idTarget:Number.isFinite(op.idTarget)?op.idTarget:round8(bore+.125*unit),idDepth:Number.isFinite(op.idDepth)?op.idDepth:round8(Math.min(job.stock.length,unit)),idGrooveZ:Number.isFinite(op.idGrooveZ)?op.idGrooveZ:round8(-Math.min(job.stock.length/2,.6*unit)),idGrooveWidth:Number.isFinite(op.idGrooveWidth)?op.idGrooveWidth:round8(.125*unit),idGrooveRoot:Number.isFinite(op.idGrooveRoot)?op.idGrooveRoot:round8(bore+.2*unit),drillDiameter:Number.isFinite(op.drillDiameter)?op.drillDiameter:round8(.375*unit),drillDepth:Number.isFinite(op.drillDepth)?op.drillDepth:round8(Math.min(job.stock.length,.75*unit)),drillPeck:Number.isFinite(op.drillPeck)?op.drillPeck:round8(.125*unit),threadZStart:Number.isFinite(op.threadZStart)?op.threadZStart:0,threadZEnd:Number.isFinite(op.threadZEnd)?op.threadZEnd:round8(-Math.min(job.stock.length,unit)),threadMajor:Number.isFinite(op.threadMajor)?op.threadMajor:round8(op.kind==='id_thread'?bore+.075*unit:job.stock.diameter),threadMinor:Number.isFinite(op.threadMinor)?op.threadMinor:round8(op.kind==='id_thread'?bore:Math.max(.01*unit,job.stock.diameter-.075*unit)),threadPitch:Number.isFinite(op.threadPitch)?op.threadPitch:round8(.0625*unit),threadPasses:Number.isInteger(op.threadPasses)&&op.threadPasses>0?op.threadPasses:6};}):[];
  return copy;
 }
 function convertOperationUnits(ops,from,to){
  if(from===to)return structuredClone(ops);
  if(!['inch','mm'].includes(from)||!['inch','mm'].includes(to))throw Error('Invalid units.');
  const k=from==='inch'?25.4:1/25.4;
- const lengths=['formPeckBackoff','formStep','formLeave','formWidthReview','formPrepAllowance','specialLift','faceZ','faceLeave','faceStartX','faceEndX','faceStep','doc','finishRadial','finishAxial','feed','clearanceRadial','retractZ','leadInLength','leadOutLength','exitAxial','exitRadial','fadeInLength','fadeOutLength','fadeInLift','fadeOutLift','fadeInMargin','fadeOutMargin','overlapLength','overlapAllowance','overlapPriorOD','overlapPriorZ1','overlapPriorZ2','rearEntryZ','rearPocketWidth','rearPocketClearance','rearJawClearance','idTarget','idDepth','idGrooveZ','idGrooveWidth','idGrooveRoot','drillDiameter','drillDepth','drillPeck','threadZStart','threadZEnd','threadMajor','threadMinor','threadPitch'];
+ const lengths=['formPeckBackoff','formStep','formLeave','formWidthReview','formPrepAllowance','specialLift','specialPeckBackoff','specialStep','specialLeave','specialFinishFeed','faceZ','faceLeave','faceStartX','faceEndX','faceStep','doc','finishRadial','finishAxial','feed','clearanceRadial','retractZ','leadInLength','leadOutLength','exitAxial','exitRadial','fadeInLength','fadeOutLength','fadeInLift','fadeOutLift','fadeInMargin','fadeOutMargin','overlapLength','overlapAllowance','overlapPriorOD','overlapPriorZ1','overlapPriorZ2','rearEntryZ','rearPocketWidth','rearPocketClearance','rearJawClearance','idTarget','idDepth','idGrooveZ','idGrooveWidth','idGrooveRoot','drillDiameter','drillDepth','drillPeck','threadZStart','threadZEnd','threadMajor','threadMinor','threadPitch'];
  return ops.map(op=>{const out=structuredClone(op);for(const f of lengths)if(finite(out[f]))out[f]=round8(out[f]*k);return out;});
 }
 function validateOperations(ops,job){
@@ -2417,7 +2427,7 @@ function validateOperations(ops,job){
   if(typeof op.enabled!=='boolean')errors.push(`${label}: enabled must be true/false.`);
   const t=job.tools?.find(t=>t.id===op.toolId);
   if(!t)errors.push(`${label}: select an existing tool.`);
-  else if(op.kind==='face'?!['od','face'].includes(t.kind):op.kind==='od_groove'?t.kind!=='od_groove':op.kind==='form_profile'?!(t.kind==='custom'&&t.formDesign):op.kind==='special_profile'?!['od_thread','od_groove','od'].includes(t.kind):op.kind==='od_thread'?t.kind!=='od_thread':op.kind==='id_thread'?t.kind!=='id_thread':op.kind==='drill'?t.kind!=='drill':op.kind==='id_groove'?t.kind!=='id_groove':isBoreOperation(op.kind)?t.kind!=='id':t.kind!=='od')errors.push(`${label}: ${t.name} is not a compatible ${OP_KINDS[op.kind]} tool.`);
+  else if(op.kind==='face'?!['od','face'].includes(t.kind):op.kind==='od_groove'?t.kind!=='od_groove':op.kind==='form_profile'?!(t.kind==='custom'&&t.formDesign):op.kind==='special_profile'?!(['od_thread','od_groove','od'].includes(t.kind)||(t.kind==='custom'&&!!t.formDesign)):op.kind==='od_thread'?t.kind!=='od_thread':op.kind==='id_thread'?t.kind!=='id_thread':op.kind==='drill'?t.kind!=='drill':op.kind==='id_groove'?t.kind!=='id_groove':isBoreOperation(op.kind)?t.kind!=='id':t.kind!=='od')errors.push(`${label}: ${t.name} is not a compatible ${OP_KINDS[op.kind]} tool.`);
   else {
    if(!t.verified)warnings.push(`${label}: tool dimensions are not marked checked.`);
    if(t.tipDirection===0)warnings.push(`${label}: tool-tip direction T0 / none: confirm setup.`);
@@ -2458,8 +2468,16 @@ function validateOperations(ops,job){
   }
   if(op.kind==='special_profile'){
    if(!numberIn(op.specialLift,0.0000001,1e6))errors.push(`${label}: special contour X feed-out must be positive.`);
-   if(op.to-op.from!==1)errors.push(`${label}: select adjacent figure points for ONE groove flank; define the second flank with a separate operation.`);
-   warnings.push(`${label}: special contour is a SINGLE tentative nose path, not approved cutting engagement. A thread tool cannot be assumed suitable for this groove.`);
+   if(!['short','full'].includes(op.specialMotionMode||'short'))errors.push(`${label}: invalid special contour between-pass return.`);
+   if(!['whole_groove','single_flank'].includes(op.specialSweepMode||'whole_groove'))errors.push(`${label}: invalid whole-groove or single-flank selection.`);
+   if(!Number.isFinite(op.specialDwellRevs)||op.specialDwellRevs<0||op.specialDwellRevs>5)errors.push(`${label}: midpoint dwell must be 0–5 spindle revolutions.`);
+   if(!numberIn(op.specialPeckBackoff??(job.units==='inch'?.002:.0508),0.0000001,1e6))errors.push(`${label}: special contour short-backoff must be positive.`);
+   if(!['rough_finish','finish_only'].includes(op.specialStrategy))errors.push(`${label}: invalid special contour strategy.`);
+   if(!['tangent','arc_midpoint'].includes(op.specialArcLimit||'tangent'))errors.push(`${label}: invalid special contour fillet stop.`);
+   if(!numberIn(op.specialStep,0.0000001,1e6)||!numberIn(op.specialLeave,0,1e6)||!numberIn(op.specialFinishFeed,0.0000001,1e6)||!Number.isInteger(op.specialPassCap)||op.specialPassCap<1||op.specialPassCap>120)errors.push(`${label}: invalid special DOC, finishing allowance or pass cap.`);
+   if(op.specialSweepMode==='single_flank'&&op.to-op.from!==1)errors.push(`${label}: legacy single flank needs adjacent figure points.`);
+   if(op.specialSweepMode!=='single_flank'&&op.to-op.from<2)errors.push(`${label}: whole groove needs a figure range across BOTH flank shoulders (example P02–P04).`);
+   warnings.push(`${label}: special contour rough-and-finish paths are unverified; cutting-edge and holder engagement require review. A thread tool cannot be assumed suitable for this groove.`);
   }
   if(op.kind==='drill'){
    if(!numberIn(op.drillDiameter,1e-7,job.stock.diameter)||!numberIn(op.drillDepth,1e-7,job.stock.length)||!numberIn(op.drillPeck,1e-7,job.stock.length))errors.push(`${label}: drill diameter, depth and peck must be positive and fit the raw stock.`);
@@ -3853,7 +3871,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.24.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.29.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -4223,7 +4241,7 @@ function drawBodyAtCursor(g,plan,map,source,op,trackedPosition,pointMode='nose')
  const anchor=pointMode==='nose'?(tg.noseCenter||tg.tip||tg.referencePoint):(tg.tip||tg.referencePoint||tg.noseCenter);
  if(!anchor)return;
  const delta=cSub(trackedPosition,anchor);
- // v0.9.24: high-zoom holder is a context sketch; the actual outline of
+ // v0.9.29: high-zoom holder is a context sketch; the actual outline of
  // the insert, tool tip and current nose center must take visual priority.
  const px=opInspectionPixelUnits(),close=opViewZoom>=3;
  const drawPoly=(poly,fill,stroke,width,layer)=>{
@@ -4813,7 +4831,7 @@ function specialToolEdgeAudit(source,op,profile,tool,trace,usingNose){
  if(!result.suspected.length)result.limitations.push('No sampled flag is NOT evidence of safety; physical tool approval is still required.');
  return result;
 }
-/** v0.9.24 · Conservative axial-envelope / full-form-edge CONTACT ESTIMATE.
+/** v0.9.29 · Conservative axial-envelope / full-form-edge CONTACT ESTIMATE.
  * This is NOT a tool force, chip or clearance calculation. Inputs are the
  * nominal stock envelope AFTER earlier operations only. Special/form/thread
  * moves do not gain stock credit simply from preview existence.
@@ -4903,7 +4921,7 @@ function formFullEdgeEngagement(source,op,d,minU,stageXs){
   stages,limitations:['Nominal 2D axial stock envelope, not measured stock','Prior operation motion and tool engagement are not independently verified','Form multi-edge engagement is an estimate; force, rake, relief, chip evacuation and 3D clearance unknown','No automatic feed/speed approval or NC output']};
 }
 
-/** v0.9.24: true X/Z staged infeed for custom form tools.
+/** v0.9.29: true X/Z staged infeed for custom form tools.
  * Form datum X is diameter; biased approach Z differs from the finished form's
  * datum Z and MUST converge to zero bias on the final stage. At every proposed
  * stage the complete edge is checked against the finished profile. Nominal
@@ -5010,6 +5028,69 @@ function formFlankStockEngagement(source,op,d,minU,stageXs,offsets,profile){
   limitations:['Ten subposes per X/Z stage, sampled 2D nominal stock only','No actual cutting-force or chip-thickness solution','No rake, edge relief, holder/chuck clearance, or machine validation','No NC generated']};
 }
 
+/** v0.9.29: Include only half of a physical circular bottom fillet, never
+ *  the backside. Arc MIDPOINT means halfway along its signed sweep, NOT the
+ *  arc's circle center (which usually lies outside the surface). */
+function specialFlankWithHalfArc(segments,mode,tol){
+ const lines=segments.filter(s=>s.kind==='line'&&dist(s.start,s.end)>tol)
+  .sort((a,b)=>dist(b.start,b.end)-dist(a.start,b.start));
+ const line=lines[0];if(!line)return {segments:null,reason:'no nonzero straight flank'};
+ if(mode!=='arc_midpoint')return {segments:[line],reason:'STRAIGHT FLANK TANGENT'};
+ const arcs=segments.filter(s=>s.kind==='arc'&&s.radius>0&&Math.abs(s.sweep)>1e-10);
+ const after=arcs.find(a=>dist(a.start,line.end)<=tol*10);
+ const before=arcs.find(a=>dist(a.end,line.start)<=tol*10);
+ if(after){const half={...after,sweep:after.sweep/2,end:profileArcAt(after,.5)};
+  return {segments:[line,half],reason:'TO END-FILLET ARC MIDPOINT'};}
+ if(before){const half={...before,startAngle:before.startAngle+before.sweep/2,sweep:before.sweep/2,start:profileArcAt(before,.5)};
+  return {segments:[half,line],reason:'FROM START-FILLET ARC MIDPOINT'};}
+ return {segments:[line],reason:'NO ADJACENT END FILLET · TANGENT USED'};
+}
+/** Convert selected part-flank CONTACT coordinates to a candidate actual
+ *  datum path for a custom X+ radial form edge. At each pose, the cutter
+ *  envelope must be no deeper than the protected finished profile:
+ *    datum.v >= max_e{ partRadius(datum.u + edge.u) - edge.v }.
+ *  This is 2D full-edge geometric avoidance, not cutting-force or holder proof.
+ *  Choosing the flank lip as the contact reference shifts datum.u according
+ *  to the real form width instead of pretending it is a sharp thread point. */
+function specialFormDatumPath(source,profile,tool,contactTrace){
+ const g=buildToolGeometry(tool),edge=g.sharpOutline||[];
+ if(g.errors?.length||edge.length<2)return {error:'FORM TOOL EDGE: incomplete F11 profile.'};
+ const d=tool.formDesign;
+ if(!d||!(d.width>0))return {error:'FORM TOOL EDGE: no defined full cutting edge.'};
+ // Pick the lip nearest the selected OD flank, not the center datum.
+ const L=source.nodes[d.fromIndex],R=source.nodes[d.toIndex];
+ if(!L||!R)return {error:'FORM TOOL EDGE: its source point range is no longer present.'};
+ const centerU=(-L.z-R.z)/2;
+ const selectedU=(contactTrace[0].u+contactTrace.at(-1).u)/2;
+ const chooseMin=selectedU<centerU;
+ const lip=edge.reduce((best,e)=>!best||(chooseMin?e.u<best.u:e.u>best.u)?e:best,null);
+ const rawFront=Number(source.stock.frontZ)||0,rawRear=rawFront-source.stock.length;
+ const minU=-rawFront,maxU=-rawRear;
+ const toolProfile=edge.slice();
+ const out=[];let lifted=0,limitingOther=0,firstLimiting=null;
+ const eps=source.units==='inch'?.00005:.00127;
+ for(const contact of contactTrace){
+  const datumU=contact.u-lip.u,requestedV=contact.v-lip.v;
+  let mustBeV=-Infinity,active=null;
+  for(const e of toolProfile){
+   const u=datumU+e.u;
+   if(u<minU-eps||u>maxU+eps)continue;
+   const finished=outerDiameterAtU(source,profile,u)/2;
+   if(!Number.isFinite(finished))return {error:'FORM TOOL EDGE: finished surface is undefined under cutter.'};
+   const limit=finished-e.v;
+   if(limit>mustBeV){mustBeV=limit;active=e;}
+  }
+  if(!Number.isFinite(mustBeV))return {error:'FORM TOOL EDGE: full cutter is outside modeled stock axial extent.'};
+  const datumV=Math.max(requestedV,mustBeV+eps);
+  if(datumV>requestedV+eps*2)lifted++;
+  if(active&&Math.abs(active.u-lip.u)>eps*4){limitingOther++;if(!firstLimiting)firstLimiting={u:datumU+active.u,v:datumV+active.v};}
+  out.push({u:datumU,v:datumV});
+ }
+ return {trace:out,lip,lipSide:chooseMin?'Z+ FACE':'Z− CHUCK',lifted,limitingOther,firstLimiting,
+  warnings:[`FULL FORM EDGE: ${out.length} sampled datum poses; ${lifted} lifted outward by the finished-surface envelope, ${limitingOther} controlled by a cutting-edge point other than the selected lip.`,
+   'The virtual contact trace is NOT an approved cut. Where the opposing lip determines clearance, one-flank cutting may fail to reach the desired surface. Use separate opposite-side access and a controlled bottom cleanup.']};
+}
+
 function nominalMotionForOperation(source,op,profileArg=null){
  const blocked=(reason,warnings=[])=>({schema:MOTION_PREVIEW_SCHEMA,status:'BLOCKED',reason,passes:[],warnings,moves:[],assurance:'NONE'});
  if(!op?.enabled)return blocked('Operation disabled.');
@@ -5026,7 +5107,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
  if(Math.abs(source.stock.frontZ||0)>1e-9){
   // Support facing and ordinary OD operations, all planned in a temporary raw-front
   // coordinate frame and then translated back to the real work coordinates.
-  if(op.kind!=='form_profile'){
+  if(op.kind!=='form_profile'&&op.kind!=='special_profile'){
    if(!['face','od_rough','od_finish','od_groove'].includes(op.kind))return blocked('Shifted raw-front stock: this operation still needs a qualified coordinate-frame planner; do not assume Z0 is the raw face.');
    const local=shiftedStockMotionSource(source),shift=Number(source.stock.frontZ);
    const matching=local.operations.find(o=>o.id===op.id)||{...op,faceZ:Number(op.faceZ)-shift};
@@ -5034,9 +5115,10 @@ function nominalMotionForOperation(source,op,profileArg=null){
    const proposed=nominalMotionForOperation(local,matching,localProfile);
    return shiftedStockPlanToWork(proposed,shift);
   }
-  // FORM: keep the saved cutter edge and source figure in ORIGINAL work Z.
-  // Their signatures must not be shifted independently. Form motion below
-  // checks the full cutter's axial span against real raw stock coordinates.
+  // FORM and SPECIAL CONTOUR: operate in original WORK Z. Form design
+  // signatures and the selected one-flank profile are already work-referenced.
+  // They must not inherit an independently shifted theoretical tool contour.
+  // Both planners check raw front/rear limits and use actual front+retract Z.
 
  }
  if(!(op.clearanceRadial>0&&op.retractZ>0))return blocked('Positive radial clearance and Z retract are required.');
@@ -5171,65 +5253,319 @@ function nominalMotionForOperation(source,op,profileArg=null){
    pass.stockBeforeSource='PRECEDING_MODELED_MOTION_ENVELOPES_ONLY';
    pass.formPoseReference='NOMINAL_TOOL_DATUM_NOT_ACTUAL_EDGE_CONTACT';
   }
+ }else if(op.kind==='special_profile'&&op.specialSweepMode!=='single_flank'){
+  // v0.9.29 WHOLE-GROOVE / FRONT-SHOULDER FIRST. Do not borrow the
+  // single-flank half-arc reversal: it creates midpoint-first backtracking.
+  // Rough: Z+ shoulder -> bottom -> Z- shoulder, X OUT, Z return ABOVE STOCK.
+  // Finish: Z+ shoulder -> geometric bottom MIDPOINT only, optional dwell,
+  // straight +X withdrawal. All paths are UNVERIFIED / NC LOCKED.
+  if(op.to-op.from<2)return blocked('WHOLE GROOVE: choose front and rear shoulder figure points spanning BOTH groove flanks (e.g. P02–P04).');
+  let exact=operationContourSegments(profile,op);
+  if(!exact.length)return blocked('WHOLE GROOVE: chosen point range has no OD contour.');
+  let contact=motionRegionSample(exact);
+  if(contact.length<5)return blocked('WHOLE GROOVE: incomplete contour; select front shoulder, groove bottom, rear shoulder.');
+  if(contact[0].u>contact.at(-1).u){exact=exact.slice().reverse().map(cReverse);contact=motionRegionSample(exact);}
+  const tol=Math.max(1e-7,source.stock.length*1e-7);
+  if(contact.some((p,i)=>i&&p.u<contact[i-1].u-tol))return blocked('WHOLE GROOVE: contour doubles backward in Z. Cannot safely define one-direction groove sweep.');
+  const front=contact[0],rear=contact.at(-1);
+  const minV=Math.min(...contact.map(q=>q.v)),maxV=Math.max(...contact.map(q=>q.v));
+  const bottomCandidates=contact.map((p,i)=>({p,i})).filter(q=>q.p.v<=minV+Math.max(tol,(maxV-minV)*.0001));
+  const midIndex=bottomCandidates[Math.floor((bottomCandidates.length-1)/2)].i;
+  const bottom=contact[midIndex];
+  const valleyDepth=Math.min(front.v,rear.v)-bottom.v;
+  if(!(midIndex>0&&midIndex<contact.length-1&&valleyDepth>tol*10))return blocked('WHOLE GROOVE: front/back shoulders and an internal groove bottom are required. Select both shoulder point limits.');
+  if(contact.some(p=>p.v*2>stockD+tol||p.v*2<=rawBore+tol))return blocked('WHOLE GROOVE: contour crosses outside raw OD or enters the bore.');
+  // Reject multi-valley or reversed wall slopes. Small tangent sampling
+  // fluctuations are tolerated but the base shape must be a single recess.
+  const monotol=Math.max(tol,valleyDepth*.001);
+  if(contact.slice(1,midIndex+1).some((p,i)=>p.v>contact[i].v+monotol)||contact.slice(midIndex+1).some((p,i)=>p.v<contact[midIndex+i].v-monotol))
+   return blocked('WHOLE GROOVE: detected secondary valley, hump, or reversed flank. Narrow the figure range to ONE complete groove.');
+  const hasNose=tool.kind!=='custom'&&Number.isFinite(tool.noseRadius)&&tool.noseRadius>0;
+  const customForm=!!tool.formDesign;
+  if(hasNose){
+   specialComp=previewNoseComp(source,{...op,kind:'od_finish',fadeInMode:'off',fadeOutMode:'off'},profile,tool);
+   if(specialComp.status!=='CENTER_OFFSET_PREVIEW')return blocked('WHOLE GROOVE: compensated center geometry unavailable: '+specialComp.reason);
+   const corrected=noseCenterOffset(exact,tool.noseRadius,1);
+   if(corrected.status==='BLOCKED')return blocked('WHOLE GROOVE: nose center cannot follow the recess: '+corrected.reason);
+   specialComp.centerPrimitives=corrected.centerPrimitives;
+   specialComp.centerTrace=corrected.centerTrace;
+   specialComp.virtualTipTrace=corrected.centerTrace.map(q=>cAdd(q,specialComp.referenceShiftUV));
+  }
+  const formDatum=customForm?specialFormDatumPath(source,profile,tool,contact):null;
+  if(formDatum?.error)return blocked(formDatum.error);
+  if(formDatum)warnings.push(...formDatum.warnings);
+  const trace=formDatum?formDatum.trace:hasNose?specialComp.centerTrace:contact;
+  if(trace.length<3)return blocked('WHOLE GROOVE: tool path contains too few poses.');
+  // Match the physical bottom location in U, rather than assuming the nose
+  // center/contact spline samples have identical vertex counts.
+  const centerU=bottom.u;
+  let finishIndex=trace.reduce((best,p,i)=>Math.abs(p.u-centerU)<Math.abs(trace[best].u-centerU)?i:best,0);
+  finishIndex=Math.max(1,Math.min(trace.length-2,finishIndex));
+  const rawFrontZ=Number(source.stock.frontZ)||0,rawRearZ=rawFrontZ-source.stock.length;
+  const axialTolerance=source.units==='inch'?.00005:.00127;
+  const zPositions=trace.map(q=>-q.u),traceMinZ=Math.min(...zPositions),traceMaxZ=Math.max(...zPositions);
+  if(traceMinZ<rawRearZ-axialTolerance||traceMaxZ>rawFrontZ+axialTolerance)
+   return blocked('WHOLE GROOVE: tool datum travels outside modeled raw-stock Z range. Review tool geometry or work setup.');
+  const step=op.specialStep,leave=op.specialLeave,radial=op.specialLift;
+  const previous=formPriorStockEnvelope(source,op);
+  let remaining=0;
+  if(!previous.error){
+   for(const p of contact){const r=previous.radialAtU(p.u)-p.v;
+    if(!Number.isFinite(r))return blocked('WHOLE GROOVE: unknown modeled stock along groove.');remaining=Math.max(remaining,r);}
+  }else{remaining=Math.max(0,...contact.map(q=>stockR-q.v));warnings.push('WHOLE GROOVE: previous stock unknown. Conservative RAW CYLINDER used; no earlier removal credited. '+previous.error);}
+  if(op.specialStrategy==='finish_only'&&remaining>Math.max(leave,source.units==='inch'?.025:.635)+tol)
+   return blocked('WHOLE GROOVE FINAL ONLY: too much modeled stock for a nominal finish. Rough or prepare the pocket first.');
+  const offsets=[];
+  if(op.specialStrategy==='rough_finish'&&remaining>leave+tol){
+   const count=Math.ceil(Math.max(0,remaining-leave)/step);
+   if(count+1>Math.min(op.specialPassCap,MOTION_PREVIEW_MAX_PASSES))return blocked('WHOLE GROOVE: rough pass count exceeds limit. Increase step or prepare stock.');
+   for(let k=1;k<=count;k++)offsets.push(Math.max(leave,remaining-k*step));
+  }
+  offsets.push(0);
+  const maxDatum=Math.max(...trace.map(p=>p.v))+Math.max(...offsets);
+  const outsideX=mpRound(Math.max(travelX,2*(maxDatum+radial+op.clearanceRadial)));
+  const safeFrontZ=mpRound(rawFrontZ+op.retractZ);
+  const passTraces=[];
+  const dw=op.specialDwellRevs||0;
+  warnings.push('WHOLE GROOVE SWEEP: each rough pass is one FRONT SHOULDER -> BOTTOM -> REAR SHOULDER contour cut. Between rough passes the tool feeds straight X OUT above raw stock and returns in Z above stock; NO reverse trace through the groove.');
+  warnings.push('FINAL HALF CONTOUR: front shoulder to deepest bottom midpoint only; no feed back toward either shoulder. End retract is STRAIGHT X.');
+  if(customForm)warnings.push('FULL FORM TOOL: both flank sweeps are DATUM CANDIDATES only; opposing cutting lip may lift the tool and prevent contact. Whole-edge stock engagement, rubbing, trapped chips and holder clearance not proven.');
+  for(let k=0;k<offsets.length;k++){
+   const offset=offsets[k],fin=k===offsets.length-1;
+   const allPath=trace.map(p=>({u:p.u,v:p.v+offset}));
+   const path=fin?allPath.slice(0,finishIndex+1):allPath;
+   const startP=path[0],endP=path.at(-1),cutX=2*endP.v;
+   // Every pass originates at the SAME FRONT SHOULDER at its own depth.
+   let stages=k===0?
+    [['rapid','special-groove-safe-front',outsideX,safeFrontZ],['rapid','special-groove-approach-front-shoulder',outsideX,-startP.u]]:
+    [['rapid','special-groove-above-stock-front',outsideX,-startP.u]];
+   stages.push(['feed','special-groove-front-shoulder-entry-review',2*startP.v,-startP.u]);
+   for(let i=1;i<path.length;i++)stages.push(['feed',fin?'special-groove-final-to-midpoint':'special-groove-rough-front-to-rear',2*path[i].v,-path[i].u]);
+   if(fin&&dw>0)stages.push(['dwell','special-groove-midpoint-dwell-review',cutX,-endP.u]);
+   // Single straight X withdrawal from cut endpoint. A Z traverse is
+   // allowed ONLY once the tool has reached the outside-stock X plane.
+   stages.push(['feed',fin?'special-groove-final-straight-x-out':'special-groove-straight-x-out',outsideX,-endP.u]);
+   if(fin)stages.push(['rapid','special-groove-final-safe-front',outsideX,safeFrontZ]);
+   else stages.push(['rapid','special-groove-return-z-at-outside-x',outsideX,-startP.u]);
+   addPass(cutX,-endP.u,stages,`SPECIAL GROOVE ${fin?'FINAL FRONT → MIDPOINT':'ROUGH '+(k+1)+'/'+(offsets.length-1)+' · FRONT → REAR'} · X RADIAL STOCK ${mpRound(offset)} ${source.units} · ${fin&&dw?`DWELL ${dw} REV · `:''}UNVERIFIED`);
+   const pass=passes.at(-1);if(fin)pass.feedPerRev=op.specialFinishFeed;
+   pass.specialProfile=true;pass.noStockCredit=true;
+   pass.specialPassType=fin?'FINISH_TO_MIDPOINT':'FULL_GROOVE_ROUGH';
+   pass.specialSweepMode='whole_groove';pass.specialRadialOffset=mpRound(offset);
+   pass.specialFlankDirection='FRONT_SHOULDER_TO_REAR_SHOULDER_ROUGH;FINAL_TO_BOTTOM_MIDPOINT';
+   pass.specialRetraceVerified=false;pass.specialDwellRevolutions=fin?dw:0;
+   if(fin&&dw){const m=pass.moves.find(m=>m.role==='special-groove-midpoint-dwell-review');if(m){m.spindleRevolutions=dw;m.previewOnly=true;}}
+   pass.motionReference=hasNose?'PHYSICAL_NOSE_CENTER_CANDIDATE':customForm?'FULL_FORM_EDGE_ENVELOPE_DATUM_CANDIDATE':'NOMINAL_SHARP_TIP';
+   pass.coordinateFrame='WORK_Z';pass.specialStockZBounds={rawRearZ:mpRound(rawRearZ),rawFrontZ:mpRound(rawFrontZ),flankMinZ:mpRound(traceMinZ),flankMaxZ:mpRound(traceMaxZ),safeFrontZ,verified:false};
+   if(formDatum)pass.specialFormContactReview={edgeLip:formDatum.lipSide,toolU:mpRound(formDatum.lip.u),toolV:mpRound(formDatum.lip.v),liftedPoses:formDatum.lifted,opposingEdgeControlled:formDatum.limitingOther,verified:false};
+   pass.specialEdgeReview=specialToolEdgeAudit(source,op,profile,tool,path,hasNose);
+   passTraces.push([...path,{u:endP.u,v:outsideX/2}]);
+  }
+  if(hasNose){
+   const shift=specialComp.referenceShiftUV;
+   specialComp.centerTraces=passTraces;
+   specialComp.virtualTipTraces=passTraces.map(path=>path.map(p=>cAdd(p,shift)));
+   specialComp.centerTrace=passTraces.at(-1);specialComp.virtualTipTrace=specialComp.virtualTipTraces.at(-1);
+   specialComp.sampled=specialComp.centerTrace.map((p,i)=>({x:mpRound(2*p.v),z:mpRound(-p.u),referenceX:mpRound(2*specialComp.virtualTipTrace[i].v),referenceZ:mpRound(-specialComp.virtualTipTrace[i].u)}));
+  }
+  if(dw>0)warnings.push(`MIDPOINT DWELL ${dw} SPINDLE REV: zero-motion PREVIEW event only. No controller G04 conversion, actual timing, speed-mode behavior, rubbing/heat/chip proof. Dwell may damage finish; verify before use.`);
+  if(passes.some(p=>p.specialEdgeReview?.suspected?.length))warnings.push('WHOLE GROOVE TOOL BODY: a sampled possible contact was found. Inspect before proceeding; unflagged poses are NOT proven clear.');
+  warnings.push(`WHOLE GROOVE ${passes.length} passes, radial depth ${mpRound(step)} ${source.units}, finish leave ${mpRound(leave)}. No prior-stock credit; finished-surface/holder sweep unverified. NC LOCKED.`);
+  if(!op.specialReviewed)warnings.push('Operator has NOT reviewed insert hand, flank direction, jaw clearance or holder sweep.');
  }else if(op.kind==='special_profile'){
   // A special contour is ONE authored OD flank. Unlike threading, this has
   // NO spindle synchronization; the threading TOOL is being used as a form edge.
   const segs=operationContourSegments(profile,op);
   if(op.to-op.from!==1||!segs.length)return blocked('SPECIAL CONTOUR: select two neighboring OD figure points bounding one groove flank.');
   let ordered=op.cutDirection==='reverse'?segs.slice().reverse().map(cReverse):segs;
+  // A fillet owned by the FROM vertex is normally excluded by FAPT figure
+  // semantics. For a user-requested halfway-arc stop, deliberately recover
+  // ONLY the contiguous half of that source feature, not the entire roll.
+  if(op.specialArcLimit==='arc_midpoint'){
+   const fromArcs=profile.segments.filter(s=>s.kind==='arc'&&s.from===op.from&&s.to===op.from);
+   if(fromArcs.length){
+    const arc=op.cutDirection==='reverse'?cReverse(fromArcs[0]):fromArcs[0];
+    if(op.cutDirection==='reverse')ordered.push(arc);else ordered.unshift(arc);
+   }
+  }
   let sampled=motionRegionSample(ordered);
   if(sampled.length<2)return blocked('SPECIAL CONTOUR: no complete flank geometry.');
   const tol=Math.max(1e-8,source.stock.length*1e-8);
   const signs=key=>new Set(sampled.slice(1).map((p,i)=>Math.sign(p[key]-sampled[i][key])).filter(x=>x!==0));
-  if(signs('u').size>1||signs('v').size>1){
-   // A fillet owned by the endpoint can roll past the straight V flank's
-   // tangent. Select JUST the largest monotonic straight flank, never feed
-   // through the roll on an insert of unknown edge shape.
-   const lines=ordered.filter(s=>s.kind==='line'&&dist(s.start,s.end)>tol);
-   const flank=lines.sort((a,b)=>dist(b.start,b.end)-dist(a.start,a.end))[0];
-   if(!flank)return blocked('SPECIAL CONTOUR: selected curved region reverses in Z/X; no accessible straight flank can be isolated.');
-   ordered=[flank];sampled=motionRegionSample(ordered);
-   if(new Set(sampled.slice(1).map((p,i)=>Math.sign(p.u-sampled[i].u)).filter(Boolean)).size>1||new Set(sampled.slice(1).map((p,i)=>Math.sign(p.v-sampled[i].v)).filter(Boolean)).size>1)
-    return blocked('SPECIAL CONTOUR: the selected flank is nonmonotonic and requires a separately verified tool strategy.');
-   warnings.push('SPECIAL CONTOUR: endpoint radius/chamfer roll was excluded; stopping at the STRAIGHT FLANK tangent. Corner completion needs its own tool/access review.');
+  if(signs('u').size>1||signs('v').size>1||ordered.some(s=>s.kind==='arc')){
+   // The authored endpoint may contain a complete radius rolling toward
+   // the opposite flank. Only the line, optionally followed by HALF of
+   // its adjacent arc, is a legitimate one-flank candidate.
+   const pick=specialFlankWithHalfArc(ordered,op.specialArcLimit||'tangent',tol);
+   if(!pick.segments)return blocked('SPECIAL CONTOUR: no accessible straight flank; '+pick.reason);
+   ordered=pick.segments;sampled=motionRegionSample(ordered);
+   warnings.push('SPECIAL CONTOUR LIMIT: '+pick.reason+'. An arc midpoint is a halfway SWEEP location, not the circle center. Opposite flank access is NOT proven.');
+  }
+  if(op.specialArcLimit==='arc_midpoint'&&sampled[0].v<sampled.at(-1).v){
+   // v0.9.29: the adjacent half arc can be authored BEFORE the line. The
+   // prior v0.9.27 planner cut from the center towards the OD shoulder.
+   // Reverse the COMPLETE chain, so it feeds SHOULDER -> FILLET MIDPOINT.
+   ordered=ordered.slice().reverse().map(cReverse);
+   sampled=motionRegionSample(ordered);
+   warnings.push('SPECIAL MIDPOINT ORDER: reversed source chain to enter from the selected outer shoulder and cut toward its half-arc midpoint.');
   }
   if(sampled.some(p=>p.v*2>stockD+tol||p.v*2<=rawBore+tol))return blocked('SPECIAL CONTOUR: selected OD flank crosses outside stock / into bore.');
   // A zero-radius threading insert is a modeled theoretical point; do NOT
   // invent a positive nose circle or call this cutter compensation.
-  const hasNose=Number.isFinite(tool.noseRadius)&&tool.noseRadius>0;
+  const hasNose=tool.kind!=='custom'&&Number.isFinite(tool.noseRadius)&&tool.noseRadius>0;
   if(hasNose){
    specialComp=previewNoseComp(source,{...op,kind:'od_finish',fadeInMode:'off',fadeOutMode:'off'},profile,tool);
    if(specialComp.status!=='CENTER_OFFSET_PREVIEW')return blocked('SPECIAL CONTOUR nose offset unavailable: '+specialComp.reason);
+   if(op.specialArcLimit==='arc_midpoint'){
+    // Standard OD finish compensation uses the WHOLE authored figure feature;
+    // that can omit the half-arc or preserve the author's outward direction.
+    // Offset the just-clipped, direction-normalized actual flank instead.
+    const side=ordered.at(-1).end.u>=ordered[0].start.u?1:-1;
+    const corrected=noseCenterOffset(ordered,tool.noseRadius,side);
+    if(corrected.status==='BLOCKED')return blocked('SPECIAL HALF-ARC NOSE COMP: '+corrected.reason);
+    specialComp.centerPrimitives=corrected.centerPrimitives;
+    specialComp.centerTrace=corrected.centerTrace;
+    specialComp.virtualTipTrace=corrected.centerTrace.map(q=>cAdd(q,specialComp.referenceShiftUV));
+    warnings.push('SPECIAL HALF-ARC NOSE: tool-center trace follows selected shoulder-to-midpoint half-arc, not full original OD feature. NOMINAL ONLY.');
+   }
   }else warnings.push('SHARP THREAD INSERT: tool has nose R0; path is theoretical TIP ONLY, not compensated. Verify real tip radius/flat and gauge point before trusting it.');
-  const trace=hasNose?specialComp.centerTrace:sampled;
+  // With a custom form tool, its entire edge—not an imaginary sharp tip—
+  // determines the datum motion. A normal insert retains existing nose-comp.
+  const customForm=!!tool.formDesign;
+  const formDatum=customForm?specialFormDatumPath(source,profile,tool,sampled):null;
+  if(formDatum?.error)return blocked(formDatum.error);
+  if(formDatum)warnings.push(...formDatum.warnings);
+  const trace=formDatum?formDatum.trace:hasNose?specialComp.centerTrace:sampled;
   if(trace.length<2)return blocked('SPECIAL CONTOUR produced no usable tool positions.');
-  const first=trace[0],last=trace.at(-1),radial=Math.max(op.specialLift,Math.min(op.clearanceRadial,op.specialLift));
-  const xExit=Math.min(travelX,2*(last.v+radial));
-  if(xExit<=2*last.v+tol)return blocked('SPECIAL CONTOUR outward X exit has no clearance.');
-  const steps=[['rapid','outside-raw-stock',travelX,safeFront],['rapid','z-at-outer-clearance',travelX,-first.u],['feed','unverified-flank-entry',2*first.v,-first.u]];
-  for(let i=1;i<trace.length;i++)steps.push(['feed','special-flank-trace',2*trace[i].v,-trace[i].u]);
-  steps.push(['feed','special-outward-x-exit',xExit,-last.u],['feed','special-to-outer-clearance',travelX,-last.u],['rapid','return-clear',travelX,safeFront]);
-  addPass(2*last.v,-last.u,steps,'SPECIAL PROFILE / ONE FLANK / INSERT ACCESS NOT PROVEN');
-  passes[0].motionReference=hasNose?'PHYSICAL_NOSE_CENTER':'NOMINAL_SHARP_TIP';
-  passes[0].noStockCredit=true;
-  passes[0].specialProfile=true;
+  // v0.9.29: raw stock may begin at positive work Z. Do not translate the
+  // figure points or compensated tip; instead check the actual raw envelope.
+  const rawFrontZ=Number(source.stock.frontZ)||0;
+  const rawRearZ=rawFrontZ-source.stock.length;
+  const axialTolerance=source.units==='inch'?0.00005:0.00127;
+  const zBounds=trace.map(q=>-q.u);
+  const traceMinZ=Math.min(...zBounds),traceMaxZ=Math.max(...zBounds);
+  if(traceMinZ<rawRearZ-axialTolerance||traceMaxZ>rawFrontZ+axialTolerance)
+   return blocked(`SPECIAL CONTOUR: selected cutting flank spans Z${mpRound(traceMinZ)} to Z${mpRound(traceMaxZ)} outside raw stock Z${mpRound(rawRearZ)} to Z${mpRound(rawFrontZ)}. Review setup or select a different flank.`);
+  // v0.9.29: One F11 tool definition can serve different strategies.
+  // The selected flank is traced in successive X-offsets (physical RADIAL
+  // DOC, machine X DIAMETER is twice the offset). The final stage follows
+  // the original candidate flank. No stock-removal credit is inferred.
+  const first=trace[0],last=trace.at(-1),radial=op.specialLift;
+  const firstX=2*first.v,lastX=2*last.v;
+  const specialSafeFront=mpRound(rawFrontZ+op.retractZ);
+  const previous=formPriorStockEnvelope(source,op);
+  let maximumRemaining=0;
+  const step=op.specialStep,leave=op.specialLeave;
+  if(!previous.error){
+   for(const p of sampled){
+    const remaining=previous.radialAtU(p.u)-p.v;
+    if(!Number.isFinite(remaining))return blocked('SPECIAL: previous modeled stock is unknown at a flank location.');
+    maximumRemaining=Math.max(maximumRemaining,remaining);
+   }
+  }else{
+   // Unavailable preceding stock must not be asserted clear. Use the raw
+   // cylinder conservatively, bounded by the selected flange geometry.
+   maximumRemaining=Math.max(0,...sampled.map(p=>stockR-p.v));
+   warnings.push('SPECIAL PREVIOUS STOCK UNKNOWN: using RAW cylinder for a conservative rough-offset estimate; earlier clearing is NOT credited. '+previous.error);
+  }
+  if(maximumRemaining<-tol)return blocked('SPECIAL: selected flank is outside the modeled stock.');
+  if(op.specialStrategy==='finish_only'&&maximumRemaining>Math.max(leave,source.units==='inch'?.025:.635)+tol)
+   return blocked(`SPECIAL FINAL ONLY: modeled stock ${mpRound(maximumRemaining)} ${source.units} radial exceeds the 0.025-inch-equivalent review limit. Add rough passes or preceding stock preparation.`);
+  const offsets=[];
+  if(op.specialStrategy==='rough_finish'&&maximumRemaining>leave+tol){
+   // Each rough pass is at least finish allowance above final radius. A
+   // separate last pass is always at the authored flank / nose center.
+   const roughCount=Math.ceil(Math.max(0,maximumRemaining-leave)/step);
+   if(roughCount+1>Math.min(op.specialPassCap,MOTION_PREVIEW_MAX_PASSES))
+    return blocked(`SPECIAL: ${roughCount} rough passes plus finish exceed cap ${op.specialPassCap}. Increase radial DOC or prepare more stock first.`);
+   for(let k=1;k<=roughCount;k++)offsets.push(Math.max(leave,maximumRemaining-k*step));
+  }
+  offsets.push(0); // final flank; never silently omit it
+  // A full form edge can place its DATUM outside the stock while the cutting
+  // lip is still inside. The ordinary thread-tool clearance diameter cannot
+  // safely be reused. Include the largest staged datum and full-edge radial
+  // extent. This is a VIEW/PREVIEW clearance, not a proven machine travel limit.
+  const maxOffset=offsets.length?Math.max(...offsets):0;
+  const highestDatum=Math.max(...trace.map(q=>q.v))+maxOffset;
+  const specialOutsideX=formDatum?mpRound(Math.max(travelX,2*(highestDatum+radial+op.clearanceRadial))):travelX;
+  if(!(specialOutsideX>0&&Number.isFinite(specialOutsideX)))return blocked('SPECIAL: no finite full-edge clearance diameter.');
+  if(formDatum)warnings.push(`SPECIAL FORM DATUM CLEARANCE: proposed XØ${mpRound(specialOutsideX)} accounts for entire staged edge envelope. Check actual travel, jaws, holder and workholding before machining.`);
+  const passTraces=[];
+  const shortReturn=(op.specialMotionMode||'short')==='short';
+  const shortBackoff=op.specialPeckBackoff??(source.units==='inch'?.002:.0508);
+  const returnRisk='SHORT RETURN is a nominal reverse trace at X + backoff; there is NO proof of safe insert back-cutting, holder swing, remaining stock clearance, or chip evacuation.';
+  if(shortReturn&&offsets.length>1)warnings.push(`SPECIAL SHORT RETURN: X backs off ${mpRound(shortBackoff)} ${source.units} radially, then retraces the prior offset flank to its outer shoulder; no FULL X or safe-front withdrawal between passes. ${returnRisk}`);
+  const normalizedShoulder=op.specialArcLimit==='arc_midpoint';
+  if(normalizedShoulder)warnings.push('SPECIAL SHOULDER-INWARD: midpoint mode cuts from selected outer flank shoulder toward the half-arc midpoint; front/rear flank depends on the selected P-range.');
+  for(let k=0;k<offsets.length;k++){
+   const offset=offsets[k],fin=k===offsets.length-1;
+   const path=trace.map(p=>({u:p.u,v:p.v+offset}));
+   // OD radial stock offset grows outward. Return at the PREVIOUS offset +
+   // peck clearance, not at the next (deeper) offset, to avoid nominally
+   // skimming into material during the retreat.
+   const startP=path[0],endP=path.at(-1),cutX=2*endP.v;
+   const xExit=Math.min(specialOutsideX,2*(endP.v+radial));
+   if(xExit<=cutX+tol)return blocked('SPECIAL: outward X feed-out does not reach clearance.');
+   let stages;
+   if(k===0||!shortReturn){
+    stages=[['rapid','special-outside-stock-at-safe-front',specialOutsideX,specialSafeFront],
+     ['rapid','special-outside-stock-at-flank-start-z',specialOutsideX,-startP.u],
+     ['feed','special-radial-entry-candidate',2*startP.v,-startP.u]];
+   }else{
+    const priorOffset=offsets[k-1];
+    // The previous pass ended at this very start pose after its reverse
+    // flank retrace, so the next pass is continuous, not a teleport.
+    stages=[['feed','special-resume-at-short-backoff',2*(trace[0].v+priorOffset+shortBackoff),-trace[0].u],
+     ['feed','special-incremental-radial-reentry',2*startP.v,-startP.u]];
+   }
+   for(let i=1;i<path.length;i++)stages.push(['feed',fin?'special-flank-finish':'special-flank-rough-offset',2*path[i].v,-path[i].u]);
+   if(fin||!shortReturn){
+    // Complete clearance remains mandatory at the end of the operation
+    // and available after every pass in FULL RETURN mode.
+    stages.push(['feed','special-x-out-after-flank',xExit,-endP.u],
+     ['feed','special-to-outer-clearance',specialOutsideX,-endP.u],
+     ['rapid','special-safe-front-return',specialOutsideX,specialSafeFront]);
+   }else{
+    const radialBackoffX=2*(endP.v+shortBackoff);
+    stages.push(['feed','special-short-x-peck-out',radialBackoffX,-endP.u]);
+    for(let i=trace.length-2;i>=0;i--){
+     const p=trace[i];
+     stages.push(['feed','special-offset-flank-retrace-review',2*(p.v+offset+shortBackoff),-p.u]);
+    }
+   }
+   addPass(cutX,-endP.u,stages,`SPECIAL ${fin?'FINAL FLANK':'ROUGH '+(k+1)+'/'+(offsets.length-1)} · ${shortReturn?'SHORT BACKOFF':'FULL RETURN'} · RADIAL STOCK ${mpRound(offset)} ${source.units} · FEED ${mpRound(fin?op.specialFinishFeed:op.feed)}/${source.units} PER REV · UNVERIFIED`);
+   const pass=passes.at(-1);
+   if(fin)pass.feedPerRev=op.specialFinishFeed;
+   pass.noStockCredit=true;pass.specialProfile=true;
+   pass.specialPassType=fin?'FINISH':'ROUGH';pass.specialRadialOffset=mpRound(offset);
+   pass.specialMotionMode=shortReturn?'short':'full';pass.specialPeckBackoff=shortReturn?mpRound(shortBackoff):null;
+   pass.specialFlankDirection=normalizedShoulder?'OUTER_SHOULDER_TO_HALF_ARC_MIDPOINT':'SELECTED_CONTOUR_DIRECTION';
+   pass.specialRetraceVerified=false;
+   if(formDatum)pass.specialFormContactReview={edgeLip:formDatum.lipSide,toolU:mpRound(formDatum.lip.u),toolV:mpRound(formDatum.lip.v),liftedPoses:formDatum.lifted,opposingEdgeControlled:formDatum.limitingOther,verified:false};
+   pass.motionReference=hasNose?'PHYSICAL_NOSE_CENTER_CANDIDATE':tool.formDesign?'FULL_FORM_EDGE_ENVELOPE_DATUM_CANDIDATE':'NOMINAL_SHARP_TIP';
+   pass.coordinateFrame='WORK_Z';
+   pass.specialStockZBounds={rawRearZ:mpRound(rawRearZ),rawFrontZ:mpRound(rawFrontZ),flankMinZ:mpRound(traceMinZ),flankMaxZ:mpRound(traceMaxZ),safeFrontZ:specialSafeFront,verified:false};
+   // Audit the cutting trace only. The short-retrace swept return remains
+   // explicitly UNVERIFIED and may contact material/holder/clamping.
+   pass.specialEdgeReview=specialToolEdgeAudit(source,op,profile,tool,path,hasNose);
+   passTraces.push([...path,{u:endP.u,v:(fin||!shortReturn)?xExit/2:endP.v+shortBackoff}]);
+  }
   if(hasNose){
-   const end={u:last.u,v:xExit/2},shift=specialComp.referenceShiftUV;
-   specialComp.centerTrace=[...trace,end];
-   specialComp.virtualTipTrace=specialComp.centerTrace.map(p=>cAdd(p,shift));
-   specialComp.centerTraces=[specialComp.centerTrace];
-   specialComp.virtualTipTraces=[specialComp.virtualTipTrace];
+   const shift=specialComp.referenceShiftUV;
+   specialComp.centerTraces=passTraces;
+   specialComp.virtualTipTraces=passTraces.map(path=>path.map(p=>cAdd(p,shift)));
+   specialComp.centerTrace=passTraces.at(-1);
+   specialComp.virtualTipTrace=specialComp.virtualTipTraces.at(-1);
    specialComp.sampled=specialComp.centerTrace.map((p,i)=>({x:mpRound(2*p.v),z:mpRound(-p.u),referenceX:mpRound(2*specialComp.virtualTipTrace[i].v),referenceZ:mpRound(-specialComp.virtualTipTrace[i].u)}));
   }
-  // Geometry-based edge/holder check for thread and custom cutters too. It does
-  // not change contact poses or authorize general-profile machining.
-  const edgeAudit=specialToolEdgeAudit(source,op,profile,tool,trace,hasNose);
-  passes[0].specialEdgeReview=edgeAudit;
-  warnings.push(`SPECIAL TOOL EDGE REVIEW: ${edgeAudit.status} · ${edgeAudit.testedPoses} sampled poses. This is NOT a qualified engagement or clearance check.`);
-  for(const issue of edgeAudit.suspected||[])warnings.push(`SPECIAL ${issue.part} INTERFERENCE CANDIDATE near XØ${issue.at.xDiameter} Z${issue.at.z}: ${issue.detail}`);
+  const flags=passes.filter(p=>p.specialEdgeReview?.suspected?.length);
+  if(flags.length)warnings.push(`SPECIAL TOOL BODY REVIEW: possible edge or holder contact flagged in ${flags.length} of ${passes.length} passes; inspect each before machining.`);
+  warnings.push(`SPECIAL ${op.specialStrategy==='finish_only'?'FINAL ONLY':'ROUGH + FINISH'}: ${passes.length} nominal flank passes, max remaining radial stock ${mpRound(maximumRemaining)} ${source.units}, DOC ${mpRound(step)}, finish allowance ${mpRound(leave)}. Actual stock engagement is NOT verified.`);
+  if(tool.formDesign)warnings.push('CUSTOM FORM TOOL: preview datum follows the projected full-form EDGE ENVELOPE and selected flank lip. Opposing contact, safe engagement and holder clearance remain UNVERIFIED; do not assume the selected flank can be finished by this tool.');
+  else if(!hasNose)warnings.push('SHARP INSERT: R0 means theoretical tip reference only; verify actual cutting tip flat/radius.');
   if(op.fadeInMode&&op.fadeInMode!=='off'||op.fadeOutMode&&op.fadeOutMode!=='off')warnings.push('SPECIAL CONTOUR ignores unrelated finish fade settings.');
-  warnings.push('SPECIAL CONTOUR IS A SINGLE-FLANK CANDIDATE: a thread insert is not automatically a qualified V-groove cutter. Check tip included angle, chip flow, interference with the opposite flank, cutting direction, nose R, and holder clearance.');
-  warnings.push('No repeat passes, flank engagement, or stock removal are claimed. Verify preceding clearance before the entry feed. NC LOCKED.');
+  warnings.push('SPECIAL FLANK ENTRY IS AN UNVERIFIED RADIAL FEED AT THE START Z. It may pass through uncut stock. Short returns retrace a prior offset and are NOT proven collision-free. All paths are tentative; NO stock removal credited and NC LOCKED.');
+  warnings.push('Tool suitability, edge orientation, unused-edge clearance, holder sweep, jaws and machine limits remain UNVERIFIED; no actual machine-ready toolpath.');
   if(!op.specialReviewed)warnings.push('Operator has not marked special tool/flank access reviewed.');
  }else if(op.kind==='drill'){
   const d=op.drillDiameter,depth=op.drillDepth,peck=op.drillPeck;
@@ -5678,9 +6014,13 @@ function nominalStockStages(source,op,profile,plan,limit='all'){
  if(Math.abs(shift)>1e-9){
   const local=shiftedStockMotionSource(source),localOp=local.operations.find(o=>o.id===op.id)||op;
   const localProfile=buildProfile({...local,operations:[]});
-  const localPlan=nominalMotionForOperation(local,localOp,localProfile);
+  // Special contour is a single-flank preview with no material-removal credit.
+  // Query preceding stock only; avoid generating a second incompatible toolpath
+  // in the translated frame. Form tools retain their existing conservative path.
+  const localPlan=op.kind==='special_profile'?{status:'PREVIEW_ONLY',passes:[]}:nominalMotionForOperation(local,localOp,localProfile);
   if(localPlan.status!=='PREVIEW_ONLY')return null;
   const stage=nominalStockStages(local,localOp,localProfile,localPlan,limit);
+  if(!stage)return null;
   return {...stage,originU:-shift,rawFrontZ:shift};
  }
 
@@ -5850,8 +6190,13 @@ function drawMotionOverlay(g,plan,map){
   for(let i=1;i<p.moves.length;i++){
    const a=p.moves[i-1],b=p.moves[i],point=q=>map({u:-q.z,v:q.x/2});
    const s=point(a),e=point(b),rapid=b.kind==='rapid',ret=b.role==='return',cut=b.role==='cut'||b.role==='plunge'||b.role==='finish-land-cut',exit=b.role?.startsWith('breakout')||b.role?.startsWith('exit-');
+   if(b.kind==='dwell'){
+    g.append(el('circle',{cx:e.x,cy:e.y,r:5,fill:'none',stroke:'#ffc56c','stroke-width':1.5,'pointer-events':'none','data-mt-inspection-layer':'dwell-marker'}));
+    const tag=el('text',{x:e.x+8,y:e.y-8,fill:'#ffc56c','font-size':10,'font-family':'monospace','pointer-events':'none','data-mt-inspection-layer':'dwell-label'});
+    tag.textContent=`DWELL ${b.spindleRevolutions||0} REV`;g.append(tag);continue;
+   }
    const fade=b.role?.startsWith('fade-'),bridge=b.role==='finish-recess-bridge-candidate',candidate=b.role?.includes('clearance-candidate');
-   const color=rapid?'#d29cd5':fade?'#d69efa':bridge?'#f3c36d':candidate?'#f2b46e':exit?'#f2b46e':ret?'#91d1ff':cut?'#9cf783':'#ceb875';
+   const color=rapid?'#d29cd5':fade?'#d69efa':bridge?'#f3c36d':candidate?'#f2b46e':exit?'#f2b46e':ret?'#91d1ff':cut?'#a6ffb5':'#f0cf80';
    if(fade&&!$('opShowFade').checked)continue;
    const formPeck=b.role==='form-short-radial-peck-backoff-candidate';
    g.append(el('line',{x1:s.x,y1:s.y,x2:e.x,y2:e.y,stroke:formPeck?'#ffc56c':color,'stroke-width':formPeck?2.0:fade?1.6:bridge?1.55:cut?1.4:exit?1.25:(rapid?.85:1.05),
@@ -5897,7 +6242,12 @@ let motionInspection=null,motionInspectOpKey=null,motionPointerId=null;
 function makeInspectionTrajectory(plan,mode,passChoice){
  const segments=[];let length=0;
  function add(a,b,meta){
-  const len=cLen(cSub(b,a));if(!Number.isFinite(len)||len<1e-12)return;
+  const len=cLen(cSub(b,a));if(!Number.isFinite(len))return;
+  if(len<1e-12&&meta.kind==='dwell'){
+   const visualHold=Math.max(.001,length*.012);
+   segments.push({a,b,at:length,len:visualHold,...meta,zeroMotionDwell:true});length+=visualHold;return;
+  }
+  if(len<1e-12)return;
   segments.push({a,b,at:length,len,...meta});length+=len;
  }
  if(plan.status!=='PREVIEW_ONLY')return {segments,length,mode};
@@ -6017,7 +6367,7 @@ function closestInspectionPosition(svg,event,track,map){
 }
 
 /* v0.8.9 visual-only viewBox zoom: never modifies X/Z, preview moves, stock, or export. */
-/* v0.9.24 · INSPECTION RENDERING ONLY.
+/* v0.9.29 · INSPECTION RENDERING ONLY.
    Zoom is a viewBox transformation. Stroke widths, labels and cursor glyphs
    are screen-space artifacts, NOT machine/stock/tool dimensions. No motion data
    or collision geometry is changed by any of the adjustments below. */
@@ -6036,8 +6386,8 @@ function applyOpInspectionPolish(root=$('opGraph')){
   if(!(initial>0))continue;
   const role=e.getAttribute('data-mt-inspection-layer')||'';
   if(['active','nose','tip','crosshair','nose-guide'].includes(role))continue; // already pixel-normalized
-  const min=role==='insert'?.95:role==='motion'?.70:role==='point'?.55:.65;
-  const max=role==='insert'?1.4:role==='motion'?1.15:1.1;
+  const min=role==='insert'?.95:role==='motion'?.88:role==='selected-region'?.95:role==='point'?.55:.78;
+  const max=role==='insert'?1.4:role==='motion'?1.48:role==='selected-region'?1.35:1.22;
   const width=z<=1?initial:Math.min(max*px,Math.max(min*px,initial/z));
   e.setAttribute('stroke-width',String(Number(width.toFixed(4))));
  }
@@ -6054,14 +6404,14 @@ function applyOpInspectionPolish(root=$('opGraph')){
  // Distinguish the CURRENT motion from historical/anticipated paths at zoom.
  for(const e of root.querySelectorAll('[data-mt-motion-kind]')){
   const kind=e.getAttribute('data-mt-motion-kind');
-  const emphasis=kind==='cut'?.52:kind==='bridge'?.42:kind==='peck'?.72:kind==='fade'?.42:.25;
+  const emphasis=kind==='cut'?.91:kind==='bridge'?.85:kind==='peck'?.98:kind==='fade'?.83:kind==='rapid'?.53:kind==='return'?.68:.66;
   e.style.opacity=close?String(emphasis):'';
  }
  for(const e of root.querySelectorAll('[data-mt-inspection-layer="point"]')){
   if(!e.dataset.mtOriginalRadius)e.dataset.mtOriginalRadius=e.getAttribute('r');
   const base=Number(e.dataset.mtOriginalRadius)||2;
-  e.setAttribute('r',String(Number((close?1.6*px:base/Math.max(1,z*.8)).toFixed(4))));
-  e.style.opacity=close?'.32':'';
+  e.setAttribute('r',String(Number((close?1.25*px:base/Math.max(1,z*.8)).toFixed(4))));
+  e.style.opacity=close?'.58':'';
  }
  // Font sizes and marker labels should not balloon into giant glyphs.
  for(const e of root.querySelectorAll('text[font-size]')){
@@ -6162,7 +6512,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.9.24',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.9.29',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,displayOrientation:'CHUCK_LEFT_Z0_RIGHT',displayOrientationNotInCode:true,workSide:source.workSide,units:source.units},
@@ -7127,7 +7477,7 @@ function wireInspector(){
 }
 
 // v0.5 — Operations describe machining INTENT ONLY. No passes, offset moves or NC output.
-function operationToolEligible(t,kind){return kind==='form_profile'?t.kind==='custom'&&!!t.formDesign:kind==='special_profile'?['od_thread','od_groove','od'].includes(t.kind):kind==='face'?['face','od'].includes(t.kind):kind==='od_groove'?t.kind==='od_groove':kind==='od_thread'?t.kind==='od_thread':kind==='id_thread'?t.kind==='id_thread':kind==='drill'?t.kind==='drill':kind==='id_groove'?t.kind==='id_groove':isBoreOperation(kind)?t.kind==='id':t.kind==='od';}
+function operationToolEligible(t,kind){return kind==='form_profile'?t.kind==='custom'&&!!t.formDesign:kind==='special_profile'?['od_thread','od_groove','od','custom'].includes(t.kind):kind==='face'?['face','od'].includes(t.kind):kind==='od_groove'?t.kind==='od_groove':kind==='od_thread'?t.kind==='od_thread':kind==='id_thread'?t.kind==='id_thread':kind==='drill'?t.kind==='drill':kind==='id_groove'?t.kind==='id_groove':isBoreOperation(kind)?t.kind==='id':t.kind==='od';}
 function opFormat(n){return Number.isFinite(n)?n.toFixed(job.units==='inch'?4:3):'—';}
 function opMsg(title,lines=[],bad=false){
  const box=$('opStatus');box.replaceChildren();box.className='status-box '+(bad?'invalid':'ok');
@@ -7156,7 +7506,7 @@ function selectOperation(i){
  mtScheduleDockRepair();
 }
 function fillOperationForm(op){
- $('opRearMode').value=op.rearEntryMode||'review';$('opRearEntryZ').value=Number.isFinite(op.rearEntryZ)?op.rearEntryZ:'';$('opRearPocketWidth').value=op.rearPocketWidth??'';$('opRearPocketClearance').value=op.rearPocketClearance??'';$('opRearJawClearance').value=op.rearJawClearance??'';$('opRearEdgeReview').checked=!!op.rearEdgeReviewed; $('opName').value=op.name;$('opKind').value=op.kind;$('opFormStrategy').value=op.formStrategy||'staged';$('opFormInfeed').value=op.formInfeed||'radial';$('opFormFlankAngle').value=op.formFlankAngle||20;$('opFormMotionMode').value=op.formMotionMode||'continuous';$('opFormPeckBackoff').value=op.formPeckBackoff??(job.units==='inch'?.002:.0508);$('opFormStep').value=op.formStep??(job.units==='inch'?.015:.381);$('opFormLeave').value=op.formLeave??(job.units==='inch'?.005:.127);$('opFormWidthReview').value=op.formWidthReview??(job.units==='inch'?.25:6.35);$('opFormPrepAllowance').value=op.formPrepAllowance??(job.units==='inch'?.025:.635);$('opFormSkipAir').checked=op.formSkipAir!==false;$('opFormPassCap').value=op.formPassCap??60;$('opFormReviewed').checked=!!op.formReviewed;$('opSpecialLift').value=op.specialLift??(job.units==='inch'?.05:1.27);$('opSpecialReviewed').checked=!!op.specialReviewed;$('opLeadIn').value=op.leadInMode||'axial';$('opLeadOut').value=op.leadOutMode||'radial';$('opLeadInLength').value=op.leadInLength;$('opLeadOutLength').value=op.leadOutLength;$('opExitMode').value=op.exitMode||'auto';$('opExitAxial').value=op.exitAxial??0;$('opExitRadial').value=op.exitRadial??0;$('opExitCorridorReviewed').checked=!!op.exitCorridorReviewed;
+ $('opRearMode').value=op.rearEntryMode||'review';$('opRearEntryZ').value=Number.isFinite(op.rearEntryZ)?op.rearEntryZ:'';$('opRearPocketWidth').value=op.rearPocketWidth??'';$('opRearPocketClearance').value=op.rearPocketClearance??'';$('opRearJawClearance').value=op.rearJawClearance??'';$('opRearEdgeReview').checked=!!op.rearEdgeReviewed; $('opName').value=op.name;$('opKind').value=op.kind;$('opFormStrategy').value=op.formStrategy||'staged';$('opFormInfeed').value=op.formInfeed||'radial';$('opFormFlankAngle').value=op.formFlankAngle||20;$('opFormMotionMode').value=op.formMotionMode||'continuous';$('opFormPeckBackoff').value=op.formPeckBackoff??(job.units==='inch'?.002:.0508);$('opFormStep').value=op.formStep??(job.units==='inch'?.015:.381);$('opFormLeave').value=op.formLeave??(job.units==='inch'?.005:.127);$('opFormWidthReview').value=op.formWidthReview??(job.units==='inch'?.25:6.35);$('opFormPrepAllowance').value=op.formPrepAllowance??(job.units==='inch'?.025:.635);$('opFormSkipAir').checked=op.formSkipAir!==false;$('opFormPassCap').value=op.formPassCap??60;$('opFormReviewed').checked=!!op.formReviewed;$('opSpecialSweepMode').value=op.specialSweepMode==='single_flank'?'single_flank':'whole_groove';$('opSpecialDwellRevs').value=op.specialDwellRevs??0;$('opSpecialMotionMode').value=op.specialMotionMode==='full'?'full':'short';$('opSpecialPeckBackoff').value=op.specialPeckBackoff??(job.units==='inch'?.002:.0508);$('opSpecialLift').value=op.specialLift??(job.units==='inch'?.05:1.27);$('opSpecialStrategy').value=op.specialStrategy||'rough_finish';$('opSpecialStep').value=op.specialStep??(job.units==='inch'?.025:.635);$('opSpecialLeave').value=op.specialLeave??(job.units==='inch'?.005:.127);$('opSpecialFinishFeed').value=op.specialFinishFeed??(job.units==='inch'?.004:.1016);$('opSpecialPassCap').value=op.specialPassCap??60;$('opSpecialArcLimit').value=op.specialArcLimit||'tangent';$('opSpecialReviewed').checked=!!op.specialReviewed;$('opLeadIn').value=op.leadInMode||'axial';$('opLeadOut').value=op.leadOutMode||'radial';$('opLeadInLength').value=op.leadInLength;$('opLeadOutLength').value=op.leadOutLength;$('opExitMode').value=op.exitMode||'auto';$('opExitAxial').value=op.exitAxial??0;$('opExitRadial').value=op.exitRadial??0;$('opExitCorridorReviewed').checked=!!op.exitCorridorReviewed;
  $('opFadeInMode').value=op.fadeInMode||'off';$('opFadeOutMode').value=op.fadeOutMode||'off';$('opFadeInLength').value=op.fadeInLength??0;$('opFadeOutLength').value=op.fadeOutLength??0;$('opFadeInLift').value=op.fadeInLift??0;$('opFadeOutLift').value=op.fadeOutLift??0;$('opFadeInAngle').value=op.fadeInAngle??5;$('opFadeOutAngle').value=op.fadeOutAngle??5;$('opFadeInMargin').value=op.fadeInMargin??(job.units==='inch'?.005:.127);$('opFadeOutMargin').value=op.fadeOutMargin??(job.units==='inch'?.005:.127);refreshFadeFields();
  $('opOverlapMode').value=op.overlapMode||'inspect';$('opOverlapLength').value=op.overlapLength??(job.units==='inch'?.15:3.81);$('opOverlapAllowance').value=op.overlapAllowance??(job.units==='inch'?.015:.381);$('opOverlapPriorOD').value=op.overlapPriorOD??0;$('opOverlapPriorZ1').value=op.overlapPriorZ1??0;$('opOverlapPriorZ2').value=op.overlapPriorZ2??0;$('opOverlapPriorReviewed').checked=!!op.overlapPriorReviewed;refreshOverlapForm();
  $('opEnabled').checked=op.enabled;$('opIdSource').value=op.idGeometrySource||'auto';
@@ -7249,6 +7599,8 @@ function showOperationFields(){
  $('opThreadFields').hidden=!['od_thread','id_thread'].includes(kind);$('opDrillFields').hidden=kind!=='drill';
  $('opIdBoreFields').hidden=!isBoreOperation(kind);$('opIdGrooveFields').hidden=kind!=='id_groove';
  $('opFormPeckRow').hidden=kind!=='form_profile'||$('opFormMotionMode').value!=='peck';$('opGrooveFields').hidden=kind!=='od_groove';$('opSpecialPanel').hidden=kind!=='special_profile';$('opFormPanel').hidden=kind!=='form_profile';
+ const wholeSweep=kind==='special_profile'&&$('opSpecialSweepMode').value==='whole_groove';
+ $('opSpecialArcLimitRow').hidden=wholeSweep;$('opSpecialMotionModeRow').hidden=wholeSweep;$('opSpecialPeckBackoffRow').hidden=wholeSweep;
  const start=Number($('opFrom').value),end=Number($('opTo').value),dir=$('opCutDirection').value;
  const iStart=dir==='forward'?Math.min(start,end):dir==='reverse'?Math.max(start,end):start;
  const iEnd=dir==='forward'?Math.max(start,end):dir==='reverse'?Math.min(start,end):end;
@@ -7266,7 +7618,7 @@ function refreshOverlapForm(){const el=$('opOverlapMode');if(!el)return;const mo
 function readOperationForm(){
  if(!job.operations.length)return null;
  const op=structuredClone(job.operations[opSelected]);
- op.rearEntryMode=$('opRearMode').value;op.rearEntryZ=$('opRearEntryZ').value.trim()===''?null:Number($('opRearEntryZ').value);op.rearPocketWidth=Number($('opRearPocketWidth').value);op.rearPocketClearance=Number($('opRearPocketClearance').value);op.rearJawClearance=Number($('opRearJawClearance').value);op.rearEdgeReviewed=$('opRearEdgeReview').checked;op.name=$('opName').value.trim();op.kind=$('opKind').value;op.formStrategy=$('opFormStrategy').value;op.formInfeed=$('opFormInfeed').value;op.formFlankAngle=Number($('opFormFlankAngle').value);op.formMotionMode=$('opFormMotionMode').value;op.formPeckBackoff=Number($('opFormPeckBackoff').value);op.formStep=Number($('opFormStep').value);op.formLeave=Number($('opFormLeave').value);op.formWidthReview=Number($('opFormWidthReview').value);op.formPrepAllowance=Number($('opFormPrepAllowance').value);op.formSkipAir=$('opFormSkipAir').checked;op.formPassCap=Number($('opFormPassCap').value);op.formReviewed=$('opFormReviewed').checked;op.specialLift=Number($('opSpecialLift').value);op.specialReviewed=$('opSpecialReviewed').checked;op.leadInMode=$('opLeadIn').value;op.leadOutMode=$('opLeadOut').value;op.leadInLength=Number($('opLeadInLength').value);op.leadOutLength=Number($('opLeadOutLength').value);
+ op.rearEntryMode=$('opRearMode').value;op.rearEntryZ=$('opRearEntryZ').value.trim()===''?null:Number($('opRearEntryZ').value);op.rearPocketWidth=Number($('opRearPocketWidth').value);op.rearPocketClearance=Number($('opRearPocketClearance').value);op.rearJawClearance=Number($('opRearJawClearance').value);op.rearEdgeReviewed=$('opRearEdgeReview').checked;op.name=$('opName').value.trim();op.kind=$('opKind').value;op.formStrategy=$('opFormStrategy').value;op.formInfeed=$('opFormInfeed').value;op.formFlankAngle=Number($('opFormFlankAngle').value);op.formMotionMode=$('opFormMotionMode').value;op.formPeckBackoff=Number($('opFormPeckBackoff').value);op.formStep=Number($('opFormStep').value);op.formLeave=Number($('opFormLeave').value);op.formWidthReview=Number($('opFormWidthReview').value);op.formPrepAllowance=Number($('opFormPrepAllowance').value);op.formSkipAir=$('opFormSkipAir').checked;op.formPassCap=Number($('opFormPassCap').value);op.formReviewed=$('opFormReviewed').checked;op.specialSweepMode=$('opSpecialSweepMode').value;op.specialDwellRevs=Number($('opSpecialDwellRevs').value);op.specialMotionMode=$('opSpecialMotionMode').value;op.specialPeckBackoff=Number($('opSpecialPeckBackoff').value);op.specialLift=Number($('opSpecialLift').value);op.specialStrategy=$('opSpecialStrategy').value;op.specialStep=Number($('opSpecialStep').value);op.specialLeave=Number($('opSpecialLeave').value);op.specialFinishFeed=Number($('opSpecialFinishFeed').value);op.specialPassCap=Number($('opSpecialPassCap').value);op.specialArcLimit=$('opSpecialArcLimit').value;op.specialReviewed=$('opSpecialReviewed').checked;op.leadInMode=$('opLeadIn').value;op.leadOutMode=$('opLeadOut').value;op.leadInLength=Number($('opLeadInLength').value);op.leadOutLength=Number($('opLeadOutLength').value);
  op.overlapMode=$('opOverlapMode').value;for(const [id,key] of [['opOverlapLength','overlapLength'],['opOverlapAllowance','overlapAllowance'],['opOverlapPriorOD','overlapPriorOD'],['opOverlapPriorZ1','overlapPriorZ1'],['opOverlapPriorZ2','overlapPriorZ2']])op[key]=Number($(id).value);op.overlapPriorReviewed=$('opOverlapPriorReviewed').checked;
  op.exitMode=$('opExitMode').value;op.exitAxial=Number($('opExitAxial').value);op.exitRadial=Number($('opExitRadial').value);op.exitCorridorReviewed=$('opExitCorridorReviewed').checked;
  for(const [id,key] of [['opFadeInMode','fadeInMode'],['opFadeOutMode','fadeOutMode']])op[key]=$(id).value;
@@ -7317,13 +7669,13 @@ function drawOperationGraph(){
  }else{
   const segs=operationContourSegments(profile,op),active=sampleProfile({segments:segs},base);
   if(active.length){
-   g.append(el('path',{d:path(active),fill:'none',stroke:'#ffc377','stroke-width':2.7,'stroke-linecap':'round','stroke-linejoin':'round'}));
+   g.append(el('path',{d:path(active),fill:'none',stroke:'#ffc377','stroke-width':2.7,'stroke-linecap':'round','stroke-linejoin':'round','data-mt-inspection-layer':'selected-region'}));
    // Bound markers live on the effective trimmed contour, not at a
    // theoretical sharp vertex that has been rounded or chamfered away.
    const reversed=op.cutDirection==='reverse';
    for(const [point,tag] of (reversed?[[segs[0].start,'END'],[segs[segs.length-1].end,'START']]:[[segs[0].start,'START'],[segs[segs.length-1].end,'END']])){
     const q=map(point);
-    g.append(el('circle',{cx:q.x,cy:q.y,r:2.9,fill:'#ffe1a7','fill-opacity':.65,stroke:'#8c4e25','stroke-width':.7}));
+    g.append(el('circle',{cx:q.x,cy:q.y,r:2.9,fill:'#ffe1a7','fill-opacity':.75,stroke:'#8c4e25','stroke-width':.7,'data-mt-inspection-layer':'point'}));
     g.append(el('text',{x:q.x+6,y:q.y+15,fill:'#ffc377','fill-opacity':.7,'font-size':9,'font-family':'monospace','data-mt-inspection-layer':'region-tag'},tag));
    }
   }
@@ -7447,10 +7799,11 @@ function wireOperations(){
  wireMotionGraphDrag();initOpZoom();
  $('opMotionPass').addEventListener('change',()=>{if($('opMotionPass').value!=='all')$('opScrubTrack').value='moves';drawOperationGraph();});
  $('opIdSource').addEventListener('change',()=>{updateIdFigureReadout();opMarkDirty();}); for(const id of ['opFrom','opTo','opCutDirection'])$(id).addEventListener('change',showOperationFields);
- for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opFaceStep','opFaceLeave','opIdTarget','opIdDepth','opIdGrooveZ','opIdGrooveWidth','opIdGrooveRoot','opDrillDiameter','opDrillDepth','opDrillPeck','opThreadZStart','opThreadZEnd','opThreadMajor','opThreadMinor','opThreadPitch','opThreadPasses','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract','opLeadIn','opLeadOut','opLeadInLength','opLeadOutLength','opExitMode','opExitAxial','opExitRadial','opExitCorridorReviewed','opOverlapMode','opOverlapLength','opOverlapAllowance','opOverlapPriorOD','opOverlapPriorZ1','opOverlapPriorZ2','opOverlapPriorReviewed','opFadeInMode','opFadeOutMode','opFadeInLength','opFadeOutLength','opFadeInLift','opFadeOutLift','opFadeInAngle','opFadeOutAngle','opFadeInMargin','opFadeOutMargin','opRearMode','opRearEntryZ','opRearPocketWidth','opRearPocketClearance','opRearJawClearance','opRearEdgeReview']){
+ for(const id of ['opName','opEnabled','opFrom','opTo','opFaceZ','opFaceStart','opFaceEnd','opFaceStep','opFaceLeave','opIdTarget','opIdDepth','opIdGrooveZ','opIdGrooveWidth','opIdGrooveRoot','opDrillDiameter','opDrillDepth','opDrillPeck','opThreadZStart','opThreadZEnd','opThreadMajor','opThreadMinor','opThreadPitch','opThreadPasses','opSpecialLift','opSpecialSweepMode','opSpecialDwellRevs','opSpecialMotionMode','opSpecialPeckBackoff','opSpecialStrategy','opSpecialStep','opSpecialLeave','opSpecialFinishFeed','opSpecialPassCap','opSpecialArcLimit','opDoc','opFinRad','opFinAx','opFeed','opRPM','opClearance','opRetract','opLeadIn','opLeadOut','opLeadInLength','opLeadOutLength','opExitMode','opExitAxial','opExitRadial','opExitCorridorReviewed','opOverlapMode','opOverlapLength','opOverlapAllowance','opOverlapPriorOD','opOverlapPriorZ1','opOverlapPriorZ2','opOverlapPriorReviewed','opFadeInMode','opFadeOutMode','opFadeInLength','opFadeOutLength','opFadeInLift','opFadeOutLift','opFadeInAngle','opFadeOutAngle','opFadeInMargin','opFadeOutMargin','opRearMode','opRearEntryZ','opRearPocketWidth','opRearPocketClearance','opRearJawClearance','opRearEdgeReview']){
   $(id).addEventListener('input',()=>{if(['opRearMode','opRearEntryZ','opRearPocketWidth','opRearPocketClearance','opRearJawClearance','opRearEdgeReview'].includes(id))$('opRearStatus').textContent='Nominal reverse entry is available only if an earlier operation has cleared the selected pocket in the stock model. Preview remains non-executable.';opMarkDirty();});$(id).addEventListener('change',opMarkDirty);
  }
  for(const id of ['opShowFade','opPointDetail'])$(id).addEventListener('change',drawOperationGraph);
+ $('opSpecialSweepMode').addEventListener('change',showOperationFields);
  $('opOverlapMode').addEventListener('change',refreshOverlapForm);
  $('opAndrewsBoth').addEventListener('click',()=>{ $('opFadeInMode').value='andrews';$('opFadeOutMode').value='andrews';refreshFadeFields();opMarkDirty();});
  for(const id of ['opFadeInMode','opFadeOutMode','opFadeInAngle','opFadeOutAngle','opFadeInMargin','opFadeOutMargin','opTool'])$(id).addEventListener('change',refreshFadeFields);
