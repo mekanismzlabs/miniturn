@@ -480,16 +480,39 @@ body[data-display="mazatrol"] .arc-candidate{background:#142b3f;border-color:#53
 body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 @media(max-width:500px){.feature-keys{gap:4px}.feature-keys button{min-height:49px;font-size:17px;padding:5px 1px}.feature-keys button small{font-size:8px}.arc-fields{gap:6px}.arc-header{font-size:10px}.arc-candidates{gap:5px}}
 
-/* v0.9.29: compact strategy + peck control without narrow-Android overflow. */
+/* v0.9.30: compact strategy + peck control without narrow-Android overflow. */
 .form-quick-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:8px;align-items:center;width:100%}
 .form-quick-row label{font-size:11px;letter-spacing:.04em;line-height:1.35}
 .form-quick-row select{width:100%;min-width:0;max-width:100%;font-size:12px;min-height:38px;padding:5px 8px}
 .form-quick-hint{font-size:11px;line-height:1.4;opacity:.84}
 @media(max-width:390px){.form-quick-row{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}.form-quick-row select{font-size:11px;padding:4px}}
-/* v0.9.29 · close inspection polish: never alter real geometry. */
+/* v0.9.30 · close inspection polish: never alter real geometry. */
 #opGraph path,#opGraph line,#opGraph circle{vector-effect:none}
 #opGraph [data-mt-inspection-layer="active"]{filter:none}
 #opGraph [data-mt-inspection-layer="holder"],#opGraph [data-mt-inspection-layer="point-label"]{pointer-events:none}
+
+/* v0.9.30 · compact offline DXF CAD exchange */
+#cadDialog{width:min(1020px,96vw);max-height:93vh;overflow:auto;color:var(--ink);background:var(--surface);border:1px solid #52725d;border-radius:9px;padding:18px;box-shadow:0 16px 60px #0009}
+#cadDialog::backdrop{background:#000b}
+.cad-top{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--panel-border);padding-bottom:11px}
+.cad-top strong{color:var(--teal);font-size:15px}
+.cad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.cad-grid label{display:flex;flex-direction:column;gap:5px;font:11px/1.5 Consolas,monospace;color:var(--mute)}
+.cad-grid input,.cad-grid select{background:#091b15;color:var(--ink);border:1px solid var(--panel-border);border-radius:4px;padding:9px;min-width:0;min-height:39px}
+.cad-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0}
+.cad-tabs button,.cad-entity-list button,.cad-layer-list button{border:1px solid var(--panel-border);border-radius:5px;background:#173127;color:var(--ink);padding:8px;cursor:pointer}
+.cad-tabs button[aria-pressed="true"]{background:#365944;color:#ffdf9d}
+.cad-note{font:11px/1.65 Consolas,monospace;color:var(--mute);margin:10px 0;overflow-wrap:anywhere}
+.cad-import-layout{display:grid;grid-template-columns:minmax(240px,1fr) minmax(245px,1fr);gap:10px}
+.cad-preview{min-height:245px;background:#071511;border:1px solid var(--panel-border);border-radius:5px;overflow:hidden}
+.cad-preview svg{width:100%;height:290px;display:block;touch-action:manipulation}
+.cad-layer-list,.cad-entity-list{display:flex;flex-wrap:wrap;gap:5px;max-height:115px;overflow:auto}
+.cad-layer-list button[aria-pressed="false"],.cad-entity-list button[aria-pressed="false"]{opacity:.45;text-decoration:line-through}
+.cad-metrics{padding:10px;background:#0a1916;border:1px solid var(--panel-border);border-radius:5px;white-space:pre-wrap;line-height:1.6;font:11px/1.6 Consolas,monospace}
+.cad-status{font:11px/1.55 Consolas,monospace;color:var(--amber);min-height:18px;margin-top:8px;white-space:pre-wrap}
+.cad-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.cad-actions button{flex:1 1 160px;min-height:39px}
+@media(max-width:720px){.cad-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cad-import-layout{grid-template-columns:1fr}#cadDialog{padding:11px}.cad-preview svg{height:230px}}
 </style>
 <style>
 /* v0.8.3 concise physical tool review */
@@ -527,7 +550,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .op-zoom-hint{font:10px monospace;color:var(--mute);margin-right:auto}
 @media(max-width:620px){.mt-mini-figure{width:216px;left:8px;right:auto;bottom:calc(var(--mt-dock-height,146px) + var(--mt-input-height,0px) + 18px)}.op-zoom-hint{width:100%;font-size:9px}.mt-mini-caption{font-size:9px}}
 </style>
-<title>MiniTurn v0.9.29 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.30 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -686,7 +709,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.29</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.30</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -786,7 +809,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     </section>
     <section class="panel graph-panel" id="fullProfilePanel" aria-label="Measured profile graph">
       <div class="section-header"><h2>03 / FIGURE GRAPH · TAP POINT TO EDIT</h2><span class="small-chip">PHYSICAL 1:1 AXES</span></div>
-      <div class="graph-toolbar"><span id="graphTitle" class="graph-subtitle">OD PROFILE / FACE AT Z0</span><div class="zoom-controls"><button id="zoomOut" title="Zoom out">−</button><button id="zoomFit">FIT</button><button id="zoomIn" title="Zoom in">+</button></div></div>
+      <div class="graph-toolbar"><span id="graphTitle" class="graph-subtitle">OD PROFILE / FACE AT Z0</span><div class="zoom-controls"><button id="zoomOut" title="Zoom out">−</button><button id="zoomFit">FIT</button><button id="zoomIn" title="Zoom in">+</button><button type="button" id="cadFigureOpen" title="Import or export workpiece DXF">DXF ↕</button></div></div>
       <div class="graph-frame"><svg id="profileGraph" viewBox="0 0 900 540" role="img" aria-label="True proportional lathe X diameter and Z axial profile, including stock outline"></svg></div>
       
       <div class="legend"><span><i class="legend-line finished"></i> FINISHED CONTOUR</span><span><i class="legend-line stock"></i> STOCK ENVELOPE</span><span><i class="legend-dot"></i> SELECTED POINT</span></div>
@@ -811,7 +834,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       </div>
       <p class="inspect-hint">Editable starting geometry; physical tool, insert mounting and clearance must be confirmed. Presets never overwrite saved shop tools automatically.</p>
       
-      <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD NEW TOOL</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button></div>
+      <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD NEW TOOL</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button><button id="cadToolOpen" class="action-btn" type="button">DXF · IMPORT / EXPORT</button></div>
       <details class="tip-advanced library-maintenance"><summary>▸ LIBRARY / DEMO TOOLS / RESET</summary><div class="library-maintenance-inner"><div class="library-divider"></div>
       <div class="section-header"><h2>DEMO TOOLS</h2><span class="small-chip">VALID PRESETS</span></div>
       
@@ -1400,6 +1423,41 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <dialog id="diagnosticDialog" class="diagnostic-dialog"><div class="dialog-title"><strong>DISPLAY DIAGNOSTICS · v0.9.13</strong><button id="diagnosticClose" aria-label="Close diagnostics">×</button></div><p>Stored locally on this device. Report captures browser and script issues, but not a full browser-process crash. Your job is not uploaded.</p><pre id="diagnosticText"></pre><button type="button" id="diagnosticDownload" class="action-btn">SAVE ERROR REPORT .TXT</button></dialog>
 <input hidden id="fileImport" type="file" accept="application/json,.json"><input hidden id="toolFileImport" type="file" accept="application/json,.json">
 <dialog id="reportDialog"><div class="dialog-title"><strong>FIGURE REPORT</strong><button id="closeReport" aria-label="Close report">×</button></div><p>Geometry report only. No CNC program, cutting commands, or tool offset compensation.</p><pre id="reportText"></pre><button id="downloadReport" class="action-btn">SAVE REPORT .TXT</button></dialog>
+
+<input hidden id="cadFile" type="file" accept=".dxf,text/plain,application/dxf,application/x-dxf">
+<dialog id="cadDialog" aria-label="CAD DXF interchange">
+ <div class="cad-top"><strong>CAD EXCHANGE · DXF R2010 ASCII · v0.9.30</strong><button type="button" id="cadClose">✕ CLOSE</button></div>
+ <div class="cad-tabs"><button type="button" id="cadWorkTarget" aria-pressed="true">WORK FIGURE</button><button type="button" id="cadToolTarget" aria-pressed="false">TOOL / INSERT</button></div>
+ <div class="cad-actions"><button type="button" id="cadBrowse" class="action-btn primary">OPEN .DXF</button><button type="button" id="cadExport" class="action-btn">EXPORT CURRENT .DXF</button></div>
+ <p class="cad-note">Preview-only until you explicitly commit. Layers and individual geometry can be excluded. 2D LINE / ARC / CIRCLE / LWPOLYLINE / basic POLYLINE only. Work arcs stay exact; tool arcs are faceted for custom outlines. No blocks, splines or 3D solids.</p>
+ <div class="cad-grid">
+  <label>DXF SOURCE UNITS<select id="cadSourceUnit"><option value="auto">AUTO ($INSUNITS)</option><option value="inch">INCH</option><option value="mm">MILLIMETERS</option></select></label>
+  <label>EXPORT UNITS<select id="cadExportUnit"><option value="inch">INCH</option><option value="mm">MILLIMETERS</option></select></label>
+  <label>CAD Y FOR WORK FIGURE<select id="cadWorkY"><option value="radius">Y = PHYSICAL RADIUS</option><option value="diameter">Y = DIAMETER X</option></select></label>
+  <label>WORK DXF X DIRECTION<select id="cadWorkDirection"><option value="positive">X+ INTO PART → LATHE Z−</option><option value="negative">X− INTO PART → LATHE Z−</option></select></label>
+  <label>WORK Z ORIGIN<select id="cadWorkOrigin"><option value="first">FIRST CONTOUR POINT = Z0</option><option value="min">LEFTMOST CAD X = Z0</option></select></label>
+  <label>JOIN ENDPOINT TOLERANCE<select id="cadJoinTol"><option value="0.000001">0.000001 (DXF UNITS)</option><option value="0.0001" selected>0.0001 (DXF UNITS)</option><option value="0.001">0.001 (DXF UNITS)</option><option value="0.01">0.01 (DXF UNITS)</option></select></label>
+ </div>
+ <div class="cad-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+  <label>INSERT DXF OPTION<select id="cadToolImport"><option value="polygon">CUSTOM INSERT POLYGON (CLOSED)</option><option value="edge">CUSTOM FORM EDGE (OPEN · STUDY)</option></select></label>
+  <label>TOOL DXF EXPORT<select id="cadToolExport"><option value="edge">CUTTING EDGE / INSERT OUTLINE</option><option value="assembly">INSERT + HOLDER ENVELOPE</option></select></label>
+ </div>
+ <div class="cad-tabs"><button type="button" id="cadSourceFlip">⇄ SOURCE IN / MM</button><button type="button" id="cadExportFlip">⇄ EXPORT IN / MM</button></div>
+ <details style="margin:8px 0;border:1px solid var(--panel-border);padding:9px;border-radius:5px"><summary style="color:var(--amber);cursor:pointer;font-size:11px">▸ DIMENSION CHECK VS PRINT · OPTIONAL</summary>
+  <div class="cad-grid">
+    <label>MEASURE<select id="cadVerifyAxis"><option value="X">CAD X SPAN</option><option value="Y">CAD Y SPAN</option><option value="length">SELECTED CONTOUR LENGTH</option></select></label>
+    <label>EXPECTED IN JOB UNITS<input id="cadExpected" type="number" step="any" placeholder="Print dimension"></label>
+    <label>ALLOWED ± TOLERANCE (JOB UNITS)<input id="cadTolerance" type="number" step="any" value="0.001" min="0"></label>
+  </div>
+  <p class="cad-note">Enter the actual drawing dimension before committing. A failed check blocks import. The check compares CAD geometry to your entered dimension; it does not certify the insert or machine setup.</p>
+ </details>
+ <div class="cad-import-layout">
+  <div><div class="cad-preview"><svg id="cadPreview" viewBox="0 0 480 290" aria-label="DXF geometry preview. Select an entity to include or exclude"></svg></div><p class="cad-note">Tap any visible entity to include/exclude it. Green = selected; gray = excluded. The preview is not a machining simulation.</p></div>
+  <div><div class="cad-metrics" id="cadMetrics">OPEN A DXF FILE TO PREVIEW DIMENSIONS.</div><p class="cad-note" id="cadFileInfo">No file loaded.</p><div class="cad-layer-list" id="cadLayers"></div><div class="cad-entity-list" id="cadEntities"></div></div>
+ </div>
+ <div class="cad-actions"><button type="button" id="cadAll">KEEP ALL</button><button type="button" id="cadNone">REMOVE ALL</button><button type="button" id="cadReverse">REVERSE CONTOUR</button><button type="button" id="cadCommit" class="action-btn primary" disabled>IMPORT SELECTED CONTOUR</button></div>
+ <div id="cadStatus" class="cad-status" role="status" aria-live="polite">OPEN a DXF, check scale/dimensions, select one connected contour, then IMPORT.</div>
+</dialog>
 <script type="module">
 /** MiniTurn Tool Geometry v0.2.
  * Local tool geometry coordinates (u,v) represent PHYSICAL axial/radial distance.
@@ -2366,7 +2424,7 @@ const {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,de
  * X is diameter, Z is axial; DOC, radial finish allowance and radial clearance are PHYSICAL radii.
  * Feed is length/revolution; RPM is revolutions/minute. No G96/CSS in this release.
  */
-const OPERATION_VERSION='0.9.29';
+const OPERATION_VERSION='0.9.30';
 const OP_KINDS={form_profile:'FORM TOOL · RADIAL',od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',special_profile:'SPECIAL CONTOUR',od_thread:'OD THREAD',id_rough:'ID ROUGH',id_finish:'ID FINISH',id_groove:'ID GROOVE',id_thread:'ID THREAD',drill:'DRILL / PECK'};
 const isIdOperation=k=>['id_rough','id_finish','id_groove','id_thread'].includes(k);
 const isBoreOperation=k=>['id_rough','id_finish'].includes(k);
@@ -3871,7 +3929,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.29.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.30.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -4241,7 +4299,7 @@ function drawBodyAtCursor(g,plan,map,source,op,trackedPosition,pointMode='nose')
  const anchor=pointMode==='nose'?(tg.noseCenter||tg.tip||tg.referencePoint):(tg.tip||tg.referencePoint||tg.noseCenter);
  if(!anchor)return;
  const delta=cSub(trackedPosition,anchor);
- // v0.9.29: high-zoom holder is a context sketch; the actual outline of
+ // v0.9.30: high-zoom holder is a context sketch; the actual outline of
  // the insert, tool tip and current nose center must take visual priority.
  const px=opInspectionPixelUnits(),close=opViewZoom>=3;
  const drawPoly=(poly,fill,stroke,width,layer)=>{
@@ -4831,7 +4889,7 @@ function specialToolEdgeAudit(source,op,profile,tool,trace,usingNose){
  if(!result.suspected.length)result.limitations.push('No sampled flag is NOT evidence of safety; physical tool approval is still required.');
  return result;
 }
-/** v0.9.29 · Conservative axial-envelope / full-form-edge CONTACT ESTIMATE.
+/** v0.9.30 · Conservative axial-envelope / full-form-edge CONTACT ESTIMATE.
  * This is NOT a tool force, chip or clearance calculation. Inputs are the
  * nominal stock envelope AFTER earlier operations only. Special/form/thread
  * moves do not gain stock credit simply from preview existence.
@@ -4921,7 +4979,7 @@ function formFullEdgeEngagement(source,op,d,minU,stageXs){
   stages,limitations:['Nominal 2D axial stock envelope, not measured stock','Prior operation motion and tool engagement are not independently verified','Form multi-edge engagement is an estimate; force, rake, relief, chip evacuation and 3D clearance unknown','No automatic feed/speed approval or NC output']};
 }
 
-/** v0.9.29: true X/Z staged infeed for custom form tools.
+/** v0.9.30: true X/Z staged infeed for custom form tools.
  * Form datum X is diameter; biased approach Z differs from the finished form's
  * datum Z and MUST converge to zero bias on the final stage. At every proposed
  * stage the complete edge is checked against the finished profile. Nominal
@@ -5028,7 +5086,7 @@ function formFlankStockEngagement(source,op,d,minU,stageXs,offsets,profile){
   limitations:['Ten subposes per X/Z stage, sampled 2D nominal stock only','No actual cutting-force or chip-thickness solution','No rake, edge relief, holder/chuck clearance, or machine validation','No NC generated']};
 }
 
-/** v0.9.29: Include only half of a physical circular bottom fillet, never
+/** v0.9.30: Include only half of a physical circular bottom fillet, never
  *  the backside. Arc MIDPOINT means halfway along its signed sweep, NOT the
  *  arc's circle center (which usually lies outside the surface). */
 function specialFlankWithHalfArc(segments,mode,tol){
@@ -5254,7 +5312,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
    pass.formPoseReference='NOMINAL_TOOL_DATUM_NOT_ACTUAL_EDGE_CONTACT';
   }
  }else if(op.kind==='special_profile'&&op.specialSweepMode!=='single_flank'){
-  // v0.9.29 WHOLE-GROOVE / FRONT-SHOULDER FIRST. Do not borrow the
+  // v0.9.30 WHOLE-GROOVE / FRONT-SHOULDER FIRST. Do not borrow the
   // single-flank half-arc reversal: it creates midpoint-first backtracking.
   // Rough: Z+ shoulder -> bottom -> Z- shoulder, X OUT, Z return ABOVE STOCK.
   // Finish: Z+ shoulder -> geometric bottom MIDPOINT only, optional dwell,
@@ -5402,7 +5460,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
    warnings.push('SPECIAL CONTOUR LIMIT: '+pick.reason+'. An arc midpoint is a halfway SWEEP location, not the circle center. Opposite flank access is NOT proven.');
   }
   if(op.specialArcLimit==='arc_midpoint'&&sampled[0].v<sampled.at(-1).v){
-   // v0.9.29: the adjacent half arc can be authored BEFORE the line. The
+   // v0.9.30: the adjacent half arc can be authored BEFORE the line. The
    // prior v0.9.27 planner cut from the center towards the OD shoulder.
    // Reverse the COMPLETE chain, so it feeds SHOULDER -> FILLET MIDPOINT.
    ordered=ordered.slice().reverse().map(cReverse);
@@ -5437,7 +5495,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
   if(formDatum)warnings.push(...formDatum.warnings);
   const trace=formDatum?formDatum.trace:hasNose?specialComp.centerTrace:sampled;
   if(trace.length<2)return blocked('SPECIAL CONTOUR produced no usable tool positions.');
-  // v0.9.29: raw stock may begin at positive work Z. Do not translate the
+  // v0.9.30: raw stock may begin at positive work Z. Do not translate the
   // figure points or compensated tip; instead check the actual raw envelope.
   const rawFrontZ=Number(source.stock.frontZ)||0;
   const rawRearZ=rawFrontZ-source.stock.length;
@@ -5446,7 +5504,7 @@ function nominalMotionForOperation(source,op,profileArg=null){
   const traceMinZ=Math.min(...zBounds),traceMaxZ=Math.max(...zBounds);
   if(traceMinZ<rawRearZ-axialTolerance||traceMaxZ>rawFrontZ+axialTolerance)
    return blocked(`SPECIAL CONTOUR: selected cutting flank spans Z${mpRound(traceMinZ)} to Z${mpRound(traceMaxZ)} outside raw stock Z${mpRound(rawRearZ)} to Z${mpRound(rawFrontZ)}. Review setup or select a different flank.`);
-  // v0.9.29: One F11 tool definition can serve different strategies.
+  // v0.9.30: One F11 tool definition can serve different strategies.
   // The selected flank is traced in successive X-offsets (physical RADIAL
   // DOC, machine X DIAMETER is twice the offset). The final stage follows
   // the original candidate flank. No stock-removal credit is inferred.
@@ -6367,7 +6425,7 @@ function closestInspectionPosition(svg,event,track,map){
 }
 
 /* v0.8.9 visual-only viewBox zoom: never modifies X/Z, preview moves, stock, or export. */
-/* v0.9.29 · INSPECTION RENDERING ONLY.
+/* v0.9.30 · INSPECTION RENDERING ONLY.
    Zoom is a viewBox transformation. Stroke widths, labels and cursor glyphs
    are screen-space artifacts, NOT machine/stock/tool dimensions. No motion data
    or collision geometry is changed by any of the adjustments below. */
@@ -6512,7 +6570,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.9.29',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.9.30',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,displayOrientation:'CHUCK_LEFT_Z0_RIGHT',displayOrientationNotInCode:true,workSide:source.workSide,units:source.units},
@@ -7984,6 +8042,384 @@ $('opFormQuickMode').addEventListener('change',()=>{
  op.formMotionMode=m;autosave();drawOperationGraph();
  notify(m==='peck'?'FORM SHORT X PECK ENABLED':m==='continuous'?'FORM CONTINUOUS FEED ENABLED':'FORM FULL WITHDRAWAL ENABLED');
 });
+
+/* MiniTurn v0.9.30 CAD exchange: standalone ASCII DXF parser/writer, preview and deliberate commit.
+   Physical dimensions only. No machining path, safety, stock allowance, or holder certification. */
+const MT_CAD=(()=>{
+ const cad={target:'work',src:null,segments:[],excluded:new Set(),reverse:false,filename:'',notice:''};
+ const $c=id=>document.getElementById(id);
+ const numeric=(v,label)=>{const n=Number(v);if(!Number.isFinite(n))throw Error('Invalid '+label);return n;};
+ const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+ const eq=(a,b,t)=>dist(a,b)<=t;
+ const round10=n=>Number(n.toPrecision(12));
+ const unitK=(from,to)=>from===to?1:from==='inch'?25.4:1/25.4;
+ const unitName=u=>u==='inch'?'IN':'MM';
+ const fmt=(v,u)=>Number(v).toFixed(u==='inch'?5:4);
+ const show=(msg,error=false)=>{cad.notice=msg;$c('cadStatus').textContent=msg;$c('cadStatus').style.color=error?'#ff9e8b':'';};
+ const dxNum=(s)=>{const n=Number(s);return Number.isFinite(n)?Number(n.toPrecision(13)):0;};
+ function pairList(text){
+  if(text.length>6000000||text.includes('\0'))throw Error('Unsupported or oversized DXF. Use ASCII DXF with a 2D drawing (max 6 MB).');
+  const lines=text.replace(/^\uFEFF/,'').split(/\r\n|\n|\r/),out=[];
+  if(lines.length%2===1&&lines.at(-1).trim()==='')lines.pop();
+  if(lines.length%2)throw Error('DXF group-code/value pairs are incomplete. Save as ASCII DXF.');
+  for(let i=0;i<lines.length;i+=2){const code=Number(lines[i].trim());if(!Number.isInteger(code))throw Error('Malformed DXF group code near line '+(i+1));out.push({c:code,v:lines[i+1].trim()});}
+  return out;
+ }
+ const item=(g,c,defaultVal='')=>g.find(x=>x.c===c)?.v??defaultVal;
+ const val=(g,c,d=0)=>numeric(item(g,c,String(d)),'DXF code '+c);
+ function dxfArc(center,r,deg1,deg2,layer,id){
+  const sa=deg1*Math.PI/180,ea=deg2*Math.PI/180;
+  let sweep=ea-sa;while(sweep<=0)sweep+=2*Math.PI;
+  const at=a=>({x:center.x+r*Math.cos(a),y:center.y+r*Math.sin(a)});
+  return {id,type:'ARC',layer,a:at(sa),b:at(sa+sweep),center,r,sweep,sa,enabled:true};
+ }
+ function bulgeSeg(a,b,bulge,layer,id){
+  if(Math.abs(bulge)<1e-12)return {id,layer,type:'LINE',a,b};
+  const d=dist(a,b);if(d<1e-12)throw Error('Zero chord in bulge polyline.');
+  const radius=d*(1+bulge*bulge)/(4*Math.abs(bulge));
+  const mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2},h=d*(1-bulge*bulge)/(4*bulge);
+  const center={x:mid.x-(b.y-a.y)/d*h,y:mid.y+(b.x-a.x)/d*h};
+  const sa=Math.atan2(a.y-center.y,a.x-center.x),sweep=4*Math.atan(bulge);
+  return {id,layer,type:'ARC',a,b,center,r:radius,sa,sweep};
+ }
+ function readDxf(text){
+  const p=pairList(text),entities=[],bad={},lim=6000;
+  let section='',insunits=0,hd='',n=0;
+  const add=e=>{if(entities.length>=lim)throw Error('Too many DXF contour elements (max 6000). Remove drawing detail first.');entities.push({...e,id:++n,enabled:true});};
+  const extract=g=>{
+    const type=g[0]?.v,layer=item(g,8,'0');
+    if(type==='LINE'){
+      if(Math.abs(val(g,30))>1e-8||Math.abs(val(g,31))>1e-8){bad['3D LINE']=(bad['3D LINE']||0)+1;return;}
+      add({type,layer,a:{x:val(g,10),y:val(g,20)},b:{x:val(g,11),y:val(g,21)}});
+    }
+    else if(type==='ARC'||type==='CIRCLE'){
+      const center={x:val(g,10),y:val(g,20)},r=val(g,40);
+      if(Math.abs(val(g,30))>1e-8||Math.abs(val(g,210))>1e-8||Math.abs(val(g,220))>1e-8||Math.abs(val(g,230,1)-1)>1e-8){bad['3D ARC']=(bad['3D ARC']||0)+1;return;}
+      if(!(r>0))throw Error('DXF arc or circle has nonpositive radius.');
+      if(type==='CIRCLE')add({type,layer,center,r,a:{x:center.x+r,y:center.y},b:{x:center.x+r,y:center.y},sa:0,sweep:Math.PI*2});
+      else add(dxfArc(center,r,val(g,50),val(g,51),layer,0));
+    }else if(type==='LWPOLYLINE'){
+      if(Math.abs(val(g,38))>1e-8||Math.abs(val(g,210))>1e-8||Math.abs(val(g,220))>1e-8||Math.abs(val(g,230,1)-1)>1e-8){bad['3D LWPOLYLINE']=(bad['3D LWPOLYLINE']||0)+1;return;}
+      const verts=[];let current=null;
+      for(const kv of g){if(kv.c===10){current={x:dxNum(kv.v),y:0,bulge:0};verts.push(current);}else if(current&&kv.c===20)current.y=dxNum(kv.v);else if(current&&kv.c===42)current.bulge=dxNum(kv.v);}
+      const closed=!!(Number(item(g,70,'0'))&1);
+      for(let i=0;i<verts.length-(closed?0:1);i++){const a=verts[i],b=verts[(i+1)%verts.length];if(!b||dist(a,b)<1e-10)continue;add(bulgeSeg(a,b,a.bulge,layer,0));}
+    }else if(type && type!=='SEQEND'){bad[type]=(bad[type]||0)+1;}
+  };
+  for(let i=0;i<p.length;i++){
+   const g=p[i];
+   if(g.c===0&&g.v==='SECTION'){section='';continue;}
+   if(g.c===2&&p[i-1]?.c===0&&p[i-1]?.v==='SECTION'){section=g.v;continue;}
+   if(g.c===0&&g.v==='ENDSEC'){section='';continue;}
+   if(section==='HEADER'){
+    if(g.c===9)hd=g.v;
+    else if(hd==='$INSUNITS'&&g.c===70){insunits=Number(g.v)||0;hd='';}
+   }
+   if(section!=='ENTITIES'||g.c!==0)continue;
+   if(g.v==='POLYLINE'){
+    let meta=[],verts=[];let j=i+1;
+    while(j<p.length&&p[j].c!==0)meta.push(p[j++]);
+    while(j<p.length&&p[j].c===0&&p[j].v==='VERTEX'){
+      const v=[];j++;while(j<p.length&&p[j].c!==0)v.push(p[j++]);verts.push({x:val(v,10),y:val(v,20),bulge:val(v,42,0)});
+    }
+    if(p[j]?.v==='SEQEND'){j++;while(j<p.length&&p[j].c!==0)j++;}
+    if(Number(item(meta,70,'0'))&88){bad['3D POLYLINE']=(bad['3D POLYLINE']||0)+1;}
+    else{
+      const closed=!!(Number(item(meta,70,'0'))&1),layer=item(meta,8,'0');
+      for(let k=0;k<verts.length-(closed?0:1);k++){const a=verts[k],b=verts[(k+1)%verts.length];if(b&&dist(a,b)>1e-10)add(bulgeSeg(a,b,a.bulge,layer,0));}
+    }
+    i=j-1;continue;
+   }
+   const group=[g];let j=i+1;while(j<p.length&&p[j].c!==0)group.push(p[j++]);
+   extract(group);i=j-1;
+  }
+  if(!entities.length)throw Error('No supported 2D line/arc geometry found in DXF ENTITIES section.');
+  return {segments:entities,units:insunits===1?'inch':insunits===4?'mm':null,insunits,unsupported:bad};
+ }
+ function entityPoints(s){
+   if(s.type==='LINE')return [s.a,s.b];
+   const steps=s.type==='CIRCLE'?60:Math.max(16,Math.min(200,Math.ceil(Math.abs(s.sweep)/(Math.PI/48))));
+   return Array.from({length:steps+1},(_,i)=>({x:s.center.x+s.r*Math.cos(s.sa+s.sweep*i/steps),y:s.center.y+s.r*Math.sin(s.sa+s.sweep*i/steps)}));
+ }
+ const selected=()=>cad.segments.filter(s=>!cad.excluded.has(s.id));
+ function sourceUnit(){
+  const u=$c('cadSourceUnit').value;
+  return u==='auto'?cad.src?.units||null:u;
+ }
+ const kToJob=()=>sourceUnit()?unitK(sourceUnit(),job.units):null;
+ const kToExport=()=>unitK(job.units,$c('cadExportUnit').value);
+ function chainSegments(segs,tolerance){
+  if(!segs.length)throw Error('No selected DXF entities.');
+  if(segs.some(s=>s.type==='CIRCLE'))throw Error('Full circles cannot become an open work contour. Remove CIRCLE layers/entities.');
+  const remain=segs.slice(),chain=[{...remain.shift(),reversed:false}];
+  let changed=true;
+  while(remain.length&&changed){
+   changed=false;
+   for(let i=0;i<remain.length;i++){
+    const e=remain[i],front=chain[0],end=chain.at(-1),head=front.reversed?front.b:front.a,tail=end.reversed?end.a:end.b;
+    let action=null;
+    if(eq(tail,e.a,tolerance))action=['push',false];
+    else if(eq(tail,e.b,tolerance))action=['push',true];
+    else if(eq(head,e.b,tolerance))action=['unshift',false];
+    else if(eq(head,e.a,tolerance))action=['unshift',true];
+    if(action){const entry={...e,reversed:action[1]};chain[action[0]](entry);remain.splice(i,1);changed=true;break;}
+   }
+  }
+  if(remain.length)throw Error('Selection contains '+(remain.length+1)+' disconnected/branched components. Remove extra geometry or layers; one unbranched chain required.');
+  const points=[chain[0].reversed?chain[0].b:chain[0].a,...chain.map(e=>e.reversed?e.a:e.b)];
+  if(eq(points[0],points.at(-1),tolerance)&&cad.target==='work')throw Error('A closed CAD loop cannot be a single open lathe work figure. Remove a closing segment.');
+  // Detect branching and overlaps without silently choosing at T junctions.
+  const degree=[];
+  for(const e of segs){for(const p of [e.a,e.b]){const rec=degree.find(x=>eq(x.p,p,tolerance));if(rec)rec.n++;else degree.push({p,n:1});}}
+  if(degree.some(x=>x.n>2))throw Error('DXF contains branching geometry (three or more edges at one point). Exclude branches before importing.');
+  if(cad.reverse){chain.reverse();chain.forEach(e=>e.reversed=!e.reversed);points.reverse();}
+  return {chain,points};
+ }
+ function worldBounds(segs){const points=segs.flatMap(entityPoints);if(!points.length)return null;return {minX:Math.min(...points.map(p=>p.x)),maxX:Math.max(...points.map(p=>p.x)),minY:Math.min(...points.map(p=>p.y)),maxY:Math.max(...points.map(p=>p.y))};}
+ function verifyAgainstPrint(){
+   const raw=$c('cadExpected').value.trim();if(!raw)return {active:false,passed:true};
+   const exp=Number(raw),tol=Number($c('cadTolerance').value),k=kToJob();
+   if(!Number.isFinite(exp)||exp<0||!Number.isFinite(tol)||tol<0)return {active:true,passed:false,why:'Enter nonnegative print dimension and tolerance.'};
+   if(!k)return {active:true,passed:false,why:'Specify DXF source units before verifying.'};
+   const ss=selected(),bounds=worldBounds(ss);if(!bounds)return {active:true,passed:false,why:'No selected geometry.'};
+   const v=$c('cadVerifyAxis').value;
+   const rawSize=v==='X'?(bounds.maxX-bounds.minX):v==='Y'?(bounds.maxY-bounds.minY):ss.reduce((sum,e)=>sum+(e.type==='LINE'?dist(e.a,e.b):Math.abs(e.sweep)*e.r),0);
+   const actual=rawSize*k,diff=actual-exp,passed=Math.abs(diff)<=tol+1e-9;
+   return {active:true,passed,actual,expected:exp,delta:diff,tol,why:`${passed?'PASS':'FAIL'} · ${v} = ${fmt(actual,job.units)} ${unitName(job.units)} / PRINT ${fmt(exp,job.units)} · DELTA ${fmt(diff,job.units)} · LIMIT ±${fmt(tol,job.units)}`};
+ }
+ function currentMetrics(){
+  const sel=selected(),bounds=worldBounds(sel),k=kToJob(),unit=sourceUnit();
+  if(!bounds)return '0 SELECTED ELEMENTS';
+  const axial=(bounds.maxX-bounds.minX),y=(bounds.maxY-bounds.minY);
+  const len=sel.reduce((sum,e)=>sum+(e.type==='LINE'?dist(e.a,e.b):Math.abs(e.sweep)*e.r),0);
+  let gap='—',connected='NOT VERIFIED';
+  try{const result=chainSegments(sel,Number($c('cadJoinTol').value));gap=dist(result.points[0],result.points.at(-1)).toPrecision(7);connected='CONNECTED';}catch(e){connected=e.message;}
+  
+  return `${sel.length} selected of ${cad.segments.length} elements\n`+
+   `CAD source: ${unit||'UNSPECIFIED'} (${cad.src?.units?'$INSUNITS = '+cad.src.insunits:'no inch/mm unit header'})\n`+
+   `CAD X span: ${fmt(axial,unit)} ${unit||'?'}\n`+
+   `CAD Y span: ${fmt(y,unit)} ${unit||'?'}\n`+
+   `Total selected length: ${fmt(len,unit)} ${unit||'?'}\n`+
+   `Join: ${connected}\n`+
+   `First-to-last gap: ${gap} CAD units\n`+
+   (k?`Job units ${job.units}: X span ${fmt(axial*k,job.units)}, Y span ${fmt(y*k,job.units)}\n`+
+   `SCALE: 1 ${unitName(unit)} = ${round10(k)} ${unitName(job.units)}\n`:'SELECT INPUT UNITS BEFORE IMPORT; no safe automatic scaling.\n')+
+   (cad.target==='work'?`WORK: CAD Y → ${$c('cadWorkY').value==='radius'?'physical radius; lathe X = 2Y':'lathe X diameter; physical radius = Y/2'}.`:'TOOL: CAD XY uses physical U/V distances, NEVER lathe X-diameter values.')+ (verifyAgainstPrint().active?'\nPRINT CHECK: '+verifyAgainstPrint().why:'');
+ }
+ function makeSvgElem(tag,attrs){const el=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));return el;}
+ function draw(){
+   const svg=$c('cadPreview');svg.replaceChildren();const bounds=worldBounds(selected().length?selected():cad.segments);
+   if(!bounds){svg.appendChild(makeSvgElem('text',{x:25,y:145,fill:'#a1beab','font-size':14})).textContent='OPEN A DXF TO INSPECT';return;}
+   const spanX=Math.max(bounds.maxX-bounds.minX,1e-8),spanY=Math.max(bounds.maxY-bounds.minY,1e-8);
+   const scale=Math.min(435/spanX,245/spanY),ox=240-(bounds.minX+bounds.maxX)*scale/2,oy=145+(bounds.minY+bounds.maxY)*scale/2;
+   for(let i=0;i<cad.segments.length;i++){
+    const s=cad.segments[i],pts=entityPoints(s),path=makeSvgElem('path',{d:pts.map((p,j)=>`${j?'L':'M'}${(p.x*scale+ox).toFixed(3)},${(oy-p.y*scale).toFixed(3)}`).join(' '),fill:'none',stroke:cad.excluded.has(s.id)?'#64746c':'#77e9b2','stroke-width':cad.excluded.has(s.id)?1.35:2.3,'stroke-linecap':'round',opacity:cad.excluded.has(s.id)?.5:1});
+    path.addEventListener('click',()=>{if(cad.excluded.has(s.id))cad.excluded.delete(s.id);else cad.excluded.add(s.id);refresh();});
+    svg.append(path);
+   }
+   svg.appendChild(makeSvgElem('text',{x:10,y:18,'font-size':11,fill:'#e2b16f'})).textContent=`CAD XY · ${cad.src?.units||'UNITS ?'} · ${cad.segments.length} elements`;
+ }
+ function refresh(){
+  const layers=[...new Set(cad.segments.map(x=>x.layer))],lDiv=$c('cadLayers'),eDiv=$c('cadEntities');lDiv.replaceChildren();eDiv.replaceChildren();
+  for(const layer of layers){const es=cad.segments.filter(s=>s.layer===layer),on=es.some(s=>!cad.excluded.has(s.id));const b=document.createElement('button');b.type='button';b.textContent=`${layer} (${es.length})`;b.setAttribute('aria-pressed',String(on));b.title='Toggle entire DXF layer';b.addEventListener('click',()=>{for(const e of es){if(on)cad.excluded.add(e.id);else cad.excluded.delete(e.id);}refresh();});lDiv.append(b);}
+  const listed=cad.segments.slice(0,90);
+  for(const s of listed){const b=document.createElement('button');b.type='button';b.title='Toggle one CAD element';b.setAttribute('aria-pressed',String(!cad.excluded.has(s.id)));b.textContent=`${s.id} ${s.type==='ARC'?'ARC R'+s.r.toPrecision(5):s.type==='LINE'?'LINE '+dist(s.a,s.b).toPrecision(6):s.type+' R'+s.r.toPrecision(5)}`;b.addEventListener('click',()=>{if(cad.excluded.has(s.id))cad.excluded.delete(s.id);else cad.excluded.add(s.id);refresh();});eDiv.append(b);}
+  if(cad.segments.length>90)eDiv.append(document.createTextNode(`… ${cad.segments.length-90} more (tap graph or toggle layer)`));
+  $c('cadMetrics').textContent=currentMetrics();$c('cadCommit').disabled=!selected().length||!sourceUnit()||(verifyAgainstPrint().active&&!verifyAgainstPrint().passed);draw();
+ }
+ function open(target){cad.target=target;cad.reverse=false;$c('cadWorkTarget').setAttribute('aria-pressed',String(target==='work'));$c('cadToolTarget').setAttribute('aria-pressed',String(target==='tool'));
+   $c('cadCommit').textContent=target==='work'?'IMPORT AS WORK FIGURE':'CREATE CUSTOM TOOL FROM DXF';$c('cadExportUnit').value=job.units;
+   $c('cadWorkY').closest('label').hidden=target!=='work';$c('cadWorkDirection').closest('label').hidden=target!=='work';$c('cadWorkOrigin').closest('label').hidden=target!=='work';
+   $c('cadToolImport').closest('label').hidden=target!=='tool';$c('cadToolExport').closest('label').hidden=target!=='tool';
+   $c('cadDialog').showModal();refresh();
+ }
+ function readLoaded(text,filename){
+  const r=readDxf(text);cad.src=r;cad.segments=r.segments;cad.excluded.clear();cad.reverse=false;cad.filename=filename;
+  $c('cadFileInfo').textContent=`${filename} · ${r.segments.length} geometry segments · unsupported entities: ${Object.entries(r.unsupported).map(([x,n])=>x+'='+n).join(', ')||'none'}${r.units?' · '+r.units.toUpperCase():' · DXF unit code '+r.insunits+' (not IN/MM)'}`;
+  $c('cadSourceUnit').value='auto';refresh();
+  show(r.units?'DXF unit header found. VERIFY SCALE AND SELECT EXACT CONTOUR before import.':'DXF UNITS UNKNOWN. Select inch or mm manually before import.',!r.units);
+ }
+ function chainToWork(){
+  const k=kToJob();if(!k)throw Error('Choose source units first.');
+  const {chain,points}=chainSegments(selected(),Number($c('cadJoinTol').value));
+  if(chain.length>119)throw Error('Work figure supports 120 vertices. Remove excess geometry.');
+  const yRatio=$c('cadWorkY').value==='diameter'?0.5:1;
+  const xdir=$c('cadWorkDirection').value==='negative'?-1:1;
+  const origin=$c('cadWorkOrigin').value==='first'?points[0].x:(xdir===1?Math.min(...points.map(p=>p.x)):Math.max(...points.map(p=>p.x)));
+  const convert=p=>({u:(p.x-origin)*xdir*k,v:p.y*k*yRatio});
+  const phys=points.map(convert);
+  if(phys.some(p=>p.u< -1e-6||p.v< -1e-6))throw Error('Imported coordinates include negative Z-depth or negative radius. Change origin/direction, remove excess entities, or reposition the DXF geometry in CAD.');
+  const xvals=phys.map(p=>2*p.v),zvals=phys.map(p=>-p.u);
+  const maxDia=Math.max(...xvals),maxDepth=Math.max(...phys.map(p=>p.u));
+  if(maxDia<1e-9||maxDepth<=1e-9)throw Error('Contour requires positive diameter and positive axial depth. Check work XY mapping.');
+  const nodes=phys.map(p=>({id:nodeId(),x:round(p.v*2,8),z:round(-p.u,8),corner:'sharp',size:0}));
+  const blank=clone(job);
+  // Preserve currently planned stock whenever it contains imported geometry;
+  // otherwise explicitly enlarge only the *temporary* candidate, reported before commit.
+  const padding=Math.max(job.units==='inch'?.02:.5,maxDepth*.03);
+  const dPadding=Math.max(job.units==='inch'?.02:.5,maxDia*.02);
+  const stockD=Math.max(blank.stock.diameter,maxDia+dPadding),stockL=Math.max(blank.stock.length,maxDepth+padding);
+  blank.stock={...blank.stock,diameter:round(stockD,7),length:round(stockL,7),frontZ:0};
+  if(blank.stock.type==='tube'&&blank.stock.bore>=Math.min(...xvals.filter(x=>x>0)))blank.stock.bore=Math.min(blank.stock.bore,maxDia*.25);
+  blank.nodes=nodes;blank.operations=[];blank.inspectionPositions={};
+  // Preserve true CAD ARC primitives through MiniTurn's explicit arc choices.
+  // Never replace an arc silently with a straight chord.
+  for(let i=0;i<chain.length;i++){
+    const arc=chain[i];if(arc.type==='LINE')continue;
+    const start=phys[i],end=phys[i+1];
+    const center=convert(arc.center),radius=arc.r*k;const spec={mode:'endpoints',radius:round(radius,9),endX:nodes[i+1].x,endZ:nodes[i+1].z};
+    const candidates=arcAssistCandidates(nodes,i,spec,blank.stock).candidates;
+    const expected=arc.sweep*(arc.reversed?-1:1)*xdir;
+    const found=candidates.find(c=>dist({x:c.center.u,y:c.center.v},{x:center.u,y:center.v})<Math.max(1e-5,radius*1e-5)&&Math.sign(c.sweep)===Math.sign(expected));
+    if(!found)throw Error(`Arc ${i+1} cannot resolve exactly in MiniTurn. Check CAD coordinate mapping and stock bounds; no approximation committed.`);
+    nodes[i+1].arcToPrev={...spec,choiceKey:found.key};
+  }
+  const valid=validateJob(blank);if(valid.errors.length)throw Error('Work figure validation: '+valid.errors[0]);
+  const profile=buildProfile(blank);if(profile.errors.length)throw Error('Profile geometry: '+profile.errors[0]);
+  return {candidate:blank,maxDia,maxDepth,stockChanged:stockD!==job.stock.diameter||stockL!==job.stock.length};
+ }
+ function chainToTool(){
+  const k=kToJob();if(!k)throw Error('Select DXF source units first.');
+  const {chain,points}=chainSegments(selected(),Number($c('cadJoinTol').value));
+  
+  const sampled=[points[0]];
+  for(const ent of chain){let ps=entityPoints(ent);if(ent.reversed)ps.reverse();for(const p of ps.slice(1)){if(dist(sampled.at(-1),p)>1e-10)sampled.push(p);}}
+  const ext=worldBounds(selected());if(!ext)throw Error('No geometry selected.');
+  const scaled=sampled.map(p=>({u:p.x*k,v:p.y*k}));
+  const station=toolNextNumber();if(!station||job.tools.length>=100)throw Error('No available tool station.');
+  const t=makeTemplate('custom',job.units,station);
+  t.kind='custom';t.shape='CUSTOM';t.hand='N';t.mountAxis='radial';t.holder={mode:'none'};t.noseRadius=0;t.verified=false;t.userCustomized=true;
+  t.name=`DXF ${cad.filename.replace(/\.dxf$/i,'').slice(0,42)}`.slice(0,65);
+  t.notes='Imported 2D DXF outline. Geometry unverified; first vertex is nominal tip. Validate thickness, rake, relief, datum and pocket before EDM or turning.';
+  const edge=$c('cadToolImport').value==='edge';
+  if(edge){
+    if(eq(points[0],points.at(-1),Number($c('cadJoinTol').value)))throw Error('Form edge requires an OPEN line; use POLYGON mode for closed insert outline.');
+    const left=Math.min(...scaled.map(p=>p.u)),right=Math.max(...scaled.map(p=>p.u)),width=right-left;
+    if(width<=0)throw Error('Form edge has zero axial width.');
+    if(scaled.some((p,i)=>i>0&&p.u<scaled[i-1].u-1e-7))throw Error('Form edge must progress from left to right without reversing axial U. Reverse the contour or edit CAD.');
+    const maxY=Math.max(...scaled.map(p=>p.v)),minY=Math.min(...scaled.map(p=>p.v));
+    const depth=Math.max(0,maxY-minY),extra=Math.max(width*.05,depth*.15,job.units==='inch'?.005:.12);
+    const maxPts=36,step=Math.max(1,Math.ceil((scaled.length-1)/(maxPts-1)));
+    const reduced=scaled.filter((p,i)=>i===0||i===scaled.length-1||i%step===0).slice(0,maxPts);
+    const designEdge=reduced.map(p=>({axial:round(p.u-left,8),projection:round(maxY-p.v,8)}));
+    const exactSegments=chain.map(e=>{
+      const from=e.reversed?e.b:e.a,to=e.reversed?e.a:e.b;
+      const segment={kind:e.type==='LINE'?'line':'arc',start:{u:from.x*k,v:from.y*k},end:{u:to.x*k,v:to.y*k}};
+      if(e.type==='ARC'){
+       segment.center={u:e.center.x*k,v:e.center.y*k};segment.radius=e.r*k;
+       segment.startAngle=Math.atan2(segment.start.v-segment.center.v,segment.start.u-segment.center.u);
+       segment.sweep=e.sweep*(e.reversed?-1:1);
+      }
+      return segment;
+    });
+    t.formDesign={schema:'miniturn.form-design/1',fromIndex:-1,toIndex:-1,signature:[],width,depth,maxV:maxY,minV:minY,edge:designEdge,exactSegments,qualified:false,importedDxf:true};
+    t.customPoints=[...designEdge.map(p=>({u:p.axial,v:-p.projection})),{u:width,v:extra},{u:0,v:extra}];
+    t.width=width;t.reach=Math.max(depth,extra);t.ic=Math.max(width,extra);
+    t.holder={mode:'none'};t.name=`DXF FORM EDGE ${station}`;
+    t.notes='Imported OPEN CAD edge with exact DXF lines/arcs retained — THEORETICAL form tool study only. No insert back, relief, pocket or manufacturing geometry verified.';
+  }else{
+    if(!eq(points[0],points.at(-1),Number($c('cadJoinTol').value)))throw Error('Custom insert polygon must be CLOSED. Keep only the complete closed insert outline.');
+    const reduced=scaled.slice(0,-1);
+    if(reduced.length<3||reduced.length>80)throw Error('Custom tool outline needs 3–80 vertices after DXF sampling. Simplify CAD or remove unwanted arc segments.');
+    const first=reduced[0];t.customPoints=reduced.map(p=>({u:round(p.u-first.u,8),v:round(p.v-first.v,8)}));
+    t.ic=Math.max((ext.maxX-ext.minX)*k,(ext.maxY-ext.minY)*k);
+    t.width=t.ic;t.reach=t.ic;
+  }
+  const checked=validateTool(t);if(checked.errors.length)throw Error('Tool validation: '+checked.errors[0]);
+  return t;
+ }
+ function dxGroup(c,v){return String(c)+'\n'+String(v)+'\n';}
+ function emitDxf(entities,units){
+  const layers=[...new Set(entities.map(e=>e.layer))];let s='';const g=(c,v)=>{s+=dxGroup(c,v);};
+  g(0,'SECTION');g(2,'HEADER');g(9,'$ACADVER');g(1,'AC1024');g(9,'$INSUNITS');g(70,units==='inch'?1:4);g(9,'$MEASUREMENT');g(70,units==='inch'?0:1);g(0,'ENDSEC');
+  g(0,'SECTION');g(2,'TABLES');g(0,'TABLE');g(2,'LAYER');g(70,layers.length);
+  for(const layer of layers){g(0,'LAYER');g(2,layer);g(70,0);g(62,7);g(6,'CONTINUOUS');}
+  g(0,'ENDTAB');g(0,'ENDSEC');g(0,'SECTION');g(2,'ENTITIES');
+  const pt=(p,base)=>{g(base,p.x);g(base+10,p.y);g(base+20,0);};
+  for(const e of entities){if(e.type==='LINE'){
+      g(0,'LINE');g(8,e.layer);pt(e.a,10);pt(e.b,11);
+    }else if(e.type==='ARC'){
+      const sa=Math.atan2(e.a.y-e.center.y,e.a.x-e.center.x),end=Math.atan2(e.b.y-e.center.y,e.b.x-e.center.x);
+      g(0,'ARC');g(8,e.layer);pt(e.center,10);g(40,e.r);
+      g(50,((e.sweep<0?end:sa)*180/Math.PI+360)%360);g(51,((e.sweep<0?sa:end)*180/Math.PI+360)%360);
+    }}
+  g(0,'ENDSEC');g(0,'EOF');return s;
+ }
+ function exportWork(){
+  const profile=buildProfile(job);if(profile.errors.length||!profile.segments.length)throw Error(profile.errors[0]||'No work geometry.');
+  const k=kToExport(),xy=p=>({x:round10(p.u*k),y:round10(p.v*k)});
+  const entities=profile.segments.map(e=>e.kind==='line'?{type:'LINE',layer:'WORK_PROFILE',a:xy(e.start),b:xy(e.end)}:{type:'ARC',layer:'WORK_PROFILE',a:xy(e.start),b:xy(e.end),center:xy(e.center),r:round10(e.radius*k),sweep:e.sweep});
+  return {text:emitDxf(entities,$c('cadExportUnit').value),suffix:'WORK_PROFILE'};
+ }
+ function exportTool(){
+  if(toolDirty)throw Error('Save tool edits before exporting DXF; only saved tool geometry is exported.');
+  const t=job.tools[toolSelected];if(!t)throw Error('Select a tool.');
+  const geom=buildToolGeometry(t);if(geom.errors.length)throw Error(geom.errors[0]);
+  const k=kToExport(),xy=p=>({x:round10(p.u*k),y:round10(p.v*k)});
+  const entities=[];
+  const addPoly=(points,layer,closed=true)=>{if(!points||points.length<2)return;for(let i=0;i<points.length-(closed?0:1);i++){const a=points[i],b=points[(i+1)%points.length];if(Math.hypot(a.u-b.u,a.v-b.v)>1e-10)entities.push({type:'LINE',layer,a:xy(a),b:xy(b)});}};
+  if(t.formDesign?.exactSegments?.length){
+    // An F11 study retains source analytic lines/circular arcs. Translate the
+    // physical OD profile into the theoretical insert-edge datum without flattening arcs.
+    const d=t.formDesign,es=d.exactSegments,raw=motionRegionSample(es),minU=Math.min(...raw.map(p=>p.u));
+    const real=p=>({u:p.u-minU-d.width/2,v:p.v-d.maxV});
+    for(const e of es){
+      if(e.kind==='line')entities.push({type:'LINE',layer:'CUTTING_EDGE',a:xy(real(e.start)),b:xy(real(e.end))});
+      else if(e.kind==='arc')entities.push({type:'ARC',layer:'CUTTING_EDGE',a:xy(real(e.start)),b:xy(real(e.end)),center:xy(real(e.center)),r:round10(e.radius*k),sweep:e.sweep});
+    }
+  }else if(t.formDesign?.edge?.length){const e=t.formDesign.edge.map(p=>({u:p.axial-t.formDesign.width/2,v:-p.projection}));addPoly(e,'CUTTING_EDGE',false);}
+  else addPoly(geom.outline,'INSERT_OUTLINE');
+  if($c('cadToolExport').value==='assembly'){
+    if(t.formDesign?.edge?.length)addPoly(geom.outline,'INSERT_SCHEMATIC');
+    addPoly(geom.holderOutline,'HOLDER_SCHEMATIC');
+  }
+  if(!entities.length)throw Error('No modeled 2D tool outline is available.');
+  return {text:emitDxf(entities,$c('cadExportUnit').value),suffix:'T'+String(t.station).padStart(2,'0')+'_TOOL'};
+ }
+ async function readFile(e){try{
+   const file=e.target.files?.[0];if(!file)return;readLoaded(await file.text(),file.name);
+  }catch(err){show('DXF OPEN FAILED · '+err.message,true);}finally{e.target.value='';}}
+ function commit(){try{
+  if(!sourceUnit())throw Error('Select DXF input units explicitly.');
+  const check=verifyAgainstPrint();if(check.active&&!check.passed)throw Error('DIMENSION CHECK FAILED · '+check.why);
+  if(cad.target==='work'){
+   const {candidate,maxDia,maxDepth,stockChanged}=chainToWork();
+   const question=`REPLACE current work figure with ${candidate.nodes.length} DXF points?\nImported maximum Ø ${fmt(maxDia,job.units)}; depth ${fmt(maxDepth,job.units)} ${job.units}.\n${stockChanged?'Temporary stock envelope will grow to enclose the contour.\n':''}Existing operations and saved inspection positions will be CLEARED; tools are kept.\nSource is not independently verified.`;
+   if(!confirm(question))return;
+   if(!mutate(candidate,0))throw Error('MiniTurn rejected the candidate figure (no changes applied).');
+   $c('cadDialog').close();notify('DXF WORK FIGURE IMPORTED · VERIFY ALL DIMENSIONS AND STOCK');setPage('figure');
+  }else{
+   const t=chainToTool();
+   if(!confirm(`Create unverified ${t.name} in tool table?\nDXF ${sourceUnit()} → job ${job.units}; verify first point as nominal tool reference, profile thickness and orientation.`))return;
+   job.tools.push(t);toolSelected=job.tools.length-1;toolDirty=false;refreshToolWorkspace();autosave();$c('cadDialog').close();setPage('tools');notify('DXF CUSTOM TOOL SAVED · UNVERIFIED GEOMETRY');
+  }
+ }catch(err){show('NOT IMPORTED · '+err.message,true);}}
+ function init(){
+  $c('cadFigureOpen').addEventListener('click',()=>open('work'));
+  $c('cadToolOpen').addEventListener('click',()=>open('tool'));
+  $c('cadWorkTarget').addEventListener('click',()=>openTarget('work'));
+  $c('cadToolTarget').addEventListener('click',()=>openTarget('tool'));
+  $c('cadBrowse').addEventListener('click',()=>$c('cadFile').click());$c('cadFile').addEventListener('change',readFile);
+  $c('cadClose').addEventListener('click',()=>$c('cadDialog').close());
+  for(const id of ['cadSourceUnit','cadJoinTol','cadWorkY','cadWorkDirection','cadWorkOrigin','cadToolImport','cadVerifyAxis','cadExpected','cadTolerance'])$c(id).addEventListener('change',refresh);
+  $c('cadAll').addEventListener('click',()=>{cad.excluded.clear();refresh();});
+  $c('cadNone').addEventListener('click',()=>{cad.segments.forEach(s=>cad.excluded.add(s.id));refresh();});
+  $c('cadSourceFlip').addEventListener('click',()=>{const now=sourceUnit();$c('cadSourceUnit').value=now==='inch'?'mm':'inch';refresh();show(`DXF INPUT UNITS OVERRIDDEN TO ${$c('cadSourceUnit').value.toUpperCase()}. CHECK DIMENSIONS AGAIN — THIS CHANGES THE INTERPRETATION OF THE FILE.`);});
+  $c('cadExportFlip').addEventListener('click',()=>{$c('cadExportUnit').value=$c('cadExportUnit').value==='inch'?'mm':'inch';refresh();show(`DXF OUTPUT UNITS: ${$c('cadExportUnit').value.toUpperCase()}. JOB REMAINS ${job.units.toUpperCase()}.`);});
+  $c('cadReverse').addEventListener('click',()=>{cad.reverse=!cad.reverse;show('Contour order '+(cad.reverse?'REVERSED':'ORIGINAL')+' · review the first tool/reference point.');refresh();});
+  for(const id of ['cadExpected','cadTolerance'])$c(id).addEventListener('input',refresh);
+  $c('cadCommit').addEventListener('click',commit);
+  $c('cadExport').addEventListener('click',()=>{try{const output=cad.target==='work'?exportWork():exportTool();download(output.text,safeFilename()+'_'+output.suffix+'_'+$c('cadExportUnit').value+'.dxf','application/dxf');show(`DXF EXPORTED (${unitName($c('cadExportUnit').value)}) · VERIFY IN CAD BEFORE MANUFACTURE.`);}
+   catch(err){show('DXF EXPORT FAILED · '+err.message,true);}});
+  draw();
+ }
+ function openTarget(target){cad.target=target;$c('cadWorkTarget').setAttribute('aria-pressed',String(target==='work'));$c('cadToolTarget').setAttribute('aria-pressed',String(target==='tool'));
+   $c('cadCommit').textContent=target==='work'?'IMPORT AS WORK FIGURE':'CREATE CUSTOM TOOL FROM DXF';
+   for(const id of ['cadWorkY','cadWorkDirection','cadWorkOrigin'])$c(id).closest('label').hidden=target!=='work';
+   for(const id of ['cadToolImport','cadToolExport'])$c(id).closest('label').hidden=target!=='tool';refresh();}
+ return {init,readDxf,emitDxf,chainSegments,readLoaded,sourceUnit,currentMetrics,exportWork,exportTool,chainToWork,chainToTool};
+})();
+MT_CAD.init();
 
 </script>
 </body>
