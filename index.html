@@ -577,6 +577,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 #opZoomLabel{font:11px monospace;color:var(--amber);min-width:40px;text-align:center}
 .op-zoom-hint{font:10px monospace;color:var(--mute);margin-right:auto}
 @media(max-width:620px){.mt-mini-figure{width:216px;left:8px;right:auto;bottom:calc(var(--mt-dock-height,146px) + var(--mt-input-height,0px) + 18px)}.op-zoom-hint{width:100%;font-size:9px}.mt-mini-caption{font-size:9px}}
+/* v0.9.38 R3: focused 7-original + 2-left-hand starter set; keep Doosan NC export unchanged. */
 /* v0.9.38 - pilot machine-test NC export in addition to review studies */
 .nc-pilot-confirm{display:flex;gap:10px;align-items:flex-start;font-size:11px;line-height:1.5;margin:8px 0;padding:6px 0}
 .nc-pilot-confirm input{flex:0 0 18px;width:18px;height:18px;accent-color:#8bddb6}
@@ -592,7 +593,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .nc-study-op-choice.disabled-op{opacity:.7}
 .nc-study-section-note{margin:7px 0;color:#e6c789;font-size:11px;line-height:1.6}
 </style>
-<title>MiniTurn v0.9.38 R2 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.38 R3 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -757,7 +758,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.38 R2 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.38 R3 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -877,17 +878,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <div class="tool-list" id="toolList" role="listbox" aria-label="Select a tool"></div>
       <div class="section-header second-header"><h2>NEW STANDARD TOOL</h2><span class="small-chip">TEMPLATES</span></div>
       <div class="tool-form-grid">
-        <label class="field">FAMILY FILTER<select id="toolPresetFamily"><option value="all">ALL STANDARD TOOLS</option><option value="catalog">CATALOG REFERENCES</option><option value="od">OD TURNING / FACING</option><option value="id">ID BORING / MODULAR HEADS</option><option value="groove">GROOVING</option><option value="thread">THREADING</option><option value="drill">DRILLING / SPECIAL</option></select></label>
+        <label class="field">FAMILY FILTER<select id="toolPresetFamily"><option value="starter">ORIGINAL STARTER SET · 9</option><option value="all">MORE TEMPLATES · ADVANCED</option><option value="catalog">CATALOG REFERENCES</option><option value="od">OD TURNING / FACING</option><option value="id">ID BORING / MODULAR HEADS</option><option value="groove">GROOVING</option><option value="thread">THREADING</option><option value="drill">DRILLING / SPECIAL</option></select></label>
         <label class="field">ISO HOLDER / TOOL TEMPLATE<select id="toolPreset"></select></label>
       </div>
-      <p class="inspect-hint">Select a template, then press <b>F1 ADD NEW TOOL</b>. Selecting a preset never changes the currently displayed or saved tool. The R/L CNMG 80° and DNMG 55° choices use radial/X-mounted catalog-style holders. Geometry is schematic; verify the physical tool before NC.</p>
+      <p class="inspect-hint">The starter set is the original seven tools plus left-hand CNMG 80° and DNMG 55°. Select a template and press <b>F1 ADD NEW TOOL</b>; this never changes the selected saved tool. More templates are under the advanced filter. Geometry is schematic; verify physical mounting before NC.</p>
       
       <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD NEW TOOL</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button><button id="cadToolOpen" class="action-btn" type="button">DXF · IMPORT / EXPORT</button></div>
-      <details class="tip-advanced library-maintenance"><summary>▸ LIBRARY / DEMO TOOLS / RESET</summary><div class="library-maintenance-inner"><div class="library-divider"></div>
-      <div class="section-header"><h2>DEMO TOOLS</h2><span class="small-chip">VALID PRESETS</span></div>
+      <details class="tip-advanced library-maintenance"><summary>▸ SHOP LIBRARY / RESTORE 9 STARTER TOOLS</summary><div class="library-maintenance-inner"><div class="library-divider"></div>
+      <div class="section-header"><h2>STARTER TOOL TABLE</h2><span class="small-chip">7 ORIGINAL + 2 LH</span></div>
       
-      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">REBUILD 6 STANDARD TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button></div>
-      <div class="tool-actions"><button id="purgeBrowserTools" class="action-btn">RESET SAVED TOOLS</button></div>
+      <div class="tool-actions"><button id="resetDemoTools" class="action-btn">REBUILD ORIGINAL 7 + 2 LH TOOLS</button><button id="undoDemoReset" class="small-btn muted">UNDO DEMO RESET</button></div>
+      <div class="tool-actions"><button id="purgeBrowserTools" class="action-btn">CLEAR SAVED SHOP LIBRARY</button></div>
       
       <div class="library-divider"></div>
       <div class="section-header"><h2>SHOP LIBRARY</h2><span class="small-chip">OFFLINE</span></div>
@@ -2136,7 +2137,7 @@ function holderPolygon(tool){
 function renderMountPoint(point,side='front'){
  return {u:point.u,v:side==='rear'?-point.v:point.v};
 }
-/** v0.5.7 corrected six-tool demonstration table. The two OD cutters are
+/** v0.9.38 R3: seven-tool original starter table with two LH OD companions. The two OD cutters are
  * dimensioned catalog family REFERENCE outlines, not certified manufacturer CAD.
  * Remaining process families deliberately retain clearly identified generic
  * envelopes until measured/authorized catalog geometries exist.
@@ -2148,17 +2149,20 @@ const DEMO_TOOL_PRESETS=Object.freeze([
  'catalog_ghdr25_3',    // T04: 3 mm external grooving holder
  'catalog_ser2525m16',  // T05: 16ER laydown OD thread holder
  'drill',                 // T06: generic centerline drill
- 'groove_id'              // T07: generic internal groove (unverified)
+ 'groove_id',             // T07: generic internal groove (unverified)
+ 'catalog_pclnl_2525m12', // T08: LH CNMG 80° companion to T01
+ 'catalog_pdjnl_2525m15'  // T09: LH DNMG 55° companion to T02
 ]);
 const TOOL_TEMPLATE_REVISION='0.6.15';
 // Bump this revision whenever standard-tool pocket, pose, insert or holder
 // defaults change. Browser autosave is NOT the source of truth for presets.
+const STARTER_TEMPLATE_KEYS=new Set(DEMO_TOOL_PRESETS);
 const DEMO_GENERIC_NAMES={6:'CENTERLINE DRILL · GENERIC',7:'ID GROOVE · GENERIC (VERIFY TOOL)'};
 function starterTools(units='inch'){
  return DEMO_TOOL_PRESETS.map((key,i)=>{
   const tool=makeTemplate(key,units,i+1);
   tool.demoTemplate=key;tool.templateGeometryRevision=TOOL_TEMPLATE_REVISION;
-  if(i>=5){tool.name=DEMO_GENERIC_NAMES[i+1];
+  if(DEMO_GENERIC_NAMES[i+1]){tool.name=DEMO_GENERIC_NAMES[i+1];
    tool.notes='EXAMPLE ONLY: nominal, unverified 2D holder and insert. Replace with a measured shop tool before machine planning.';
   }
   tool.verified=false;
@@ -7613,7 +7617,9 @@ function fillToolForm(t){
  // must never trigger the 'new catalog draft' change event automatically.
  if(t.catalog?.code){
   const key=Object.keys(CATALOG_HOLDERS).find(k=>CATALOG_HOLDERS[k].code===t.catalog.code);
-  if(key){$('toolPresetFamily').value='all';$('toolPreset').dispatchEvent(new Event('miniturn-filter-reset'));$('toolPreset').value='catalog_'+key;}
+  if(key){const presetKey='catalog_'+key;
+   if(![...$('toolPreset').options].some(o=>o.value===presetKey)){$('toolPresetFamily').value='all';$('toolPreset').dispatchEvent(new Event('miniturn-filter-reset'));}
+   $('toolPreset').value=presetKey;}
  }else if(t.demoTemplate&&TOOL_PRESETS.some(p=>p.key===t.demoTemplate)){
   if(![...$('toolPreset').options].some(o=>o.value===t.demoTemplate)){$('toolPresetFamily').value='all';$('toolPreset').dispatchEvent(new Event('miniturn-filter-reset'));}
   $('toolPreset').value=t.demoTemplate;
@@ -7988,16 +7994,17 @@ function wireTools(){
   const option=document.createElement('option');option.value=val;option.textContent=name;$(id).append(option);
  }
  const groupFor=p=>p.key.startsWith('catalog_')?'catalog':p.kind.includes('groove')?'groove':p.kind.includes('thread')?'thread':p.kind==='id'?'id':p.kind==='face'||p.kind==='od'?'od':'drill';
- const fillToolPresetList=(filter='all')=>{
+ const fillToolPresetList=(filter='starter')=>{
   const selected=$('toolPreset').value;
   $('toolPreset').replaceChildren();
-  for(const p of TOOL_PRESETS){if(filter!=='all'&&groupFor(p)!==filter)continue;
+  const pool=filter==='starter'?DEMO_TOOL_PRESETS.map(key=>TOOL_PRESETS.find(p=>p.key===key)).filter(Boolean):TOOL_PRESETS;
+  for(const p of pool){if(filter!=='starter'&&filter!=='all'&&groupFor(p)!==filter)continue;
    const option=document.createElement('option');option.value=p.key;option.textContent=p.name;$('toolPreset').append(option);}
   if([...$('toolPreset').options].some(o=>o.value===selected))$('toolPreset').value=selected;
  };
  fillToolPresetList();
  $('toolPresetFamily').addEventListener('change',()=>fillToolPresetList($('toolPresetFamily').value));
- $('toolPreset').addEventListener('miniturn-filter-reset',()=>fillToolPresetList('all'));
+ $('toolPreset').addEventListener('miniturn-filter-reset',()=>fillToolPresetList($('toolPresetFamily').value));
  $('toolPreset').addEventListener('change',()=>{
   // Choosing from the catalog is NOT an edit to the saved, selected tool.
   // The new template enters the tool library only when F1 ADD is pressed.
@@ -8088,37 +8095,43 @@ function wireTools(){
  $('addTool').addEventListener('click',()=>toolAction('add'));$('duplicateTool').addEventListener('click',()=>toolAction('duplicate'));
  $('deleteTool').addEventListener('click',()=>toolAction('delete'));
  document.querySelectorAll('[data-tool-action]').forEach(btn=>btn.addEventListener('click',()=>toolAction(btn.dataset.toolAction)));
- $('purgeBrowserTools').addEventListener('click',()=>{
-  if(!confirm('CLEAR ALL PREVIOUS TOOL DEFINITIONS saved by MiniTurn in this browser?\n\nThis will replace all active-job tools with the latest six demo tools and DELETE your browser-saved reusable shop tool library. It does NOT remove part geometry, display settings, exported JSON files, or any ChatGPT history.\n\nExisting operation tool assignments will be rebuilt and need review. This cannot be undone from the old library unless you exported a JSON backup.'))return;
-  const tools=starterTools(job.units);
-  const operations=(job.operations||[]).map(op=>({...op,
-    toolId:op.kind==='od_finish'?tools[1].id:tools[0].id}));
-  const next={...job,tools,operations,inspectionPositions:{}};
-  const checked=validateJob(next);
-  if(checked.errors.length){notify('TOOL RESET BLOCKED: '+checked.errors[0],true);return;}
-  try{
-    // Do not destroy any unrelated browser preferences, version settings,
-    // or profile/job coordinates. A JSON export is the backup mechanism.
-    localStorage.removeItem(LIB_KEY);
-    localStorage.removeItem(DEMO_BACKUP_KEY);
-    localStorage.removeItem(AUTO_DEMO_BACKUP_KEY);
-    job=next;toolSelected=0;opSelected=0;toolDirty=false;inspectedToolId=null;
-    refreshToolWorkspace();autosave();
-    notify('OLD BROWSER TOOLS CLEARED · CORRECTED TOOL POSES LOADED');
-  }catch(err){notify('TOOL RESET FAILED: '+err.message,true);}
- });
+ // Preserve jobs and their operation/tool links. Rebuilding the starter table is
+ // explicit, backup-first, and is blocked if any operation uses a nonstarter
+ // or customized tool. Never silently reassign form tools to the OD cutter.
+ function starterResetCandidate(){
+  const fresh=starterTools(job.units);
+  const byPreset=new Map(fresh.map(t=>[t.demoTemplate,t]));
+  const byCatalog=new Map(fresh.filter(t=>t.catalog?.code).map(t=>[t.catalog.code,t]));
+  const oldById=new Map(job.tools.map(t=>[t.id,t]));
+  const operations=[];
+  for(let i=0;i<(job.operations||[]).length;i++){
+   const op=job.operations[i],old=oldById.get(op.toolId);
+   if(!old)return {error:`STEP ${i+1} REFERENCES AN UNKNOWN TOOL. EXPORT JOB AND CORRECT IT BEFORE RESET.`};
+   if(old.userCustomized||old.verified)return {error:`STEP ${i+1} USES A CUSTOMIZED / VERIFIED TOOL (${old.name}). KEEP THAT JOB OR EXPORT IT BEFORE STARTER RESET.`};
+   const match=byPreset.get(old.demoTemplate)||byCatalog.get(old.catalog?.code);
+   if(!match)return {error:`STEP ${i+1} USES ${old.name}, NOT ONE OF THE NINE STARTER TOOLS. RESET WOULD BREAK ITS TOOL ASSIGNMENT.`};
+   operations.push({...op,toolId:match.id});
+  }
+  const candidate={...job,tools:fresh,operations,inspectionPositions:{}};
+  const check=validateJob(candidate);
+  if(check.errors.length)return {error:check.errors[0]};
+  return {candidate};
+ }
  $('resetDemoTools').addEventListener('click',()=>{
-  if(toolDirty&&!confirm('Discard unsaved tool edits before resetting the demonstration table?'))return;
-  if(!confirm('REBUILD ALL SIX DEMO TOOLS (T01–T06)?\nThis replaces the CURRENT JOB tool table, including custom tools in it. Your separately saved SHOP LIBRARY is untouched. Current job is backed up locally. Existing operations will be reassigned to demonstration tools and must be rechecked.'))return;
-  const previous=structuredClone(job),tools=starterTools(job.units);
-  const remapped=(job.operations||[]).map(op=>({...op,toolId:op.kind==='od_finish'?tools[1].id:tools[0].id}));
-  const next={...job,tools,operations:remapped,inspectionPositions:{}};
-  const check=validateJob(next);
-  if(check.errors.length){notify('RESET BLOCKED: '+check.errors[0],true);return;}
-  try{localStorage.setItem(DEMO_BACKUP_KEY,JSON.stringify(previous));}
-  catch{notify('COULD NOT SAVE SAFETY BACKUP. EXPORT YOUR JOB BEFORE RESETTING.',true);return;}
-  job=next;toolSelected=0;toolDirty=false;opSelected=0;refreshToolWorkspace();autosave();
-  notify('SIX VALID DEMO TOOLS LOADED · OLD JOB BACKED UP · VERIFY OPERATIONS');
+  if(toolDirty&&!confirm('Discard unsaved tool editor changes?'))return;
+  const outcome=starterResetCandidate();
+  if(outcome.error){notify('STARTER RESET BLOCKED: '+outcome.error,true);return;}
+  if(!confirm('REBUILD THE ORIGINAL 7 STANDARD TOOLS + 2 LEFT-HAND OD TOOLS (T01–T09)?\n\nThis replaces only the CURRENT JOB tool table. Your separately saved shop library is untouched. Existing operations using matching unmodified starter tools keep their correct tool family; other operations block reset. An undo backup is saved locally.'))return;
+  try{localStorage.setItem(DEMO_BACKUP_KEY,JSON.stringify(job));}
+  catch{notify('BACKUP FAILED. EXPORT THE JOB JSON BEFORE RESETTING.',true);return;}
+  job=outcome.candidate;toolSelected=0;toolDirty=false;opSelected=0;
+  refreshToolWorkspace();autosave();
+  notify('9 STARTER TOOLS LOADED · ORIGINAL SEVEN + TWO LH · UNDO AVAILABLE');
+ });
+ $('purgeBrowserTools').addEventListener('click',()=>{
+  if(!confirm('DELETE ONLY THE SEPARATELY SAVED SHOP TOOL LIBRARY FROM THIS BROWSER?\n\nCurrent job tools, operations, exported files and the undo backup will NOT be changed. To rebuild current job tools, use REBUILD ORIGINAL 7 + 2 LH TOOLS above.'))return;
+  try{localStorage.removeItem(LIB_KEY);notify('BROWSER SHOP LIBRARY CLEARED · CURRENT JOB UNCHANGED');}
+  catch(err){notify('LIBRARY CLEAR FAILED: '+err.message,true);}
  });
  $('undoDemoReset').addEventListener('click',()=>{
   if(toolDirty&&!confirm('Discard unsaved tool edits to restore the prior job?'))return;
