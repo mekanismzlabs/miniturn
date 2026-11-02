@@ -592,7 +592,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .nc-study-op-choice.disabled-op{opacity:.7}
 .nc-study-section-note{margin:7px 0;color:#e6c789;font-size:11px;line-height:1.6}
 </style>
-<title>MiniTurn v0.9.38 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.38 R2 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -757,7 +757,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.38 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.38 R2 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -880,7 +880,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <label class="field">FAMILY FILTER<select id="toolPresetFamily"><option value="all">ALL STANDARD TOOLS</option><option value="catalog">CATALOG REFERENCES</option><option value="od">OD TURNING / FACING</option><option value="id">ID BORING / MODULAR HEADS</option><option value="groove">GROOVING</option><option value="thread">THREADING</option><option value="drill">DRILLING / SPECIAL</option></select></label>
         <label class="field">ISO HOLDER / TOOL TEMPLATE<select id="toolPreset"></select></label>
       </div>
-      <p class="inspect-hint">Editable starting geometry; physical tool, insert mounting and clearance must be confirmed. Presets never overwrite saved shop tools automatically.</p>
+      <p class="inspect-hint">Select a template, then press <b>F1 ADD NEW TOOL</b>. Selecting a preset never changes the currently displayed or saved tool. The R/L CNMG 80° and DNMG 55° choices use radial/X-mounted catalog-style holders. Geometry is schematic; verify the physical tool before NC.</p>
       
       <div class="tool-actions"><button id="addTool" class="action-btn primary">F1 · ADD NEW TOOL</button><button id="duplicateTool" class="action-btn">F3 · DUPLICATE</button><button id="deleteTool" class="action-btn warn">F4 · DELETE</button><button id="cadToolOpen" class="action-btn" type="button">DXF · IMPORT / EXPORT</button></div>
       <details class="tip-advanced library-maintenance"><summary>▸ LIBRARY / DEMO TOOLS / RESET</summary><div class="library-maintenance-inner"><div class="library-divider"></div>
@@ -953,7 +953,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <button type="button" id="insertTrimPlus">+ 0.25°</button>
         <button type="button" id="applyMountPreset">APPLY STANDARD CLEARANCE</button>
       </div>
-      <button type="button" id="applyOdStartingPose" class="action-btn inspect-wide">STANDARD OD POSE</button>
+      <button type="button" id="applyOdStartingPose" class="action-btn inspect-wide">STANDARD OD POSE · KEEP HAND</button>
       
       <div class="tip-direction-readout" id="insertAngleReadout">INSERT TO HOLDER: 0°</div>
       
@@ -1720,9 +1720,9 @@ const TOOL_PRESETS=[
  // never assigned OEM model numbers or certified head clearance.
  {key:'od_c_r04',name:'OD R · CNMG 80° · R0.4 mm',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.015748,angle:180},
  {key:'od_c_r08',name:'OD R · CNMG 80° · R0.8 mm',kind:'od',shape:'C',hand:'R',ic:.5,noseRadius:.031496,angle:180},
- {key:'od_c_l08',name:'OD L · CNMG 80° · R0.8 mm',kind:'od',shape:'C',hand:'L',ic:.5,noseRadius:.031496,angle:180},
+ {key:'od_c_l08',name:'OD L · CNMG 80° · PCLNL',kind:'od',shape:'C',hand:'L',ic:.5,noseRadius:.031496,angle:180},
  {key:'od_d_r04',name:'OD R · DNMG 55° · R0.4 mm',kind:'od',shape:'D',hand:'R',ic:.5,noseRadius:.015748,angle:180},
- {key:'od_d_l04',name:'OD L · DNMG 55° · R0.4 mm',kind:'od',shape:'D',hand:'L',ic:.5,noseRadius:.015748,angle:180},
+ {key:'od_d_l04',name:'OD L · DNMG 55° · PDJNL',kind:'od',shape:'D',hand:'L',ic:.5,noseRadius:.015748,angle:180},
  {key:'od_v_r02',name:'OD FINE R · VNMG 35° · R0.2 mm',kind:'od',shape:'V',hand:'R',ic:.375,noseRadius:.007874,angle:180},
  {key:'od_v_r04',name:'OD FINE R · VNMG 35° · R0.4 mm',kind:'od',shape:'V',hand:'R',ic:.375,noseRadius:.015748,angle:180},
  {key:'od_t_r04',name:'OD R · TNMG 60° · R0.4 mm',kind:'od',shape:'T',hand:'R',ic:.375,noseRadius:.015748,angle:180},
@@ -1788,6 +1788,11 @@ function defaultPocket(t){
 function reseatInsertAtDatum(t){const result=structuredClone(t);result.pocket=defaultPocket(result);result.verified=false;return result;}
 function makeTemplate(key='od_c',units='inch',station=1){
  if(key.startsWith('catalog_'))return makeCatalogTool(key.slice(8),units,station);
+ // The only additional OD left-hand presets are exact counterparts of the
+ // established right-hand 80° / 55° catalog families. No generic axial/Z
+ // holder is substituted for an OD radial/X-mounted lathe tool.
+ if(key==='od_c_l08')return makeCatalogTool('pclnl_2525m12',units,station);
+ if(key==='od_d_l04')return makeCatalogTool('pdjnl_2525m15',units,station);
  const t=TOOL_PRESETS.find(x=>x.key===key);
  if(!t)throw new Error('Unknown tool preset');
  const scale=units==='mm'?25.4:1;
@@ -1833,13 +1838,12 @@ function applyOdStartingOrientation(tool,hand='R'){
  t.angle=t.holderBaseAngle;
  if(t.mountedRelief==null){const r=recommendedMountedClearance(t.shape);if(r!==null)t.mountedRelief=r;}
  if(!Number.isFinite(t.insertFineAngle))t.insertFineAngle=0;
- if(t.catalog?.approach&&hand==='R'&&DIAMOND_ANGLES[t.shape]){
-  t.cutCorner='chuck-inward';
-  t.insertSeatAngle=t.catalog.approach-t.angle-insertMountOffset(t)+DIAMOND_ANGLES[t.shape]/2;
- }else if(t.catalog?.approach){
-  // No validated left-hand catalog outline is present in this release.
-  delete t.cutCorner;
-  t.verified=false;
+ if(t.catalog?.approach&&DIAMOND_ANGLES[t.shape]){
+  // R side is unchanged. Left-hand matches the current PCLNL/PDJNL starter
+  // pose instead of clearing the cutting-corner orientation.
+  t.cutCorner=hand==='L'?'chuck-outward':'chuck-inward';
+  const kapr=hand==='L'?180-t.catalog.approach:t.catalog.approach;
+  t.insertSeatAngle=kapr-t.angle-insertMountOffset(t)+DIAMOND_ANGLES[t.shape]/2;
  }
  t.pocket=defaultPocket(t);t.verified=false;
  return t;
@@ -7995,19 +7999,9 @@ function wireTools(){
  $('toolPresetFamily').addEventListener('change',()=>fillToolPresetList($('toolPresetFamily').value));
  $('toolPreset').addEventListener('miniturn-filter-reset',()=>fillToolPresetList('all'));
  $('toolPreset').addEventListener('change',()=>{
-  if(!job.tools.length)return;
-  if(toolDirty&&!confirm('Discard unsaved tool edits and preview the selected standard tool?')){
-   return;
-  }
-  try{
-   const previous=job.tools[toolSelected];
-   const t=makeTemplate($('toolPreset').value,job.units,previous.station);
-   t.id=previous.id;t.station=previous.station;t.offset=previous.offset;
-   t.mountSide=previous.mountSide;t.tipReference=previous.tipReference==='nose'&&t.noseRadius>0?'nose':'virtual';
-   toolDraftBase=t;fillToolForm(t);toolDirty=true;
-   drawToolPreview();
-   notify(`${t.name} LOADED AS PREVIEW · F2 SAVE CURRENT / F1 ADD NEW`);
-  }catch(err){notify(err.message,true);}
+  // Choosing from the catalog is NOT an edit to the saved, selected tool.
+  // The new template enters the tool library only when F1 ADD is pressed.
+  notify('TEMPLATE SELECTED · F1 ADD TO TOOL LIBRARY · SAVED TOOL UNCHANGED');
  });
  $('toolMountAxis').addEventListener('change',()=>{
   try{const t=readToolForm();const target=$('toolMountAxis').value;
@@ -8064,7 +8058,7 @@ function wireTools(){
  });
  $('applyOdStartingPose').addEventListener('click',()=>{
   try{
-   const updated=applyOdStartingOrientation(readToolForm(),'R');
+   const updated=applyOdStartingOrientation(readToolForm(),$('toolHand').value);
    $('toolHand').value=updated.hand;
    $('toolTipDirection').value=String(updated.tipDirection);
    $('toolAngleFine').value=String(updated.angleAdjust);
@@ -8075,7 +8069,7 @@ function wireTools(){
    $('toolMountedRelief').value=updated.mountedRelief??'';
    $('toolVerified').checked=false;
    toolDirty=true;drawToolPreview();
-   notify('OD RIGHT STARTING POSE LOADED — F2 SAVE TOOL');
+   notify('OD '+updated.hand+' HAND STARTING POSE LOADED — CHECK GRAPH THEN F2 SAVE');
   }catch(err){notify(err.message,true);}
  });
  $('reseatInsert').addEventListener('click',()=>{
