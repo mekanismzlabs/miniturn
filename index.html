@@ -514,7 +514,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .cad-actions button{flex:1 1 160px;min-height:39px}
 @media(max-width:720px){.cad-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cad-import-layout{grid-template-columns:1fr}#cadDialog{padding:11px}.cad-preview svg{height:230px}}
 
-/* v0.9.36 help-link-only update: external illustrated guide */
+/* v0.9.37 help-link-only update: external illustrated guide */
 .guide-link{display:inline-flex;align-items:center;justify-content:center;min-height:37px;padding:8px 11px;border:1px solid #6acaa5;border-radius:5px;background:#1e4537;color:#f2dc8d;text-decoration:none;font-size:11px;font-weight:700;white-space:nowrap;letter-spacing:.45px}
 .guide-link:hover{background:#28614c;color:#fff1bc}
 .guide-link:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
@@ -577,8 +577,17 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 #opZoomLabel{font:11px monospace;color:var(--amber);min-width:40px;text-align:center}
 .op-zoom-hint{font:10px monospace;color:var(--mute);margin-right:auto}
 @media(max-width:620px){.mt-mini-figure{width:216px;left:8px;right:auto;bottom:calc(var(--mt-dock-height,146px) + var(--mt-input-height,0px) + 18px)}.op-zoom-hint{width:100%;font-size:9px}.mt-mini-caption{font-size:9px}}
+/* v0.9.37 - multi-operation NC studies (selection is session-local) */
+.nc-study-selection{margin:10px 0;padding:12px;border:1px solid #335f4f;border-radius:7px;background:#0b1c17}
+.nc-study-selection[hidden]{display:none}
+.nc-study-select-actions{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0}
+.nc-study-op-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:5px;max-height:235px;overflow-y:auto;padding:5px;border:1px solid #2c4a3e;border-radius:5px}
+.nc-study-op-choice{display:flex;gap:9px;align-items:center;min-width:0;padding:7px 8px;border:1px solid #284638;border-radius:5px;background:#0b1a17;font-size:11px;letter-spacing:.15px;overflow-wrap:anywhere}
+.nc-study-op-choice input{width:17px;height:17px;flex:none;accent-color:#8bddb6}
+.nc-study-op-choice.disabled-op{opacity:.7}
+.nc-study-section-note{margin:7px 0;color:#e6c789;font-size:11px;line-height:1.6}
 </style>
-<title>MiniTurn v0.9.36 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.37 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -732,7 +741,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
  .operation-editor-panel input,.operation-editor-panel select,.operation-editor-panel textarea,
  .operation-list-panel select {font-size:16px!important;}
 }
-/* v0.9.36 · compact post-code study view, scroll inside code rather than widening mobile layout */
+/* v0.9.37 · compact post-code study view, scroll inside code rather than widening mobile layout */
 .nc-study-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
 .nc-study-fields .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .nc-study-fields select{width:100%;min-width:0;max-width:100%;font:12px Consolas,monospace;padding:11px;color:#c8e6d8;background:#102920;border:1px solid #507260;border-radius:6px}
@@ -743,7 +752,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.36 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.37 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -1411,12 +1420,18 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <div class="job-export-buttons"><button id="pfExportSetup" class="action-btn primary">SAVE SETUP SHEET .TXT</button><button id="pfExportPlan" class="action-btn">EXPORT PROCESS PLAN .JSON</button><button id="pfExportNC" class="action-btn" disabled title="Unavailable until verified toolpaths and a qualified machine post exist">NC OUTPUT · LOCKED</button></div>
       <details class="preflight-detail" id="pfCodeStudyPanel" open>
         <summary>16 / GENERIC G-CODE POST STUDY · REVIEW ONLY</summary>
-        <p class="job-small-note">All 12 operation types are selectable. 10 types generate unverified G00/G01/G02/G03 motion studies from the scrubber's planned moves. G02/G03 use tolerance-checked circular fits in physical G18 Z/radius geometry, incremental radial I and axial K; choose LINE ONLY to compare. OD/ID THREAD produce commented thread-envelope studies ONLY — no unsynchronized G01, G32 or G76. Special-contour dwell requests are comments, NOT executable G04. Unchanged X/Z words and zero-distance moves are omitted. Only continuous FEED segments are eligible for arc fitting; rapids and short/uncertain curves remain lines. G-code arc paths and all tool clearances remain unverified. Haas, FANUC-A and Doosan / MANUAL GUIDE i syntax studies are NOT qualified posts. No tool call, spindle, work offset, coolant, or verified machine-clearance commands. Do not send to a CNC.</p>
+        <p class="job-small-note">Select one step or any group of enabled steps in job order. Motion integrity is checked uniformly across all 12 operation types; 10 types generate unverified G00/G01/G02/G03 motion studies from the scrubber's planned moves. G02/G03 use tolerance-checked circular fits in physical G18 Z/radius geometry, incremental radial I and axial K; choose LINE ONLY to compare. OD/ID THREAD produce commented thread-envelope studies ONLY — no unsynchronized G01, G32 or G76. Special-contour dwell requests are comments, NOT executable G04. Unchanged X/Z words and zero-distance moves are omitted. Only continuous FEED segments are eligible for arc fitting and collinear consolidation; rapids and short/uncertain curves remain lines. G-code arc paths and all tool clearances remain unverified. Haas, FANUC-A and Doosan / MANUAL GUIDE i syntax studies are NOT qualified posts. No tool call, spindle, work offset, coolant, or verified machine-clearance commands. Do not send to a CNC.</p>
         <div class="nc-study-fields">
           <label class="field">CODE DIALECT<select id="pfStudyPost"><option value="haas_ngc">HAAS LATHE / NGC · G99 STUDY</option><option value="fanuc_a">GENERIC FANUC-A · G99 STUDY</option><option value="doosan_mgi">DOOSAN PUMA / FANUC MANUAL GUIDE i · G1900/G1901</option></select></label>
-          <label class="field">SELECT OPERATION<select id="pfStudyStep"></select></label>
+          <label class="field">EXPORT SCOPE<select id="pfStudyScope"><option value="single">ONE OPERATION</option><option value="selected">SELECTED OPERATIONS · IN JOB ORDER</option></select></label>
+          <label class="field" id="pfStudySingleField">SINGLE OPERATION<select id="pfStudyStep"></select></label>
           <label class="field">CIRCULAR MOVES<select id="pfStudyArcs"><option value="auto">AUTO · G02/G03 I/K (G18)</option><option value="linear">G01 ONLY · COMPARISON</option></select></label>
           <label class="field">MAX FIT ERROR<select id="pfStudyArcTol"><option value="tight">TIGHT · 0.00002 IN / 0.0005 MM</option><option value="normal">STANDARD · 0.00005 IN / 0.0013 MM</option></select></label>
+        </div>
+        <div class="nc-study-selection" id="pfStudySelection" hidden>
+          <div class="job-small-note">CHOOSE ANY OPERATION(S) FOR THIS REVIEW EXPORT. Ordered by the MACHINING SEQUENCE, not by selection order. Disabled operations cannot be selected. This is a collection of independent study fragments — no tool changes or safe inter-operation links are emitted.</div>
+          <div class="nc-study-select-actions"><button class="action-btn" type="button" id="pfStudyAll">SELECT ENABLED</button><button class="action-btn" type="button" id="pfStudyNone">CLEAR</button><button class="action-btn" type="button" id="pfStudyOnly">ONLY CURRENT STEP</button></div>
+          <div class="nc-study-op-list" id="pfStudyOpChecks" role="group" aria-label="Operations to include in G-code study"></div>
         </div>
         <div class="job-export-buttons"><button class="action-btn primary" type="button" id="pfStudyBuild">GENERATE G-CODE STUDY</button><button class="action-btn" type="button" id="pfStudyDownload" disabled>SAVE REVIEW .TXT</button></div>
         <div class="motion-notice" id="pfStudyStatus" role="status">12 OPERATION TYPES · G00/G01/G02/G03 STUDIES · 2 THREAD ENVELOPE STUDIES. ALL NC MACHINE EXPORT LOCKED.</div>
@@ -2473,7 +2488,7 @@ const {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,de
  * X is diameter, Z is axial; DOC, radial finish allowance and radial clearance are PHYSICAL radii.
  * Feed is length/revolution; RPM is revolutions/minute. No G96/CSS in this release.
  */
-const OPERATION_VERSION='0.9.36';
+const OPERATION_VERSION='0.9.37';
 const OP_KINDS={form_profile:'FORM TOOL · RADIAL',od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',special_profile:'SPECIAL CONTOUR',od_thread:'OD THREAD',id_rough:'ID ROUGH',id_finish:'ID FINISH',id_groove:'ID GROOVE',id_thread:'ID THREAD',drill:'DRILL / PECK'};
 const isIdOperation=k=>['id_rough','id_finish','id_groove','id_thread'].includes(k);
 const isBoreOperation=k=>['id_rough','id_finish'].includes(k);
@@ -3255,7 +3270,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.9.36 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.9.37 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -3979,7 +3994,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.36. G-code studies are REVIEW TEXT only.';
+const NC_EXPORT_DISABLED_REASON='No verified cutting-motion IR, complete swept clearance, or qualified controller post exists in v0.9.37. G-code studies are REVIEW TEXT only.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -4893,6 +4908,15 @@ function shiftedStockPlanToWork(plan,shift){
   }
  }
  walk(result);result.sourceStockFrontZ=shift;result.coordinateFrame='WORK_Z';
+ // The pass-detail text is not a numeric Z coordinate; the legacy translator
+ // moved the actual feed Z but left a stale local-frame 'Z-0.005' annotation.
+ if(result.passes){for(const p of result.passes){
+  if(p.detail?.startsWith('FACE / ')){
+   const faceCut=p.moves?.find(m=>m.role==='face-X-plus-cut'||m.role==='face-X-minus-cut');
+   if(faceCut)p.detail=p.detail.replace(/ · Z[-+]?\d+(?:\.\d+)?(?= ·|$)/,` · WORK Z${mpRound(faceCut.z)}`);
+  }
+  p.coordinateFrame='WORK_Z';
+ }}
  result.warnings=[...result.warnings,`TRANSLATED STOCK: raw front Z+${mpRound(shift)}, coordinates restored to work Z0. Stock/face preview is nominal; cutter, jaws, fixture and machine-safe travel NOT certified.`];
  return result;
 }
@@ -5169,13 +5193,16 @@ function specialFormDatumPath(source,profile,tool,contactTrace){
  const L=source.nodes[d.fromIndex],R=source.nodes[d.toIndex];
  if(!L||!R)return {error:'FORM TOOL EDGE: its source point range is no longer present.'};
  const centerU=(-L.z-R.z)/2;
- const selectedU=(contactTrace[0].u+contactTrace.at(-1).u)/2;
- const chooseMin=selectedU<centerU;
+ // The entry shoulder determines which cutting lip is the intended contact.
+ // The AVERAGE of a complete symmetric groove is its CENTER; using it to
+ // choose the lip incorrectly chose the rear lip on a front-first sweep.
+ const selectedU=contactTrace[0].u;
+ const chooseMin=selectedU<=centerU;
  const lip=edge.reduce((best,e)=>!best||(chooseMin?e.u<best.u:e.u>best.u)?e:best,null);
  const rawFront=Number(source.stock.frontZ)||0,rawRear=rawFront-source.stock.length;
  const minU=-rawFront,maxU=-rawRear;
  const toolProfile=edge.slice();
- const out=[];let lifted=0,limitingOther=0,firstLimiting=null;
+ const out=[],contactReview=[];let lifted=0,limitingOther=0,firstLimiting=null;
  const eps=source.units==='inch'?.00005:.00127;
  for(const contact of contactTrace){
   const datumU=contact.u-lip.u,requestedV=contact.v-lip.v;
@@ -5193,8 +5220,11 @@ function specialFormDatumPath(source,profile,tool,contactTrace){
   if(datumV>requestedV+eps*2)lifted++;
   if(active&&Math.abs(active.u-lip.u)>eps*4){limitingOther++;if(!firstLimiting)firstLimiting={u:datumU+active.u,v:datumV+active.v};}
   out.push({u:datumU,v:datumV});
+  contactReview.push({targetU:contact.u,targetV:contact.v,datumU,datumV,
+   actualLipU:datumU+lip.u,actualLipV:datumV+lip.v,
+   radialLift:Math.max(0,datumV+lip.v-contact.v),limitingEdgeU:active?.u??null});
  }
- return {trace:out,lip,lipSide:chooseMin?'Z+ FACE':'Z− CHUCK',lifted,limitingOther,firstLimiting,
+ return {trace:out,contactReview,lip,lipSide:chooseMin?'Z+ FACE':'Z− CHUCK',lifted,limitingOther,firstLimiting,
   warnings:[`FULL FORM EDGE: ${out.length} sampled datum poses; ${lifted} lifted outward by the finished-surface envelope, ${limitingOther} controlled by a cutting-edge point other than the selected lip.`,
    'The virtual contact trace is NOT an approved cut. Where the opposing lip determines clearance, one-flank cutting may fail to reach the desired surface. Use separate opposite-side access and a controlled bottom cleanup.']};
 }
@@ -5404,11 +5434,33 @@ function nominalMotionForOperation(source,op,profileArg=null){
   if(formDatum)warnings.push(...formDatum.warnings);
   const trace=formDatum?formDatum.trace:hasNose?specialComp.centerTrace:contact;
   if(trace.length<3)return blocked('WHOLE GROOVE: tool path contains too few poses.');
-  // Match the physical bottom location in U, rather than assuming the nose
-  // center/contact spline samples have identical vertex counts.
-  const centerU=bottom.u;
-  let finishIndex=trace.reduce((best,p,i)=>Math.abs(p.u-centerU)<Math.abs(trace[best].u-centerU)?i:best,0);
+  // PHYSICAL CONTACT FRAME vs TOOL-DATUM FRAME: never compare bottom.u to
+  // shifted datum.u. A custom full-form path preserves one pose per source
+  // contact sample, so the requested physical bottom is at SAME INDEX.
+  // A nose-center path has a different sample parameterization; match by
+  // normalized cumulative arc length rather than mixing positions in U.
+  let finishIndex;
+  if(formDatum){
+   if(formDatum.contactReview.length!==contact.length||trace.length!==contact.length)
+    return blocked('WHOLE GROOVE: F11 contact-to-datum correspondence missing. Do not post a guessed midpoint.');
+   finishIndex=midIndex;
+  }else if(hasNose){
+   const prefix=(path,idx)=>{let distance=0;for(let i=1;i<=idx;i++)distance+=Math.hypot(path[i].u-path[i-1].u,path[i].v-path[i-1].v);return distance;};
+   const fraction=prefix(contact,midIndex)/Math.max(1e-12,prefix(contact,contact.length-1));
+   const target=fraction*prefix(trace,trace.length-1);
+   let distance=0;finishIndex=1;let error=Infinity;
+   for(let i=1;i<trace.length-1;i++){distance+=Math.hypot(trace[i].u-trace[i-1].u,trace[i].v-trace[i-1].v);
+    if(Math.abs(distance-target)<error){error=Math.abs(distance-target);finishIndex=i;}}
+  }else finishIndex=midIndex;
   finishIndex=Math.max(1,Math.min(trace.length-2,finishIndex));
+  const physicalMidpoint={u:bottom.u,v:bottom.v};
+  const datumMidpoint=trace[finishIndex];
+  const midContact=formDatum?.contactReview[finishIndex]||null;
+  if(midContact&&Math.abs(midContact.actualLipU-physicalMidpoint.u)>tol*3)
+   return blocked('WHOLE GROOVE: final form lip does not align axially to the physical bottom.');
+  if(midContact?.radialLift>Math.max(tol*3,source.units==='inch'?.0001:.00254))
+   warnings.push(`MIDPOINT CONTACT NOT REACHED: full form edge holds selected lip radially OUT by ${mpRound(midContact.radialLift)} ${source.units}. Correct tool/form access before considering a finishing cut.`);
+  if(hasNose)warnings.push('MIDPOINT NOSE PATH: matched by contour progress, NOT measured physical contact. Review nose-center offset and endpoint against actual insert geometry.');
   const rawFrontZ=Number(source.stock.frontZ)||0,rawRearZ=rawFrontZ-source.stock.length;
   const axialTolerance=source.units==='inch'?.00005:.00127;
   const zPositions=trace.map(q=>-q.u),traceMinZ=Math.min(...zPositions),traceMaxZ=Math.max(...zPositions);
@@ -5464,7 +5516,16 @@ function nominalMotionForOperation(source,op,profileArg=null){
    pass.specialRetraceVerified=false;pass.specialDwellRevolutions=fin?dw:0;
    if(fin&&dw){const m=pass.moves.find(m=>m.role==='special-groove-midpoint-dwell-review');if(m){m.spindleRevolutions=dw;m.previewOnly=true;}}
    pass.motionReference=hasNose?'PHYSICAL_NOSE_CENTER_CANDIDATE':customForm?'FULL_FORM_EDGE_ENVELOPE_DATUM_CANDIDATE':'NOMINAL_SHARP_TIP';
-   pass.coordinateFrame='WORK_Z';pass.specialStockZBounds={rawRearZ:mpRound(rawRearZ),rawFrontZ:mpRound(rawFrontZ),flankMinZ:mpRound(traceMinZ),flankMaxZ:mpRound(traceMaxZ),safeFrontZ,verified:false};
+   pass.coordinateFrame='WORK_Z';
+   if(fin){pass.physicalFinishContact={
+     targetZ:mpRound(-physicalMidpoint.u),targetX:mpRound(2*physicalMidpoint.v),
+     datumZ:mpRound(-datumMidpoint.u),datumX:mpRound(2*datumMidpoint.v),
+     lipContactZ:midContact?mpRound(-midContact.actualLipU):null,
+     lipContactX:midContact?mpRound(2*midContact.actualLipV):null,
+     radialUncut:midContact?mpRound(midContact.radialLift):null,
+     frame:customForm?'F11_FULL_EDGE_DATUM_TO_PART_CONTACT':hasNose?'NOSE_CENTER_TO_PART_CONTACT_ESTIMATE':'PART_CONTACT_IS_NOMINAL_TIP',
+     verified:false
+   };}pass.specialStockZBounds={rawRearZ:mpRound(rawRearZ),rawFrontZ:mpRound(rawFrontZ),flankMinZ:mpRound(traceMinZ),flankMaxZ:mpRound(traceMaxZ),safeFrontZ,verified:false};
    if(formDatum)pass.specialFormContactReview={edgeLip:formDatum.lipSide,toolU:mpRound(formDatum.lip.u),toolV:mpRound(formDatum.lip.v),liftedPoses:formDatum.lifted,opposingEdgeControlled:formDatum.limitingOther,verified:false};
    pass.specialEdgeReview=specialToolEdgeAudit(source,op,profile,tool,path,hasNose);
    passTraces.push([...path,{u:endP.u,v:outsideX/2}]);
@@ -6054,6 +6115,17 @@ function nominalMotionForOperation(source,op,profileArg=null){
   }
  }
  const uniqWarnings=[...new Set(warnings)];warnings.length=0;warnings.push(...uniqWarnings);
+ // Uniform review contract for ALL 12 operation families. Roles identify
+ // nominal tool datum/physical nose/centerline and NEVER imply G41/G42.
+ for(const p of passes){
+  p.coordinateFrame='WORK_Z';p.programAxes='X_DIAMETER_Z_AXIAL';
+  p.motionReference=p.motionReference||(op.kind==='drill'?'CENTERLINE_DRILL_AXIS':
+   ['od_thread','id_thread'].includes(op.kind)?'UNSYNCHRONIZED_THREAD_ENVELOPE':
+   op.kind==='form_profile'?'FORM_TOOL_NOMINAL_DATUM':
+   (['od_finish','id_finish'].includes(op.kind)&&tool.noseRadius>0?'PHYSICAL_NOSE_CENTER_CANDIDATE':'NOMINAL_TIP_OR_TOOL_DATUM'));
+  p.toolGeometryVerified=tool.verified===true;
+  p.motionQualified=false;
+ }
  const moves=passes.flatMap(p=>p.moves.map(m=>({pass:p.number,...m}))); 
  const compensation=splitFinishPlan?.compensation||specialComp||previewNoseComp(source,op,profile,tool);
  const leadPreview=splitFinishPlan?{status:'NOT_EVALUATED',reason:'Split land approaches are represented by each independent pass.',segments:[],verified:false}:finishLeadCandidates(op,compensation);
@@ -6634,7 +6706,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.9.36',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.9.37',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,displayOrientation:'CHUCK_LEFT_Z0_RIGHT',displayOrientationNotInCode:true,workSide:source.workSide,units:source.units},
@@ -6653,7 +6725,7 @@ function emitNCFromPlan(plan){
   throw new Error(NC_EXPORT_DISABLED_REASON);
  throw new Error('POST NOT IMPLEMENTED / NO QUALIFIED NC DRIVER');
 }
-/* v0.9.36 GENERIC LATHE CODE STUDY.
+/* v0.9.37 GENERIC LATHE CODE STUDY.
  * Intentional boundary: an NC review listing, not a qualified post artifact.
  * A single operation is translated from the SAME nominalMotionForOperation() moves
  * shown in the operation scrubber. NO automatic modal machine state is assumed.
@@ -6703,7 +6775,7 @@ function doosanGuideBlankStudy(source){
  ? `G1901 D${n(d)} E${n(e)} L${n(l)} K${n(k)}`
  : `G1900 D${n(d)} L${n(l)} K${n(k)}`,diameter:d,length:l,bore:stock.type==='tube'?e:null,frontAllowance:k};
 }
-/* v0.9.36 - Nominal G18 arc fitting for REVIEW STUDIES, never qualified NC.
+/* v0.9.37 - Nominal G18 arc fitting for REVIEW STUDIES, never qualified NC.
  * Work coordinates: X is DIAMETER; circle geometry uses R=X/2 and Z.
  * G18 is the Z-X plane: signed (Z,R) CCW -> G03, CW -> G02.
  * I is incremental RADIAL offset; K is incremental Z offset (NOT diameter I).
@@ -6781,6 +6853,66 @@ function ncStudyFindArc(start,moves,at,tol,coordDecimals){
  }
  return best;
 }
+/* Common motion integrity audit. Works on the SAME scrubber passes for
+ * every operation/tool type; this is a review constraint, NOT collision proof.
+ * Stops false teleports and invalid coordinate/frame conversions BEFORE post.
+ */
+function ncStudyMotionAudit(source,op,tool,plan){
+ const scale=source.units==='inch'?1:25.4,eps=.00002*scale;
+ const notes=[];let last=null,segments=0;
+ for(const [pi,pass] of plan.passes.entries()){
+  if(!pass.moves?.length)throw Error(`Step ${op.name}: pass ${pi+1} has no motion.`);
+  if(pass.coordinateFrame&&pass.coordinateFrame!=='WORK_Z')throw Error('Unknown coordinate frame: cannot post this plan.');
+  if(pass.programAxes&&pass.programAxes!=='X_DIAMETER_Z_AXIAL')throw Error('Nonlathe motion axes: cannot post this plan.');
+  if(!(Number(pass.feedPerRev??op.feed)>0))throw Error('Nonpositive feed per revolution.');
+  const first=pass.moves[0];
+  if(last&&first.kind!=='rapid'&&Math.hypot((first.x-last.x)/2,first.z-last.z)>eps)
+   throw Error(`Pass ${pi+1} begins with an unconnected FEED (implicit coordinate teleport). Review the planner.`);
+  for(const m of pass.moves){
+   if(!['rapid','feed','dwell','guide'].includes(m.kind)||!Number.isFinite(m.x)||!Number.isFinite(m.z)||m.x<0)
+    throw Error(`Invalid ${op.kind} move or unmapped X/Z coordinate.`);
+   if(m.kind==='dwell'&&(!(m.spindleRevolutions>0)||m.spindleRevolutions>5))throw Error('Invalid spindle-revolution dwell.');
+   if(last&&m.kind==='feed')segments++;
+   last=m;
+  }
+  if(pass.physicalFinishContact){
+   const c=pass.physicalFinishContact;
+   if(Math.abs(c.lipContactZ-c.targetZ)>eps*4&&c.lipContactZ!==null)
+    throw Error('Form-tool midpoint lip Z mismatch: contact and datum frames disagree.');
+   if(c.radialUncut>eps*4)notes.push(`MIDPOINT CONTACT NOT REACHED / LIP LIFT R${c.radialUncut} ${source.units}`);
+   notes.push(`FINAL PHYSICAL TARGET X${c.targetX} Z${c.targetZ}`);notes.push(`FINAL TOOL DATUM X${c.datumX} Z${c.datumZ} / NOT A CONTACT CLAIM`);
+  }
+ }
+ const referenceNames=[...new Set(plan.passes.map(p=>p.motionReference||'NOMINAL_TOOL_DATUM'))];
+ notes.unshift(`MOTION FRAME WORK Z, X DIAMETER; REFERENCE ${referenceNames.join(' + ')}; TOOL ${tool.station} (UNVERIFIED)`);
+ if(op.kind==='form_profile'||op.kind==='special_profile')notes.push('FULL EDGE, HOLDER AND TRUE CUTTING CONTACT ARE NOT CERTIFIED BY THIS AUDIT.');
+ return {notes,segments,coordinateFrame:'WORK_Z',referenceNames,qualified:false};
+}
+/* Reduce adjacent collinear feeds without changing endpoints, role, passes,
+ * direction, feed, dwell, rapids or rounded coordinate discontinuities.
+ * Each intervening physical-radius point must stay within the tolerance.
+ */
+function ncStudyFindLine(start,moves,at,tol,coordDecimals){
+ if(!start||moves[at]?.kind!=='feed')return null;
+ const role=moves[at].role,points=[{x:start.x,z:start.z}];let best=0;
+ const p2=p=>({z:Number(p.z.toFixed(coordDecimals)),r:Number((p.x/2).toFixed(coordDecimals+1))});
+ for(let k=at;k<moves.length&&k<at+800;k++){
+  const m=moves[k];if(m.kind!=='feed'||m.role!==role||!Number.isFinite(m.x)||!Number.isFinite(m.z))break;
+  points.push(m);
+  if(points.length<3)continue;
+  const a=p2(points[0]),b=p2(points.at(-1)),dz=b.z-a.z,dr=b.r-a.r,len=Math.hypot(dz,dr);
+  if(len<=tol)continue;
+  let good=true;
+  for(let i=1;i<points.length-1;i++){
+   const p=p2(points[i]),u=((p.z-a.z)*dz+(p.r-a.r)*dr)/(len*len);
+   const deviation=Math.abs((p.z-a.z)*dr-(p.r-a.r)*dz)/len;
+   if(u<-1e-5||u>1+1e-5||deviation>tol){good=false;break;}
+  }
+  if(!good)break;
+  best=points.length-1;
+ }
+ return best>=2?best:null;
+}
 function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
  const dialect=NC_STUDY_POSTS[postId];if(!dialect)throw Error('Select a supported G-code study dialect.');
  if(source.workSide!=='front')throw Error('Only front/Z0-right setup is supported by the study post.');
@@ -6793,6 +6925,7 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
  if(!tool)throw Error('Select a valid assigned tool before generating code.');
  const planned=nominalMotionForOperation(source,op,figure);
  if(planned.status!=='PREVIEW_ONLY'||!planned.passes?.length)throw Error('Preview blocked: '+(planned.reason||'no usable passes'));
+ const integrity=ncStudyMotionAudit(source,op,tool,planned);
  const totalMoves=planned.passes.reduce((sum,p)=>sum+(p.moves?.length||0),0);
  if(totalMoves>10000)throw Error('More than 10,000 motions: narrow the operation for a review study.');
  if(!['auto','linear'].includes(arcMode)||!['tight','normal'].includes(arcTolerance))throw Error('Invalid arc study setting.');
@@ -6802,7 +6935,7 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
  const feedDecimals=source.units==='inch'?5:4;
  const nn=v=>ncStudyNumber(v,coordDecimals),ff=v=>ncStudyNumber(v,feedDecimals);
  const clean=v=>String(v??'').replace(/[()\r\n%]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,64);
- const lines=['(MINITURN 0.9.36 - EXPERIMENTAL G-CODE MOTION STUDY)',
+ const lines=['(MINITURN 0.9.37 - EXPERIMENTAL G-CODE MOTION STUDY)',
   '(NOT A QUALIFIED MACHINE PROGRAM - DO NOT RUN ON EQUIPMENT)',
   `(POST STUDY ${clean(dialect.label)})`,
   `(JOB ${clean(source.name)} / STEP ${index+1} ${clean(op.name)})`,
@@ -6845,6 +6978,7 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
   lines.push('', '(THREAD ENVELOPE ONLY - NO G00/G01 CUTTING BLOCKS EMITTED)');
  }else{
   lines.push('',`(PATH LIMITATIONS: ${clean(NC_STUDY_NOTES[op.kind]||'PREVIEW GEOMETRY ONLY')})`);
+  for(const note of integrity.notes)lines.push(`(${clean(note)})`);
   if(planned.warnings?.length)lines.push(`(MOTION WARNINGS: ${planned.warnings.length} - CHECK SCRUBBER AND PHYSICAL REVIEW)`);
  }
  // One modal machine-coordinate record per operation, NOT per pass or movement kind.
@@ -6889,6 +7023,21 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
      }
     }
    }
+   // Exact straight-line consolidation complements arc fitting. Never merge
+   // across a motion role boundary, dwell, rapid, feed change, or pass.
+   if(m.kind==='feed'&&lastX!==null&&lastZ!==null&&(x!==lastX||z!==lastZ)){
+    const count=ncStudyFindLine({x:Number(lastX),z:Number(lastZ)},motions,j,
+      Math.max(Math.pow(10,-coordDecimals)*1.25,arcTol*.4),coordDecimals);
+    if(count){
+     const target=motions[j+count-1],ex=nn(target.x),ez=nn(target.z);
+     if(ex!==lastX||ez!==lastZ){
+      const w=['G01'];if(ex!==lastX)w.push(`X${ex}`);if(ez!==lastZ)w.push(`Z${ez}`);
+      if(!feedSet)w.push(`F${ff(f)}`);
+      lines.push(w.join(' '));blocks.push({kind:'feed',code:'G01',x:Number(ex),z:Number(ez),feed:f,role:m.role,consolidated:count});
+      lastX=ex;lastZ=ez;feedSet=true;lineCount++;j+=count;continue;
+     }
+    }
+   }
    const writeX=lastX===null||x!==lastX,writeZ=lastZ===null||z!==lastZ;
    if(!writeX&&!writeZ){j++;continue;}
    const code=m.kind==='rapid'?'G00':'G01';
@@ -6907,7 +7056,7 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
   '(INSERT VERIFIED TOOL SPINDLE OFFSET AND MACHINE CLEARANCES ONLY IN A QUALIFIED POST)',
   '(DO NOT USE THIS LISTING TO CUT METAL)');
  return {text:lines.join('\n')+'\n',profile:postId,operationIndex:index,kind:op.kind,moveCount:blocks.length,arcCount,lineCount,rapidCount,maxArcError,arcMode,arcTol,passCount:planned.passes.length,blocks,reviewEvents,threadGuide,
-  fingerprint:pfFingerprintFor(source),sourceMoves:totalMoves,guideBlank,unverified:true};
+  fingerprint:pfFingerprintFor(source),sourceMoves:totalMoves,guideBlank,integrity,unverified:true};
 }
 function resetNCStudy(){
  ncStudyCache=null;
@@ -6917,29 +7066,92 @@ function resetNCStudy(){
  if(btn)btn.disabled=true;
 }
 function refreshNCStudyStepPicker(){
- const list=$('pfStudyStep');if(!list)return;
- const prior=list.value;list.replaceChildren();
- job.operations.forEach((op,i)=>{const opt=document.createElement('option');opt.value=String(i);opt.textContent=`${String(i+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||op.kind}${NC_STUDY_THREAD_KINDS.has(op.kind)?' (THREAD GUIDE ONLY)':''}`;list.append(opt);});
+ const list=$('pfStudyStep'),checks=$('pfStudyOpChecks');if(!list||!checks)return;
+ const prior=list.value,old=[...checks.querySelectorAll('input[data-op-id]')];
+ const selected=new Map(old.map(x=>[x.dataset.opId,x.checked]));
+ const initialized=checks.dataset.initialized==='yes';
+ list.replaceChildren();checks.replaceChildren();
+ job.operations.forEach((op,i)=>{
+  const opt=document.createElement('option');opt.value=String(i);
+  opt.textContent=`${String(i+1).padStart(2,'0')} · ${OP_KINDS[op.kind]||op.kind}${NC_STUDY_THREAD_KINDS.has(op.kind)?' (THREAD GUIDE ONLY)':''}${!op.enabled?' [DISABLED]':''}`;
+  list.append(opt);
+  const label=document.createElement('label');label.className='nc-study-op-choice'+(!op.enabled?' disabled-op':'');
+  const check=document.createElement('input');check.type='checkbox';check.dataset.opId=op.id;check.value=String(i);
+  check.checked=!!op.enabled&&(selected.has(op.id)?selected.get(op.id):!initialized);
+  check.disabled=!op.enabled;
+  const span=document.createElement('span');span.textContent=opt.textContent;
+  label.append(check,span);checks.append(label);
+ });
+ checks.dataset.initialized='yes';
  if([...list.options].some(o=>o.value===prior))list.value=prior;
  else list.value=String(Math.max(0,Math.min(pfSelected,job.operations.length-1)));
 }
+function ncStudySelectedIndices(){
+ if($('pfStudyScope').value==='single')return [Number($('pfStudyStep').value)];
+ return [...$('pfStudyOpChecks').querySelectorAll('input[data-op-id]:checked')].map(x=>Number(x.value)).sort((a,b)=>a-b);
+}
+function ncStudySelectedGCode(source,indices,postId,arcMode,arcTol){
+ if(!indices.length)throw Error('Select at least one enabled operation for the study.');
+ if(new Set(indices).size!==indices.length||indices.some(i=>!Number.isInteger(i)||i<0||i>=source.operations.length))
+  throw Error('Invalid/duplicate operation selection.');
+ // Fail ATOMICALLY: do not silently omit a blocked step or deliver partial code.
+ const parts=indices.map(i=>{try{return ncStudyGCode(source,i,postId,arcMode,arcTol);}catch(e){
+  throw Error(`STEP ${i+1} (${source.operations[i]?.name}): ${e.message}`);}});
+ if(parts.length===1)return {...parts[0],selectedIndices:indices};
+ const safe=s=>String(s).replace(/[()\r\n%]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,60);
+ const header=[
+  '(MINITURN 0.9.37 - MULTI-OPERATION G-CODE STUDY COLLECTION)',
+  '(NOT A QUALIFIED OR CONTINUOUS CNC PROGRAM - DO NOT RUN ON EQUIPMENT)',
+  `(JOB ${safe(source.name)} / ${parts.length} SELECTED OPERATIONS IN MACHINING ORDER)`,
+  `(SELECTED STEPS ${indices.map(i=>i+1).join(', ')})`,
+  '(EACH SECTION HAS ITS OWN INDEPENDENT MODAL START AND UNKNOWN PRIOR POSITION)',
+  '(NO INTER-OPERATION RETRACT LINK TOOL CHANGE OFFSET SPINDLE OR COOLANT)',
+  '(SECTION FIRST RAPIDS ARE NOT PROVEN SAFE FROM THE PRECEDING SECTION)',
+  '(A QUALIFIED MACHINE POST MUST ADD INTER-OP LINKS AND VALIDATE ALL OPERATIONS)',
+  '(NC EXPORT LOCKED - REVIEW FRAGMENTS ONLY)',
+  ''
+ ];
+ for(let j=0;j<parts.length;j++){
+  const i=indices[j];
+  header.push(`(========== STUDY SECTION ${j+1}/${parts.length} / STEP ${i+1} ${safe(source.operations[i].name)} ==========)`);
+  header.push(parts[j].text.trimEnd(),'');
+  header.push(`(========== END STEP ${i+1} / NO QUALIFIED LINK TO NEXT OPERATION ==========)`,'');
+ }
+ header.push('(END MULTI-STEP STUDY COLLECTION - NOT FOR MACHINING)');
+ return {text:header.join('\n')+'\n',profile:postId,operationIndex:indices[0],selectedIndices:indices,
+  kind:'selected-operations',passCount:parts.reduce((n,p)=>n+p.passCount,0),
+  moveCount:parts.reduce((n,p)=>n+p.moveCount,0),arcCount:parts.reduce((n,p)=>n+p.arcCount,0),
+  lineCount:parts.reduce((n,p)=>n+p.lineCount,0),rapidCount:parts.reduce((n,p)=>n+p.rapidCount,0),
+  reviewEvents:parts.flatMap(p=>p.reviewEvents),fingerprint:pfFingerprintFor(source),
+  guideBlank:parts.find(p=>p.guideBlank)?.guideBlank||null,parts,threadGuide:parts.every(p=>p.threadGuide),unverified:true};
+}
 function wireNCStudy(){
- const step=$('pfStudyStep'),post=$('pfStudyPost'),arcMode=$('pfStudyArcs'),arcTol=$('pfStudyArcTol');
+ const step=$('pfStudyStep'),scope=$('pfStudyScope'),checks=$('pfStudyOpChecks'),post=$('pfStudyPost'),arcMode=$('pfStudyArcs'),arcTol=$('pfStudyArcTol');
+ const applyScope=()=>{const multi=scope.value==='selected';$('pfStudySelection').hidden=!multi;$('pfStudySingleField').hidden=multi;resetNCStudy();};
+ scope.addEventListener('change',applyScope);applyScope();
  [step,post,arcMode,arcTol].forEach(el=>el.addEventListener('change',resetNCStudy));
+ checks.addEventListener('change',resetNCStudy);
+ const toggleAll=(fn)=>{for(const ch of checks.querySelectorAll('input[data-op-id]'))ch.checked=!ch.disabled&&fn(ch);resetNCStudy();};
+ $('pfStudyAll').addEventListener('click',()=>toggleAll(()=>true));
+ $('pfStudyNone').addEventListener('click',()=>toggleAll(()=>false));
+ $('pfStudyOnly').addEventListener('click',()=>toggleAll(ch=>Number(ch.value)===Number(step.value)));
  $('pfStudyBuild').addEventListener('click',()=>{
   try{
    if(pfEditing&&!saveJobSetup())return;
-   const result=ncStudyGCode(job,Number(step.value),post.value,arcMode.value,arcTol.value);
+   const selected=ncStudySelectedIndices();
+   const result=ncStudySelectedGCode(job,selected,post.value,arcMode.value,arcTol.value);
    ncStudyCache=result;$('pfStudyPreview').textContent=result.text;$('pfStudyDownload').disabled=false;
-   $('pfStudyStatus').textContent=`${result.threadGuide?'THREAD ENVELOPE ONLY':'G-CODE STUDY BUILT'} · ${result.guideBlank?result.guideBlank.code+' STOCK BLOCK · ':''}${result.passCount} PASSES · ${result.moveCount} MOTION BLOCKS · ${result.arcCount} G02/G03 ARCS · ${result.lineCount} G01 LINES · ${result.rapidCount} G00 RAPIDS · ${result.reviewEvents.length} COMMENTS · NC LOCKED`;
+   $('pfStudyStatus').textContent=`${selected.length} SELECTED STEP(S) ${selected.map(i=>i+1).join(',')} · ${result.passCount} PASSES · ${result.moveCount} MOTION BLOCKS · ${result.arcCount} G02/G03 · ${result.lineCount} G01 · ${result.rapidCount} G00 · ${result.reviewEvents.length} COMMENTS · NO INTER-OP LINKS · NC LOCKED`;
   }catch(e){resetNCStudy();$('pfStudyStatus').textContent='STUDY BLOCKED · '+e.message;notify(e.message,true);}
  });
  $('pfStudyDownload').addEventListener('click',()=>{
-  if(!ncStudyCache||ncStudyCache.fingerprint!==pfFingerprintFor(job)){
-   resetNCStudy();notify('JOB CHANGED · REGENERATE THE G-CODE STUDY',true);return;
+  if(!ncStudyCache||ncStudyCache.fingerprint!==pfFingerprintFor(job)||
+    JSON.stringify(ncStudyCache.selectedIndices)!==JSON.stringify(ncStudySelectedIndices())){
+   resetNCStudy();notify('JOB OR SELECTION CHANGED · REGENERATE THE G-CODE STUDY',true);return;
   }
   const d=ncStudyCache;
-  download(d.text,`${safeFilename()}_step${d.operationIndex+1}_${d.profile}_NC_STUDY_NOT_FOR_MACHINE.txt`,'text/plain');
+  const stepLabel=d.selectedIndices.length===1?'step'+(d.selectedIndices[0]+1):'steps'+d.selectedIndices.map(i=>i+1).join('-');
+  download(d.text,`${safeFilename()}_${stepLabel}_${d.profile}_NC_STUDY_NOT_FOR_MACHINE.txt`,'text/plain');
   notify('REVIEW G-CODE TEXT SAVED · NOT MACHINE READY');
  });
 }
@@ -7054,7 +7266,7 @@ function refreshJobInfo(){
 }
 function textSetupSheet(){
  const s=normalizeJobSetup(job.setup),report=preflightReport(job);
- const lines=['MINITURN 0.9.36 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)} · RAW FRONT Z${pfValue(job.stock.frontZ||0)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ const lines=['MINITURN 0.9.37 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)} · RAW FRONT Z${pfValue(job.stock.frontZ||0)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
  job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · RPM ${op.rpm} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · LEAVE ${pfValue(op.faceLeave||0)} · ${op.faceDirection==='outward'?'X+ INNER→OUTER':'X− OUTER→INNER'} · XØ${pfValue(op.faceDirection==='outward'?op.faceEndX:op.faceStartX)} TO XØ${pfValue(op.faceDirection==='outward'?op.faceStartX:op.faceEndX)} · AXIAL STEP ${pfValue(op.faceStep)}`:`   P${(op.cutDirection==='reverse'?op.to:op.from)+1} TO P${(op.cutDirection==='reverse'?op.from:op.to)+1} · ${op.cutDirection||'forward'} · ACCESS: ${op.accessPlan||'review'}`);});
  lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
  lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
