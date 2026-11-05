@@ -523,6 +523,12 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .guide-link:hover{background:#28614c;color:#fff1bc}
 .guide-link:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .footer-bottom .guide-link{min-height:33px;font-size:10px;padding:6px 9px}
+/* v0.9.58: keep feature controls contextual and friendly to non-CAD operators. */
+.figure-shape-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.figure-shape-actions button{flex:1 1 130px;min-height:42px}
+.figure-shape-actions button[hidden]{display:none!important}
+.figure-shape-hint{font:600 12px/1.45 system-ui,sans-serif;color:var(--mute);padding:6px 1px 8px}
+@media(max-width:430px){.figure-shape-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.figure-shape-actions button{min-width:0;font-size:11px}}
 </style>
 <style>
 
@@ -606,7 +612,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .nc-study-op-choice.disabled-op{opacity:.7}
 .nc-study-section-note{margin:7px 0;color:#e6c789;font-size:11px;line-height:1.6}
 </style>
-<title>MiniTurn v0.9.57 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.58 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -1128,7 +1134,7 @@ body[data-display="toolbox"] .mt-warnings-jump{background:#41382c;color:#edcf97;
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.57</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.58</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
     <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option><option value="daylight">DAYLIGHT</option><option value="toolbox">TOOLBOX</option><option value="contrast">HIGH CONTRAST</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><button type="button" id="mtWarningsJump" class="mt-warnings-jump" aria-label="Open the universal warnings report in Job / Export">WARNINGS</button><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
@@ -1208,11 +1214,11 @@ body[data-display="toolbox"] .mt-warnings-jump{background:#41382c;color:#edcf97;
             <label class="field" id="arcXField">END X Ø<input id="arcEndX" type="text" inputmode="decimal" autocomplete="off" placeholder="X diameter"></label>
             <label class="field" id="arcZField">END Z<input id="arcEndZ" type="text" inputmode="decimal" autocomplete="off" placeholder="Z position"></label>
           </div>
-          <div class="arc-actions"><button id="arcSolve" type="button" class="action-btn">SOLVE / SHOW CHOICES</button><button id="arcCommit" type="button" class="action-btn primary" disabled>USE SELECTED ARC</button></div>
+          <div class="arc-actions"><button id="arcSolve" type="button" class="action-btn">SOLVE / SHOW CHOICES</button><button id="arcCommit" type="button" class="action-btn primary" disabled>USE SELECTED ARC</button><button id="arcCancel" type="button" class="action-btn">CANCEL ARC</button></div>
           <div id="arcStatus" class="arc-message" role="status" aria-live="polite">Enter dimensions from the print. No solution is assumed.</div>
           <div id="arcCandidates" class="arc-candidates" role="group" aria-label="Choose an arc by appearance"></div>
           <div id="arcCalculated" class="arc-calculated" hidden></div>
-          <div class="view-note">CW / CCW = P START → END AS SHOWN · CHUCK LEFT · NOT CONTROLLER G02 / G03</div>
+          <div class="view-note">PICK THE SHAPE THAT MATCHES YOUR PART. NOTHING CHANGES UNTIL USE SELECTED ARC. CW/CCW REFER TO THE DRAWING, NOT MACHINE G-CODE.</div>
         </section>
         <div class="symbolic-actions"><button type="button" id="symApply" class="action-btn primary">ADD ELEMENT</button><button type="button" id="symUndo" class="action-btn">UNDO LAST</button></div>
         <div id="symbolicMessage" class="symbolic-message" role="status" aria-live="polite"></div>
@@ -1228,7 +1234,12 @@ body[data-display="toolbox"] .mt-warnings-jump{background:#41382c;color:#edcf97;
         <label class="field">CORNER<select id="editCorner"><option value="sharp">SHARP</option><option value="fillet">RADIUS (R)</option><option value="chamfer">CHAMFER (C)</option></select></label>
         <label class="field">R / C SIZE<input id="editSize" type="text" inputmode="decimal" autocomplete="off"></label>
       </div>
-      <div class="row edit-actions"><button type="button" id="editPartialArc" class="action-btn" hidden>EDIT THIS ARC</button></div>
+      <div class="figure-shape-actions" aria-label="Selected figure feature actions">
+        <button type="button" id="figureAddArc" class="action-btn">+ ARC AFTER POINT</button>
+        <button type="button" id="figureBreakFeature" class="action-btn" hidden>BREAK APART R / C</button>
+        <button type="button" id="editPartialArc" class="action-btn" hidden>EDIT THIS ARC</button>
+      </div>
+      <div class="figure-shape-hint" id="figureShapeHint" aria-live="polite">Select a point to add an arc or break apart its corner.</div>
       <div class="row edit-actions"><button id="insertBtn" class="action-btn">F1 · INSERT AFTER P01</button><button id="replaceBtn" class="action-btn primary">F2 · REPLACE</button><button id="deleteBtn" class="action-btn warn">F3 · DELETE</button></div>
       <div class="figure-first-row"><button id="insertFirstBtn" type="button" class="action-btn">+ BEFORE P01</button><span id="figureFirstHint">Add a new start without changing existing point IDs.</span></div>
       </div></div></details>
@@ -3938,7 +3949,7 @@ function refreshBlankFields(){
  $('blankBoreField').hidden=job.stock.type!=='tube';$('blankBore').value=fmt(job.stock.bore||0);
 }
 
-let arcDraft=null,arcEditIndex=-1;
+let arcDraft=null,arcEditIndex=-1,arcStartIndex=-1;
 function arcFormSpec(){
  const mode=$('arcMode').value,radius=parseNumeric($('arcRadius').value),x=parseNumeric($('arcEndX').value),z=parseNumeric($('arcEndZ').value);
  return {mode,radius,endX:mode==='endpoints'||mode==='tangentX'?x:null,endZ:mode==='endpoints'||mode==='tangentZ'?z:null};
@@ -3948,22 +3959,29 @@ function arcSyncFields(){
  $('arcXField').hidden=m==='tangentZ';$('arcZField').hidden=m==='tangentX';
 }
 function arcOpen(editIndex=-1){
- arcEditIndex=editIndex;symbolicChoice='arc';arcDraft=null;
+ const anchor=editIndex>0?editIndex-1:selected;
+ if(anchor<0||anchor>=job.nodes.length)return notify('CHOOSE A START POINT FIRST',true);
+ if(editIndex<=0){
+  if(job.nodes[anchor].corner!=='sharp')return notify('SELECT A SHARP POINT · BREAK APART THIS RADIUS OR CHAMFER FIRST',true);
+  if(job.nodes[anchor+1]?.arcToPrev)return notify('AN ARC ALREADY FOLLOWS THIS POINT · SELECT ITS END AND PRESS EDIT THIS ARC',true);
+ }
+ arcEditIndex=editIndex;arcStartIndex=anchor;symbolicChoice='arc';arcDraft=null;
  const existing=editIndex>0?job.nodes[editIndex].arcToPrev:null;
  $('arcRadius').value=existing?fmt(existing.radius):'';
  $('arcMode').value=existing?.mode||'endpoints';
  $('arcEndX').value=Number.isFinite(existing?.endX)?fmt(existing.endX):'';
  $('arcEndZ').value=Number.isFinite(existing?.endZ)?fmt(existing.endZ):'';
- $('arcEntryTag').textContent=editIndex>0?`EDIT P${String(editIndex+1).padStart(2,'0')}`:`FROM P${String(job.nodes.length).padStart(2,'0')}`;
+ $('arcEntryTag').textContent=editIndex>0?`EDIT ARC ENDING AT ${figurePointLocationLabel(editIndex)}`:
+  `START ${figurePointLocationLabel(anchor)} · ${anchor===job.nodes.length-1?'APPEND':'INSERT BEFORE '+figurePointLocationLabel(anchor+1)}`;
  $('arcAssistPanel').hidden=false;arcSyncFields();
- $('arcStatus').textContent='Enter the known print dimensions, then SOLVE. Tap the arc that matches the drawing.';
+ $('arcStatus').textContent=`Start at ${figurePointLocationLabel(anchor)}. Enter the print dimensions, press SOLVE, then choose the matching shape. Nothing is changed yet.`;
  $('arcCandidates').replaceChildren();$('arcCalculated').hidden=true;$('arcCommit').disabled=true;
  refreshSymbolic();drawGraph();
  if(existing)arcSolve(existing.choiceKey);
 }
-function arcClose(){arcDraft=null;arcEditIndex=-1;$('arcAssistPanel').hidden=true;if(symbolicChoice==='arc')symbolicChoice='left';refreshSymbolic();drawGraph();}
+function arcClose(){arcDraft=null;arcEditIndex=-1;arcStartIndex=-1;$('arcAssistPanel').hidden=true;if(symbolicChoice==='arc')symbolicChoice='left';refreshSymbolic();drawGraph();}
 function arcSolve(preferredKey=null){
- const spec=arcFormSpec(),index=arcEditIndex>0?arcEditIndex-1:job.nodes.length-1;
+ const spec=arcFormSpec(),index=arcStartIndex;
  const solved=arcAssistCandidates(job.nodes,index,spec,job.stock);
  arcDraft={spec,index,candidates:solved.candidates,chosenKey:null};
  $('arcCandidates').replaceChildren();$('arcCalculated').hidden=true;$('arcCommit').disabled=true;
@@ -4013,19 +4031,95 @@ function arcChoose(key){
 function arcCommit(){
  if(!arcDraft||!arcDraft.chosenKey)return notify('CHOOSE AN ARC FIRST',true);
  const c=arcDraft.candidates.find(c=>c.key===arcDraft.chosenKey);if(!c)return;
- const next=clone(job),oldIndex=arcEditIndex,spec={...arcDraft.spec,choiceKey:c.key};
+ const next=clone(job),oldIndex=arcEditIndex,spec={...arcDraft.spec,choiceKey:c.key},insertAt=arcDraft.index+1;
  if(oldIndex>0){
   next.nodes[oldIndex].arcToPrev=spec;next.nodes[oldIndex].x=round(c.end.v*2,9);next.nodes[oldIndex].z=round(-c.end.u,9);
   if(!mutate(next,oldIndex))return;
  }else{
   if(next.nodes.length>=120)return notify('120 ROW MAXIMUM',true);
   if(pendingSymbolicCorner)return notify('COMPLETE OR CANCEL THE PENDING CORNER BEFORE ARC',true);
-  next.nodes.push({id:nodeId(),x:round(c.end.v*2,9),z:round(-c.end.u,9),corner:'sharp',size:0,arcToPrev:spec});
-  if(!mutate(next,next.nodes.length-1))return;
-  symbolicHistory.push({count:1,firstIds:[next.nodes.at(-1).id],previousCorner:'sharp',previousSize:0});
+  if(next.nodes[insertAt]?.corner&&next.nodes[insertAt].corner!=='sharp'&&
+     !confirm('This arc joins a radius or chamfer. Its tangency may move. Continue and inspect the finished contour?'))return;
+  const newArcPoint={id:nodeId(),x:round(c.end.v*2,9),z:round(-c.end.u,9),corner:'sharp',size:0,arcToPrev:spec};
+  next.nodes.splice(insertAt,0,newArcPoint);
+  if(!mutate(next,insertAt))return;
+  // Only tail-appends belong to the directional-input undo history. Middle
+  // insertions are ordinary Figure Points edits and preserve saved point IDs.
+  if(insertAt===next.nodes.length-1)symbolicHistory.push({count:1,firstIds:[newArcPoint.id],previousCorner:'sharp',previousSize:0});
  }
- const message=`ARC R${fmt(c.radius)} · VIEW ${arcViewDirection(c.sweep)} ${c.angle.toFixed(2)}° · CALCULATED CENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}`;
- arcClose();$('symbolicMessage').textContent=message;notify('ARC ADDED · NO NC OUTPUT');
+ const message=`ARC R${fmt(c.radius)} · VIEW ${arcViewDirection(c.sweep)} ${c.angle.toFixed(2)}° · CENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}`;
+ arcClose();$('symbolicMessage').textContent=message;notify(oldIndex>0?'ARC UPDATED':`ARC INSERTED · POINTS RENUMBERED`);
+}
+/** v0.9.58 · Convert a shorthand corner into inspectable contour endpoints.
+ * The center is a REFERENCE ONLY, never a node in the cutting chain.
+ * Existing corner-node ID remains on the incoming tangent point so operation
+ * ranges survive; the outgoing endpoint gets a new permanent ID.
+ */
+function figureFeatureCenter(index){
+ const node=job.nodes[index];if(!node||index<1)return null;
+ if(node.arcToPrev){
+  const found=arcAssistCandidates(job.nodes,index-1,node.arcToPrev,job.stock);
+  const c=found.candidates.find(c=>c.key===node.arcToPrev.choiceKey);
+  return c?{kind:'RADIUS CENTER',x:c.center.v*2,z:-c.center.u,point:c.center}:null;
+ }
+ if(node.chamferLineFromPrev){
+  const a=job.nodes[index-1],b=node;
+  return {kind:'CHAMFER MIDPOINT',x:(a.x+b.x)/2,z:(a.z+b.z)/2,
+   point:{u:-(a.z+b.z)/2,v:(a.x+b.x)/4}};
+ }
+ return null;
+}
+function figureRefreshShapeActions(){
+ const n=job.nodes[selected],hasCorner=n&&['chamfer','fillet'].includes(n.corner),center=figureFeatureCenter(selected);
+ $('figureBreakFeature').hidden=!hasCorner;
+ $('figureBreakFeature').textContent=hasCorner?`BREAK APART ${n.corner==='fillet'?'RADIUS':'CHAMFER'}`:'BREAK APART R / C';
+ $('figureAddArc').textContent=`+ ARC AFTER ${figurePointLocationLabel(selected)}`;
+ $('figureAddArc').disabled=!n||n.corner!=='sharp'||!!job.nodes[selected+1]?.arcToPrev;
+ $('figureShapeHint').textContent=center?
+  `${center.kind} · X Ø${fmt(center.x)} · Z${fmt(center.z)} · REFERENCE ONLY (NOT A CUTTING POINT)`:
+  hasCorner?'BREAK APART CREATES TWO EDITABLE ENDPOINTS. THE CUTTING SHAPE STAYS THE SAME.':
+  'ADD ARC STARTS FROM THE HIGHLIGHTED POINT. THE NEW ENDPOINT IS INSERTED IN THE FIGURE.';
+}
+function figureBreakSelectedFeature(){
+ const i=selected,original=job.nodes[i];
+ if(!original||i<=0||i>=job.nodes.length-1||!['chamfer','fillet'].includes(original.corner)){
+  notify('SELECT AN INTERNAL RADIUS OR CHAMFER POINT FIRST',true);return false;
+ }
+ const profile=buildProfile(job);if(profile.errors.length){notify(profile.errors[0],true);return false;}
+ const corner=profile.corners?.[i];
+ if(!corner||!corner.trim)return notify('THIS CORNER CANNOT BE BROKEN APART',true);
+ if(job.nodes.length>=120)return notify('120 POINT MAXIMUM',true);
+ const endpoint=p=>({x:round(p.v*2,9),z:round(-p.u,9)});
+ const entry=endpoint(corner.entry),exit=endpoint(corner.exit);
+ let spec=null;
+ if(original.corner==='fillet'){
+  const proposal={mode:'endpoints',radius:original.size,endX:exit.x,endZ:exit.z};
+  const test=job.nodes.map(n=>({...n}));test[i]={...original,...entry,corner:'sharp',size:0,arcToPrev:undefined};
+  const solved=arcAssistCandidates(test,i,proposal,job.stock);
+  let a=Math.atan2(corner.entry.v-corner.center.v,corner.entry.u-corner.center.u);
+  let b=Math.atan2(corner.exit.v-corner.center.v,corner.exit.u-corner.center.u);
+  if(corner.sign>0)while(b<=a)b+=2*Math.PI;
+  else while(b>=a)b-=2*Math.PI;
+  const wantedSweep=b-a;
+  const pick=solved.candidates.find(c=>Math.hypot(c.center.u-corner.center.u,c.center.v-corner.center.v)<Math.max(1e-6,corner.radius*1e-5)&&Math.sign(c.sweep)===Math.sign(wantedSweep)&&Math.abs(c.sweep-wantedSweep)<1e-4);
+  if(!pick){notify('COULD NOT PRESERVE THE ORIGINAL RADIUS EXACTLY · NO CHANGE MADE',true);return false;}
+  spec={...proposal,choiceKey:pick.key};
+ }
+ const uses=(job.operations||[]).filter(op=>[op.fromPointId,op.toPointId].includes(original.id));
+ const desc=original.corner==='fillet'?'radius':'chamfer';
+ let question=`Break apart this ${desc} into two end points? The finished contour will stay the same.`;
+ if(uses.length)question+='\n\nThis point is an operation boundary. Its reference will move to the first tangent point. Review '+uses.map(o=>o.name).join(', ')+'.';
+ if(!confirm(question))return false;
+ const next=clone(job);next.nodes[i]={...original,...entry,corner:'sharp',size:0};
+ delete next.nodes[i].arcToPrev;
+ const out={...exit,id:nodeId(),corner:'sharp',size:0};
+ if(spec)out.arcToPrev=spec;
+ else out.chamferLineFromPrev=true;
+ next.nodes.splice(i+1,0,out);
+ if(!mutate(next,i+1))return false;
+ const c=figureFeatureCenter(i+1);
+ notify(`BROKE APART ${desc.toUpperCase()} · ENDPOINTS ${figurePointLocationLabel(i)} / ${figurePointLocationLabel(i+1)} · ${c?.kind||'CENTER'} X${fmt(c?.x||0)} Z${fmt(c?.z||0)}`);
+ return true;
 }
 // v0.9.52 · Figure input trace. Rebuilt from the saved geometry on every refresh,
 // so importing, editing, undoing or reopening cannot leave an obsolete history.
@@ -4076,7 +4170,9 @@ function mtRefreshFigureTrace(){
 function refreshSymbolic(){
  if(!$('symbolicStatus'))return;
  const p=job.nodes.at(-1),last=job.nodes.length;
- $('symbolicStatus').textContent=`${blankStatusText()} · NEXT FROM P${String(last).padStart(2,'0')} · XØ${fmt(p.x)} Z${fmt(p.z)}`;
+ $('symbolicStatus').textContent=symbolicChoice==='arc'&&arcStartIndex>=0?
+  `${blankStatusText()} · ARC FROM ${figurePointLocationLabel(arcStartIndex)} · XØ${fmt(job.nodes[arcStartIndex].x)} Z${fmt(job.nodes[arcStartIndex].z)}`:
+  `${blankStatusText()} · NEXT FROM P${String(last).padStart(2,'0')} · XØ${fmt(p.x)} Z${fmt(p.z)}`;
  mtRefreshFigureTrace();
  document.querySelectorAll('[data-symbol]').forEach(b=>{b.classList.toggle('selected-symbol',b.dataset.symbol===symbolicChoice);b.setAttribute('aria-pressed',String(b.dataset.symbol===symbolicChoice));});
  const dim=['groove','thread'].includes(symbolicChoice),corner=['radius','chamfer'].includes(symbolicChoice);
@@ -4194,11 +4290,13 @@ function wireSymbolic(){
  document.querySelectorAll('[data-p1-preset]').forEach(btn=>btn.addEventListener('click',()=>setP1Preset(btn.dataset.p1Preset)));
  $('setP1').addEventListener('click',setFirstPoint);
  $('symApply').addEventListener('click',symbolicApply);$('symUndo').addEventListener('click',symbolicUndo);
- $('arcSolve').addEventListener('click',()=>arcSolve());$('arcCommit').addEventListener('click',arcCommit);
+ $('arcSolve').addEventListener('click',()=>arcSolve());$('arcCommit').addEventListener('click',arcCommit);$('arcCancel').addEventListener('click',arcClose);
  const arcInvalidate=()=>{arcDraft=null;$('arcCommit').disabled=true;$('arcCandidates').replaceChildren();$('arcCalculated').hidden=true;$('arcStatus').textContent='Dimensions changed — SOLVE again to review the valid alternatives.';drawGraph();};
  $('arcMode').addEventListener('change',()=>{arcSyncFields();arcInvalidate();});
  for(const arcField of ['arcRadius','arcEndX','arcEndZ'])$(arcField).addEventListener('input',arcInvalidate);
- $('editPartialArc').addEventListener('click',()=>arcOpen(selected));
+ $('editPartialArc').addEventListener('click',()=>{arcOpen(selected);$('arcAssistPanel').scrollIntoView({behavior:'smooth',block:'nearest'});});
+ $('figureAddArc').addEventListener('click',()=>{arcOpen(-1);if(!$('arcAssistPanel').hidden)$('arcAssistPanel').scrollIntoView({behavior:'smooth',block:'nearest'});});
+ $('figureBreakFeature').addEventListener('click',figureBreakSelectedFeature);
  $('beginFigure').addEventListener('click',newSymbolicFigure);
  $('blankType').addEventListener('change',()=>{$('blankBoreField').hidden=$('blankType').value!=='tube';});
 }
@@ -4252,7 +4350,7 @@ function updateFigureInsertControls(){
  $('insertFirstBtn').setAttribute('aria-pressed',String(figureInsertBeforeFirst));
  $('figureFirstHint').textContent=figureInsertBeforeFirst?'New P01 is staged. Change X/Z, then press F1.':'New first point preserves existing IDs and operation endpoints.';
 }
-function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1);figureInsertCornerExplicit=false; const n=job.nodes[selected];updateFigureInsertControls();$('editPartialArc').hidden=!n.arcToPrev;$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();syncTerminalDock();}
+function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1);figureInsertCornerExplicit=false; const n=job.nodes[selected];updateFigureInsertControls();$('editPartialArc').hidden=!n.arcToPrev;figureRefreshShapeActions();$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();syncTerminalDock();}
 // Figure Points is a two-action draft editor: typing (or pressing keypad ENTER)
 // must never modify job.nodes, redraw the saved contour, or trigger autosave.
 // Only F1 INSERT and F2 REPLACE commit edited X/Z/corner values.
@@ -4333,6 +4431,12 @@ function drawGraph(){
   if(on){line({x:p.x,y:28},{x:p.x,y:H-25},'#e8b56a',1,'4 5');line({x:30,y:p.y},{x:W-20,y:p.y},'#e8b56a',1,'4 5');txt(`P${String(i+1).padStart(2,'0')}`,p.x+12,p.y-12,'#ffd396',14);}
  }
  drawGraphPointDraft(layer,map);
+ const ref=figureFeatureCenter(selected);
+ if(ref){const q=map(ref.point);
+  line({x:q.x-7,y:q.y},{x:q.x+7,y:q.y},'#f7cd88',2);
+  line({x:q.x,y:q.y-7},{x:q.x,y:q.y+7},'#f7cd88',2);
+  txt(ref.kind,q.x+10,q.y+16,'#f7cd88',12);
+ }
  txt('FRONT / Z0',map({u:0,v:D/2}).x,27,'#a1cab9',13,'middle');
  txt(mirrorZ?'CHUCK ← −Z':'−Z → CHUCK',mirrorZ?115:W-22,27,'#a1cab9',13,mirrorZ?'start':'end');
  $('graphReadout').textContent=`POINT ${String(selected+1).padStart(2,'0')}  ·  X (Ø) ${fmt(job.nodes[selected].x)}  ·  Z ${fmt(job.nodes[selected].z)}  ·  ${job.units.toUpperCase()}  ·  SCALE ${zoom.toFixed(2)}×  · CHUCK LEFT / Z0 RIGHT`;
@@ -4607,7 +4711,9 @@ function doAction(name){
    else if(previous.arcToPrev.mode==='tangentX')previous.arcToPrev.endX=row.x;
    else previous.arcToPrev.endZ=row.z;
   }
-  temp.nodes[selected]={...previous,...row};mutate(temp,selected);}
+  temp.nodes[selected]={...previous,...row};
+  if(previous.chamferLineFromPrev&&(Math.abs(previous.x-row.x)>1e-8||Math.abs(previous.z-row.z)>1e-8))delete temp.nodes[selected].chamferLineFromPrev;
+  mutate(temp,selected);}
  else if(name==='delete'){if(job.nodes.length<=1){notify('AT LEAST ONE ROW REQUIRED',true);return;}const temp=clone(job);temp.nodes.splice(selected,1);mutate(temp,Math.min(selected,temp.nodes.length-1));}
  else if(name==='prev')selectRow(selected-1);
  else if(name==='next')selectRow(selected+1);
