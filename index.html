@@ -606,7 +606,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .nc-study-op-choice.disabled-op{opacity:.7}
 .nc-study-section-note{margin:7px 0;color:#e6c789;font-size:11px;line-height:1.6}
 </style>
-<title>MiniTurn v0.9.47 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.57 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -704,6 +704,18 @@ body[data-pad-side="right"] .mt-input-dock[data-open="false"]{right:4px;top:48%;
 @media print{.mt-input-dock{display:none!important}}
 </style>
 
+
+<style id="mt0953DraggableInput">
+/* v0.9.53: the collapsed INPUT tab can travel around the visible screen perimeter.
+   Expanded keyboard keeps its existing bottom/right dock; terminal F-keys stay accessible. */
+#mtInputDock[data-open="false"] #mtPadToggle{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#mtInputDock[data-open="false"].mt-bubble-dragging #mtPadToggle{cursor:grabbing}
+#mtInputDock[data-open="false"].mt-bubble-positioned{
+ left:0;top:0;right:auto!important;bottom:auto!important;transform:none!important;
+ border-radius:9px;
+}
+</style>
+
 <style id="mt098DockFix">
 /* v0.9.11 Android navigation dock: root-level fixed overlay, stable grid and non-scaling touch targets. */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -769,7 +781,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </style>
 
 <style id="mt0947WorkflowNavigation">
-/* v0.9.47: four primary programming steps, with manual Position Check optional. */
+/* v0.9.51: four primary programming steps, with manual Position Check optional. */
 .page-tabs .page-tab-secondary{margin-left:auto;min-height:35px;font-size:10px;font-weight:600;padding:7px 10px;letter-spacing:.3px;border-style:dashed;background:transparent;color:var(--mute);border-radius:5px;opacity:.85}
 .page-tabs .page-tab-secondary.active{opacity:1;background:#1e4936;color:var(--mint);border-style:solid}
 .workflow-next{grid-column:1 / -1;display:flex;gap:9px;align-items:center;justify-content:flex-end;flex-wrap:wrap;min-width:0;padding:11px 12px;margin:4px 0 8px;border-radius:8px;border:1px solid var(--panel-border);background:var(--surface);}
@@ -793,24 +805,343 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
 }
 @media print{.workflow-next{display:none!important}}
 </style>
+<style id="mt0948Polish">
+/* Figure CTA must follow BOTH Figure panels at every breakpoint.
+   Previously .entry-panel/.graph-panel had order 1/2 on mobile while
+   the nav had the default order 0, putting NEXT at the top. */
+#figureWorkspace > .workflow-next{order:3;grid-column:1/-1}
+/* The live inset is a miniature version of the normal Figure panel. */
+.mt-mini-figure{
+ background:linear-gradient(170deg,#12231e,#101b19);
+ border:1px solid var(--panel-border);border-radius:10px;
+ box-shadow:0 8px 24px rgba(0,0,0,.45);padding:9px;
+}
+.mt-mini-head{color:var(--ink);font-family:inherit;letter-spacing:.35px;margin-bottom:6px}
+.mt-mini-head strong{color:var(--ink)}
+.mt-mini-head button{background:var(--surface2);color:var(--ink);border:1px solid var(--panel-border);border-radius:5px}
+#miniFigureSvg{background:var(--plot-bg);border:1px solid var(--panel-border);border-radius:5px}
+.mt-mini-caption{color:var(--amber);font-family:inherit;font-variant-numeric:tabular-nums;margin-top:6px}
+body[data-display="vivid"] .mt-mini-figure{background:linear-gradient(170deg,#12253a,#0c1a2c)}
+body[data-display="contrast"] .mt-mini-figure{background:#000}
+body[data-display="daylight"] .mt-mini-figure{background:#fff}
+body[data-display="daylight"] .mt-mini-caption{color:#6e491e}
+body[data-display="mazatrol"] .mt-mini-figure{background:linear-gradient(170deg,#12182b,#090e1e)}
+</style>
+<style id="mt0949Toolbox">
+/* v0.9.51: slightly heavier secondary lettering across existing displays.
+   No geometry, post or tool-state logic is changed. */
+body{font-weight:500}
+.field,.tagline,.edit-caption,.graph-subtitle,.legend,.view-note,
+.tab-note,.footer-bottom,.keypad-label,.job-small-note,.job-summary-bar,
+.tool-row .tool-name,.operation-row small,.op-feature-readout,.op-access-summary,
+.mt-mini-caption,.graph-readout,.row-table th{font-weight:600}
+/* Slightly clearer secondary ink in the classic dark palette. */
+body[data-display="classic"]{--mute:#aac6b7}
+body[data-display="classic"] .field,
+body[data-display="classic"] .tagline,
+body[data-display="classic"] .graph-subtitle,
+body[data-display="classic"] .legend,
+body[data-display="classic"] .view-note,
+body[data-display="classic"] .edit-caption,
+body[data-display="classic"] .footer-bottom{color:#afcabd}
+
+/* TOOLBOX: Kennedy machinist chest inspired -- dark brown wrinkle steel,
+   brass-tinted pulls, warm paper labels and green felt lining. No image assets. */
+body[data-display="toolbox"]{
+ color-scheme:dark;
+ --bg:#332a23;--surface:#4c3c30;--surface2:#5d4a38;
+ --ink:#f3e7cf;--mute:#d0bfa2;--teal:#9ebc9d;--mint:#b9d2b2;
+ --panel-border:#947b5d;--amber:#e6bd79;--red:#eda58f;
+ --plot-bg:#172d25;--plot-part:#8ee3d0;--plot-stock:#d4b687;--plot-active:#f9d77d;
+ background-color:#332a23;
+ background-image:
+  radial-gradient(ellipse at 20% 8%,rgba(181,148,105,.11),transparent 45%),
+  repeating-linear-gradient(0deg,rgba(255,239,201,.018) 0px,rgba(255,239,201,.018) 1px,transparent 1px,transparent 4px),
+  linear-gradient(145deg,#3a3028,#29231f);
+ color:#f3e7cf;
+}
+body[data-display="toolbox"] .app-shell{background:transparent}
+body[data-display="toolbox"] .masthead{border-color:#9b805a}
+body[data-display="toolbox"] h1,
+body[data-display="toolbox"] .section-header h2,
+body[data-display="toolbox"] .brand-line .version{color:#f0c789}
+body[data-display="toolbox"] .brand-mark{
+ background:linear-gradient(160deg,#6a4e39,#463629);
+ color:#f5e5c5;border:1px solid #c09b67;box-shadow:inset 0 1px rgba(255,236,195,.17)
+}
+body[data-display="toolbox"] .version{border-color:#af8d62}
+body[data-display="toolbox"] .panel,
+body[data-display="toolbox"] .mt-mini-figure{
+ background:
+  repeating-linear-gradient(0deg,rgba(235,213,165,.012) 0px,rgba(235,213,165,.012) 1px,transparent 1px,transparent 5px),
+  linear-gradient(170deg,#564536,#47382d);
+ border-color:#987a55;
+ box-shadow:inset 0 1px rgba(247,215,174,.09),0 3px 10px rgba(13,9,5,.19);
+}
+body[data-display="toolbox"] .field,
+body[data-display="toolbox"] .tagline,
+body[data-display="toolbox"] .graph-subtitle,
+body[data-display="toolbox"] .edit-caption,
+body[data-display="toolbox"] .legend,
+body[data-display="toolbox"] .view-note,
+body[data-display="toolbox"] .footer-bottom,
+body[data-display="toolbox"] .tab-note,
+body[data-display="toolbox"] .keypad-label,
+body[data-display="toolbox"] .job-small-note,
+body[data-display="toolbox"] .tool-help,
+body[data-display="toolbox"] .editor-hint,
+body[data-display="toolbox"] .verified-line,
+body[data-display="toolbox"] .job-summary-bar{color:#e0ceb2}
+body[data-display="toolbox"] input,
+body[data-display="toolbox"] select,
+body[data-display="toolbox"] textarea,
+body[data-display="toolbox"] .field input,
+body[data-display="toolbox"] .field select,
+body[data-display="toolbox"] .job-setup-grid input,
+body[data-display="toolbox"] .job-setup-grid select,
+body[data-display="toolbox"] .job-setup-grid textarea,
+body[data-display="toolbox"] .display-picker select{
+ color-scheme:light;background:#e6dac2;color:#30271e;
+ border-color:#aa936e;
+}
+body[data-display="toolbox"] input::placeholder,
+body[data-display="toolbox"] textarea::placeholder{color:#786750}
+body[data-display="toolbox"] input:focus,
+body[data-display="toolbox"] select:focus,
+body[data-display="toolbox"] textarea:focus{
+ border-color:#e2bd80;box-shadow:0 0 0 2px rgba(224,188,116,.38)
+}
+body[data-display="toolbox"] input[type="checkbox"],
+body[data-display="toolbox"] input[type="radio"]{accent-color:#357057}
+body[data-display="toolbox"] .display-picker{
+ background:linear-gradient(180deg,#705640,#5e4936);color:#f6e8cc;border-color:#bd9968;
+}
+body[data-display="toolbox"] .page-tab,
+body[data-display="toolbox"] .small-btn,
+body[data-display="toolbox"] .small-btn.muted,
+body[data-display="toolbox"] .action-btn,
+body[data-display="toolbox"] .action-btn.warn,
+body[data-display="toolbox"] .text-btn,
+body[data-display="toolbox"] .softkeys button,
+body[data-display="toolbox"] .numeric-pad button,
+body[data-display="toolbox"] .zoom-controls button,
+body[data-display="toolbox"] .feature-keys button,
+body[data-display="toolbox"] .symbolic-keys button,
+body[data-display="toolbox"] .sign-key,
+body[data-display="toolbox"] .region-pick button,
+body[data-display="toolbox"] .p1-presets button,
+body[data-display="toolbox"] .mt-mini-head button,
+body[data-display="toolbox"] .workflow-secondary{
+ background:linear-gradient(180deg,#755a41,#634b38);
+ color:#f6e9ce;border-color:#b39366;
+}
+body[data-display="toolbox"] .page-tab.active,
+body[data-display="toolbox"] .action-btn.primary,
+body[data-display="toolbox"] .numeric-pad .enter-key,
+body[data-display="toolbox"] .workflow-primary,
+body[data-display="toolbox"] .symbolic-keys .selected-symbol,
+body[data-display="toolbox"] .feature-keys .selected-symbol{
+ background:linear-gradient(170deg,#3a6950,#244835);
+ color:#f7edce;border-color:#a5b18a;
+}
+body[data-display="toolbox"] .page-tab.active{box-shadow:inset 0 -2px #dab276}
+body[data-display="toolbox"] .softkeys b{color:#f8d28f}
+body[data-display="toolbox"] .softkey-dock{
+ background:linear-gradient(180deg,rgba(62,47,36,.98),rgba(49,38,30,.98));
+ border-color:#a18259;box-shadow:0 -3px 14px rgba(10,7,4,.3)
+}
+body[data-display="toolbox"] .small-chip,
+body[data-display="toolbox"] .saved-tag,
+body[data-display="toolbox"] .prototype-tag{
+ background:#624d37;color:#eed4a6;border-color:#a88b61;
+}
+body[data-display="toolbox"] .saved-tag.bad{color:#ffbd9e;border-color:#d9947e}
+body[data-display="toolbox"] .rows-wrap,
+body[data-display="toolbox"] .status-box,
+body[data-display="toolbox"] .readout,
+body[data-display="toolbox"] .profile-editor-details,
+body[data-display="toolbox"] .p1-start,
+body[data-display="toolbox"] .op-access-panel,
+body[data-display="toolbox"] .job-step-detail,
+body[data-display="toolbox"] .preflight-head,
+body[data-display="toolbox"] .job-post-contract,
+body[data-display="toolbox"] .catalog-spec,
+body[data-display="toolbox"] .catalog-viewbar,
+body[data-display="toolbox"] .machine-view-guide,
+body[data-display="toolbox"] .geometry-advanced .tip-advanced-inner,
+body[data-display="toolbox"] .arc-assist,
+body[data-display="toolbox"] .arc-candidate{
+ background:#392f27;color:#f0e3c9;border-color:#897054;
+}
+body[data-display="toolbox"] .status-box strong,
+body[data-display="toolbox"] .p1-start-heading,
+body[data-display="toolbox"] .catalog-spec strong,
+body[data-display="toolbox"] .machine-view-guide summary,
+body[data-display="toolbox"] .machine-view-guide-inner strong{color:#ebcb91}
+body[data-display="toolbox"] .status-box.invalid{background:#502e27;border-color:#c88469;color:#ffcebb}
+body[data-display="toolbox"] .status-box.invalid strong{color:#ffbb9e}
+body[data-display="toolbox"] .row-table th,
+body[data-display="toolbox"] .job-table th{background:#66513d;color:#f5d8a7}
+body[data-display="toolbox"] .row-table td,
+body[data-display="toolbox"] .job-table td{background:#42352b;color:#f2e5cd;border-color:#7e694f}
+body[data-display="toolbox"] .row-table tr.active-row td,
+body[data-display="toolbox"] .job-table tr[aria-selected="true"] td{background:#38634c;color:#fcf2dc}
+body[data-display="toolbox"] .row-table tr:hover td{background:#584632}
+body[data-display="toolbox"] .tool-row,
+body[data-display="toolbox"] .operation-row{background:#594634;color:#f1e5cb;border-color:#987b56}
+body[data-display="toolbox"] .tool-row.active,
+body[data-display="toolbox"] .operation-row.active,
+body[data-display="toolbox"] .operation-row[aria-selected="true"]{
+ background:#2f5942;border-color:#b3b68b;color:#f8efd7;
+}
+body[data-display="toolbox"] .tool-row .tool-number,
+body[data-display="toolbox"] .tool-row .tool-name,
+body[data-display="toolbox"] .operation-row strong{color:#f0d09b}
+body[data-display="toolbox"] .operation-row small{color:#ddc7aa}
+body[data-display="toolbox"] .tool-row .tool-shape-tag{
+ color:#f4ddb4;border-color:#b19468;
+}
+body[data-display="toolbox"] .graph-frame,
+body[data-display="toolbox"] .tool-preview-frame,
+body[data-display="toolbox"] .inspect-graph-frame,
+body[data-display="toolbox"] .operation-graph-frame,
+body[data-display="toolbox"] #miniFigureSvg{
+ background:#172d25;border-color:#7a866d;
+}
+body[data-display="toolbox"] .workflow-next{background:#48392c;border-color:#a7885b}
+body[data-display="toolbox"] .workflow-secondary{color:#f8edcf}
+body[data-display="toolbox"] .mt-mini-head{color:#f3e2c5}
+body[data-display="toolbox"] .mt-mini-caption{color:#f1cf91}
+body[data-display="toolbox"] .tool-legend,
+body[data-display="toolbox"] .graph-readout{color:#f0dec1}
+body[data-display="toolbox"] .tool-warning{
+ color:#f4dbac;background:#473c2b;border-color:#af8e54;
+}
+body[data-display="toolbox"] dialog{background:#443428;color:#f3e7ce;border-color:#b29265}
+body[data-display="toolbox"] dialog pre{background:#281f1a;color:#eee0c4;border-color:#907254}
+body[data-display="toolbox"] dialog p{color:#e0cfb3}
+body[data-display="toolbox"] .dialog-title strong{color:#f0c98b}
+</style>
+<style id="mt0951UniversalWarnings">
+/* One saved-job warning location: Job / Export → Preflight.  Editor errors stay near invalid inputs. */
+.mt-warnings-jump{border:1px solid #b68a42;background:#362a16;color:#f5cd76;border-radius:5px;padding:9px 11px;min-height:38px;font:800 11px/1.2 Consolas,monospace;letter-spacing:.3px;cursor:pointer}
+.mt-warnings-jump.has-critical{border-color:#e04444;background:#3c181b;color:#ff7979;font-weight:900}
+.mt-warnings-jump.has-advisories{border-color:#b68a42;color:#f5cd76}
+.mt-warnings-jump:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+#pfIssues{scroll-margin-top:18px;max-height:min(55vh,540px);overflow-y:auto;padding:10px;border:1px solid var(--panel-border);border-radius:6px}
+.mt-warning-section{margin:4px 0 8px;font:900 12px/1.5 Consolas,monospace;letter-spacing:.4px}
+.mt-critical-heading,.mt-count-critical{color:#ff6868!important;font-weight:900}
+.mt-count-advisory{color:#f3c363!important;font-weight:800}
+.pf-issue.mt-severity-critical{border-left:3px solid #f04444;padding:10px;border-bottom-color:#a54141;background:rgba(150,25,25,.12)}
+.pf-issue.mt-severity-critical strong,.pf-issue.mt-severity-critical span{color:#ff7676!important;font-weight:800!important}
+.pf-issue.mt-severity-advisory{border-left:3px solid #d39d37;padding:8px 10px;border-bottom-color:var(--panel-border)}
+.pf-issue.mt-severity-advisory strong{color:#f1c168!important;font-weight:900}
+.pf-issue.mt-severity-advisory span{color:var(--ink);font-weight:600}
+.pf-issue{align-items:flex-start;overflow-wrap:anywhere;gap:9px}
+.pf-issue strong{flex:0 0 52px;min-width:0}
+.mt-warning-advisories{margin-top:10px}
+.mt-warning-advisories summary{cursor:pointer;color:#f0c16c;font-weight:900;padding:7px 0;font-size:12px;letter-spacing:.2px}
+.mt-field-error{color:#ff7676!important;font-weight:800;overflow-wrap:anywhere}
+body[data-display="daylight"] .pf-issue.mt-severity-critical strong,
+body[data-display="daylight"] .pf-issue.mt-severity-critical span,
+body[data-display="daylight"] .mt-critical-heading,
+body[data-display="daylight"] .mt-count-critical{color:#af111b!important}
+body[data-display="daylight"] .mt-warnings-jump.has-critical{background:#ffe8e8;color:#a71118}
+body[data-display="daylight"] .mt-warnings-jump.has-advisories{background:#fffae7;color:#835200}
+body[data-display="daylight"] .mt-warning-advisories summary,
+body[data-display="daylight"] .pf-issue.mt-severity-advisory strong,
+body[data-display="daylight"] .mt-count-advisory{color:#8b5600!important}
+body[data-display="toolbox"] #pfIssues{background:#332920;border-color:#a5855c}
+body[data-display="toolbox"] .mt-warnings-jump{background:#3b2e21;border-color:#c29a64}
+body[data-display="toolbox"] .mt-warnings-jump.has-critical{background:#4b2224;color:#ff9595;border-color:#ef6d6d}
+@media(max-width:620px){.mt-warnings-jump{font-size:10px;padding:7px 9px}#pfIssues{max-height:55vh}}
+</style>
+<style id="mt0952OperatorPolish">
+/* Committed FAPT figure trace: single line, independently scrollable on phones. */
+.mt-direction-panel{margin:12px 0 14px;padding:10px;border:1px solid var(--panel-border);border-radius:7px;background:var(--surface2);min-width:0}
+.mt-direction-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;color:var(--ink);font:800 11px/1.4 Consolas,monospace;letter-spacing:.65px}
+.mt-direction-heading span{font-size:10px;font-weight:700;color:var(--mute);white-space:nowrap}
+.mt-direction-track{display:flex;align-items:center;gap:5px;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;white-space:nowrap;touch-action:pan-x;padding:8px 6px 12px;scrollbar-width:thin;scrollbar-color:var(--mute) transparent;border:1px solid var(--panel-border);border-radius:5px;background:var(--bg);min-height:56px}
+.mt-direction-symbol{flex:none;min-width:35px;text-align:center;font:800 27px/1.1 system-ui,'Segoe UI Symbol',sans-serif;color:var(--ink);border-radius:4px;padding:3px 4px}
+.mt-direction-feature{color:var(--amber);font-size:23px}
+.mt-direction-arc{color:var(--teal)}
+.mt-direction-empty{font:700 11px/1.5 Consolas,monospace;color:var(--mute);padding-inline:7px}
+body[data-display="daylight"] .mt-direction-track{background:#edf2f0}
+body[data-display="toolbox"] .mt-direction-panel{background:#4a3b2d;border-color:#a88c65}
+body[data-display="toolbox"] .mt-direction-track{background:#21372d;border-color:#8c7759}
+body[data-display="toolbox"] .mt-direction-symbol{color:#e6e4d9}
+body[data-display="toolbox"] .mt-direction-feature{color:#ffd98a}
+body[data-display="toolbox"] .mt-direction-arc{color:#93d8cc}
+/* TOOLBOX: actual brushed-aluminum controls, not brown/green painted buttons.
+   Leave critical warning classification unmistakably red. */
+body[data-display="toolbox"] button:not(.mt-warnings-jump):not(.selected-symbol),
+body[data-display="toolbox"] .guide-link,
+body[data-display="toolbox"] .workflow-primary,
+body[data-display="toolbox"] .workflow-secondary{
+ background:linear-gradient(95deg,rgba(255,255,255,.2) 0%,transparent 17%,rgba(255,255,255,.12) 29%,transparent 47%,rgba(255,255,255,.08) 65%,transparent 90%),
+            linear-gradient(180deg,#e1e0da 0%,#b9bbb8 15%,#a2a7a7 51%,#888f90 52%,#b5b7b2 100%);
+ color:#222a2b;border:1px solid #7b7d79;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.73),inset 0 -1px 0 #666b6b,0 1px 2px rgba(12,9,6,.45);
+ text-shadow:0 1px 0 rgba(255,255,255,.22);
+ font-weight:800;
+}
+body[data-display="toolbox"] button.selected-symbol,
+body[data-display="toolbox"] .symbolic-keys button.selected-symbol,
+body[data-display="toolbox"] .feature-keys button.selected-symbol,
+body[data-display="toolbox"] .page-tab.active,
+body[data-display="toolbox"] .action-btn.primary,
+body[data-display="toolbox"] .numeric-pad .enter-key{
+ background:linear-gradient(180deg,#bfc5c4,#909b9a 49%,#7b8584 51%,#aeb5b1);
+ color:#172421;border:1px solid #5e7770;
+ box-shadow:inset 0 1px 1px #eef1eb,inset 0 0 0 2px rgba(28,85,67,.16),0 1px 3px #18100e66;
+ font-weight:900;
+}
+body[data-display="toolbox"] .softkeys b{color:#244e43;text-shadow:none}
+body[data-display="toolbox"] button:disabled{opacity:.43;filter:grayscale(.28)}
+body[data-display="toolbox"] button:active:not(:disabled){filter:brightness(.88);transform:translateY(1px)}
+body[data-display="toolbox"] .mt-warnings-jump.has-critical{background:#4b2224;color:#ff9595;border-color:#ef6d6d;box-shadow:none;text-shadow:none}
+body[data-display="toolbox"] .mt-warnings-jump.has-advisories{background:#60451d;color:#ffdf9e;border-color:#cfa15b;box-shadow:none;text-shadow:none}
+body[data-display="toolbox"] .mt-warnings-jump{background:#41382c;color:#edcf97;box-shadow:none}
+@media(max-width:500px){.mt-direction-panel{padding:8px}.mt-direction-symbol{font-size:25px;min-width:32px}}
+</style>
+
+<style id="mt0954FigurePoints">
+/* v0.9.54: one visible, deliberately entered graph-point editing state. */
+.figure-first-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:10px}
+.figure-first-row button{flex:0 0 auto;min-height:39px}
+.figure-first-row span{flex:1;min-width:140px;font-size:10px;color:var(--muted,#a9c2af);line-height:1.6}
+#graphPointEditToggle{min-width:120px;white-space:nowrap;font-size:10px;font-weight:800}
+#graphPointEditToggle[aria-pressed="true"]{border-color:var(--amber,#dfbd78);outline:1px solid var(--amber,#dfbd78)}
+.graph-toolbar{flex-wrap:wrap}.graph-toolbar .zoom-controls{flex-wrap:wrap;justify-content:flex-end}
+.graph-point-hint{color:var(--ink,#d5efe3);opacity:.85;font-size:10px;line-height:1.65;margin:8px 0}
+.graph-point-draft{border:1px solid var(--amber,#d5ab71);border-radius:7px;background:var(--surface2,#183226);padding:12px;margin-top:11px;display:grid;gap:11px}
+.graph-point-draft[hidden]{display:none!important}
+.graph-draft-head{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--amber,#f1c475);font-size:11px}
+.graph-draft-head .small-btn{flex:0 0 auto;grid-column:auto;min-width:76px}
+.graph-draft-coordinates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.graph-draft-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.graph-draft-actions .action-btn{flex:0 1 auto;min-height:44px}
+.graph-draft-actions span{font-size:10px;color:var(--ink,#c6d7cf);opacity:.85;line-height:1.5;flex:1;min-width:140px}
+@media(max-width:510px){#graphPointEditToggle{min-width:108px;font-size:9px}.graph-toolbar .zoom-controls{width:100%;justify-content:flex-start}.figure-first-row button{font-size:10px}}
+</style>
 </head>
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.47 · GUIDE</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
-    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="contrast">HIGH CONTRAST</option><option value="daylight">DAYLIGHT</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.57</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option><option value="daylight">DAYLIGHT</option><option value="toolbox">TOOLBOX</option><option value="contrast">HIGH CONTRAST</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><button type="button" id="mtWarningsJump" class="mt-warnings-jump" aria-label="Open the universal warnings report in Job / Export">WARNINGS</button><span class="prototype-tag">MOTION PREVIEW · NC LOCKED</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
     <button id="figureTab" class="page-tab active" aria-pressed="true">F10 · FIGURE</button>
     <button id="toolTab" class="page-tab" aria-pressed="false">F11 · TOOL TABLE</button>
-    <button id="opTab" class="page-tab" aria-pressed="false">ALT+4 · MACHINING</button>
+    <button id="opTab" class="page-tab" aria-pressed="false">ALT+4 · OPERATIONS</button>
     <button id="jobTab" class="page-tab" aria-pressed="false">ALT+5 · JOB / EXPORT</button>
     <button id="inspectTab" class="page-tab page-tab-secondary" aria-pressed="false" title="Optional manual tool and figure position inspection; shortcut F12">F12 · POSITION CHECK · OPTIONAL</button>
     
   </nav>
   <main class="workspace" id="figureWorkspace">
     <section class="panel entry-panel" aria-label="Geometry entry">
-      <div class="section-header"><h2>01 / BLANK & SETUP</h2><span id="unitTag" class="small-chip">INCH</span></div>
+      <div class="section-header"><h2>01 / STOCK AND PART PROFILE</h2><span id="unitTag" class="small-chip">INCH</span></div>
       <div class="setup-grid">
         <label class="field name-field">JOB NAME<input id="jobName" type="text" maxlength="45" autocomplete="off" spellcheck="false" value=""></label>
         <label class="field">UNITS<select id="unitSelect"><option value="inch">INCH</option><option value="mm">METRIC (MM)</option></select></label>
@@ -819,10 +1150,11 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
         <label class="field">STOCK Ø<input id="stockDiameter" inputmode="decimal" type="text" autocomplete="off"></label>
         <label class="field" id="blankBoreField" hidden>START BORE Ø<input id="blankBore" type="text" inputmode="decimal" autocomplete="off"></label>
         <label class="field">STOCK LENGTH<input id="stockLength" inputmode="decimal" type="text" autocomplete="off"></label>
+        <label class="field">CHUCKED LENGTH <span id="stockChuckedUnit" class="field-unit"></span><input id="stockChuckedLength" inputmode="decimal" type="text" autocomplete="off" placeholder="IF KNOWN" title="Length of the blank held inside the chuck or jaws. This is setup information; jaw clearance must still be verified for the actual machine."></label>
         <label class="field">RAW STOCK FRONT Z<input id="stockFrontZ" inputmode="text" type="text" autocomplete="off" title="Stock face position in the work coordinate system. Finished Z0 may be behind the raw face."></label>
         <div class="stock-coordinate-note">WORK Z0 AND RAW FACE ARE INDEPENDENT · STOCK EXTENDS TOWARD −Z FROM RAW FRONT.</div>
         <button class="small-btn" id="applyStock">APPLY SETUP</button>
-        <button class="small-btn muted" id="demoButton">DEMO PART</button>
+        
       </div>
       <div class="section-header second-header"><h2>02 / SYMBOLIC FIGURE</h2><span class="small-chip">X = DIAMETER</span></div>
       <div class="symbolic-panel" id="symbolicPanel">
@@ -838,6 +1170,12 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
           <div class="p1-actions"><button type="button" id="setP1" class="action-btn primary">SET P01</button><button type="button" id="beginFigure" class="action-btn">NEW FIGURE</button></div>
         </div>
         <div class="symbolic-status" id="symbolicStatus">NEXT MOVE FROM P01</div>
+        <section class="mt-direction-panel" aria-label="Entered figure movement history">
+          <div class="mt-direction-heading"><strong>FIGURE PATH · INPUT TRACE</strong><span id="mtDirectionCount">P01 · START</span></div>
+          <div class="mt-direction-track" id="mtDirectionTrack" role="group" tabindex="0" aria-label="Scroll horizontally through committed figure directions, corners and arcs">
+            <span class="mt-direction-empty">P01 · ADD YOUR FIRST DIRECTION</span>
+          </div>
+        </section>
         <div class="symbolic-keys" id="symbolicKeys" aria-label="Eight-direction FAPT-style figure keypad">
           <button type="button" data-symbol="nw">↖<small>7 · X+ Z−</small></button>
           <button type="button" data-symbol="up">↑<small>8 · X+</small></button>
@@ -879,11 +1217,11 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
         <div class="symbolic-actions"><button type="button" id="symApply" class="action-btn primary">ADD ELEMENT</button><button type="button" id="symUndo" class="action-btn">UNDO LAST</button></div>
         <div id="symbolicMessage" class="symbolic-message" role="status" aria-live="polite"></div>
       </div>
-      <details class="profile-editor-details" id="profileEditorDetails"><summary>POINT WORKSTATION · LIST + EDIT TOGETHER</summary>
+      <details class="profile-editor-details" id="profileEditorDetails"><summary>FIGURE POINTS · LIST + EDIT</summary>
       <div class="point-workstation-bar"><button type="button" id="pointBack" aria-label="Previous figure point">◀ PREV</button><label>EDITING <select id="pointJump" aria-label="Choose figure point"></select></label><button type="button" id="pointForward" aria-label="Next figure point">NEXT ▶</button></div>
       <div class="point-workstation-layout">
       <div class="rows-wrap point-scroll"><table class="row-table"><thead><tr><th>NO.</th><th>X (Ø)</th><th>Z</th><th>CORNER</th></tr></thead><tbody id="vertexRows"></tbody></table></div>
-      <div class="point-edit-side"><div class="edit-caption">SELECT ROW OR GRAPH POINT · F2 REPLACES · F1 INSERTS AFTER</div>
+      <div class="point-edit-side"><div class="edit-caption" id="figurePointsInsertHint">F1 INSERTS AFTER HIGHLIGHTED P01 · F2 REPLACES SELECTED POINT</div>
       <div class="editor-grid">
         <label class="field">X DIAMETER<input id="editX" type="text" inputmode="decimal" autocomplete="off"></label>
         <label class="field">Z AXIAL<div class="signed-input"><input id="editZ" type="text" inputmode="text" autocomplete="off"><button class="sign-key" type="button" data-sign-target="editZ" aria-label="Change profile Z sign">±</button></div></label>
@@ -891,14 +1229,21 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
         <label class="field">R / C SIZE<input id="editSize" type="text" inputmode="decimal" autocomplete="off"></label>
       </div>
       <div class="row edit-actions"><button type="button" id="editPartialArc" class="action-btn" hidden>EDIT THIS ARC</button></div>
-      <div class="row edit-actions"><button id="insertBtn" class="action-btn">F1 · INSERT</button><button id="replaceBtn" class="action-btn primary">F2 · REPLACE</button><button id="deleteBtn" class="action-btn warn">F3 · DELETE</button></div>
+      <div class="row edit-actions"><button id="insertBtn" class="action-btn">F1 · INSERT AFTER P01</button><button id="replaceBtn" class="action-btn primary">F2 · REPLACE</button><button id="deleteBtn" class="action-btn warn">F3 · DELETE</button></div>
+      <div class="figure-first-row"><button id="insertFirstBtn" type="button" class="action-btn">+ BEFORE P01</button><span id="figureFirstHint">Add a new start without changing existing point IDs.</span></div>
       </div></div></details>
-      <div class="status-box" id="geometryStatus" role="status" aria-live="polite"></div>
     </section>
     <section class="panel graph-panel" id="fullProfilePanel" aria-label="Measured profile graph">
-      <div class="section-header"><h2>03 / FIGURE GRAPH · TAP POINT TO EDIT</h2><span class="small-chip">PHYSICAL 1:1 AXES</span></div>
-      <div class="graph-toolbar"><span id="graphTitle" class="graph-subtitle">OD PROFILE / FACE AT Z0</span><div class="zoom-controls"><button id="zoomOut" title="Zoom out">−</button><button id="zoomFit">FIT</button><button id="zoomIn" title="Zoom in">+</button><button type="button" id="cadFigureOpen" title="Import or export workpiece DXF">DXF ↕</button></div></div>
+      <div class="section-header"><h2>03 / FIGURE GRAPH · POINT EDIT</h2><span class="small-chip">PHYSICAL 1:1 AXES</span></div>
+      <div class="graph-toolbar"><span id="graphTitle" class="graph-subtitle">OD PROFILE / FACE AT Z0</span><div class="zoom-controls"><button id="zoomOut" title="Zoom out">−</button><button id="zoomFit">FIT</button><button id="zoomIn" title="Zoom in">+</button><button type="button" id="cadFigureOpen" title="Import or export workpiece DXF">DXF ↕</button><button type="button" id="graphPointEditToggle" aria-pressed="false" title="Tap points to select, or tap the graph to propose a new point">EDIT POINTS · OFF</button></div></div>
       <div class="graph-frame"><svg id="profileGraph" viewBox="0 0 900 540" role="img" aria-label="True proportional lathe X diameter and Z axial profile, including stock outline"></svg></div>
+      <div id="graphPointEditHint" class="graph-point-hint">Tap an existing point to select it. Drag the graph to pan. Turn on EDIT POINTS to propose a new point anywhere on the graph.</div>
+      <div id="graphPointDraft" class="graph-point-draft" hidden>
+        <div class="graph-draft-head"><strong id="graphDraftTitle">NEW POINT · CONFIRM DIMENSIONS</strong><button type="button" id="graphDraftCancel" class="small-btn muted">CANCEL</button></div>
+        <label class="field">INSERT POSITION<select id="graphDraftLocation" aria-label="Choose the contour position of the new point"></select></label>
+        <div class="graph-draft-coordinates"><label class="field">X DIAMETER<input id="graphDraftX" type="text" inputmode="decimal" autocomplete="off"></label><label class="field">Z AXIAL<input id="graphDraftZ" type="text" inputmode="text" autocomplete="off"></label></div>
+        <div class="graph-draft-actions"><button type="button" id="graphDraftCommit" class="action-btn primary">INSERT FIGURE POINT</button><span>Tap position is approximate. Enter print dimensions before saving.</span></div>
+      </div>
       
       <div class="legend"><span><i class="legend-line finished"></i> FINISHED CONTOUR</span><span><i class="legend-line stock"></i> STOCK ENVELOPE</span><span><i class="legend-dot"></i> SELECTED POINT</span></div>
       <div class="readout" id="graphReadout">SELECT A PROFILE POINT</div>
@@ -1112,7 +1457,7 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
     <nav class="workflow-next" aria-label="Tool table next step">
       <span class="workflow-step">02 / 04 · TOOL TABLE</span>
       <button type="button" class="workflow-secondary" data-flow-go="inspect">POSITION CHECK · OPTIONAL</button>
-      <button type="button" class="workflow-primary" data-flow-go="operations">NEXT: MACHINING <span aria-hidden="true">→</span></button>
+      <button type="button" class="workflow-primary" data-flow-go="operations">NEXT: OPERATIONS <span aria-hidden="true">→</span></button>
     </nav>
   </main>
   <main class="inspect-workspace" id="inspectWorkspace" hidden>
@@ -1160,25 +1505,25 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
     <nav class="workflow-next" aria-label="Position check navigation">
       <span class="workflow-step">OPTIONAL / POSITION CHECK</span>
       <button type="button" class="workflow-secondary" data-flow-go="tools">← TOOL TABLE</button>
-      <button type="button" class="workflow-primary" data-flow-go="operations">NEXT: MACHINING <span aria-hidden="true">→</span></button>
+      <button type="button" class="workflow-primary" data-flow-go="operations">NEXT: OPERATIONS <span aria-hidden="true">→</span></button>
     </nav>
   </main>
 
   <main class="operation-workspace mt-op-compact" id="opWorkspace" hidden>
-    <section class="panel operation-list-panel" aria-label="Machining operation list">
+    <section class="panel operation-list-panel" aria-label="Operations list">
       <div class="section-header"><h2>10 / OPERATION SEQUENCE</h2><span class="small-chip" id="opCount">0 OPERATIONS</span></div>
       <div id="operationList" class="operation-list" role="listbox" aria-label="Select machining operation"></div>
-      <div class="section-header second-header"><h2>ADD MACHINING OPERATION</h2><span class="small-chip">NO CANNED CYCLES</span></div>
+      <div class="section-header second-header"><h2>ADD OPERATION</h2><span class="small-chip">NO CANNED CYCLES</span></div>
       <label class="field">OPERATION TYPE<select id="newOpKind"><option value="face">FACING</option><option value="od_rough">OD ROUGHING</option><option value="od_finish">OD FINISHING</option><option value="od_groove">OD GROOVING</option><option value="special_profile">SPECIAL CONTOUR · ROUGH + FINISH</option><option value="form_profile">FORM TOOL · STAGED RADIAL</option><option value="od_thread">OD THREADING</option><option value="id_thread">ID THREADING</option><option value="drill">DRILL / PECK</option><option value="id_rough">ID ROUGH BORING</option><option value="id_finish">ID FINISH BORING</option><option value="id_groove">ID GROOVING</option></select></label>
       <button class="action-btn primary inspect-wide" id="opAdd">F1 · ADD OPERATION</button>
-      <button class="small-btn muted inspect-wide mt-op-extra" id="opDemo">LOAD 3-OP EXAMPLE</button>
+      
       <div class="operation-actions"><button class="action-btn" id="opDuplicate">COPY</button><button class="action-btn warn" id="opDelete">DELETE</button></div>
       <div class="section-header second-header op-redundant-head mt-op-extra"><h2>SEQUENCE ORDER</h2><span class="small-chip">TOP TO BOTTOM</span></div>
       <div class="operation-actions"><button class="action-btn" id="opMoveUp">↑ MOVE UP</button><button class="action-btn" id="opMoveDown">↓ MOVE DOWN</button></div>
       
     </section>
     <section class="panel operation-editor-panel" aria-label="Operation parameter entry">
-      <div class="section-header"><h2>11 / MACHINING DATA INPUT</h2><span class="small-chip" id="opEditorTitle">OP 01</span></div>
+      <div class="section-header"><h2>11 / OPERATION DATA INPUT</h2><span class="small-chip" id="opEditorTitle">OP 01</span></div>
       <button class="small-btn muted" type="button" id="opOperatorNotesToggle" aria-pressed="false">SHOW HELP / EXTRAS</button>
       <label class="field op-step-picker" hidden>EDIT STEP<select id="opStepSelect" aria-label="Select existing machining step to edit"></select></label>
       <div class="operation-form-grid">
@@ -1447,8 +1792,8 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
       <details class="motion-details"><summary>PASS TABLE / PREVIEW ASSUMPTIONS</summary><div class="motion-table-wrap"><table class="motion-table"><thead><tr><th>PASS</th><th>CUT X Ø</th><th>END Z</th><th>FEED</th><th>PATH TYPE</th></tr></thead><tbody id="opMotionRows"></tbody></table></div><div class="motion-notice">OD/ID stock is an approximate axial envelope. Finish-only 2D insert and mounted-holder sweeps flag potential overlap with modeled stock/finished material; they do NOT establish collision-free cutting. Insert seat and tool orientation, fixture/jaw protrusion, controller offsets and machine travel remain unverified.</div><div id="opMotionWarnings" class="motion-warnings"></div></details>
       <div class="tool-warning compact-warning">TOOL BODY: 2D SWEEP REVIEW ONLY · NO COLLISION CERTIFICATION · NC LOCKED</div>
     </section>
-    <nav class="workflow-next" aria-label="Machining next step">
-      <span class="workflow-step">03 / 04 · MACHINING</span>
+    <nav class="workflow-next" aria-label="Operations next step">
+      <span class="workflow-step">03 / 04 · OPERATIONS</span>
       <button type="button" class="workflow-secondary" data-flow-go="tools">← TOOL TABLE</button>
       <button type="button" class="workflow-primary" data-flow-go="job">NEXT: JOB / EXPORT <span aria-hidden="true">→</span></button>
     </nav>
@@ -1469,7 +1814,7 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
         <div class="job-setup-grid">
           <label class="field">CHUCK / FIXTURE<input id="pfFixture" type="text" maxlength="80" spellcheck="false" placeholder="CHUCK, JAWS, FIXTURE"></label>
           <label class="field">WORK Z0 DATUM<input id="pfDatum" type="text" maxlength="90" spellcheck="false" placeholder="E.G. STOCK FACE / FINISH FACE"></label>
-          <label class="field">GRIP LENGTH <span class="pf-unit"></span><input id="pfGrip" type="number" min="0" step="any" placeholder="MEASURE"></label>
+          <div class="stock-coordinate-note" id="pfChuckedSummary">CHUCKED LENGTH: SET IN FIGURE → STOCK AND PART PROFILE.</div>
           <label class="field">STICKOUT FROM JAWS <span class="pf-unit"></span><input id="pfStickout" type="number" min="0" step="any" placeholder="MEASURE"></label>
           <label class="field">SAFE X Ø <span class="pf-unit"></span><input id="pfSafeX" type="number" min="0" step="any" placeholder="TO BE VERIFIED"></label>
           <label class="field">SAFE Z <span class="pf-unit"></span><input id="pfSafeZ" type="number" step="any" placeholder="TO BE VERIFIED"></label>
@@ -1481,15 +1826,15 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
       <div class="job-savebar"><button class="action-btn primary" id="pfSave">SAVE JOB DATA</button><span id="pfSavedMsg" class="job-small-note">Machine templates are placeholders; none are production-qualified.</span></div>
     </section>
     <section class="panel job-sequence-panel" aria-label="Mazatrol-inspired operation sequence">
-      <div class="section-header"><h2>14 / MACHINING SEQUENCE</h2><span id="pfStepCount" class="small-chip">0 STEPS</span></div>
+      <div class="section-header"><h2>14 / OPERATION SEQUENCE</h2><span id="pfStepCount" class="small-chip">0 STEPS</span></div>
       <div class="job-table-wrap"><table class="job-table"><thead><tr><th>NO.</th><th>UNIT / OPERATION</th><th>TOOL</th><th>F/REV</th><th>SPINDLE</th><th>STATE</th></tr></thead><tbody id="pfSteps"></tbody></table></div>
       <div id="pfStepDetail" class="job-step-detail" aria-live="polite"></div>
-      <div class="job-savebar"><button id="pfEditStep" class="action-btn">EDIT SELECTED STEP</button><button id="pfAddStep" class="action-btn">ADD MACHINING STEP</button></div>
+      <div class="job-savebar"><button id="pfEditStep" class="action-btn">EDIT SELECTED STEP</button><button id="pfAddStep" class="action-btn">ADD OPERATION STEP</button></div>
     </section>
     <section class="panel job-preflight-panel" aria-label="Preflight checklist and post readiness">
-      <div class="section-header"><h2>15 / PREFLIGHT & POST READINESS</h2><span class="small-chip">NO ASSUMED SAFETY</span></div>
+      <div class="section-header"><h2>15 / UNIVERSAL WARNINGS & PREFLIGHT</h2><span class="small-chip">NO ASSUMED SAFETY</span></div>
       <div class="preflight-head" id="pfReadiness"></div>
-      <div id="pfIssues" class="job-issues" role="status" aria-live="polite"></div>
+      <div id="pfIssues" class="job-issues" role="region" aria-label="Universal warnings, critical blockers and advisory notices" aria-live="polite"></div>
       <details class="preflight-detail"><summary>OPERATOR CHECKLIST · SESSION ONLY</summary>
         <div id="pfChecks" class="pf-checks"></div>
         <p class="job-small-note">Checks are cleared when job, tool, or operation data changes and when a file is reopened. They are not a machine safety certification.</p>
@@ -1541,14 +1886,14 @@ body[data-display="daylight"] .workflow-secondary{color:#204638;background:#daea
     </section>
     <nav class="workflow-next" aria-label="Job completion step">
       <span class="workflow-step">04 / 04 · JOB / EXPORT</span>
-      <button type="button" class="workflow-secondary" data-flow-go="operations">← MACHINING</button>
+      <button type="button" class="workflow-secondary" data-flow-go="operations">← OPERATIONS</button>
       <button type="button" class="workflow-primary" data-flow-action="export-job">SAVE JOB FILE <span aria-hidden="true">↓</span></button>
     </nav>
   </main>
   <!-- v0.8.8: single context keypad for all entry screens. Never hides the F keys. -->
   <aside class="mt-input-dock" id="mtInputDock" data-open="false" role="group" aria-label="MiniTurn input keypad">
     <div class="mt-pad-heading">
-      <button type="button" id="mtPadToggle" class="mt-pad-tab" aria-expanded="false" aria-controls="mtPadBody">⌨ INPUT</button>
+      <button type="button" id="mtPadToggle" class="mt-pad-tab" aria-expanded="false" aria-controls="mtPadBody" title="Tap to open; drag to move along screen edge">⌨ INPUT</button>
       <span class="mt-pad-which" id="padTargetReadout">TAP A FIELD</span>
       <button type="button" id="mtPadSide" class="mt-pad-mini" title="Switch between bottom and right-side dock">RIGHT ⇥</button>
       <button type="button" id="mtPadDismiss" class="mt-pad-mini" aria-label="Hide keypad">✕</button>
@@ -2742,7 +3087,7 @@ const {OPERATION_VERSION,OP_KINDS,isIdOperation,isBoreOperation,makeOperation,de
  * Feed is length/revolution; fixed RPM and SFM/CSS are distinct selections.
  * SFM is stored as ft/min in any unit system, converted to m/min for G21 G96.
  */
-const OPERATION_VERSION='0.9.47';
+const OPERATION_VERSION='0.9.51';
 const OP_KINDS={form_profile:'FORM TOOL · RADIAL',od_rough:'OD ROUGH',od_finish:'OD FINISH',face:'FACE',od_groove:'OD GROOVE',special_profile:'SPECIAL CONTOUR',od_thread:'OD THREAD',id_rough:'ID ROUGH',id_finish:'ID FINISH',id_groove:'ID GROOVE',id_thread:'ID THREAD',drill:'DRILL / PECK'};
 const isIdOperation=k=>['id_rough','id_finish','id_groove','id_thread'].includes(k);
 const isBoreOperation=k=>['id_rough','id_finish'].includes(k);
@@ -3454,7 +3799,7 @@ const HOLDER_VIEW_KEY='miniturn.tool.catalogView.v0.5.6';
 const REFERENCE_VIEW_KEY='miniturn.tool.localRef.v0.6.1';
 const DEMO_BACKUP_KEY='miniturn.demoToolReset.backup.v0.6';
 const AUTO_DEMO_BACKUP_KEY='miniturn.grooveDemoMigration.original.v0.6.7';
-const DISPLAY_MODES=['classic','vivid','contrast','daylight','mazatrol'];
+const DISPLAY_MODES=['classic','vivid','mazatrol','daylight','toolbox','contrast'];
 let displayMode='classic';
 try { const savedMode=localStorage.getItem(DISPLAY_KEY); if(DISPLAY_MODES.includes(savedMode))displayMode=savedMode; } catch {}
 const GRAPH_COLOR_ROLES={};
@@ -3479,7 +3824,8 @@ const GRAPH_COLOR_PALETTES={
  vivid:{bg:'#08162c',grid:'#213c5d',label:'#b8d7fa',axis:'#83b8e1',stock:'#a3c8f7',part:'#45ffa6',partFill:'#00816b',insert:'#16efec',holder:'#ffaa4e',selected:'#ffcf57',selectedOutline:'#614a17',point:'#fff4da',warning:'#ff689c',preview:'#a58bff',note:'#f5d8ff'},
  contrast:{bg:'#000000',grid:'#343434',label:'#ffffff',axis:'#aaaaaa',stock:'#ededed',part:'#00ffed',partFill:'#08756e',insert:'#00d5ff',holder:'#ff9900',selected:'#ffed00',selectedOutline:'#ffffff',point:'#ffffff',warning:'#ff4488',preview:'#bc94ff',note:'#ffed00'},
  mazatrol:{bg:'#070b19',grid:'#26364e',label:'#aebfd7',axis:'#677e9e',stock:'#b1a683',part:'#8ed6ed',partFill:'#264669',insert:'#59e0e2',holder:'#ef9d51',selected:'#ff9b4b',selectedOutline:'#67341c',point:'#e6edf8',warning:'#ff7666',preview:'#a5a1fb',note:'#ffd39b'},
- daylight:{bg:'#ffffff',grid:'#dbe4e9',label:'#233948',axis:'#697985',stock:'#646e76',part:'#006aa8',partFill:'#b9e4f3',insert:'#008876',holder:'#934100',selected:'#b52515',selectedOutline:'#5d2617',point:'#7b1540',warning:'#b00030',preview:'#6343aa',note:'#7b1540'}
+ daylight:{bg:'#ffffff',grid:'#dbe4e9',label:'#233948',axis:'#697985',stock:'#646e76',part:'#006aa8',partFill:'#b9e4f3',insert:'#008876',holder:'#934100',selected:'#b52515',selectedOutline:'#5d2617',point:'#7b1540',warning:'#b00030',preview:'#6343aa',note:'#7b1540'},
+ toolbox:{bg:'#172d25',grid:'#355544',label:'#f2e5c7',axis:'#7e9d87',stock:'#d4b687',part:'#8ee3d0',partFill:'#2d6251',insert:'#9ad8e1',holder:'#cb9b69',selected:'#f9d77d',selectedOutline:'#54412f',point:'#fbe0a9',warning:'#ffa37f',preview:'#bed0e9',note:'#d7bf8a'}
 };
 function graphColor(value){
  if(displayMode==='classic'||typeof value!=='string')return value;
@@ -3491,7 +3837,7 @@ function applyDisplayMode(mode,redraw=true){
  document.body.dataset.display=displayMode;
  $('displayMode').value=displayMode;
  const meta=document.querySelector('meta[name="theme-color"]');
- if(meta)meta.content=displayMode==='mazatrol'?'#080c16':displayMode==='daylight'?'#eaf0f2':displayMode==='contrast'?'#000000':displayMode==='vivid'?'#08162c':'#0b1715';
+ if(meta)meta.content=displayMode==='mazatrol'?'#080c16':displayMode==='daylight'?'#eaf0f2':displayMode==='toolbox'?'#3b3129':displayMode==='contrast'?'#000000':displayMode==='vivid'?'#08162c':'#0b1715';
  try{localStorage.setItem(DISPLAY_KEY,displayMode);}catch{}
  if(!redraw)return;
  if(activePage==='figure')drawGraph();
@@ -3533,7 +3879,7 @@ window.addEventListener('error',event=>{reportRuntimeError(event.error||event.me
 window.addEventListener('unhandledrejection',event=>{reportRuntimeError(event.reason,'ASYNC ERROR');});
 function diagnosticText(){
  const storage=(()=>{try{const key='__miniturn_storage_probe__';localStorage.setItem(key,'ok');localStorage.removeItem(key);return 'available';}catch{return 'unavailable';}})();
- return [`MINITURN v0.9.47 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
+ return [`MINITURN v0.9.51 — DIAGNOSTICS`,`Captured: ${new Date().toISOString()}`,`Current page: ${activePage}`,`Location protocol: ${location.protocol}`,`Local storage: ${storage}`,`User agent: ${navigator.userAgent}`,`Figure rows: ${job.nodes.length}`,`Tools: ${job.tools?.length||0}`,`Operations: ${job.operations?.length||0}`,`Display errors logged: ${runtimeErrors.length}`,...runtimeErrors.map((e,i)=>`\n#${i+1} ${e.at} ${e.kind} [${e.page}]\n${e.detail}`),'','A completely terminated Android browser view may leave no JavaScript error log.'].join('\n');
 }
 function showDiagnostics(){const dialog=$('diagnosticDialog');$('diagnosticText').textContent=diagnosticText();if(!dialog.open)dialog.showModal();}
 function retryDisplay(){
@@ -3681,10 +4027,57 @@ function arcCommit(){
  const message=`ARC R${fmt(c.radius)} · VIEW ${arcViewDirection(c.sweep)} ${c.angle.toFixed(2)}° · CALCULATED CENTER X${fmt(c.center.v*2)} Z${fmt(-c.center.u)}`;
  arcClose();$('symbolicMessage').textContent=message;notify('ARC ADDED · NO NC OUTPUT');
 }
+// v0.9.52 · Figure input trace. Rebuilt from the saved geometry on every refresh,
+// so importing, editing, undoing or reopening cannot leave an obsolete history.
+// Symbols depict the physical FIGURE sequence (not commanded G-code).
+let mtPreviousTrace='';
+function mtFigureTraceItems(){
+ const nodes=job?.nodes||[], items=[];
+ const arrows={'1,0':'↑','-1,0':'↓','0,1':'➔','0,-1':'←',
+   '1,1':'↗','1,-1':'↖','-1,1':'↘','-1,-1':'↙'};
+ const sign=v=>Math.abs(v)<1e-9?0:(v>0?1:-1);
+ for(let i=1;i<nodes.length;i++){
+  const prev=nodes[i-1], cur=nodes[i], pIndex=i+1;
+  // One GROOVE button creates three construction nodes. Show one input glyph.
+  if(cur.feature==='groove-start'&&i+2<nodes.length&&nodes[i+2].feature==='groove-end'){
+   items.push({glyph:'G',kind:'feature',label:`GROOVE · P${i+1}–P${i+3}`,index:i+2});
+   i+=2;
+  }else if(cur.arcToPrev){
+   const solved=arcAssistCandidates(nodes,i-1,cur.arcToPrev,job.stock);
+   const selected=solved.candidates.find(c=>c.key===cur.arcToPrev.choiceKey);
+   const view=selected?arcViewDirection(selected.sweep):null;
+   items.push({glyph:view==='CW'?'↷':view==='CCW'?'↶':'A',kind:'arc',label:`P${pIndex} · ${view||'ARC'} R${cur.arcToPrev.radius}`,index:i});
+  }else if(cur.feature==='thread'){
+   items.push({glyph:'T',kind:'feature',label:`P${pIndex} · THREAD`,index:i});
+  }else{
+   const key=`${sign(cur.x-prev.x)},${sign(cur.z-prev.z)}`;
+   items.push({glyph:arrows[key]||'·',kind:'move',label:`P${pIndex} · X${cur.x} Z${cur.z}`,index:i});
+  }
+  // R/C belongs to the PRECEDING corner, after arriving at that point.
+  if(cur.corner==='chamfer'||cur.corner==='fillet'){
+   items.push({glyph:cur.corner==='chamfer'?'C':'R',kind:'feature',label:`P${pIndex} · ${cur.corner.toUpperCase()} ${cur.size}`,index:i});
+  }
+ }
+ return items;
+}
+function mtRefreshFigureTrace(){
+ const track=$('mtDirectionTrack'),counter=$('mtDirectionCount');if(!track||!counter)return;
+ const items=mtFigureTraceItems(),signature=items.map(x=>x.glyph+'@'+x.index).join('|');
+ counter.textContent=`${items.length} INPUT${items.length===1?'':'S'} · ${job.nodes.length} POINT${job.nodes.length===1?'':'S'}`;
+ track.replaceChildren();
+ if(!items.length){const el=document.createElement('span');el.className='mt-direction-empty';el.textContent='P01 · ADD YOUR FIRST DIRECTION';track.append(el);}
+ else for(const item of items){
+  const el=document.createElement('span');el.className=`mt-direction-symbol mt-direction-${item.kind}`;
+  el.textContent=item.glyph;el.title=item.label;
+  el.setAttribute('aria-label',item.label);track.append(el);
+ }
+ if(signature!==mtPreviousTrace){track.scrollLeft=track.scrollWidth;mtPreviousTrace=signature;}
+}
 function refreshSymbolic(){
  if(!$('symbolicStatus'))return;
  const p=job.nodes.at(-1),last=job.nodes.length;
  $('symbolicStatus').textContent=`${blankStatusText()} · NEXT FROM P${String(last).padStart(2,'0')} · XØ${fmt(p.x)} Z${fmt(p.z)}`;
+ mtRefreshFigureTrace();
  document.querySelectorAll('[data-symbol]').forEach(b=>{b.classList.toggle('selected-symbol',b.dataset.symbol===symbolicChoice);b.setAttribute('aria-pressed',String(b.dataset.symbol===symbolicChoice));});
  const dim=['groove','thread'].includes(symbolicChoice),corner=['radius','chamfer'].includes(symbolicChoice);
  const direction=SYMBOLIC_MOVES[symbolicChoice];
@@ -3773,10 +4166,22 @@ function setP1Preset(type){
  setPadTarget($('startX'));
  $('symbolicMessage').textContent=`P01 XØ${fmt(x)} Z0 · PRESS SET P01`;
 }
+/** Recorded chuck engagement; intentionally does NOT infer a safe jaw plane. */
+function readChuckedLength(totalLength){
+ const raw=$('stockChuckedLength').value.trim();
+ if(!raw)return null;
+ const value=parseNumeric(raw);
+ if(value===null||!(value>0)||!(value<totalLength)){
+  notify('CHUCKED LENGTH MUST BE GREATER THAN ZERO AND LESS THAN TOTAL STOCK LENGTH',true);
+  return false;
+ }
+ return value;
+}
 function newSymbolicFigure(){
  const d=parseNumeric($('stockDiameter').value),l=parseNumeric($('stockLength').value),fZ=parseNumeric($('stockFrontZ').value);if(!(d>0&&l>0&&fZ!==null&&fZ>=0&&fZ<l))return notify('ENTER VALID BLANK DIMENSIONS',true);
+ const chuck=readChuckedLength(l);if(chuck===false)return;
  if(job.nodes.length>1&&!confirm('NEW FIGURE? Existing contour and machining regions will be replaced. Tools will be kept.'))return;
- const t=clone(job);t.stock={type:$('blankType').value,diameter:d,length:l,frontZ:fZ,bore:$('blankType').value==='tube'?(parseNumeric($('blankBore').value)||0):0};t.workSide=$('workSide').value;
+ const t=clone(job);t.stock={type:$('blankType').value,diameter:d,length:l,frontZ:fZ,bore:$('blankType').value==='tube'?(parseNumeric($('blankBore').value)||0):0};t.workSide=$('workSide').value;t.setup={...normalizeJobSetup(t.setup),grip:chuck};
  const x=$('startX').value.trim()===''?d:parseNumeric($('startX').value);
  const z=$('startZ').value.trim()===''?0:parseNumeric($('startZ').value);
  if(x===null||z===null||x<0||x>d+1e-8||z>fZ+1e-8||z< fZ-l-1e-8)return notify('P01: CHECK X AND RAW STOCK FRONT Z / STOCK LENGTH',true);
@@ -3819,16 +4224,59 @@ function loadLocal(){
  notify('NEW FIGURE READY · SET P01');
 }
 function autosave(){try{if(!validateJob(job).errors.length){localStorage.setItem(KEY,JSON.stringify(job));dirty=false;notify('SAVED ON DEVICE');}else notify('FIX GEOMETRY TO SAVE',true);}catch{notify('LOCAL STORAGE UNAVAILABLE — EXPORT JOB',true);}}
-function refreshSetup(){ $('jobName').value=job.name||''; $('unitSelect').value=job.units; $('unitTag').textContent=job.units==='inch'?'INCH':'MM'; $('stockDiameter').value=fmt(job.stock.diameter); $('stockLength').value=fmt(job.stock.length);$('stockFrontZ').value=fmt(job.stock.frontZ||0);$('startX').value=fmt(job.nodes[0].x);$('startZ').value=fmt(job.nodes[0].z);refreshBlankFields();refreshSymbolic();}
-function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1); const n=job.nodes[selected];$('editPartialArc').hidden=!n.arcToPrev;$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();syncTerminalDock();}
+function refreshSetup(){ $('jobName').value=job.name||''; $('unitSelect').value=job.units; $('unitTag').textContent=job.units==='inch'?'INCH':'MM'; $('stockDiameter').value=fmt(job.stock.diameter); $('stockLength').value=fmt(job.stock.length);const grip=normalizeJobSetup(job.setup).grip;$('stockChuckedLength').value=grip===null?'':fmt(grip);$('stockChuckedUnit').textContent=job.units==='inch'?'(IN)':'(MM)';$('stockFrontZ').value=fmt(job.stock.frontZ||0);$('startX').value=fmt(job.nodes[0].x);$('startZ').value=fmt(job.nodes[0].z);refreshBlankFields();refreshSymbolic();}
+let figureInsertBeforeFirst=false,graphPointEditMode=false,graphPointDraft=null;
+// An inserted point normally starts SHARP even if the highlighted existing
+// point owns a chamfer/fillet. F2 REPLACE still uses the displayed corner.
+let figureInsertCornerExplicit=false;
+/** A safe draft position lies on the ACTUAL straight land between two
+ * corner tangencies, not the theoretical midpoint hidden inside a large R/C. */
+function figureStraightInsertMidpoint(index){
+ const a=job.nodes[index-1],b=job.nodes[index];
+ if(!a||!b||b.arcToPrev)return null;
+ const profile=buildProfile(job);
+ const segment=profile.errors.length?null:(profile.segments||[]).find(seg=>
+  seg.kind==='line' && seg.from===index-1 && seg.to===index && !seg.feature);
+ if(!segment)return null;
+ const mid={u:(segment.start.u+segment.end.u)/2,v:(segment.start.v+segment.end.v)/2};
+ return {x:mid.v*2,z:-mid.u};
+}
+
+function figurePointLocationLabel(i){return `P${String(i+1).padStart(2,'0')}`;}
+function updateFigureInsertControls(){
+ const name=figurePointLocationLabel(selected);
+ $('insertBtn').textContent=figureInsertBeforeFirst?'F1 · INSERT NEW P01':`F1 · INSERT AFTER ${name}`;
+ $('figurePointsInsertHint').textContent=figureInsertBeforeFirst?
+  'NEW P01 · VALUES ARE A DRAFT UNTIL F1 INSERT · EXISTING POINTS WILL RENUMBER.':
+  `HIGHLIGHTED ${name} · VALUES ARE A DRAFT UNTIL F1 INSERT OR F2 REPLACE`;
+ $('insertFirstBtn').setAttribute('aria-pressed',String(figureInsertBeforeFirst));
+ $('figureFirstHint').textContent=figureInsertBeforeFirst?'New P01 is staged. Change X/Z, then press F1.':'New first point preserves existing IDs and operation endpoints.';
+}
+function selectRow(i){selected=Math.min(Math.max(0,i),job.nodes.length-1);figureInsertCornerExplicit=false; const n=job.nodes[selected];updateFigureInsertControls();$('editPartialArc').hidden=!n.arcToPrev;$('editX').value=fmt(n.x);$('editZ').value=fmt(n.z);$('editCorner').value=n.corner||'sharp';$('editSize').value=fmt(n.size||0); $('editSize').disabled=$('editCorner').value==='sharp';drawRows();drawGraph();syncTerminalDock();}
+// Figure Points is a two-action draft editor: typing (or pressing keypad ENTER)
+// must never modify job.nodes, redraw the saved contour, or trigger autosave.
+// Only F1 INSERT and F2 REPLACE commit edited X/Z/corner values.
+function figurePointDraftChanged(){
+ const n=job.nodes[selected];if(!n)return;
+ const rawX=$('editX').value.trim(),rawZ=$('editZ').value.trim();
+ const x=parseNumeric(rawX),z=parseNumeric(rawZ),corner=$('editCorner').value;
+ const size=corner==='sharp'?0:parseNumeric($('editSize').value);
+ const staged=figureInsertBeforeFirst||x===null||z===null||Math.abs(x-n.x)>1e-9||Math.abs(z-n.z)>1e-9||corner!==(n.corner||'sharp')||(size===null?true:Math.abs(size-(n.size||0))>1e-9);
+ $('figurePointsInsertHint').textContent=staged?
+  (figureInsertBeforeFirst?'DRAFT ONLY · F1 INSERTS NEW P01 · NOTHING CHANGES UNTIL F1':'DRAFT ONLY · F1 INSERTS AFTER '+figurePointLocationLabel(selected)+' · F2 REPLACES '+figurePointLocationLabel(selected)):
+  (figureInsertBeforeFirst?'NEW P01 · VALUES ARE A DRAFT UNTIL F1 INSERT':`HIGHLIGHTED ${figurePointLocationLabel(selected)} · F1 INSERTS AFTER · F2 REPLACES`);
+ // Corners belong to their saved figure node. F1 makes a SHARP new point
+ // unless the operator deliberately changed its corner/size in this draft.
+ if(!figureInsertBeforeFirst && (job.nodes[selected].corner||'sharp')!=='sharp' && !figureInsertCornerExplicit)
+  $('figurePointsInsertHint').textContent+=' · NEW POINT DEFAULTS SHARP';
+}
 function drawRows(){const tbody=$('vertexRows'),jump=$('pointJump');tbody.replaceChildren();
  if(jump){if(jump.options.length!==job.nodes.length){jump.replaceChildren();job.nodes.forEach((n,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=`P${String(i+1).padStart(2,'0')} · X${fmt(n.x)} Z${fmt(n.z)}`;jump.append(option);});}
  else job.nodes.forEach((n,i)=>{jump.options[i].textContent=`P${String(i+1).padStart(2,'0')} · X${fmt(n.x)} Z${fmt(n.z)}`;});jump.value=String(selected);}
  job.nodes.forEach((node,i)=>{const tr=document.createElement('tr');tr.className=i===selected?'active-row':'';const vals=[String(i+1).padStart(2,'0'),fmt(node.x),fmt(node.z),node.arcToPrev?'ARC R'+fmt(node.arcToPrev.radius):node.corner==='fillet'?'R'+fmt(node.size):node.corner==='chamfer'?'C'+fmt(node.size):node.feature==='thread'?'THREAD P'+fmt(node.threadPitch):node.feature==='groove-end'?'GROOVE':'SHARP'];vals.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});tr.addEventListener('click',()=>selectRow(i));tbody.append(tr);});const active=tbody.children[selected];if(active && !active.getBoundingClientRect().height) return;if(active){const list=document.querySelector('.point-scroll');if(list&&list.clientHeight){const y=active.offsetTop;const bottom=y+active.offsetHeight;if(y<list.scrollTop)list.scrollTop=y;else if(bottom>list.scrollTop+list.clientHeight)list.scrollTop=bottom-list.clientHeight;}}}
-function graphAlert(profile){let valid=profile.errors.length===0;const status=$('geometryStatus');status.replaceChildren();status.className='status-box '+(valid?'ok':'invalid'); const strong=document.createElement('strong');strong.textContent=valid?(job.nodes.length===1?'FIGURE STARTED · SELECT A MOVEMENT':`GEOMETRY VALID · ${profile.segments.length} ELEMENTS`):`GEOMETRY INVALID · ${profile.errors.length} ISSUE(S)`;status.append(strong);for(const item of [...profile.errors,...profile.warnings].slice(0,5)){const line=document.createElement('div');line.textContent=item;status.append(line);}}
 function el(type,attributes={},content=''){const e=document.createElementNS(svgNS,type);for(const [k,v] of Object.entries(attributes))e.setAttribute(k,String(k==='fill'||k==='stroke'?graphColor(v):v));if(content)e.textContent=content;return e;}
 function drawGraph(){
- const graph=$('profileGraph');graph.replaceChildren();const layer=el('g',{id:'profileLayer'});graph.append(layer);const profile=buildProfile(job);graphAlert(profile);
+ const graph=$('profileGraph');graph.replaceChildren();const layer=el('g',{id:'profileLayer'});graph.append(layer);const profile=buildProfile(job);
  const W=900,H=540,marginX=100,marginY=85;
  const L=Math.max(.01,job.stock?.length||1), D=Math.max(.01,job.stock?.diameter||1), frontU=-(job.stock?.frontZ||0);
  const base=Math.min((W-marginX*2)/L,(H-marginY*2)/D),scale=base*zoom;
@@ -3884,6 +4332,7 @@ function drawGraph(){
   if(job.nodes[i].feature==='thread'){txt(`TH ${fmt(job.nodes[i].threadPitch||0)}`,p.x+10,p.y+18,'#ffc478',11);}
   if(on){line({x:p.x,y:28},{x:p.x,y:H-25},'#e8b56a',1,'4 5');line({x:30,y:p.y},{x:W-20,y:p.y},'#e8b56a',1,'4 5');txt(`P${String(i+1).padStart(2,'0')}`,p.x+12,p.y-12,'#ffd396',14);}
  }
+ drawGraphPointDraft(layer,map);
  txt('FRONT / Z0',map({u:0,v:D/2}).x,27,'#a1cab9',13,'middle');
  txt(mirrorZ?'CHUCK ← −Z':'−Z → CHUCK',mirrorZ?115:W-22,27,'#a1cab9',13,mirrorZ?'start':'end');
  $('graphReadout').textContent=`POINT ${String(selected+1).padStart(2,'0')}  ·  X (Ø) ${fmt(job.nodes[selected].x)}  ·  Z ${fmt(job.nodes[selected].z)}  ·  ${job.units.toUpperCase()}  ·  SCALE ${zoom.toFixed(2)}×  · CHUCK LEFT / Z0 RIGHT`;
@@ -3891,24 +4340,207 @@ function drawGraph(){
  $('graphTitle').textContent=`${job.name.slice(0,36).toUpperCase()} · ${profile.segments.length} TRUE ELEMENTS · CHUCK LEFT · Z0 RIGHT`;
 }
 
+
+/** v0.9.54 - touch editing is intentionally a draft transaction. The saved
+ * figure stays unchanged until INSERT is pressed and model validation passes. */
+function figureGraphProjection(){
+ const W=900,H=540,L=Math.max(.01,job.stock.length||1),D=Math.max(.01,job.stock.diameter||1);
+ const scale=Math.min((W-200)/L,(H-170)/D)*zoom;
+ return {width:W,height:H,scale,centerU:L/2-(job.stock.frontZ||0)+panU,centerV:panV,mirrorZ};
+}
+function figureGraphScreenPoint(svgX,svgY){
+ const p=figureGraphProjection(),direction=mirrorZ?-1:1;
+ return {x:2*(p.centerV+(p.height/2-svgY)/p.scale),z:-(p.centerU+(svgX-p.width/2)/(direction*p.scale))};
+}
+function graphPointHint(msg){$('graphPointEditHint').textContent=msg;}
+function graphClearDraft(){graphPointDraft=null;$('graphPointDraft').hidden=true;drawGraph();}
+function graphDraftSlotOptions(index){
+ const list=$('graphDraftLocation');list.replaceChildren();
+ for(let i=0;i<=job.nodes.length;i++){
+  const option=document.createElement('option');option.value=String(i);
+  option.textContent=i===0?'BEFORE P01 · NEW FIRST POINT':i===job.nodes.length?`AFTER ${figurePointLocationLabel(i-1)} · APPEND`:
+   `BETWEEN ${figurePointLocationLabel(i-1)} / ${figurePointLocationLabel(i)}`;
+  list.append(option);
+ }
+ list.value=String(Math.max(0,Math.min(job.nodes.length,index)));
+}
+function graphStagePoint(x,z,index,description){
+ graphPointDraft={x,z,index};
+ graphDraftSlotOptions(index);
+ $('graphDraftTitle').textContent=description||'NEW FIGURE POINT · CONFIRM DIMENSIONS';
+ $('graphDraftX').value=fmt(x);$('graphDraftZ').value=fmt(z);
+ $('graphPointDraft').hidden=false;
+ graphPointHint('NEW POINT IS PROVISIONAL · ENTER EXACT X/Z FROM THE PRINT, THEN INSERT.');
+ drawGraph();
+ $('graphPointDraft').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function graphClosestSegment(p,a,b){
+ const dx=b.x-a.x,dy=b.y-a.y,den=dx*dx+dy*dy;
+ if(den<1e-8)return {distance:Infinity,t:0,x:a.x,y:a.y};
+ const t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/den));
+ return {distance:Math.hypot(p.x-(a.x+t*dx),p.y-(a.y+t*dy)),t,x:a.x+t*dx,y:a.y+t*dy};
+}
+function graphFindInsertionAt(svgX,svgY){
+ const projection=figureGraphProjection(),p={x:svgX,y:svgY};
+ const rect=$('profileGraph').getBoundingClientRect(),screenPxToSvg=900/Math.max(1,rect.width);
+ const nodeRadius=26*screenPxToSvg,segmentRadius=18*screenPxToSvg;
+ let selectedNode=-1,bestNode=nodeRadius;
+ job.nodes.forEach((n,i)=>{const q=projectGraphPoint(physicalPoint(n),projection),dist=Math.hypot(q.x-svgX,q.y-svgY);if(dist<bestNode){bestNode=dist;selectedNode=i;}});
+ // Defer point selection until we know whether the tap is in the middle of
+ // a valid straight segment. On a phone, the original 26px point touch radius
+ // swallowed short lands beside radii/chamfers completely.
+ const geom=buildProfile(job),segs=geom.segments||[];
+ let segment=null,best=segmentRadius;
+ for(const s of segs){
+  const samples=s.kind==='arc'?Array.from({length:25},(_,i)=>{
+   const angle=s.startAngle+s.sweep*i/24;
+   return projectGraphPoint({u:s.center.u+s.radius*Math.cos(angle),v:s.center.v+s.radius*Math.sin(angle)},projection);
+  }):[projectGraphPoint(s.start,projection),projectGraphPoint(s.end,projection)];
+  for(let i=1;i<samples.length;i++){
+   const hit=graphClosestSegment(p,samples[i-1],samples[i]);
+   if(hit.distance<best){best=hit.distance;segment={kind:s.kind,from:s.from,to:s.to,feature:s.feature||'',x:hit.x,y:hit.y,t:hit.t};}
+  }
+ }
+ // Inside the middle of an actual straight land, prefer INSERT over a nearby
+ // construction vertex, except within an 8px precise-point tap region.
+ // For short neighboring lands, shrink only the precise-node selection
+ // area proportionally so the segment remains tappable at default phone zoom.
+ let preciseNodeRadius=8*screenPxToSvg;
+ if(segment?.kind==='line'&&segment.from!==segment.to){
+  const a=projectGraphPoint(physicalPoint(job.nodes[segment.from]),projection);
+  const b=projectGraphPoint(physicalPoint(job.nodes[segment.to]),projection);
+  preciseNodeRadius=Math.min(preciseNodeRadius,Math.hypot(a.x-b.x,a.y-b.y)*.18);
+ }
+ const preferStraight=graphPointEditMode&&segment?.kind==='line'&&segment.from!==segment.to &&
+  segment.t>.12&&segment.t<.88&&bestNode>preciseNodeRadius;
+ if(selectedNode>=0&&!preferStraight)return {kind:'point',index:selectedNode};
+ if(segment){
+  if(segment.kind!=='line'||segment.from===segment.to)return {kind:'feature',index:segment.from};
+  if(job.nodes[segment.to]?.arcToPrev)return {kind:'feature',index:segment.to};
+  return {kind:'segment',index:segment.from+1,position:figureGraphScreenPoint(segment.x,segment.y)};
+ }
+ return {kind:'empty',index:Math.min(job.nodes.length,selected+1),position:figureGraphScreenPoint(svgX,svgY)};
+}
+function graphHandleTap(svgX,svgY){
+ const hit=graphFindInsertionAt(svgX,svgY);
+ if(hit.kind==='point'){
+  graphPointDraft=null;$('graphPointDraft').hidden=true;
+  figureInsertBeforeFirst=false;selectRow(hit.index);
+  $('profileEditorDetails').open=true;
+  $('profileEditorDetails').scrollIntoView({block:'start',behavior:'smooth'});
+  graphPointHint(`SELECTED ${figurePointLocationLabel(hit.index)} · EDIT IN FIGURE POINTS.`);return;
+ }
+ if(!graphPointEditMode)return;
+ if(hit.kind==='feature'){
+  if(Number.isInteger(hit.index)){
+   figureInsertBeforeFirst=false;selectRow(hit.index);
+   $('profileEditorDetails').open=true;
+   graphPointHint(`SELECTED ${figurePointLocationLabel(hit.index)} FEATURE · F1 CAN INSERT ON AN ADJACENT STRAIGHT LAND, BUT NOT THROUGH THE R/C/ARC ITSELF.`);
+  }else graphPointHint('SELECT A FEATURE POINT, THEN USE F1 TO ADD ADJACENT GEOMETRY. CIRCULAR AND CHAMFER FEATURES ARE PRESERVED.');
+  return;
+ }
+ const point=hit.position,front=job.stock.frontZ||0,L=job.stock.length;
+ // The graph can show empty space beyond stock. Clamp only the provisional
+ // tap values; never silently shift an already committed point.
+ const x=Math.max(0,Math.min(job.stock.diameter,point.x));
+ const z=Math.max(front-L,Math.min(front,point.z));
+ const title=hit.kind==='segment'?'INSERT ON SELECTED STRAIGHT SEGMENT':'INSERT FROM GRAPH TAP · SELECT CHAIN POSITION';
+ graphStagePoint(x,z,hit.index,title);
+}
+function graphCommitPoint(){
+ if(!graphPointDraft)return;
+ const index=Number($('graphDraftLocation').value),x=parseNumeric($('graphDraftX').value),z=parseNumeric($('graphDraftZ').value);
+ if(!Number.isInteger(index)||index<0||index>job.nodes.length||x===null||z===null)return notify('ENTER VALID X/Z AND INSERT POSITION',true);
+ if(job.nodes.length>=120)return notify('120 POINT MAXIMUM',true);
+ const a=job.nodes[index-1],b=job.nodes[index];
+ if((a&&Math.abs(a.x-x)<1e-9&&Math.abs(a.z-z)<1e-9)||(b&&Math.abs(b.x-x)<1e-9&&Math.abs(b.z-z)<1e-9))return notify('NEW POINT MUST NOT COINCIDE WITH ITS NEIGHBORS',true);
+ if(index>0&&b?.arcToPrev)return notify('CANNOT SPLIT ARC: EDIT ARC ASSIST FIRST',true);
+ const next=clone(job);
+ next.nodes.splice(index,0,{id:nodeId(),x,z,corner:'sharp',size:0});
+ if(mutate(next,index)){
+  $('profileEditorDetails').open=true;
+  graphPointHint(index===0?'NEW P01 ADDED · OLD POINTS RENUMBERED':`POINT INSERTED AFTER ${figurePointLocationLabel(index-1)} · GEOMETRY UPDATED`);
+  notify('FIGURE POINT SAVED · OPERATION REGION IDS PRESERVED');
+ }
+}
+function graphUpdateDraftPreview(){
+ if(!graphPointDraft)return;
+ const x=parseNumeric($('graphDraftX').value),z=parseNumeric($('graphDraftZ').value);
+ if(x===null||z===null)return;
+ graphPointDraft.x=x;graphPointDraft.z=z;graphPointDraft.index=Number($('graphDraftLocation').value);
+ drawGraph();
+}
+function drawGraphPointDraft(layer,map){
+ if(!graphPointDraft)return;
+ const {x,z,index}=graphPointDraft;
+ if(!Number.isFinite(x)||!Number.isFinite(z))return;
+ const p=map({u:-z,v:x/2});
+ for(const node of [job.nodes[index-1],job.nodes[index]])if(node){
+  const q=map(physicalPoint(node));
+  layer.append(el('line',{x1:q.x,y1:q.y,x2:p.x,y2:p.y,stroke:'#ffd57e','stroke-dasharray':'7 5','stroke-width':2,'opacity':'.85'}));
+ }
+ layer.append(el('circle',{cx:p.x,cy:p.y,r:10,fill:'#142a22',stroke:'#ffd57e','stroke-width':3,'stroke-dasharray':'4 3'}));
+ layer.append(el('text',{x:p.x+12,y:p.y-12,fill:'#ffd57e','font-size':15,'font-family':'monospace'},`NEW P${String(index+1).padStart(2,'0')}`));
+}
+
 /* v0.8.9 figure overview: fit projection independent of full figure zoom/pan. */
 let miniTileSuppressed=false,miniFullVisible=false,miniObserver=null;
 function drawMiniFigure(){
+ // v0.9.51: Mini graph uses the same plot palette, stock shading, grid,
+ // finished contour, and selected-point language as the main Figure graph.
+ // This is presentation only; profile geometry and NC motion are untouched.
  const svg=$('miniFigureSvg');if(!svg)return;
- svg.replaceChildren();const W=640,H=320,stock=job.stock,L=Math.max(.001,stock.length),D=Math.max(.001,stock.diameter),front=-(stock.frontZ||0);
- const proj={width:W,height:H,scale:Math.min((W-70)/L,(H-55)/D),centerU:front+L/2,centerV:0,mirrorZ};
+ svg.replaceChildren();
+ const W=640,H=320,stock=job.stock;
+ const L=Math.max(.001,stock.length),D=Math.max(.001,stock.diameter),front=-(stock.frontZ||0);
+ const proj={width:W,height:H,scale:Math.min((W-72)/L,(H-55)/D),centerU:front+L/2,centerV:0,mirrorZ};
  const map=p=>projectGraphPoint(p,proj);
- const stockPts=[{u:front,v:D/2},{u:front+L,v:D/2},{u:front+L,v:-D/2},{u:front,v:-D/2}].map(map);
- const drawLine=(pts,color,width,dash='')=>{
-  if(pts.length<2)return;svg.append(el('path',{d:pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' '),fill:'none',stroke:color,'stroke-width':width,...(dash?{'stroke-dasharray':dash}:{})}));
+ const path=pts=>pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
+ const drawLine=(pts,color,width,dash='',opacity=1)=>{
+  if(pts.length<2)return;
+  svg.append(el('path',{d:path(pts),fill:'none',stroke:color,'stroke-width':width,'stroke-opacity':opacity,
+   ...(dash?{'stroke-dasharray':dash}:{})}));
  };
- svg.append(el('rect',{width:W,height:H,fill:'#081712'}));drawLine([...stockPts,stockPts[0]],'#829d8d',1.8,'6 5');
- if(stock.type==='tube'&&stock.bore>0){for(const sign of [-1,1])drawLine([{u:front,v:sign*stock.bore/2},{u:front+L,v:sign*stock.bore/2}].map(map),'#b48c5e',1.2,'4 4');}
- const prof=buildProfile(job);if(!prof.errors.length){
-  const pts=sampleProfile(prof,proj.scale).map(map);drawLine(pts,'#5ce9d9',3);
-  const mirror=sampleProfile(prof,proj.scale).map(p=>map({u:p.u,v:-p.v}));drawLine(mirror,'#5ce9d9',1.6);
+ const gridLine=(a,b,color='#19382f',width=1,dash='')=>svg.append(el('line',{
+  x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:color,'stroke-width':width,
+  ...(dash?{'stroke-dasharray':dash}:{})}));
+ svg.append(el('rect',{width:W,height:H,fill:'#091714'}));
+ // Match the full graph's physical scaling and grid construction.
+ const rawStep=75/proj.scale,order=Math.pow(10,Math.floor(Math.log10(rawStep)));
+ const interval=[1,2,5,10].map(n=>n*order).find(n=>n>=rawStep)||order*10;
+ const uMin=proj.centerU-W/(2*proj.scale),uMax=proj.centerU+W/(2*proj.scale);
+ const vMin=-H/(2*proj.scale),vMax=H/(2*proj.scale);
+ for(let i=Math.ceil(uMin/interval);i<=Math.floor(uMax/interval);i++){
+  const x=map({u:i*interval,v:0}).x;gridLine({x,y:0},{x,y:H});
  }
- const p=job.nodes[selected];if(p){const q=map(physicalPoint(p));svg.append(el('circle',{cx:q.x,cy:q.y,r:6.5,fill:'#ffbf68',stroke:'#fff0c4','stroke-width':2}));}
+ for(let i=Math.ceil(vMin/interval);i<=Math.floor(vMax/interval);i++){
+  const y=map({u:0,v:i*interval}).y,isCenter=i===0;
+  gridLine({x:0,y},{x:W,y},isCenter?'#9eb8a8':'#19382f',isCenter?1.5:1,isCenter?'7 5':'');
+ }
+ const stockPts=[{u:front,v:D/2},{u:front+L,v:D/2},{u:front+L,v:-D/2},{u:front,v:-D/2}].map(map);
+ svg.append(el('path',{d:path(stockPts)+' Z',fill:'#647362','fill-opacity':'.11',
+  stroke:'#7f9988','stroke-width':1.7,'stroke-dasharray':'6 5'}));
+ if(stock.type==='tube'&&stock.bore>0){for(const sign of [-1,1]){
+  drawLine([{u:front,v:sign*stock.bore/2},{u:front+L,v:sign*stock.bore/2}].map(map),'#d8a778',1.8,'5 4');
+ }}
+ const prof=buildProfile(job);
+ if(!prof.errors.length){
+  const samples=sampleProfile(prof,proj.scale);
+  const up=samples.map(map);
+  const down=[...samples].reverse().map(p=>map({u:p.u,v:-p.v}));
+  if(up.length>=2){
+   svg.append(el('path',{d:path([...up,...down])+' Z',fill:'#278d8a','fill-opacity':'.20',stroke:'none'}));
+   drawLine(up,'#5ce9d9',3);
+   drawLine(down,'#5ce9d9',2,'',.55);
+  }
+ }
+ const p=job.nodes[selected];
+ if(p){const q=map(physicalPoint(p));
+  // Same selected-point crosshair and marker as the full Figure graph.
+  gridLine({x:q.x,y:8},{x:q.x,y:H-8},'#e8b56a',1,'4 5');
+  gridLine({x:8,y:q.y},{x:W-8,y:q.y},'#e8b56a',1,'4 5');
+  svg.append(el('circle',{cx:q.x,cy:q.y,r:7,fill:'#ffc46e',stroke:'#fff0c4','stroke-width':2}));
+ }
  $('miniFigureCaption').textContent=`P${String(selected+1).padStart(2,'0')} · XØ${fmt(p?.x||0)} · Z${fmt(p?.z||0)}${prof.errors.length?' · CHECK FIGURE':''}`;
 }
 function updateMiniVisibility(){
@@ -3933,9 +4565,42 @@ function readEditor(){const x=parseNumeric($('editX').value),z=parseNumeric($('e
  return {x,z,corner,size:corner==='sharp'?0:size};}
 function mutate(next, newSelected){next=upgradeFigureIds(next);try{next.nodes=reSolveSavedArcs(next);}catch(e){notify(e.message,true);return false;}const regionError=bindOperationRegions(next);if(regionError){notify(regionError,true);return false;}const validation=validateJob(next);if(validation.errors.length){notify(validation.errors[0],true);return false;}
  const geom=buildProfile(next);if(geom.errors.length){notify(geom.errors[0],true);return false;}
- job=next;selected=newSelected;dirty=true;inspectCamera=null;update();autosave();return true;}
+ job=next;selected=newSelected;figureInsertBeforeFirst=false;graphPointDraft=null;if($('graphPointDraft'))$('graphPointDraft').hidden=true;dirty=true;inspectCamera=null;update();autosave();return true;}
 function doAction(name){
- if(name==='insert') {if(job.nodes.length>=120){notify('120 ROW MAXIMUM',true);return;}const row=readEditor();if(!row)return;const temp=clone(job);temp.nodes.splice(selected+1,0,row);mutate(temp,selected+1);}
+ if(name==='insert') {
+  if(job.nodes.length>=120){notify('120 POINT MAXIMUM',true);return;}
+  const row=readEditor();if(!row)return;
+  const index=figureInsertBeforeFirst?0:selected+1;
+  if(!figureInsertCornerExplicit){row.corner='sharp';row.size=0;}
+  const previous=job.nodes[index-1],following=job.nodes[index];
+  if(previous&&Math.abs(previous.x-row.x)<1e-9&&Math.abs(previous.z-row.z)<1e-9){
+   if(following&&!following.arcToPrev){
+    // For neighboring R/C corners, start from the surviving STRAIGHT section
+    // rather than the construction vertices inside their tangent trims.
+    const midpoint=figureStraightInsertMidpoint(index);
+    if(!midpoint)return notify('NO STRAIGHT LAND TO SPLIT · ADJUST THE ADJACENT RADIUS/CHAMFER OR ENTER A NEW POINT POSITION',true);
+    $('editX').value=fmt(midpoint.x);$('editZ').value=fmt(midpoint.z);
+    $('editCorner').value='sharp';$('editSize').value='0';$('editSize').disabled=true;
+    figureInsertCornerExplicit=false;figurePointDraftChanged();
+    notify(`STRAIGHT LAND MIDPOINT PREPARED BETWEEN ${figurePointLocationLabel(index-1)} AND ${figurePointLocationLabel(index)} · PRESS F1 TO INSERT`);
+   }else notify('ENTER A NEW X/Z POSITION BEFORE INSERTING',true);
+   return;
+  }
+  if(following&&Math.abs(following.x-row.x)<1e-9&&Math.abs(following.z-row.z)<1e-9)return notify('NEW POINT COINCIDES WITH NEXT POINT · CHANGE X/Z',true);
+  if(index>0&&following?.arcToPrev)return notify('CANNOT SPLIT A SAVED ARC · EDIT ITS ARC ASSIST OR REMOVE THE ARC FIRST',true);
+  const nearCorner=index>0&&((previous&&(previous.corner||'sharp')!=='sharp')||(following&&(following.corner||'sharp')!=='sharp'));
+  if(nearCorner){
+   // Moving off the former connecting line changes a neighboring corner's
+   // tangent directions. That is allowed, but only after explicit approval.
+   const a=physicalPoint(previous),b=physicalPoint(following),c={u:-row.z,v:row.x/2};
+   const length=norm(vec(a,b)),distance=length>1e-10?Math.abs(cross(vec(a,b),vec(a,c)))/length:Infinity;
+   if(distance>Math.max(1e-7,length*1e-6) &&
+      !confirm('This insertion changes the adjoining radius/chamfer tangencies. Continue and inspect the updated contour?'))return;
+  }
+  const temp=clone(job);temp.nodes.splice(index,0,{...row,id:nodeId(),...(index===0?{corner:'sharp',size:0}:{})});
+  if(mutate(temp,index))notify(index===0?'NEW P01 INSERTED · EXISTING POINTS RENUMBERED':`INSERTED AFTER ${figurePointLocationLabel(index-1)} · CONTOUR RENUMBERED`);
+ }
+
  else if(name==='replace'){const row=readEditor();if(!row)return;const temp=clone(job);const previous=temp.nodes[selected];
   if(previous.arcToPrev){
    if(previous.arcToPrev.mode==='endpoints'){previous.arcToPrev.endX=row.x;previous.arcToPrev.endZ=row.z;}
@@ -3956,10 +4621,107 @@ function download(text,name,type){const blob=new Blob([text],{type}),url=URL.cre
 /** v0.8.8 · single docked MiniTurn data-entry keypad.
  * Mobile numeric/text fields don't invoke Android IME unless DEVICE is chosen.
  * Internal editor state changes through real input/change events. */
-const figureNumericFields=['startX','startZ','symX','symZ','symWidth','symSize','editX','editZ','editSize','arcRadius','arcEndX','arcEndZ','stockDiameter','stockLength','stockFrontZ','blankBore'];
-const mtFigureLabels={startX:'P01 X',startZ:'P01 Z',symX:'NEXT X',symZ:'NEXT Z',symWidth:'WIDTH / LENGTH',symSize:'R / C / DEPTH',editX:'EDIT X',editZ:'EDIT Z',editSize:'EDIT R / C',arcRadius:'ARC R',arcEndX:'ARC END X',arcEndZ:'ARC END Z',stockDiameter:'STOCK Ø',stockLength:'STOCK LENGTH',stockFrontZ:'RAW FRONT Z',blankBore:'START BORE Ø'};
+const figureNumericFields=['startX','startZ','symX','symZ','symWidth','symSize','editX','editZ','editSize','graphDraftX','graphDraftZ','arcRadius','arcEndX','arcEndZ','stockDiameter','stockLength','stockChuckedLength','stockFrontZ','blankBore'];
+const mtFigureLabels={startX:'P01 X',startZ:'P01 Z',symX:'NEXT X',symZ:'NEXT Z',symWidth:'WIDTH / LENGTH',symSize:'R / C / DEPTH',editX:'EDIT X',editZ:'EDIT Z',editSize:'EDIT R / C',graphDraftX:'NEW POINT X',graphDraftZ:'NEW POINT Z',arcRadius:'ARC R',arcEndX:'ARC END X',arcEndZ:'ARC END Z',stockDiameter:'STOCK Ø',stockLength:'STOCK LENGTH',stockChuckedLength:'CHUCKED LENGTH',stockFrontZ:'RAW FRONT Z',blankBore:'START BORE Ø'};
 const mtTouchDevice=window.matchMedia?.('(pointer:coarse)')?.matches || navigator.maxTouchPoints>0;
 let padCaret=null,mtPadOpen=false,mtPadSide='bottom',mtPadAlphaNumbers=false,mtPadCaps=true,mtNativeTarget=null;
+// Only the collapsed INPUT button moves. Position is stored as edge + proportion,
+// so rotation, address-bar resizing and F-key dock height never hide it offscreen.
+let mtBubbleAnchor=null,mtBubbleDrag=null,mtBubbleIgnoreClick=false;
+function mtBubbleBounds(){
+ const shell=$('mtInputDock'),r=shell.getBoundingClientRect(),w=r.width,h=r.height;
+ const fw=Math.max(document.documentElement.clientWidth||0,0),vh=window.innerHeight;
+ const vw=window.visualViewport;
+ const rightEdge=vw?Math.min(fw||window.innerWidth,Math.ceil(vw.offsetLeft+vw.width)):fw||window.innerWidth;
+ const leftEdge=vw?Math.max(0,Math.floor(vw.offsetLeft)):0;
+ const topEdge=vw?Math.max(0,Math.floor(vw.offsetTop)):0;
+ const bottomEdge=vw?Math.min(vh,Math.ceil(vw.offsetTop+vw.height)):vh;
+ const dock=$('softkeyDock');
+ const dockTop=dock&&!dock.hidden&&dock.getClientRects().length?dock.getBoundingClientRect().top:bottomEdge;
+ const minX=leftEdge+8,minY=topEdge+8;
+ return {minX,maxX:Math.max(minX,rightEdge-w-8),minY,
+         maxY:Math.max(minY,Math.min(bottomEdge,dockTop)-h-8)};
+}
+function mtBubblePixels(x,y){
+ const shell=$('mtInputDock');
+ shell.classList.add('mt-bubble-positioned');
+ shell.style.left=Math.round(x)+'px';shell.style.top=Math.round(y)+'px';
+ shell.style.right='auto';shell.style.bottom='auto';shell.style.transform='none';
+}
+function mtBubbleUnposition(){
+ const shell=$('mtInputDock');shell.classList.remove('mt-bubble-positioned','mt-bubble-dragging');
+ for(const key of ['left','top','right','bottom','transform'])shell.style.removeProperty(key);
+}
+function mtBubblePlace(){
+ if(mtPadOpen){mtBubbleUnposition();return;}
+ if(!mtBubbleAnchor)return; // Preserve original default until the first drag.
+ const b=mtBubbleBounds(),f=Math.max(0,Math.min(1,mtBubbleAnchor.fraction));
+ let x=b.maxX,y=b.maxY;
+ if(mtBubbleAnchor.edge==='left'){x=b.minX;y=b.minY+(b.maxY-b.minY)*f;}
+ else if(mtBubbleAnchor.edge==='right'){x=b.maxX;y=b.minY+(b.maxY-b.minY)*f;}
+ else if(mtBubbleAnchor.edge==='top'){y=b.minY;x=b.minX+(b.maxX-b.minX)*f;}
+ else if(mtBubbleAnchor.edge==='bottom'){y=b.maxY;x=b.minX+(b.maxX-b.minX)*f;}
+ mtBubblePixels(x,y);
+}
+function mtBubbleSaveFromPosition(x,y){
+ const b=mtBubbleBounds();
+ x=Math.max(b.minX,Math.min(b.maxX,x));y=Math.max(b.minY,Math.min(b.maxY,y));
+ const dist={left:x-b.minX,right:b.maxX-x,top:y-b.minY,bottom:b.maxY-y};
+ const edge=Object.keys(dist).sort((a,c)=>dist[a]-dist[c])[0];
+ const fraction=edge==='left'||edge==='right'?
+  (b.maxY>b.minY?(y-b.minY)/(b.maxY-b.minY):0.5):
+  (b.maxX>b.minX?(x-b.minX)/(b.maxX-b.minX):0.5);
+ mtBubbleAnchor={edge,fraction:Math.max(0,Math.min(1,fraction))};
+ try{localStorage.setItem('miniturn.inputBubble.v1',JSON.stringify(mtBubbleAnchor));}catch{}
+ mtBubblePlace();
+}
+function mtSetupInputBubble(){
+ try{
+  const a=JSON.parse(localStorage.getItem('miniturn.inputBubble.v1')||'null');
+  if(a&&['left','right','top','bottom'].includes(a.edge)&&Number.isFinite(a.fraction))
+   mtBubbleAnchor={edge:a.edge,fraction:Math.max(0,Math.min(1,a.fraction))};
+ }catch{}
+ const toggle=$('mtPadToggle'),shell=$('mtInputDock');
+ toggle.addEventListener('pointerdown',e=>{
+  mtBubbleIgnoreClick=false;
+  if(mtPadOpen||!e.isPrimary||e.button!==0)return;
+  const r=shell.getBoundingClientRect();
+  mtBubbleDrag={id:e.pointerId,originX:e.clientX,originY:e.clientY,left:r.left,top:r.top,moved:false};
+  try{toggle.setPointerCapture(e.pointerId);}catch{}
+ });
+ toggle.addEventListener('pointermove',e=>{
+  const d=mtBubbleDrag;if(!d||d.id!==e.pointerId)return;
+  const dx=e.clientX-d.originX,dy=e.clientY-d.originY;
+  if(!d.moved&&Math.hypot(dx,dy)<7)return;
+  d.moved=true;mtBubbleIgnoreClick=true;
+  shell.classList.add('mt-bubble-dragging');
+  const b=mtBubbleBounds();
+  mtBubblePixels(Math.max(b.minX,Math.min(b.maxX,d.left+dx)),
+                 Math.max(b.minY,Math.min(b.maxY,d.top+dy)));
+  if(e.cancelable)e.preventDefault();
+ });
+ const finish=e=>{
+  const d=mtBubbleDrag;if(!d||d.id!==e.pointerId)return;
+  mtBubbleDrag=null;shell.classList.remove('mt-bubble-dragging');
+  if(d.moved){
+   const r=shell.getBoundingClientRect();
+   mtBubbleSaveFromPosition(r.left,r.top);
+   mtBubbleIgnoreClick=true;
+   if(e.cancelable)e.preventDefault();
+  }
+ };
+ toggle.addEventListener('pointerup',finish);
+ toggle.addEventListener('pointercancel',finish);
+ toggle.addEventListener('contextmenu',e=>{if(!mtPadOpen)e.preventDefault();});
+ // Click still fires after a touch drag in Chromium. Consume it, but let a later tap open.
+ toggle.addEventListener('click',e=>{
+  if(!mtBubbleIgnoreClick)return;
+  mtBubbleIgnoreClick=false;e.preventDefault();e.stopImmediatePropagation();
+ },true);
+ window.visualViewport?.addEventListener('resize',()=>{if(!mtPadOpen)mtBubblePlace();},{passive:true});
+ mtBubblePlace();
+}
+
 function mtEligibleField(el){
  if(!el||el.disabled||el.id==='toolAngle'||el.type==='hidden'||el.type==='file'||el.tagName==='SELECT')return false;
  if(el.tagName==='TEXTAREA')return true;
@@ -3982,6 +4744,7 @@ function mtPadLayout(){
  document.body.dataset.padSide=mtPadSide;
  $('mtPadAlpha').hidden=mtFieldKind(mtSelectedField())!=='alpha';
  $('mtPadAlpha').textContent=mtPadAlphaNumbers?'ABC':'123';
+ mtBubblePlace();
  // The bottom dock overlaps content only while actively editing. Make room when open.
  document.documentElement.style.setProperty('--mt-input-height',mtPadOpen&&mtPadSide==='bottom'?`${Math.ceil(shell.getBoundingClientRect().height)}px`:'0px');
  document.querySelector('.app-shell').style.paddingBottom=`calc(var(--mt-dock-height) + var(--mt-input-height) + 18px)`;
@@ -4112,7 +4875,12 @@ function padWrite(key){
   el.dispatchEvent(new Event('change',{bubbles:true}));
   if(['arcRadius','arcEndX','arcEndZ'].includes(el.id))arcSolve();
   else if(['symZ','symX','symWidth','symSize'].includes(el.id))symbolicApply();
-  else if(['editX','editZ','editSize'].includes(el.id))doAction('replace');
+  else if(['editX','editZ','editSize'].includes(el.id)){
+   // ENTER accepts the typed value into the draft field only. The machining
+   // figure is unchanged until the operator explicitly uses F1 or F2.
+   figurePointDraftChanged();
+   notify('FIGURE POINT DRAFT ONLY · PRESS F1 INSERT OR F2 REPLACE');
+  }
   else if(el.id==='startX'){setPadTarget($('startZ'),true);return;}
   else if(el.id==='startZ')setFirstPoint();
   else if(el.id==='inspectX'||el.id==='inspectZ')$('inspectApply').click();
@@ -4139,6 +4907,7 @@ function setupPad(){
  // Preserve user-selected side across sessions but don't change any saved job model.
  try{mtPadSide=localStorage.getItem('miniturn.padDock')==='right'?'right':'bottom';}catch{}
  document.body.dataset.padSide=mtPadSide;
+ mtSetupInputBubble();
  document.querySelectorAll('.app-shell input,.app-shell textarea').forEach(mtPrepareField);
  $('mtPadToggle').addEventListener('click',()=>{mtOpenPad(!mtPadOpen);if(mtPadOpen)mtRenderKeys();});
  $('mtPadDismiss').addEventListener('click',()=>mtOpenPad(false));
@@ -4159,14 +4928,39 @@ function setupPad(){
  mtRenderKeys();mtPadLayout();padReadout();
 }
 function wire(){
- $('editCorner').addEventListener('change',()=>{$('editSize').disabled=$('editCorner').value==='sharp';});
+ $('editCorner').addEventListener('change',()=>{figureInsertCornerExplicit=true;$('editSize').disabled=$('editCorner').value==='sharp';figurePointDraftChanged();});
+ for(const id of ['editX','editZ','editSize']){
+  $(id).addEventListener('input',()=>{if(id==='editSize')figureInsertCornerExplicit=true;figurePointDraftChanged();});
+  // Native device keyboards may send ENTER as a form action. Preserve draft.
+  $(id).addEventListener('keydown',event=>{
+   if(event.key==='Enter'){event.preventDefault();figurePointDraftChanged();notify('DRAFT ONLY · PRESS F1 INSERT OR F2 REPLACE');event.currentTarget.blur();}
+  });
+ }
  $('jobName').addEventListener('change',()=>{const temp=clone(job);temp.name=$('jobName').value.trim()||'UNTITLED';mutate(temp,selected);});
  $('unitSelect').addEventListener('change',()=>{const before=job.units,step=Number($('inspectStep').value);const next=convertJobUnits(job,$('unitSelect').value);if(mutate(next,selected)&&Number.isFinite(step)&&step>0&&before!==job.units)$('inspectStep').value=Number((step*(before==='inch'?25.4:1/25.4)).toPrecision(9)).toString();});
- $('applyStock').addEventListener('click',()=>{const d=parseNumeric($('stockDiameter').value),l=parseNumeric($('stockLength').value),fZ=parseNumeric($('stockFrontZ').value);if(!d||!l||fZ===null||fZ<0||fZ>=l){notify('ENTER VALID STOCK DIMENSIONS',true);return;}const temp=clone(job);temp.stock={diameter:d,length:l,frontZ:fZ,type:$('blankType').value,bore:$('blankType').value==='tube'?(parseNumeric($('blankBore').value)||0):0};temp.workSide=$('workSide').value;mutate(temp,selected);});
- $('demoButton').addEventListener('click',()=>{if(!confirm('Restore demo part and demo tool table?'))return;job=upgradeFigureIds(defaultJob());symbolicHistory=[];opSelected=0;selected=1;zoom=1;panU=0;panV=0;update();autosave();});
- $('pointBack').addEventListener('click',()=>selectRow(Math.max(0,selected-1)));
- $('pointForward').addEventListener('click',()=>selectRow(Math.min(job.nodes.length-1,selected+1)));
- $('pointJump').addEventListener('change',()=>selectRow(Number($('pointJump').value)));
+ $('applyStock').addEventListener('click',()=>{const d=parseNumeric($('stockDiameter').value),l=parseNumeric($('stockLength').value),fZ=parseNumeric($('stockFrontZ').value);if(!d||!l||fZ===null||fZ<0||fZ>=l){notify('ENTER VALID STOCK DIMENSIONS',true);return;}const chuck=readChuckedLength(l);if(chuck===false)return;const temp=clone(job);temp.stock={diameter:d,length:l,frontZ:fZ,type:$('blankType').value,bore:$('blankType').value==='tube'?(parseNumeric($('blankBore').value)||0):0};temp.workSide=$('workSide').value;temp.setup={...normalizeJobSetup(temp.setup),grip:chuck};mutate(temp,selected);});
+
+ $('pointBack').addEventListener('click',()=>{figureInsertBeforeFirst=false;selectRow(Math.max(0,selected-1));});
+ $('pointForward').addEventListener('click',()=>{figureInsertBeforeFirst=false;selectRow(Math.min(job.nodes.length-1,selected+1));});
+ $('pointJump').addEventListener('change',()=>{figureInsertBeforeFirst=false;selectRow(Number($('pointJump').value));});
+ $('insertFirstBtn').addEventListener('click',()=>{
+  figureInsertBeforeFirst=true;selectRow(0);
+  $('editCorner').value='sharp';$('editSize').value='0';$('editSize').disabled=true;
+  figurePointDraftChanged();
+  notify('ADD NEW P01 · ENTER ITS X/Z, THEN PRESS F1 INSERT');
+ });
+ $('graphPointEditToggle').addEventListener('click',()=>{
+  graphPointEditMode=!graphPointEditMode;
+  $('graphPointEditToggle').setAttribute('aria-pressed',String(graphPointEditMode));
+  $('graphPointEditToggle').textContent=`EDIT POINTS · ${graphPointEditMode?'ON':'OFF'}`;
+  graphPointHint(graphPointEditMode?'TAP A POINT TO SELECT · TAP A STRAIGHT SEGMENT TO INSERT THERE · TAP EMPTY SPACE TO CHOOSE INSERT POSITION. DRAG TO PAN.':'TAP A POINT TO SELECT IT · DRAG TO PAN. TURN ON EDIT POINTS TO ADD.');
+  if(!graphPointEditMode)graphClearDraft();
+ });
+ $('graphDraftCancel').addEventListener('click',graphClearDraft);
+ $('graphDraftCommit').addEventListener('click',graphCommitPoint);
+ $('graphDraftLocation').addEventListener('change',graphUpdateDraftPreview);
+ $('graphDraftX').addEventListener('input',graphUpdateDraftPreview);
+ $('graphDraftZ').addEventListener('input',graphUpdateDraftPreview);
  $('insertBtn').addEventListener('click',()=>doAction('insert'));
  $('replaceBtn').addEventListener('click',()=>doAction('replace'));
  $('deleteBtn').addEventListener('click',()=>doAction('delete'));
@@ -4174,9 +4968,9 @@ function wire(){
  $('zoomIn').addEventListener('click',()=>{zoom=Math.min(40,zoom*1.5);drawGraph();});
  $('zoomOut').addEventListener('click',()=>{zoom=Math.max(.25,zoom/1.5);drawGraph();});
  $('zoomFit').addEventListener('click',()=>doAction('fit'));
- $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;job=upgradeFigureIds({schema:6,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6,type:'solid',bore:0},workSide:'front',nodes:[{z:0,x:job.units==='inch'?2.5:63.5,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{},setup:makeJobSetup()});symbolicHistory=[];selected=0;zoom=1;panU=0;panV=0;update();autosave();});
+ $('newJob').addEventListener('click',()=>{if(!confirm('Create a new blank job? Save/export anything you want to keep.'))return;graphPointDraft=null;$('graphPointDraft').hidden=true;figureInsertBeforeFirst=false;job=upgradeFigureIds({schema:6,toolTemplateRevision:TOOL_TEMPLATE_REVISION,operations:[],name:'NEW TURNING JOB',units:job.units,stock:{diameter:job.units==='inch'?2.5:63.5,length:job.units==='inch'?4:101.6,type:'solid',bore:0},workSide:'front',nodes:[{z:0,x:job.units==='inch'?2.5:63.5,corner:'sharp',size:0}],tools:structuredClone(job.tools),inspectionPositions:{},setup:makeJobSetup()});symbolicHistory=[];selected=0;zoom=1;panU=0;panV=0;update();autosave();});
  $('importJob').addEventListener('click',()=>$('fileImport').click());
- $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const upgraded=applyLegacyJob(loaded);const result=buildProfile(upgraded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;job=upgraded;symbolicHistory=[];opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
+ $('fileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>150_000)throw new Error('File exceeds 150KB limit.');const loaded=JSON.parse(await file.text());const upgraded=applyLegacyJob(loaded);const result=buildProfile(upgraded);if(result.errors.length)throw new Error(result.errors[0]);if(!confirm(`Replace current job with ${loaded.name||'imported job'}?`))return;graphPointDraft=null;$('graphPointDraft').hidden=true;figureInsertBeforeFirst=false;job=upgraded;symbolicHistory=[];opSelected=0;const tv=validateToolSet(job.tools);if(tv.errors.length)throw new Error(tv.errors[0]);selected=0;zoom=1;panU=0;panV=0;update();autosave();}catch(err){notify('IMPORT ERROR: '+err.message,true);}finally{e.target.value='';}});
  $('exportJob').addEventListener('click',()=>{const check=buildProfile(job);if(check.errors.length){notify(check.errors[0],true);return;}download(JSON.stringify(job,null,2),safeFilename()+'.miniturn.json','application/json');notify('JOB FILE EXPORTED');});
  $('reportButton').addEventListener('click',()=>doAction('report'));
  $('closeReport').addEventListener('click',()=>$('reportDialog').close());
@@ -4209,11 +5003,8 @@ function wire(){
  const releaseDrag=()=>{if(!drag)return;
   const total=Math.hypot(drag.lastX-drag.startX,drag.lastY-drag.startY);
   if(total<9){
-   const p=svgPointerPoint(g,{clientX:drag.startX,clientY:drag.startY});const sx=p.x,sy=p.y;
-   const L=job.stock.length,D=job.stock.diameter,sc=Math.min(700/L,370/D)*zoom;
-   let nearest=-1,best=27;
-   job.nodes.forEach((n,i)=>{const q=projectGraphPoint(physicalPoint(n),{width:900,height:540,scale:sc,centerU:L/2-(job.stock.frontZ||0)+panU,centerV:panV,mirrorZ});const r=Math.hypot(q.x-sx,q.y-sy);if(r<best){best=r;nearest=i;}});
-   if(nearest>=0){$('profileEditorDetails').open=true;selectRow(nearest);$('profileEditorDetails').scrollIntoView({block:'start',behavior:'smooth'});}
+   try{const p=svgPointerPoint(g,{clientX:drag.startX,clientY:drag.startY});graphHandleTap(p.x,p.y);}
+   catch(e){notify('GRAPH SELECTION ERROR · '+e.message,true);}
   }
   drag=null;g.style.cursor='grab';drawGraph();};
  g.addEventListener('pointerup',releaseDrag);
@@ -4258,7 +5049,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='The general production post remains locked in v0.9.47: no fully qualified cutting-motion IR, 3D clearance, or machine-specific post. Section 17 provides strictly gated, single-operation Doosan test .nc candidates.';
+const NC_EXPORT_DISABLED_REASON='The general production post remains locked in v0.9.51: no fully qualified cutting-motion IR, 3D clearance, or machine-specific post. Section 17 provides strictly gated, single-operation Doosan test .nc candidates.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -6994,7 +7785,7 @@ function extractStep(op,index,source,profileOverride=null){
 }
 function buildProcessPlan(source){
  const s=normalizeJobSetup(source.setup),profile=buildProfile(source);
- return {format:POST_IR_VERSION,version:'0.9.47',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
+ return {format:POST_IR_VERSION,version:'0.9.51',status:'ARC_ASSIST_INSERT_HOLDER_SWEEP_REVIEW_NON_EXECUTABLE',
   part:{name:source.name,partNumber:s.part,revision:s.revision,workOrder:s.workOrder,material:s.material,programId:s.program},
   machine:{profileId:s.machine,profile:{...MACHINE_PROFILES[s.machine]},postId:null,postVersion:null,controllerCapabilities:null},
   coordinates:{x:'DIAMETER',z:'AXIAL',physicalPlane:{u:'NEGATIVE_Z',v:'X_RADIUS'},displayMirrorZNotInCode:true,displayOrientation:'CHUCK_LEFT_Z0_RIGHT',displayOrientationNotInCode:true,workSide:source.workSide,units:source.units},
@@ -7063,7 +7854,7 @@ function doosanGuideBlankStudy(source){
  ? `G1901 D${n(d)} E${n(e)} L${n(l)} K${n(k)}`
  : `G1900 D${n(d)} L${n(l)} K${n(k)}`,diameter:d,length:l,bore:stock.type==='tube'?e:null,frontAllowance:k};
 }
-/* v0.9.47 - G18 arcs: post R (physical-radius), never I/K center offsets.
+/* v0.9.51 - G18 arcs: post R (physical-radius), never I/K center offsets.
  * X is DIAMETER; circles are solved in (Z,X/2) physical coordinates.
  * Positive R means a MINOR arc, and fits are limited to 170 degrees.
  * A candidate is accepted only if the rounded R and rounded X/Z endpoints
@@ -7269,7 +8060,7 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight'){
  const feedDecimals=source.units==='inch'?5:4;
  const nn=v=>ncStudyNumber(v,coordDecimals),ff=v=>ncStudyNumber(v,feedDecimals);
  const clean=v=>String(v??'').replace(/[()\r\n%]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,64);
- const lines=['(MINITURN 0.9.47 - EXPERIMENTAL G-CODE MOTION STUDY)',
+ const lines=['(MINITURN 0.9.51 - EXPERIMENTAL G-CODE MOTION STUDY)',
   '(NOT A QUALIFIED MACHINE PROGRAM - DO NOT RUN ON EQUIPMENT)',
   `(POST STUDY ${clean(dialect.label)})`,
   `(JOB ${clean(source.name)} / STEP ${index+1} ${clean(op.name)})`,
@@ -7476,7 +8267,7 @@ function ncPilotRapidSegmentClear(a,b,stock,clearance){
  return false;
 }
 function ncPilotGenerate(source,indices,options){
- if(indices.length!==1)throw Error('v0.9.47 machine-test NC accepts ONE operation. Multi-step links/tool changes are NOT yet verified; use the combined study instead.');
+ if(indices.length!==1)throw Error('v0.9.51 machine-test NC accepts ONE operation. Multi-step links/tool changes are NOT yet verified; use the combined study instead.');
  ncPilotSelection(source,indices);
  if(source.workSide!=='front')throw Error('Pilot export requires front-side lathe setup.');
  const setup=normalizeJobSetup(source.setup);
@@ -7487,7 +8278,7 @@ function ncPilotGenerate(source,indices,options){
  const clearance=.02*scale,eps=.002*scale;
  if(!setup.datum.trim()||!setup.fixture.trim()||!(setup.grip>0)||!(setup.stickout>0))
   throw Error('Record actual WORK Z0 datum, workholding fixture, grip, and stickout before generating NC.');
- if(setup.support!=='none')throw Error('Tailstock, steady rest, and external supports have no collision model in v0.9.47. Keep this operation in study mode.');
+ if(setup.support!=='none')throw Error('Tailstock, steady rest, and external supports have no collision model in v0.9.51. Keep this operation in study mode.');
  if(!(setup.safeX>stockOD+2*clearance)||!(setup.safeZ>front+clearance))
   throw Error(`Enter measured clearance positions: SAFE X must exceed stock Ø by ${ncStudyNumber(2*clearance,source.units==='inch'?3:2)} and SAFE Z must exceed stock front by ${ncStudyNumber(clearance,source.units==='inch'?3:2)}. Both are work coordinates.`);
  if(!(Number.isInteger(setup.maxRpm)&&setup.maxRpm>0))throw Error('Enter actual machine/workholding MAX RPM.');
@@ -7565,7 +8356,7 @@ function ncPilotGenerate(source,indices,options){
   if(op.speedMode==='css')reviewFlags.push('G96 CSS SFM UNQUALIFIED ON EXACT DOOSAN; CHECK G50 LIMIT AND X DIAMETER CONTROL CONFIGURATION');
   sections.push({i,op,tool,study,mapped,first,last,reviewFlags});
  }
- const result=['%',`O${program.padStart(5,'0')} (MINITURN 0.9.47 DOOSAN FANUC XZ SINGLE OP TEST)`,
+ const result=['%',`O${program.padStart(5,'0')} (MINITURN 0.9.51 DOOSAN FANUC XZ SINGLE OP TEST)`,
   '(EXPERIMENTAL EXECUTABLE CNC - UNQUALIFIED - TEST ONLY)',
   '(SINGLE OPERATION / G01 ONLY / CONTROLLER M CODES UNVERIFIED)',
   '(NO PHYSICAL TOOL HOLDER CHUCK TAILSTOCK COLLISION CERTIFICATION)',
@@ -7753,7 +8544,7 @@ function ncStudySelectedGCode(source,indices,postId,arcMode,arcTol){
  if(parts.length===1)return {...parts[0],selectedIndices:indices};
  const safe=s=>String(s).replace(/[()\r\n%]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,60);
  const header=[
-  '(MINITURN 0.9.47 - MULTI-OPERATION G-CODE STUDY COLLECTION)',
+  '(MINITURN 0.9.51 - MULTI-OPERATION G-CODE STUDY COLLECTION)',
   '(NOT A QUALIFIED OR CONTINUOUS CNC PROGRAM - DO NOT RUN ON EQUIPMENT)',
   `(JOB ${safe(source.name)} / ${parts.length} SELECTED OPERATIONS IN MACHINING ORDER)`,
   `(SELECTED STEPS ${indices.map(i=>i+1).join(', ')})`,
@@ -7816,7 +8607,7 @@ function wireNCStudy(){
   // program end. It is a filename-format convenience, NOT a controller test.
   const d=ncStudyCache;
   const safeLine=line=>String(line).replace(/[()]/g,' ').slice(0,75);
-  const body=['%', '(MINITURN 0.9.47 - ANNOTATED REVIEW ONLY - NONCUTTING .NC)',
+  const body=['%', '(MINITURN 0.9.51 - ANNOTATED REVIEW ONLY - NONCUTTING .NC)',
    '(THIS FILE IS NOT A CNC CUTTING PROGRAM; ALL STUDY LINES ARE COMMENTS)',
    '(USE SECTION 17 TO GENERATE AN EXECUTABLE SINGLE-OP TEST CANDIDATE)',
    ...d.text.split(/\r?\n/).filter(Boolean).map(line=>'('+safeLine(line)+')'),
@@ -7848,7 +8639,7 @@ function preflightReport(source){
  if(!s.material.trim())add(reviews,'Material / grade has not been entered.');
  if(!s.program.trim())add(reviews,'Program ID has not been assigned.');
  for(const w of [...geometry.warnings,...operation.warnings])add(reviews,w);
- for(const [i,op] of source.operations.entries()){if(!op.enabled)continue;const motion=nominalMotionForOperation(source,op,geometry);if(motion.status==='BLOCKED')add(reviews,`Step ${i+1} path preview: ${motion.reason}`);}
+ for(const [i,op] of source.operations.entries()){if(!op.enabled)continue;const motion=nominalMotionForOperation(source,op,geometry);if(motion.status==='BLOCKED')add(blockers,`Step ${i+1} path blocked: ${motion.reason}`);else for(const msg of (motion.warnings||[]))add(reviews,`Step ${i+1}: ${msg}`);}
  const ids=new Map();for(const op of source.operations.filter(x=>x.enabled)){const t=source.tools.find(t=>t.id===op.toolId);if(!t)continue;const key=`${t.station}/${t.offset}`;if(ids.has(key)&&ids.get(key)!==t.id)add(blockers,`Tool station/offset ${key} is assigned to multiple different tools.`);else ids.set(key,t.id);}
  return {blockers,reviews,confirmed:PRECHECK_ITEMS.filter(([k])=>pfSessionChecks.has(k)).length,
           total:PRECHECK_ITEMS.length,postBlocked:NC_EXPORT_DISABLED_REASON};
@@ -7857,7 +8648,7 @@ function createTextCell(tr,text,className){const el=document.createElement('td')
 function addDetail(container,label,value){const div=document.createElement('div');div.className='detail-item';const k=document.createElement('div');k.className='detail-key';k.textContent=label;const v=document.createElement('div');v.className='detail-val';v.textContent=String(value??'—');div.append(k,v);container.append(div);}
 function renderStepDetail(){
  const target=$('pfStepDetail');target.replaceChildren();const op=job.operations[pfSelected];
- if(!op){target.textContent='NO MACHINING STEPS · ADD A STEP ON THE MACHINING SCREEN';$('pfEditStep').disabled=true;return;}
+ if(!op){target.textContent='NO OPERATIONS · ADD A STEP ON THE OPERATIONS SCREEN';$('pfEditStep').disabled=true;return;}
  $('pfEditStep').disabled=false;
  const h=document.createElement('h3');h.textContent=`UNIT ${String(pfSelected+1).padStart(2,'0')} / ${op.name}`;target.append(h);
  const p=extractStep(op,pfSelected,job),t=p.tool;
@@ -7887,7 +8678,7 @@ function renderStepDetail(){
 }
 function fillJobSetupForm(){
  const s=normalizeJobSetup(job.setup);
- for(const [id,k] of [['pfPart','part'],['pfRev','revision'],['pfOrder','workOrder'],['pfMaterial','material'],['pfProgram','program'],['pfMachine','machine'],['pfFixture','fixture'],['pfDatum','datum'],['pfGrip','grip'],['pfStickout','stickout'],['pfSafeX','safeX'],['pfSafeZ','safeZ'],['pfMaxRpm','maxRpm'],['pfSupport','support'],['pfNotes','notes']]){
+ for(const [id,k] of [['pfPart','part'],['pfRev','revision'],['pfOrder','workOrder'],['pfMaterial','material'],['pfProgram','program'],['pfMachine','machine'],['pfFixture','fixture'],['pfDatum','datum'],['pfStickout','stickout'],['pfSafeX','safeX'],['pfSafeZ','safeZ'],['pfMaxRpm','maxRpm'],['pfSupport','support'],['pfNotes','notes']]){
   const el=$(id);if(!el)continue;const val=s[k];el.value=val===null?'':String(val);
  }
  document.querySelectorAll('.pf-unit').forEach(x=>x.textContent=job.units==='inch'?'(IN)':'(MM)');
@@ -7895,14 +8686,14 @@ function fillJobSetupForm(){
 function readJobSetupForm(){
  const s=normalizeJobSetup(job.setup);
  for(const [id,k] of [['pfPart','part'],['pfRev','revision'],['pfOrder','workOrder'],['pfMaterial','material'],['pfProgram','program'],['pfMachine','machine'],['pfFixture','fixture'],['pfDatum','datum'],['pfSupport','support'],['pfNotes','notes']])s[k]=$(id).value.trim();
- for(const [id,k] of [['pfGrip','grip'],['pfStickout','stickout'],['pfSafeX','safeX'],['pfSafeZ','safeZ'],['pfMaxRpm','maxRpm']])s[k]=normOptionalNumber($(id).value);
+ for(const [id,k] of [['pfStickout','stickout'],['pfSafeX','safeX'],['pfSafeZ','safeZ'],['pfMaxRpm','maxRpm']])s[k]=normOptionalNumber($(id).value);
  return normalizeJobSetup(s);
 }
 function validateSetupEntry(s){
  const problems=[];
  for(const k of ['grip','stickout','safeX'])if(s[k]!==null&&s[k]<=0)problems.push(`${k.toUpperCase()} must be positive or blank.`);
  if(s.maxRpm!==null&&(!Number.isInteger(s.maxRpm)||s.maxRpm<=0))problems.push('MAX RPM must be a positive integer or blank.');
- if(s.grip!==null&&s.grip>job.stock.length)problems.push('Grip length exceeds total stock length. Verify setup.');
+ if(s.grip!==null&&s.grip>=job.stock.length)problems.push('Chucked length must be less than total stock length. Verify setup.');
  return problems;
 }
 function saveJobSetup(){
@@ -7915,7 +8706,7 @@ function refreshJobInfo(){
  const fingerprint=pfFingerprintFor(job);if(fingerprint!==pfJobFingerprint){pfSessionChecks.clear();pfJobFingerprint=fingerprint;if(ncStudyCache)resetNCStudy();if(ncPilotCache)ncPilotInvalidate();}
  refreshNCStudyStepPicker();
  if(!pfEditing)fillJobSetupForm();
- const s=job.setup;pfSelected=Math.max(0,Math.min(pfSelected,job.operations.length-1));
+ const s=job.setup;const chunk=$('pfChuckedSummary');if(chunk)chunk.textContent=`CHUCKED LENGTH: ${s.grip===null?'NOT SET':pfValue(s.grip)+' '+(job.units==='inch'?'IN':'MM')} · EDIT IN FIGURE → STOCK AND PART PROFILE. JAW CLEARANCE IS NOT VERIFIED.`;pfSelected=Math.max(0,Math.min(pfSelected,job.operations.length-1));
  $('pfOverview').textContent=`${job.name} · ${job.units==='inch'?'INCH':'MM'} · STOCK Ø${pfValue(job.stock.diameter)} × ${pfValue(job.stock.length)} · ${job.workSide.toUpperCase()} SETUP · ${job.nodes.length} PROFILE POINTS`;
  $('pfStepCount').textContent=`${job.operations.length} STEPS`;
  const tbody=$('pfSteps');tbody.replaceChildren();
@@ -7926,19 +8717,25 @@ function refreshJobInfo(){
    tr.addEventListener('click',()=>{pfSelected=i;refreshJobInfo();});tr.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();pfSelected=i;refreshJobInfo();}});tbody.append(tr);
  });renderStepDetail();
  const report=preflightReport(job),issue=$('pfIssues');issue.replaceChildren();
- const head=$('pfReadiness');head.textContent=`${report.blockers.length} SETUP BLOCKER(S) · ${report.reviews.length} REVIEW ITEM(S) · ${report.confirmed}/${report.total} OPERATOR CHECKS · NC OUTPUT LOCKED`;
- const show=(tag,msg,problem)=>{const div=document.createElement('div');div.className='pf-issue'+(problem?' problem':'');const badge=document.createElement('strong');badge.textContent=tag;const content=document.createElement('span');content.textContent=msg;div.append(badge,content);issue.append(div);};
- if(!report.blockers.length)show('SETUP','Required setup fields completed; values not independently verified.',false);
- for(const msg of report.blockers)show('BLOCK',msg,true);
- for(const msg of report.reviews)show('CHECK',msg,false);
- show('NC','Verified production NC stays locked. Section 17 offers experimental Doosan/FANUC X-Z .nc for controlled dry-run tests only.',true);
+ const head=$('pfReadiness');
+ head.replaceChildren();
+ const counts=document.createElement('strong');counts.className=report.blockers.length?'mt-count-critical':'mt-count-advisory';counts.textContent=`${report.blockers.length} CRITICAL · ${report.reviews.length} ADVISORY`;
+ head.append(counts,document.createTextNode(` · ${report.confirmed}/${report.total} operator checks · Production NC not qualified`));
+ const jump=$('mtWarningsJump');if(jump){jump.textContent=report.blockers.length?`WARNINGS · ${report.blockers.length} BLOCK`:`WARNINGS · ${report.reviews.length}`;jump.classList.toggle('has-critical',report.blockers.length>0);jump.classList.toggle('has-advisories',!report.blockers.length&&report.reviews.length>0);}
+ const show=(target,tag,msg,level)=>{const div=document.createElement('div');div.className='pf-issue mt-severity-'+level;const label=document.createElement('strong');label.textContent=tag;const content=document.createElement('span');content.textContent=msg;div.append(label,content);target.append(div);};
+ if(report.blockers.length){const heading=document.createElement('h3');heading.className='mt-warning-section mt-critical-heading';heading.textContent=`CRITICAL / BLOCKING · ${report.blockers.length}`;issue.append(heading);for(const msg of report.blockers)show(issue,'BLOCK',msg,'critical');}
+ const advisory=document.createElement('details');advisory.className='mt-warning-advisories';advisory.open=!report.blockers.length;
+ const advSummary=document.createElement('summary');advSummary.textContent=`ADVISORY / REVIEW · ${report.reviews.length} · TAP TO ${advisory.open?'CLOSE':'EXPAND'}`;advisory.append(advSummary);
+ if(report.reviews.length){for(const msg of report.reviews)show(advisory,'CHECK',msg,'advisory');}else{const ok=document.createElement('p');ok.className='job-small-note';ok.textContent='No advisory findings for the saved job.';advisory.append(ok);}
+ issue.append(advisory);
+ if(!report.blockers.length&&!report.reviews.length){const ok=document.createElement('p');ok.className='job-small-note';ok.textContent='No current preflight issues. Actual machine clearance and program qualification are still required.';issue.append(ok);}
  const checks=$('pfChecks');checks.replaceChildren();
- for(const [key,desc] of PRECHECK_ITEMS){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=pfSessionChecks.has(key);cb.addEventListener('change',()=>{if(cb.checked)pfSessionChecks.add(key);else pfSessionChecks.delete(key);const r=preflightReport(job);head.textContent=`${r.blockers.length} SETUP BLOCKER(S) · ${r.reviews.length} REVIEW ITEM(S) · ${r.confirmed}/${r.total} OPERATOR CHECKS · NC OUTPUT LOCKED`;});const span=document.createElement('span');span.textContent=desc;label.append(cb,span);checks.append(label);}
+ for(const [key,desc] of PRECHECK_ITEMS){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=pfSessionChecks.has(key);cb.addEventListener('change',()=>{if(cb.checked)pfSessionChecks.add(key);else pfSessionChecks.delete(key);refreshJobInfo();});const span=document.createElement('span');span.textContent=desc;label.append(cb,span);checks.append(label);}
  $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: MASTER FIGURE + NOMINAL PREVIEWS + 2D TOOL-BODY REVIEW.','MOTION IR: EMPTY / NOT VERIFIED. PREVIEWS ARE NOT NC BLOCKS.', 'NC STUDY: 10 MOTION TYPES G00/G01/G02/G03 FITTED STUDIES; 2 THREAD GUIDES.', 'STUDY DIALECTS: HAAS G99 / GENERIC FANUC-A G99 / DOOSAN MANUAL GUIDE i G99.', 'DOOSAN MGi: OPTIONAL G1900 SOLID / G1901 TUBE STOCK STUDIES.', 'MANUAL GUIDE i STOCK BLOCKS REQUIRE EXACT MACHINE OPTION CONFIRMATION.', 'STUDY TXT HAS NO TOOL/SPINDLE/WORK OFFSET/COOLANT/END.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, ARC GEOMETRY, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: INDEPENDENT TOOL-MOUNTING VALIDATION + 3D HOLDER/CHUCK SWEEP -> MACHINE/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
 }
 function textSetupSheet(){
  const s=normalizeJobSetup(job.setup),report=preflightReport(job);
- const lines=['MINITURN 0.9.47 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)} · RAW FRONT Z${pfValue(job.stock.frontZ||0)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`GRIP: ${pfValue(s.grip)} · STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ const lines=['MINITURN 0.9.51 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)} · RAW FRONT Z${pfValue(job.stock.frontZ||0)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`CHUCKED LENGTH: ${pfValue(s.grip)} · MEASURED STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
  job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · ${op.speedMode==='css'?`G96 ${op.surfaceSpeedSfm} SFM`:op.speedMode==='sfm_fixed'?`G97 FROM ${op.surfaceSpeedSfm} SFM`:`G97 ${op.rpm} RPM`} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · LEAVE ${pfValue(op.faceLeave||0)} · ${op.faceDirection==='outward'?'X+ INNER→OUTER':'X− OUTER→INNER'} · XØ${pfValue(op.faceDirection==='outward'?op.faceEndX:op.faceStartX)} TO XØ${pfValue(op.faceDirection==='outward'?op.faceStartX:op.faceEndX)} · AXIAL STEP ${pfValue(op.faceStep)}`:`   P${(op.cutDirection==='reverse'?op.to:op.from)+1} TO P${(op.cutDirection==='reverse'?op.from:op.to)+1} · ${op.cutDirection||'forward'} · ACCESS: ${op.accessPlan||'review'}`);});
  lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
  lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
@@ -7946,7 +8743,7 @@ function textSetupSheet(){
 function wireJobInfo(){
  $('jobTab').addEventListener('click',()=>setPage('job'));
  const machine=$('pfMachine');for(const [id,profile] of Object.entries(MACHINE_PROFILES)){const option=document.createElement('option');option.value=id;option.textContent=profile.label;machine.append(option);}
- for(const id of ['pfPart','pfRev','pfOrder','pfMaterial','pfProgram','pfMachine','pfFixture','pfDatum','pfGrip','pfStickout','pfSafeX','pfSafeZ','pfMaxRpm','pfSupport','pfNotes']){
+ for(const id of ['pfPart','pfRev','pfOrder','pfMaterial','pfProgram','pfMachine','pfFixture','pfDatum','pfStickout','pfSafeX','pfSafeZ','pfMaxRpm','pfSupport','pfNotes']){
   $(id).addEventListener('input',()=>{pfEditing=true;$('pfSavedMsg').textContent='UNSAVED JOB DATA · PRESS SAVE JOB DATA';});
   $(id).addEventListener('change',()=>{pfEditing=true;});
  }
@@ -8002,7 +8799,7 @@ function syncTerminalDock(){
  if(activePage==='operations'){
   const count=job.operations.length,op=job.operations[Math.min(opSelected,count-1)];
   const tool=op?job.tools.find(t=>t.id===op.toolId):null;
-  label.textContent=op?`MACHINING · OP ${String(opSelected+1).padStart(2,'0')}/${String(count).padStart(2,'0')} · ${op.name.toUpperCase()}${tool?' · T'+String(tool.station).padStart(2,'0'):''}`:'MACHINING · NO OPERATION · F1 ADD';
+  label.textContent=op?`OPERATIONS · OP ${String(opSelected+1).padStart(2,'0')}/${String(count).padStart(2,'0')} · ${op.name.toUpperCase()}${tool?' · T'+String(tool.station).padStart(2,'0'):''}`:'OPERATIONS · NO OPERATION · F1 ADD';
   dock.querySelector('[data-op-action="prev"]').disabled=!count||opSelected<=0;
   dock.querySelector('[data-op-action="next"]').disabled=!count||opSelected>=count-1;
   dock.querySelector('[data-op-action="up"]').disabled=!count||opSelected<=0;
@@ -8023,6 +8820,7 @@ function syncTerminalDock(){
  // ResizeObserver normally owns the inset; this also covers older Android WebViews.
  if(!hasKeys){mtLastDockHeight=0;document.documentElement.style.setProperty('--mt-dock-height','0px');}
  if(hasKeys)mtScheduleDockRepair();
+ if(!mtPadOpen)requestAnimationFrame(mtBubblePlace);
 }
 // Observe actual dock size changes, not scroll or SVG redraws.
 if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>mtScheduleDockRepair()).observe($('softkeyDock'));
@@ -8049,7 +8847,11 @@ function setPage(page){
  // Bottom NEXT actions should always reveal the beginning of the new stage.
  window.scrollTo(0,0);
 }
-// v0.9.47 operator progression: no duplicate navigation logic or forced save.
+$('mtWarningsJump').addEventListener('click',()=>{
+ setPage('job');
+ if(activePage==='job'){refreshJobInfo();requestAnimationFrame(()=>$('pfIssues').scrollIntoView({block:'start',behavior:'smooth'}));}
+});
+// v0.9.51 operator progression: no duplicate navigation logic or forced save.
 document.querySelectorAll('[data-flow-go]').forEach(button=>button.addEventListener('click',()=>setPage(button.dataset.flowGo)));
 document.querySelectorAll('[data-flow-action="export-job"]').forEach(button=>button.addEventListener('click',()=>$('exportJob').click()));
 function toolNumber(t){return `T${String(t.station).padStart(2,'0')} H${String(t.offset).padStart(2,'0')}`;}
@@ -8208,11 +9010,11 @@ function updateCatalogSpec(t){
 }
 function toolMessage(messages,isError=false){
  const box=$('toolStatus');box.replaceChildren();box.className='status-box '+(isError?'invalid':'ok');
- const title=document.createElement('strong');title.textContent=isError?'INVALID TOOL':'TOOL VALID · SCHEMATIC';box.append(title);
- if(isError){for(const s of messages.slice(0,8)){const line=document.createElement('div');line.textContent=s;box.append(line);}return;}
- if(messages.length){const more=document.createElement('details');more.className='status-details';const sum=document.createElement('summary');sum.textContent=`CHECK NOTES (${messages.length})`;more.append(sum);
- for(const s of messages){const line=document.createElement('div');line.textContent=s;more.append(line);}box.append(more);}
+ const title=document.createElement('strong');title.textContent=isError?'INVALID TOOL INPUT':'TOOL VALID · SCHEMATIC';box.append(title);
+ if(isError){for(const msg of messages.slice(0,5)){const line=document.createElement('div');line.className='mt-field-error';line.textContent=msg;box.append(line);}}
+ else {const tip=document.createElement('span');tip.textContent='Saved-job warnings: Job / Export → Preflight.';box.append(tip);}
 }
+
 function drawToolPreview(){
  const graph=$('toolGraph');graph.replaceChildren();
  updateToolFields();
@@ -8628,9 +9430,9 @@ function inspectedPosition(tool){
 function inspectMsg(title,items,isWarning=false){
  const box=$('inspectStatus');box.replaceChildren();box.className='status-box '+(isWarning?'invalid':'ok');
  const head=document.createElement('strong');head.textContent=title==='STATIC 2D CHECK COMPLETE · NOT SAFETY APPROVAL'?'2D CHECK · SCHEMATIC':title;box.append(head);
- if(items.length){const more=document.createElement('details');more.className='status-details';const sum=document.createElement('summary');sum.textContent=`CHECK NOTES (${items.length})`;more.append(sum);
- for(const s of items){const item=document.createElement('div');item.textContent=s;more.append(item);}box.append(more);}
+ if(isWarning){const note=document.createElement('div');note.className='mt-field-error';note.textContent='Current manual position indicates a possible overlap; see the plotted overlap markers. This is not a saved-job clearance certification.';box.append(note);}
 }
+
 function refreshInspector(){
  const selector=$('inspectTool'),t=inspectionTool();selector.replaceChildren();
  for(const tool of job.tools){const opt=document.createElement('option');opt.value=tool.id;opt.textContent=`T${String(tool.station).padStart(2,'0')} / H${String(tool.offset).padStart(2,'0')} · ${tool.name}`;selector.append(opt);}
@@ -8779,8 +9581,10 @@ function opFormat(n){return Number.isFinite(n)?n.toFixed(job.units==='inch'?4:3)
 function opMsg(title,lines=[],bad=false){
  const box=$('opStatus');box.replaceChildren();box.className='status-box '+(bad?'invalid':'ok');
  const strong=document.createElement('strong');strong.textContent=title;box.append(strong);
- for(const msg of lines.slice(0,6)){const text=document.createElement('div');text.textContent=msg;box.append(text);}
+ if(bad){for(const msg of lines.slice(0,5)){const line=document.createElement('div');line.className='mt-field-error';line.textContent=msg;box.append(line);}}
+ else{const note=document.createElement('span');note.textContent='All saved-job warnings: Job / Export → Preflight.';box.append(note);}
 }
+
 function refreshOperationList(){
  const list=$('operationList');list.replaceChildren();$('opCount').textContent=`${job.operations.length} OPERATIONS`;
  const picker=$('opStepSelect');picker.replaceChildren();
@@ -9149,7 +9953,7 @@ function wireOperations(){
  $('opTab').addEventListener('click',()=>setPage('operations'));wireRegionPick();
  for(const [id,action] of [['opAdd','add'],['opSave','save'],['opDuplicate','duplicate'],['opDelete','delete'],['opMoveUp','up'],['opMoveDown','down']])$(id).addEventListener('click',()=>opAction(action));
  $('opReset').addEventListener('click',()=>{opDirty=false;refreshOperations();});
- $('opDemo').addEventListener('click',()=>{if(opDirty&&!confirm('Discard unsaved operation edits?'))return;if(job.operations.length&&!confirm('Replace all current operations with a 3-op example sequence?'))return;const demo=defaultOperations(job);const checked=validateOperations(demo,{...job,operations:demo});if(checked.errors.length){notify(checked.errors[0],true);return;}job.operations=demo;opSelected=0;opDirty=false;refreshOperations();autosave();});
+
  document.querySelectorAll('#opSoftkeys button').forEach(btn=>btn.addEventListener('click',()=>opAction(btn.dataset.opAction)));
  $('opShowMotion').addEventListener('change',drawOperationGraph);
  $('opShowNose').addEventListener('change',drawOperationGraph);$('opShowReference').addEventListener('change',drawOperationGraph);$('opShowToolBody').addEventListener('change',drawOperationGraph);
@@ -9314,7 +10118,7 @@ function wireFormToolStudy(){
    if(job.operations.length>=100)throw Error('Operation table is full.');
    const op=makeOperation('form_profile',job);op.toolId=t.id;op.from=d.fromIndex;op.to=d.toIndex;op.fromPointId=job.nodes[op.from]?.id;op.toPointId=job.nodes[op.to]?.id;op.name=displayOperationKind(op);
    const next=[...job.operations,op];const val=validateOperations(next,{...job,operations:next});if(val.errors.length)throw Error(val.errors[0]);
-   job.operations=next;opSelected=next.length-1;opDirty=false;autosave();refreshOperations();$('formReport').textContent=`FORM OPERATION CREATED · OP ${next.length} / ${op.name} · T${t.station}. Switch to ALT+4 MACHINING to inspect editable staged plunges. REVIEW ONLY · NC LOCKED.`;notify('FORM OPERATION ADDED · OPEN ALT+4 TO REVIEW');
+   job.operations=next;opSelected=next.length-1;opDirty=false;autosave();refreshOperations();$('formReport').textContent=`FORM OPERATION CREATED · OP ${next.length} / ${op.name} · T${t.station}. Switch to ALT+4 OPERATIONS to inspect editable staged plunges. REVIEW ONLY · NC LOCKED.`;notify('FORM OPERATION ADDED · OPEN ALT+4 TO REVIEW');
   }catch(e){$('formReport').textContent='FORM OPERATION NOT ADDED · '+e.message;notify(e.message,true);}
  });
  $('formExport').addEventListener('click',()=>{if(!formStudyResult)return;
