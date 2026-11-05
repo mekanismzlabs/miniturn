@@ -612,7 +612,7 @@ body[data-display="mazatrol"] .arc-candidate.selected{border-color:#ffac63}
 .nc-study-op-choice.disabled-op{opacity:.7}
 .nc-study-section-note{margin:7px 0;color:#e6c789;font-size:11px;line-height:1.6}
 </style>
-<title>MiniTurn v0.9.59 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
+<title>MiniTurn v0.9.60 — CONVERSATIONAL LATHE / MOTION PREVIEW</title>
 
 <style>
 /* v0.8.3: keep the F1–F8 terminal keys present while traversing long forms. */
@@ -1131,7 +1131,7 @@ body[data-display="toolbox"] .mt-warnings-jump{background:#41382c;color:#edcf97;
 @media(max-width:510px){#graphPointEditToggle{min-width:108px;font-size:9px}.graph-toolbar .zoom-controls{width:100%;justify-content:flex-start}.figure-first-row button{font-size:10px}}
 </style>
 <style id="mt0959CardTextContrast">
-/* v0.9.59: Tool and Operation cards use the Toolbox aluminum finish.
+/* v0.9.60: Tool and Operation cards use the Toolbox aluminum finish.
    Keep all card labels black, including primary text, secondary descriptions,
    tool-shape tags, and ON/OFF status, whether selected or not.
    Other display themes and warning colors are intentionally unaffected. */
@@ -1158,8 +1158,8 @@ body[data-display="toolbox"] button.operation-row *{
 <body>
 <div class="app-shell">
   <header class="masthead">
-    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.59</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
-    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option><option value="daylight">DAYLIGHT</option><option value="toolbox">TOOLBOX</option><option value="contrast">HIGH CONTRAST</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><button type="button" id="mtWarningsJump" class="mt-warnings-jump" aria-label="Open the universal warnings report in Job / Export">WARNINGS</button><span class="prototype-tag">NC REVIEW · MACHINE CHECK</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
+    <div class="brand-line"><span class="brand-mark">MT</span><div><h1>MINITURN <span class="version">V0.9.60</span></h1><div class="tagline">SLANT-BED · FRONT / +X · CONVERSATIONAL</div></div></div>
+    <div class="header-right"><label class="display-picker" for="displayMode">DISPLAY <select id="displayMode" aria-label="Graph colors and display contrast"><option value="classic">CLASSIC GREEN</option><option value="vivid">VIVID BLUE</option><option value="mazatrol">MAZAK-STYLE · ORANGE/BLUE</option><option value="daylight">DAYLIGHT</option><option value="toolbox">TOOLBOX</option><option value="contrast">HIGH CONTRAST</option></select></label><a class="guide-link" href="https://mekanismzlabs.github.io/miniturn/help/" target="_blank" rel="noopener noreferrer" aria-label="Open the MiniTurn user guide in a new tab">USER GUIDE ↗</a><button type="button" id="mtWarningsJump" class="mt-warnings-jump" aria-label="Open the universal warnings report in Job / Export">WARNINGS</button><span class="prototype-tag">NC PREVIEW · SHOP REVIEW</span><span id="saveState" class="saved-tag">LOCAL JOB</span></div>
   </header>
   <nav class="page-tabs" aria-label="Programming screens">
     <button id="figureTab" class="page-tab active" aria-pressed="true">F10 · FIGURE</button>
@@ -1867,9 +1867,9 @@ body[data-display="toolbox"] button.operation-row *{
       <div class="job-savebar"><button id="pfEditStep" class="action-btn">EDIT SELECTED STEP</button><button id="pfAddStep" class="action-btn">ADD OPERATION STEP</button></div>
     </section>
     <section class="panel job-preflight-panel" aria-label="Preflight checklist and post readiness">
-      <div class="section-header"><h2>15 / PREPARE NC REVIEW</h2><span class="small-chip">MACHINE CHECK REQUIRED</span></div>
+      <div class="section-header"><h2>15 / PREPARE NC</h2><span class="small-chip">MACHINE CHECK REQUIRED</span></div>
       <div class="mt-code-steps"><div><b>1</b> Choose machine and enter setup above.</div><div><b>2</b> Choose an operation to review.</div><div><b>3</b> Generate, inspect, and save code for shop review.</div>
-        <button type="button" id="pfQuickReview" class="action-btn primary">OPEN G-CODE REVIEW</button><button type="button" id="pfQuickPilot" class="action-btn">DOOSAN SINGLE-OP .NC TEST</button></div>
+        <button type="button" id="pfQuickPilot" class="action-btn primary">OPEN NC OUTPUT</button><button type="button" id="pfQuickReview" class="action-btn">G-CODE STUDY</button></div>
       <details class="preflight-detail mt-warning-wrap" id="pfWarningsDetail"><summary id="pfWarningsSummary">WARNINGS · TAP TO REVIEW</summary>
         <div class="preflight-head" id="pfReadiness"></div>
         <div id="pfIssues" class="job-issues" role="region" aria-label="Universal warnings, critical blockers and advisory notices" aria-live="polite"></div>
@@ -1915,26 +1915,18 @@ body[data-display="toolbox"] button.operation-row *{
         <pre class="nc-study-code" id="pfStudyPreview" aria-label="G-code study, not executable CNC program">CHOOSE AN OPERATION AND PRESS GENERATE.</pre>
       </details>
       <details class="preflight-detail" id="pfPilotPanel">
-        <summary>17 / DOOSAN · SINGLE-OP MACHINE-TEST CANDIDATE</summary>
-        <p class="nc-pilot-warning"><strong>EXPERIMENTAL EXECUTABLE CNC CANDIDATE — NOT PRODUCTION APPROVED.</strong> Build one operation for a Doosan/FANUC X/Z test. Missing operator-review flags are shown as warnings rather than forcing edits deep inside Tool/Operation screens. Known unsupported geometry, unsafe rapid corridors, unqualified rear-entry operations and tool-reference errors <strong>still block executable output</strong>. The operator must independently verify the exact machine, offsets, cutting motion and clearance before use.</p>
-        <div class="nc-pilot-workflow">
-          <p><strong>1 / PICK TEST OPERATION HERE</strong> — independent of the study selection above. Use a simple front-entry facing or OD test first.</p>
-          <label class="field">SINGLE OPERATION FOR EXECUTABLE .NC<select id="pfPilotOp"></select></label>
-          <div id="pfPilotReadiness" class="nc-pilot-ready" role="status" data-state="review">Choose an operation to see test-post support and review flags.</div>
-          <div class="nc-pilot-choices"><button type="button" class="action-btn" id="pfPilotFirst">CHOOSE FIRST SIMPLE OPERATION</button></div>
-        </div>
-        <details class="preflight-detail"><summary>SUPPORTED OPERATIONS · WHY OTHERS ARE REVIEW ONLY</summary><p class="job-small-note">Experimental candidate: one front-entry facing/OD roughing operation or narrowly gated OD finishing, only. Rear-entry, grooves, threads, ID, form tools, fade blends and inter-operation linking are unqualified. This uses generic Doosan / FANUC System A assumptions, not a certified machine-specific post.</p></details>
+        <summary>17 / NC OUTPUT · SINGLE OPERATION</summary>
+        <p class="job-small-note">Generate a complete experimental X/Z program for inspection. The selected machine determines Haas NGC, FANUC System A, or Doosan/FANUC-A syntax. Paths follow Operations motion preview, including Short X Lift. Verify the code independently before a machine test.</p>
         <div class="nc-study-fields">
-          <label class="field">SPINDLE DIRECTION · ALL SELECTED STEPS<select id="pfPilotSpindle"><option value="">SELECT / CONFIRM</option><option value="M03">M03 · CW / FORWARD</option><option value="M04">M04 · CCW / REVERSE</option></select></label>
-          <label class="field">COOLANT<select id="pfPilotCoolant"><option value="off">OFF · NO M08</option><option value="on">ON · M08/M09</option></select></label>
-          <label class="field">ARC OUTPUT<select id="pfPilotArcs"><option value="linear">G01 ONLY · FIRST TEST PREFERENCE</option><option value="auto">G02/G03 R · STUDY ONLY · .NC BLOCKED UNTIL POST QUALIFIED</option></select></label>
+          <label class="field">OPERATION<select id="pfPilotOp"></select></label>
+          <label class="field">SPINDLE<select id="pfPilotSpindle"><option value="M03">M03 · FORWARD</option><option value="M04">M04 · REVERSE</option></select></label>
+          <label class="field">COOLANT<select id="pfPilotCoolant"><option value="off">OFF</option><option value="on">ON · M08/M09</option></select></label>
+          <label class="field">ARC FORMAT<select id="pfPilotArcs"><option value="linear">G01 · STRAIGHT SEGMENTS</option><option value="auto">G02/G03 · RADIUS</option></select></label>
           <label class="field">WORK OFFSET<select id="pfPilotWorkOffset"><option value="G54">G54</option><option value="G55">G55</option><option value="G56">G56</option><option value="G57">G57</option><option value="G58">G58</option><option value="G59">G59</option></select></label>
         </div>
-        <p class="job-small-note">Before generating: set program number, datum, jaws, grip, stickout, measured safe X/Z and RPM ceiling in Job Data. <strong>No M00 stops are inserted.</strong> The initial index position and path to safe X/Z remain entirely unverified.</p>
-        <div class="job-export-buttons"><button type="button" class="action-btn primary" id="pfPilotBuild">GENERATE SINGLE-OP NC CANDIDATE</button><button type="button" class="action-btn" id="pfPilotDownload" disabled>SAVE REVIEWED .NC CANDIDATE</button></div>
-        <div class="motion-notice" id="pfPilotStatus" role="status">NO MACHINE-TEST NC GENERATED. LIVE TEST REQUIRES INDEPENDENT VERIFICATION.</div>
-        <label class="nc-pilot-confirm"><input type="checkbox" id="pfPilotCheckOperator"><span><strong>REVIEW ACKNOWLEDGEMENT FOR THIS EXPORT:</strong> I understand this candidate is unqualified. I will verify the actual tool/offset reference, spindle direction, stock, jaws, entrance/exit and every X/Z move in independent controller graphics/simulation before any supervised noncutting test. Downloading does not approve the NC for machining.</span></label>
-        <pre id="pfPilotPreview" class="nc-pilot-result" aria-label="Experimental Doosan Fanuc machine-test NC preview">COMPLETE JOB SETUP, SELECT OPERATIONS, AND GENERATE.</pre>
+        <div class="job-export-buttons"><button type="button" class="action-btn primary" id="pfPilotBuild">GENERATE NC</button><button type="button" class="action-btn" id="pfPilotDownload" disabled>SAVE .NC FOR REVIEW</button></div>
+        <div class="motion-notice" id="pfPilotStatus" role="status">SELECT AN OPERATION AND GENERATE.</div>
+        <pre id="pfPilotPreview" class="nc-pilot-result" aria-label="Experimental NC output">SELECT AN OPERATION AND GENERATE.</pre>
       </details>
     </section>
     <nav class="workflow-next" aria-label="Job completion step">
@@ -5188,7 +5180,7 @@ const MACHINE_PROFILES=Object.freeze({
  doosan_large:{label:'LARGE DOOSAN · POST NOT QUALIFIED',family:'doosan_large',post:'none',status:'not_configured'},
  doosan_vtl:{label:'DOOSAN VTL (FUTURE) · POST NOT QUALIFIED',family:'doosan_vtl',post:'none',status:'not_configured'}
 });
-// v0.9.59: user-configured, non-motion machine modal STARTUP TEMPLATES.
+// v0.9.60: user-configured, non-motion machine modal STARTUP TEMPLATES.
 // Full machine post qualification is separate. Profiles are saved to browser and job.
 const MACHINE_SAFETY_KEY='miniturn-nc-modal-profiles-v1';
 const NC_SAFETY_DIALECTS=['haas_ngc','fanuc_a','doosan_mgi'];
@@ -5293,7 +5285,7 @@ const PRECHECK_ITEMS=[
  ['clearance','Retract/approach clearance checked across all operations'],
  ['simulate','Independent simulation and single-block / dry-run plan arranged']
 ];
-const NC_EXPORT_DISABLED_REASON='The general production post remains unqualified in v0.9.59: no fully qualified cutting-motion IR, 3D clearance, or machine-specific post. Section 17 provides strictly gated, single-operation Doosan test .nc candidates.';
+const NC_EXPORT_DISABLED_REASON='The general production post remains unqualified in v0.9.60: no fully qualified cutting-motion IR, 3D clearance, or machine-specific post. Section 17 generates experimental single-operation NC for independent review.';
 const pfSessionChecks=new Set();
 let pfSelected=0,pfJobFingerprint='';
 let pfEditing=false;
@@ -8305,7 +8297,7 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight',in
  const feedDecimals=source.units==='inch'?5:4;
  const nn=v=>ncStudyNumber(v,coordDecimals),ff=v=>ncStudyNumber(v,feedDecimals);
  const clean=v=>String(v??'').replace(/[()\r\n%]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,64);
- const lines=['(MINITURN 0.9.59 - NC REVIEW ONLY / NOT FOR MACHINING)',
+ const lines=['(MINITURN 0.9.60 - NC REVIEW ONLY / NOT FOR MACHINING)',
   `(JOB ${clean(source.name)} / STEP ${index+1} ${clean(op.name)})`,
   `(TOOL T${clean(tool.station)} H${clean(tool.offset)} / ${clean(dialect.label)})`,
   '(MOTION STUDY ONLY - NO SPINDLE TOOL CALL OR SAFE ENTRY VERIFIED)',
@@ -8423,10 +8415,10 @@ function ncStudyGCode(source,index,postId,arcMode='auto',arcTolerance='tight',in
  * Never silently fill in spindle direction, program ID or the machine envelope.
  */
 let ncPilotCache=null;
-function ncPilotInvalidate(reason='CHANGED JOB OR EXPORT SETTINGS · REGENERATE MACHINE-TEST NC'){
+function ncPilotInvalidate(reason='CHANGED JOB OR SETTINGS · GENERATE AGAIN'){
  ncPilotCache=null;
  const p=$('pfPilotPreview'),b=$('pfPilotDownload'),st=$('pfPilotStatus');
- if(p)p.textContent='COMPLETE JOB SETUP, SELECT OPERATIONS, AND GENERATE.';
+ if(p)p.textContent='SELECT AN OPERATION AND GENERATE.';
  if(b)b.disabled=true;
  if(st)st.textContent=reason;
  if($('pfPilotCheckOperator'))$('pfPilotCheckOperator').checked=false;
@@ -8499,233 +8491,159 @@ function ncPilotRapidSegmentClear(a,b,stock,clearance){
  return false;
 }
 function ncPilotGenerate(source,indices,options){
- if(indices.length!==1)throw Error('Machine-test candidate accepts ONE operation. Multi-step links/tool changes are NOT yet verified; use the combined study instead.');
  ncPilotSelection(source,indices);
- if(source.workSide!=='front')throw Error('Pilot export requires front-side lathe setup.');
+ if(indices.length!==1)throw Error('Choose one operation for this program. Use the multi-step review for other sequences.');
+ if(source.workSide!=='front')throw Error('This X/Z post has no rear-side coordinate transform yet.');
  const setup=normalizeJobSetup(source.setup);
- const safety=ncSafetyStartup('doosan_mgi',source.units,source);
- if(setup.machine!=='doosan_xz_test')throw Error('Select DOOSAN / FANUC SLANT-BED X-Z · EXPERIMENTAL TEST ONLY in JOB DATA. No other machine has this first test exporter.');
- const program=String(setup.program).trim().toUpperCase().replace(/^O/,'');
- if(!/^\d{1,5}$/.test(program)||!Number(program))throw Error('Enter a numeric Doosan/FANUC O-program ID 1–99999 in JOB DATA; no automatic default.');
- const scale=source.units==='inch'?1:25.4,stockOD=Number(source.stock.diameter),front=Number(source.stock.frontZ||0);
- const clearance=.02*scale,eps=.002*scale;
- if(!setup.datum.trim()||!setup.fixture.trim()||!(setup.grip>0)||!(setup.stickout>0))
-  throw Error('Record actual WORK Z0 datum, workholding fixture, grip, and stickout before generating NC.');
- if(setup.support!=='none')throw Error('Tailstock, steady rest, and external supports have no collision model in this candidate. Keep this operation in study mode.');
- if(!(setup.safeX>stockOD+2*clearance)||!(setup.safeZ>front+clearance))
-  throw Error(`Enter measured clearance positions: SAFE X must exceed stock Ø by ${ncStudyNumber(2*clearance,source.units==='inch'?3:2)} and SAFE Z must exceed stock front by ${ncStudyNumber(clearance,source.units==='inch'?3:2)}. Both are work coordinates.`);
- if(!(Number.isInteger(setup.maxRpm)&&setup.maxRpm>0))throw Error('Enter actual machine/workholding MAX RPM.');
- if(!['M03','M04'].includes(options.spindle))throw Error('Explicitly select and confirm spindle direction M03/M04.');
- if(options.arcs!=='linear')throw Error('Fitted G02/G03 arcs are not qualified on the actual Doosan yet; select G01 ONLY for .nc testing.');
- if(!['on','off'].includes(options.coolant)||!['linear','auto'].includes(options.arcs)||
-    !['G54','G55','G56','G57','G58','G59'].includes(options.workOffset))throw Error('Invalid pilot NC option.');
- const opSet=source.operations.filter((_,i)=>indices.includes(i));
- const figure=buildProfile({...source,operations:[]});
- if(figure.errors.length)throw Error('Profile geometry invalid: '+figure.errors[0]);
- const coord=source.units==='inch'?5:4,n=val=>ncStudyNumber(val,coord);
- const safe=v=>String(v??'').replace(/[()%;\r\n]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,53);
- const insideStock=p=>p.x<stockOD+eps&&p.z<front+eps;
- const sections=[];
- for(let k=0;k<indices.length;k++){
-  const i=indices[k],op=source.operations[i],tool=source.tools.find(t=>t.id===op.toolId);
-  if(!tool)throw Error(`Step ${i+1}: missing assigned tool.`);
-  if(!Number.isInteger(tool.station)||tool.station<1||tool.station>99||!Number.isInteger(tool.offset)||tool.offset<1||tool.offset>99)
-   throw Error(`Step ${i+1}: tool station and offset must both be 1–99.`);
-  if(tool.mountSide!=='front')throw Error(`Step ${i+1}: non-front tool mounting has not been checked for pilot export.`);
-  // Administrative review flags do not establish geometry either way. They are
-  // documented prominently in candidate NC and checked at the export acknowledgement.
-  // Actual mathematical/known-unsafe conditions below remain hard blockers.
-  const reviewFlags=[];
-  if(tool.verified!==true)reviewFlags.push(`TOOL T${tool.station} DIMENSIONS/ASSEMBLED ORIENTATION NOT RECORDED VERIFIED`);
-  if(op.exitCorridorReviewed!==true)reviewFlags.push('EXIT CORRIDOR NOT RECORDED OPERATOR-REVIEWED');
-  if(!['face','od_rough','od_finish'].includes(op.kind))throw Error(`Step ${i+1}: ${op.kind} is still study-only (tool engagement/clearance not qualified).`);
-  if(!['od','face'].includes(tool.kind))throw Error(`Step ${i+1}: ${op.kind} cannot use ${tool.kind} for Doosan NC test; select a physically checked OD/facing tool.`);
-  if(tool.hand!=='R')throw Error(`Step ${i+1}: left-hand/reversed tool cutting direction is not qualified for .nc export yet. Use the study to review tool hand and cutting direction.`);
-  if(op.kind==='od_rough'&&op.roughReturnMode==='short')throw Error(`Step ${i+1}: SHORT X LIFT returns Z inside the raw-stock envelope. The study shows the motion, but the Doosan machine-test exporter has no verified removed-stock/holder sweep check for that rapid. Use FULL X for this test or inspect a review .nc.`);
-  if(op.kind==='od_rough'&&(['reverse'].includes(op.cutDirection)||op.accessPlan==='opposite'))throw Error(`Step ${i+1}: rear/opposite-entry OD roughing requires a qualified pocket and jaw model. Front-entry only for this test.`);
-  if(op.kind==='od_finish'&&op.cutDirection!=='reverse')throw Error(`Step ${i+1}: this OD finishing direction has not been independently verified for the active holder.`);
-  if(NC_STUDY_THREAD_KINDS.has(op.kind))throw Error(`Step ${i+1}: threading is a GUIDE ONLY. No spindle-synchronized NC implemented.`);
-  if(safety.feed==='G98'&&op.speedMode==='css')throw Error('G98 is not supported during G96 CSS: choose G99 or fixed G97 speed.');
-  if(['css','sfm_fixed'].includes(op.speedMode)){
-   if(op.speedMode==='css'&&['drill','od_thread','id_thread'].includes(op.kind))throw Error(`Step ${i+1}: G96 CSS is unsupported for drill/thread operations.`);
-   if(!(Number.isFinite(op.surfaceSpeedSfm)&&op.surfaceSpeedSfm>0&&op.surfaceSpeedSfm<=10000))throw Error(`Step ${i+1}: enter positive target surface speed in SFM.`);
-  }else if(!(Number.isFinite(op.rpm)&&op.rpm>0&&op.rpm<=setup.maxRpm))throw Error(`Step ${i+1}: RPM is invalid or above the actual RPM ceiling.`);
-  // Block spindle-revolution dwell: M04/G04 conversion is NOT controller-verified.
-  const profile=buildProfile({...source,operations:[]});
-  const planned=nominalMotionForOperation(source,op,profile);
-  if(planned.status!=='PREVIEW_ONLY')throw Error(`Step ${i+1}: preview blocked: ${planned.reason||'unknown'}`);
-  if(planned.passes.some(p=>p.moves.some(m=>m.kind==='dwell'||m.kind==='guide')))
-   throw Error(`Step ${i+1}: review-only dwell/thread guide cannot be translated into executable pilot NC.`);
-  if(planned.passes.some(p=>p.physicalFinishContact&&p.physicalFinishContact.radialUncut>eps))
-   throw Error(`Step ${i+1}: modeled form cutting lip does NOT reach the finished physical contour. Cannot export this strategy for live test.`);
-  const study=ncStudyGCode(source,i,'doosan_mgi',options.arcs,'tight');
-  const mapped=ncPilotReferenceMap(source,op,tool,planned,study);
-  if(study.threadGuide||study.reviewEvents.length||!study.blocks.length)
-   throw Error(`Step ${i+1}: unimplemented review event or missing motion. Pilot export stopped.`);
-  const first=mapped.blocks[0],last=mapped.blocks.at(-1);
-  const jawFaceEstimate=front-setup.stickout,axialJawMargin=.1*scale;
-  if(mapped.blocks.some(b=>b.z<jawFaceEstimate+axialJawMargin&&b.x<setup.safeX))
-   throw Error(`Step ${i+1}: tool reference approaches the estimated jaw-front plane. Verify actual chuck/jaws and move the cut away; this post does not certify jaw clearance.`);
-  if(first.kind!=='rapid'||insideStock(first))throw Error(`Step ${i+1}: first rapid is not established outside the raw stock envelope. Rework motion entry.`);
-  if(!(first.x>stockOD+clearance&&first.z>front+clearance))throw Error(`Step ${i+1}: first move must be radially OUTSIDE stock and IN FRONT of its face after reference mapping.`);
-  if(!(last.x>stockOD+clearance&&last.z>front+clearance))throw Error(`Step ${i+1}: final move must be radially OUTSIDE stock and IN FRONT of its face, in programmed reference coordinates.`);
-  if(insideStock(last))throw Error(`Step ${i+1}: final motion is not outside the raw stock envelope. No safe inter-operation link can be assumed.`);
-  const from=study.blocks[0];
-  // Reject implicit feed-only entry, repeated non-finite coords, arcs with missing center data.
-  let prevMotion=null;
+ const machine=setup.machine;
+ // Machine selection determines dialect and startup profile, not an approval gate.
+ // VTL requires its different, Z-first machine motion strategy and is not mapped here.
+ if(machine==='doosan_vtl')throw Error('VTL coordinates are not mapped to this slant-bed X/Z post.');
+ const postId=machine==='haas_st30'?'haas_ngc':
+  ['doosan_xz_test','doosan_puma','doosan_large'].includes(machine)?'doosan_mgi':
+  'fanuc_a';
+ const safety=ncSafetyStartup(postId,source.units,source);
+ if(!['M03','M04'].includes(options.spindle)||!['on','off'].includes(options.coolant)||
+    !['linear','auto'].includes(options.arcs)||
+    !['G54','G55','G56','G57','G58','G59'].includes(options.workOffset))throw Error('Check spindle, coolant, arc and work offset selections.');
+ const i=indices[0],op=source.operations[i];
+ if(!op?.enabled)throw Error('Select an enabled operation.');
+ const tool=source.tools.find(t=>t.id===op.toolId);
+ if(!tool)throw Error('Operation has no assigned tool.');
+ if(!(tool.station>=1&&tool.station<=99&&tool.offset>=1&&tool.offset<=99))
+  throw Error('Tool station and offset must be numbered 1-99.');
+ // No stock-envelope, tool hand, rear-entry, short-return, jaw-line, tool
+ // verification or supported-kind administrative locks here. Preview motion
+ // is emitted unchanged, for independent verification outside MiniTurn.
+ const study=ncStudyGCode(source,i,postId,options.arcs,'tight');
+ const profile=buildProfile({...source,operations:[]});
+ const planned=nominalMotionForOperation(source,op,profile);
+ if(planned.status!=='PREVIEW_ONLY')throw Error('No calculated motion for operation: '+(planned.reason||'check geometry'));
+ let mapped={blocks:study.blocks,reference:'PREVIEW X/Z',dx:0,dz:0};
+ // Use the existing physical nose-center offset transform when it resolves.
+ // Do not invent a compensation offset when the model has none.
+ if(op.kind==='od_finish'&&!study.threadGuide){
+  try{mapped=ncPilotReferenceMap(source,op,tool,planned,study);}catch(_){/* retain unshifted preview coordinates */}
+ }
+ const n=v=>ncStudyNumber(v,source.units==='inch'?5:4);
+ const clean=v=>String(v??'').replace(/[()%;\r\n]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,55);
+ const program=String(setup.program||'').trim().toUpperCase().replace(/^O/,'');
+ // O-number is optional for review, but no invented number is emitted.
+ if(program&&!/^\d{1,5}$/.test(program))throw Error('Program number should be 1-5 digits or blank.');
+ const rpmLimit=Number.isFinite(setup.maxRpm)&&setup.maxRpm>0?Math.round(setup.maxRpm):null;
+ if(op.speedMode==='css'&&!rpmLimit)throw Error('G96 needs an explicit G50 MAX RPM. Set the RPM limit in Job Data.');
+ const stockOD=Number(source.stock.diameter);
+ const rpmCalc=op.speedMode==='sfm_fixed'?
+  rpmFromSfm(op.surfaceSpeedSfm,op.kind==='drill'?op.drillDiameter:stockOD,source.units):Number(op.rpm);
+ const rpmStart=op.speedMode==='css'?
+  rpmFromSfm(op.surfaceSpeedSfm,Number.isFinite(setup.safeX)&&setup.safeX>0?setup.safeX:stockOD,source.units):rpmCalc;
+ const limitedRpm=v=>Math.max(1,Math.round(rpmLimit?Math.min(v,rpmLimit):v));
+ if(!(Number.isFinite(rpmStart)&&rpmStart>0))throw Error('Enter a positive RPM or surface speed for this operation.');
+ const out=['%'];
+ if(program&&Number(program)>0)out.push(`O${program.padStart(5,'0')}`);
+ out.push(`(MINITURN 0.9.60 / ${postId.toUpperCase()} / NC REVIEW)`,
+  `(STEP ${i+1} ${clean(op.name)} / T${tool.station} H${tool.offset})`,
+  `(PREVIEW PATH - VERIFY TOOL DATUM AND ALL MOVES)`,
+  `T${String(tool.station).padStart(2,'0')}${String(tool.offset).padStart(2,'0')}`,
+  safety.line);
+ if(rpmLimit)out.push(`G50 S${rpmLimit}`);
+ out.push(`G97 S${limitedRpm(rpmStart)} ${options.spindle}`,options.workOffset);
+ // Do not insert made-up safe moves. Only explicit user-entered coordinate
+ // targets are emitted; if absent, the actual preview starts the NC path.
+ const startX=Number.isFinite(setup.safeX)&&setup.safeX>0?setup.safeX:null;
+ const startZ=Number.isFinite(setup.safeZ)?setup.safeZ:null;
+ if(startX!==null)out.push(`G00 X${n(startX)}`);
+ if(startZ!==null)out.push(`G00 Z${n(startZ)}`);
+ if(op.speedMode==='css')out.push(`G96 S${source.units==='inch'?Number(op.surfaceSpeedSfm.toFixed(2)):Number((op.surfaceSpeedSfm*.3048).toFixed(3))}`);
+ if(options.coolant==='on')out.push('M08');
+ let lastX=startX===null?null:n(startX),lastZ=startZ===null?null:n(startZ),lastMode='G00',lastFeed=null;
+ if(study.threadGuide){
+  // Thread guides are NOT a spindle-synchronized toolpath. Never invent G01.
+  out.push('(THREAD GUIDE ONLY - G32/G76 MOTION NOT YET IMPLEMENTED)');
+  for(const entry of study.text.split('\n').filter(x=>x.startsWith('(GUIDE ')))out.push(entry);
+ }else{
   for(const b of mapped.blocks){
-   // Uncut rapid must stay outside the raw cylinder envelope, accounting for
-   // the straight segment from the previous datum. This is NOT a holder/jaw test.
-   if(b.kind==='rapid'&&prevMotion){
-    if(!ncPilotRapidSegmentClear(prevMotion,b,source.stock,clearance))
-     throw Error(`Step ${i+1}: G00 centerline might cross raw stock. Split the motion or keep this operation in study mode.`);
-   }
-   prevMotion=b;
    if(!['rapid','feed','arc'].includes(b.kind)||!Number.isFinite(b.x)||!Number.isFinite(b.z)||b.x<0)
-    throw Error(`Step ${i+1}: invalid NC block.`);
-   if(b.kind!=='rapid'&&!(b.feed>0&&Number.isFinite(b.feed)))throw Error(`Step ${i+1}: missing feed.`);
-   if(b.kind==='arc'&&(!['G02','G03'].includes(b.code)||!(Number.isFinite(b.r)&&b.r>0)))
-    throw Error(`Step ${i+1}: invalid fitted G18 arc.`);
-  }
-  if(op.speedMode==='css')reviewFlags.push('G96 CSS SFM UNQUALIFIED ON EXACT DOOSAN; CHECK G50 LIMIT AND X DIAMETER CONTROL CONFIGURATION');
-  sections.push({i,op,tool,study,mapped,first,last,reviewFlags});
- }
- const result=['%',`O${program.padStart(5,'0')} (MINITURN 0.9.59 / DOOSAN FANUC-A)`,
-  '(UNQUALIFIED SINGLE OP - INDEPENDENT MACHINE REVIEW REQUIRED)',
-  '(CHECK INITIAL TOOL INDEX POSITION JAWS OFFSETS AND EVERY MOTION)',
-  `(FEED MODE ${safety.feed} / ${safety.feed==='G99'?'PER REV':'PER MIN AT G97 RPM'})`,
-  ...sections.flatMap(sec=>sec.reviewFlags.map(w=>`(REVIEW ${safe(w)})`)),
-  `(JOB ${safe(source.name)} / STEP ${indices[0]+1})`,
-  `(WORK OFFSET ${options.workOffset} / SAFE X${n(setup.safeX)} Z${n(setup.safeZ)})`,
-  ''];
- for(let j=0;j<sections.length;j++){
-  const {i,op,tool,study,mapped,last,reviewFlags}=sections[j];
-  result.push(`(STEP ${i+1} / ${safe(op.name)} / T${tool.station} H${tool.offset})`,
-    `(G40 REFERENCE ${mapped.reference} / SHIFT X${n(mapped.dx)} Z${n(mapped.dz)})`,
-    `T${String(tool.station).padStart(2,'0')}${String(tool.offset).padStart(2,'0')}`,
-    safety.line,
-    `G50 S${Math.round(setup.maxRpm)}`,
-    ...(op.speedMode==='css'?[
-      '(START SPINDLE IN G97 AT SAFE CSS-EQUIVALENT STOCK RPM BEFORE G54/MOTION)',
-      `G97 S${Math.max(1,Math.min(Math.round(setup.maxRpm),Math.round(rpmFromSfm(op.surfaceSpeedSfm,Math.max(setup.safeX,stockOD),source.units))))} ${options.spindle}`
-     ]:op.speedMode==='sfm_fixed'?[
-      `(G97 RPM FROM ${op.surfaceSpeedSfm} SFM AT ${op.kind==='drill'?'DRILL':'STOCK'} X DIAMETER - LIMITED BY G50)`,
-      `G97 S${Math.max(1,Math.min(Math.round(setup.maxRpm),Math.round(rpmFromSfm(op.surfaceSpeedSfm,op.kind==='drill'?op.drillDiameter:stockOD,source.units))))} ${options.spindle}`
-     ]:[`G97 S${Math.round(op.rpm)} ${options.spindle}`]),
-    `${options.workOffset}`,
-    '(FIRST X/Z MOVE ASSUMES SAFE INITIAL MACHINE POSITION)',
-    `G00 X${n(setup.safeX)}`, `G00 Z${n(setup.safeZ)}`,
-    ...(op.speedMode==='css'?[
-      `(ENABLE G96 CSS AT VERIFIED WORK-COORDINATE SAFE POSITION / ${op.surfaceSpeedSfm} SFM)`,
-      `(G50 S${Math.round(setup.maxRpm)} RPM CEILING - VERIFY AT ACTUAL MACHINE)`,
-      `G96 S${source.units==='inch'?Number(op.surfaceSpeedSfm.toFixed(2)):Number((op.surfaceSpeedSfm*.3048).toFixed(3))}`
-     ]:[]),
-    ...(options.coolant==='on'?['M08']:[]),
-    `(CUTTING MOTION FROM NOMINAL SCRUBBER - STEP ${i+1})`);
-  let pathX=n(setup.safeX),pathZ=n(setup.safeZ),pathMode='G00',pathFeed=null;
-  for(const b of mapped.blocks){
-   const x=n(b.x),z=n(b.z);
-   const line=[];
-   if(b.code!==pathMode)line.push(b.code);
-   if(x!==pathX)line.push(`X${x}`);
-   if(z!==pathZ)line.push(`Z${z}`);
-   if(b.kind==='arc')line.push(`R${ncStudyNumber(b.r,coord+1)}`);
-   if(b.kind!=='rapid'){
-    // Study blocks already use the selected feed mode; do not convert twice.
-    const f=n(b.feed);
-    if(f!==pathFeed)line.push(`F${f}`);
-    pathFeed=f;
+    throw Error('Motion preview contains an invalid X/Z block.');
+   const x=n(b.x),z=n(b.z),code=b.code;
+   const words=[];
+   if(code!==lastMode)words.push(code);
+   if(x!==lastX)words.push(`X${x}`);
+   if(z!==lastZ)words.push(`Z${z}`);
+   if(b.kind==='arc'){
+    if(!(Number.isFinite(b.r)&&b.r>0)||!['G02','G03'].includes(code))throw Error('Arc R geometry is not defined.');
+    words.push(`R${ncStudyNumber(b.r,(source.units==='inch'?5:4)+1)}`);
    }
-   if(line.length){result.push(line.join(' '));pathMode=b.code;pathX=x;pathZ=z;}
+   if(b.kind!=='rapid'){
+    if(!(b.feed>0&&Number.isFinite(b.feed)))throw Error('Feed is not defined for a cutting move.');
+    const f=n(b.feed);
+    if(f!==lastFeed)words.push(`F${f}`);
+    lastFeed=f;
+   }
+   if(words.length){out.push(words.join(' '));lastMode=code;lastX=x;lastZ=z;}
   }
-  result.push('(RETURN TO MEASURED SAFE X/Z)',
-    ...(op.speedMode==='css'?[`(CANCEL CSS AT LAST PATH X - MATCH APPROXIMATE CURRENT RPM)`,`G97 S${Math.max(1,Math.min(Math.round(setup.maxRpm),Math.round(rpmFromSfm(op.surfaceSpeedSfm,Math.max(last.x,stockOD*.02),source.units))))}`]:[]),
-    `G00 X${n(setup.safeX)}`,`G00 Z${n(setup.safeZ)}`,
-    ...(options.coolant==='on'?['M09']:[]),'M05','');
+  // A requested dwell stays explicit and non-moving, not silently synthesized.
+  if(study.reviewEvents.some(e=>e.kind==='dwell-review'))out.push('(DWELL NOT POSTED - REVIEW OPERATION)');
  }
- result.push('M30','%','');
- return {text:result.join('\n'),indices:indices.slice(),fingerprint:pfFingerprintFor(source),
-  profile:'doosan_fanuc_xz_test',sections:sections.length,blocks:sections.reduce((n,s)=>n+s.study.blocks.length,0),
-  program:`O${program.padStart(5,'0')}`,options:{...options},reviewFlags:sections.flatMap(s=>s.reviewFlags),unqualified:true};
+ if(op.speedMode==='css'){
+  const lastDiameter=mapped.blocks.at(-1)?.x;
+  const cssRpm=rpmFromSfm(op.surfaceSpeedSfm,Math.max(Number(lastDiameter)||stockOD,stockOD*.02),source.units);
+  out.push(`G97 S${limitedRpm(cssRpm)}`);
+ }
+ // Return coordinates are exactly the operator-defined values, not required
+ // to be outside the RAW stock rectangle. No assumed swept-stock rejection.
+ if(startX!==null)out.push(`G00 X${n(startX)}`);
+ if(startZ!==null)out.push(`G00 Z${n(startZ)}`);
+ if(options.coolant==='on')out.push('M09');
+ out.push('M05','M30','%','');
+ return {text:out.join('\n'),indices:indices.slice(),fingerprint:pfFingerprintFor(source),
+  profile:postId,blocks:study.blocks.length,program:program?'O'+program.padStart(5,'0'):'UNNUMBERED',
+  options:{...options},reviewFlags:[],unqualified:true,threadGuide:study.threadGuide};
 }
 function ncPilotSelectedOptions(){return {spindle:$('pfPilotSpindle').value,coolant:$('pfPilotCoolant').value,
  arcs:$('pfPilotArcs').value,workOffset:$('pfPilotWorkOffset').value};}
-function ncPilotConfirmationsOK(){return $('pfPilotCheckOperator').checked;}
 function ncPilotSelectedIndices(){
- const s=$('pfPilotOp');return s&&s.value!==''?[Number(s.value)]:[];
-}
-function ncPilotOperationSummary(){
- const out=$('pfPilotReadiness');if(!out)return;
- const ids=ncPilotSelectedIndices();
- if(!ids.length){out.dataset.state='block';out.textContent='No operation selected.';return;}
- const i=ids[0],op=job.operations[i],tool=job.tools.find(t=>t.id===op.toolId);
- const notes=[];
- const supported=['face','od_rough','od_finish'].includes(op.kind);
- if(!supported)notes.push('STUDY ONLY: this operation family has no Doosan machine-test post yet.');
- if(op.kind==='od_rough'&&(op.cutDirection==='reverse'||op.accessPlan==='opposite'))notes.push('BLOCKED: rear/opposite-entry OD roughing needs a qualified pocket/jaw model.');
- if(op.kind==='od_finish'&&(op.fadeInMode!=='off'||op.fadeOutMode!=='off'))notes.push('BLOCKED: finish fade path not qualified.');
- if(tool?.verified!==true)notes.push('REVIEW: assigned tool dimensions/orientation not recorded as checked.');
- if(op.exitCorridorReviewed!==true)notes.push('REVIEW: exit corridor not marked checked in operation editor.');
- if(tool?.hand!=='R')notes.push('BLOCKED: left-hand tool NC mapping not qualified.');
- if(!tool)notes.push('BLOCKED: no assigned tool.');
- if(!notes.length)notes.push('No immediately known per-operation gates; full machine setup and motion verification still required.');
- out.dataset.state=notes.some(n=>n.startsWith('BLOCKED')||n.startsWith('STUDY ONLY'))?'block':'review';
- out.textContent=`STEP ${i+1} · ${op.name} / T${tool?.station??'?'}\n`+notes.join('\n');
+ const el=$('pfPilotOp');return el&&el.value!==''?[Number(el.value)]:[];
 }
 function refreshNCPilotOperationPicker(){
  const el=$('pfPilotOp');if(!el)return;
- const previous=el.value,oldId=el.options[el.selectedIndex]?.dataset?.opid;
+ const priorId=el.options[el.selectedIndex]?.dataset?.opid;
+ const prior=el.value;
  el.replaceChildren();
  job.operations.forEach((op,i)=>{
   if(!op.enabled)return;
   const opt=document.createElement('option');opt.value=String(i);opt.dataset.opid=op.id;
-  const supports=['face','od_rough','od_finish'].includes(op.kind)&&
-   !(op.kind==='od_rough'&&(op.cutDirection==='reverse'||op.accessPlan==='opposite'))&&
-   !(op.kind==='od_finish'&&(op.fadeInMode!=='off'||op.fadeOutMode!=='off'));
-  opt.textContent=`${String(i+1).padStart(2,'0')} · ${op.name} · ${supports?'NC CANDIDATE':'STUDY ONLY / BLOCKED'}`;
+  opt.textContent=`${String(i+1).padStart(2,'0')} · ${op.name}`;
   el.append(opt);
  });
- const old=[...el.options].find(x=>x.dataset.opid===oldId)||[...el.options].find(x=>x.value===previous);
+ const old=[...el.options].find(x=>x.dataset.opid===priorId)||[...el.options].find(x=>x.value===prior);
  if(old)el.value=old.value;
- else el.value=([...el.options].find(x=>job.operations[Number(x.value)]?.kind==='face')||el.options[0])?.value??'';
- ncPilotOperationSummary();
 }
 function wireNCPilot(){
- const opts=['pfPilotSpindle','pfPilotCoolant','pfPilotArcs','pfPilotWorkOffset'];
- opts.forEach(id=>$(id).addEventListener('change',()=>ncPilotInvalidate()));
- $('pfPilotOp').addEventListener('change',()=>{ncPilotInvalidate();ncPilotOperationSummary();});
- $('pfPilotFirst').addEventListener('click',()=>{
-  const opt=[...$('pfPilotOp').options].find(x=>{
-   const op=job.operations[Number(x.value)],tool=job.tools.find(t=>t.id===op.toolId);
-   return op.kind==='face'&&tool?.hand==='R';
-  })||[...$('pfPilotOp').options].find(x=>{
-   const op=job.operations[Number(x.value)];return op.kind==='od_rough'&&op.cutDirection!=='reverse'&&op.accessPlan!=='opposite';
-  });
-  if(opt){$('pfPilotOp').value=opt.value;ncPilotInvalidate();ncPilotOperationSummary();}
-  else notify('NO SIMPLE FRONT-ENTRY OPERATION AVAILABLE',true);
- });
+ const opts=['pfPilotSpindle','pfPilotCoolant','pfPilotArcs','pfPilotWorkOffset','pfPilotOp'];
+ opts.forEach(id=>$(id).addEventListener('change',()=>ncPilotInvalidate('CHANGED SETTINGS · GENERATE AGAIN')));
  $('pfPilotBuild').addEventListener('click',()=>{
   try{
    if(pfEditing&&!saveJobSetup())return;
    const indices=ncPilotSelectedIndices();
-   ncPilotInvalidate('GENERATING MACHINE-TEST NC');
-   const v=ncPilotGenerate(job,indices,ncPilotSelectedOptions());ncPilotCache=v;
-   $('pfPilotPreview').textContent=v.text;
+   ncPilotInvalidate('GENERATING');
+   const result=ncPilotGenerate(job,indices,ncPilotSelectedOptions());
+   ncPilotCache=result;
+   $('pfPilotPreview').textContent=result.text;
    $('pfPilotDownload').disabled=false;
-   $('pfPilotStatus').textContent=`${v.program} · STEP ${indices[0]+1} · ${v.blocks} BLOCKS · ${v.reviewFlags.length? v.reviewFlags.length+' OPERATOR REVIEW FLAG(S) · ':''}EXPERIMENTAL NC CANDIDATE. CHECK PREVIEW BEFORE SAVE.`;
-  }catch(e){ncPilotInvalidate('NC CANDIDATE CANNOT BE BUILT · '+e.message);notify(e.message,true);}
+   $('pfPilotStatus').textContent=result.threadGuide?'THREAD GUIDE ONLY · SYNCHRONIZED THREAD MOTION NOT POSTED':`${result.program} · ${result.blocks} MOTION BLOCKS · ${result.profile.toUpperCase()} · READY TO SAVE FOR REVIEW`;
+  }catch(e){ncPilotInvalidate('COULD NOT GENERATE: '+e.message);notify(e.message,true);}
  });
  $('pfPilotDownload').addEventListener('click',()=>{
   if(!ncPilotCache||ncPilotCache.fingerprint!==pfFingerprintFor(job)||
-    JSON.stringify(ncPilotCache.indices)!==JSON.stringify(ncPilotSelectedIndices())||
-    JSON.stringify(ncPilotCache.options)!==JSON.stringify(ncPilotSelectedOptions())){
-   ncPilotInvalidate();notify('CHANGED EXPORT OR JOB · REGENERATE THE .NC FILE',true);return;
+   JSON.stringify(ncPilotCache.indices)!==JSON.stringify(ncPilotSelectedIndices())||
+   JSON.stringify(ncPilotCache.options)!==JSON.stringify(ncPilotSelectedOptions())){
+   ncPilotInvalidate();notify('JOB OR SETTINGS CHANGED · GENERATE AGAIN',true);return;
   }
-  if(!ncPilotConfirmationsOK()){notify('ACKNOWLEDGE THE NC REVIEW CONDITIONS BELOW PREVIEW',true);return;}
   const d=ncPilotCache;
   const steps=`step${d.indices[0]+1}`;
-  download(d.text,`${safeFilename()}_${steps}_${d.program}_DOOSAN_XZ_TEST_UNQUALIFIED.nc`,'text/plain');
-  notify('EXPERIMENTAL .NC EXPORTED · INDEPENDENT SIMULATION AND DRY RUN REQUIRED');
+  download(d.text,`${safeFilename()}_${steps}_${d.program}_${d.profile}_REVIEW.nc`,'text/plain');
+  notify('NC SAVED FOR INDEPENDENT SHOP REVIEW');
  });
 }
 function resetNCStudy(){
@@ -8773,7 +8691,7 @@ function ncStudySelectedGCode(source,indices,postId,arcMode,arcTol,includeMGi=fa
  if(parts.length===1)return {...parts[0],selectedIndices:indices};
  const safe=s=>String(s).replace(/[()\r\n%]/g,' ').replace(/[^\x20-\x7e]/g,' ').slice(0,60);
  const header=[
-  '(MINITURN 0.9.59 - MULTI-OPERATION G-CODE REVIEW)',
+  '(MINITURN 0.9.60 - MULTI-OPERATION G-CODE REVIEW)',
   '(INDEPENDENT STUDY FRAGMENTS - NOT AN EXECUTABLE MULTI-OP PROGRAM)',
   `(JOB ${safe(source.name)} / ${parts.length} SELECTED OPERATIONS IN MACHINING ORDER)`,
   `(SELECTED STEPS ${indices.map(i=>i+1).join(', ')})`,
@@ -8963,11 +8881,11 @@ function refreshJobInfo(){
  if(!report.blockers.length&&!report.reviews.length){const ok=document.createElement('p');ok.className='job-small-note';ok.textContent='No current preflight issues. Actual machine clearance and program qualification are still required.';issue.append(ok);}
  const checks=$('pfChecks');checks.replaceChildren();
  for(const [key,desc] of PRECHECK_ITEMS){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=pfSessionChecks.has(key);cb.addEventListener('change',()=>{if(cb.checked)pfSessionChecks.add(key);else pfSessionChecks.delete(key);refreshJobInfo();});const span=document.createElement('span');span.textContent=desc;label.append(cb,span);checks.append(label);}
- $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: MASTER FIGURE + NOMINAL PREVIEWS + 2D TOOL-BODY REVIEW.','MOTION IR: EMPTY / NOT VERIFIED. PREVIEWS ARE NOT NC BLOCKS.', 'NC STUDY: 10 MOTION TYPES G00/G01/G02/G03 FITTED STUDIES; 2 THREAD GUIDES.', 'STUDY DIALECTS: HAAS / FANUC SYSTEM A / DOOSAN FANUC-A. VERIFY G-CODE SYSTEM.', 'DOOSAN MGi: G1900/G1901 STOCK BLOCK IS OPTIONAL AND OFF BY DEFAULT.', 'MANUAL GUIDE i STOCK BLOCKS REQUIRE EXACT MACHINE OPTION CONFIRMATION.', 'STUDY TXT HAS NO TOOL/SPINDLE/WORK OFFSET/COOLANT/END.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, ARC GEOMETRY, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: INDEPENDENT TOOL-MOUNTING VALIDATION + 3D HOLDER/CHUCK SWEEP -> MACHINE/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
+ $('pfPostContract').textContent=[`PROCESS PLAN: ${POST_IR_VERSION}`,'X PROGRAMMING: DIAMETER; Z: AXIAL.','CORE PLANE: U=-Z, V=X/2 (PHYSICAL).',`JOB MACHINE PROFILE: ${MACHINE_PROFILES[s.machine].label}`,'CURRENT CONTENT: MASTER FIGURE + NOMINAL PREVIEWS + 2D TOOL-BODY REVIEW.','MOTION IR: EMPTY / NOT VERIFIED. PREVIEWS ARE NOT NC BLOCKS.', 'NC REVIEW: PREVIEW G00/G01/G02/G03 PATHS; THREAD GUIDES ARE NONCUTTING.', 'STUDY DIALECTS: HAAS / FANUC SYSTEM A / DOOSAN FANUC-A. VERIFY G-CODE SYSTEM.', 'DOOSAN MGi: G1900/G1901 STOCK BLOCK IS OPTIONAL AND OFF BY DEFAULT.', 'MANUAL GUIDE i STOCK BLOCKS REQUIRE EXACT MACHINE OPTION CONFIRMATION.', 'STUDY TXT HAS NO TOOL/SPINDLE/WORK OFFSET/COOLANT/END.', 'POST INTERFACE: MACHINE-CAPABILITY ADAPTER RESERVED.', 'TARGETS: HAAS ST-30, DOOSAN PUMA, LARGE DOOSAN; VTL LATER.', 'NOT VERIFIED: HOME, T-CALL, ARC GEOMETRY, SPINDLE M CODES,', 'COOLANT, COMP G41/G42, ARC FORMAT, CYCLES, LIMITS.', 'REQUIRED NEXT: INDEPENDENT TOOL-MOUNTING VALIDATION + 3D HOLDER/CHUCK SWEEP -> MACHINE/COLLISION CHECK', '-> CONTROL POST -> CONTROLLER SIMULATION & FIRST-ARTICLE.',`NC GATE: ${NC_EXPORT_DISABLED_REASON}`].join('\n');
 }
 function textSetupSheet(){
  const s=normalizeJobSetup(job.setup),report=preflightReport(job);
- const lines=['MINITURN 0.9.59 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)} · RAW FRONT Z${pfValue(job.stock.frontZ||0)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`CHUCKED LENGTH: ${pfValue(s.grip)} · MEASURED STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
+ const lines=['MINITURN 0.9.60 · JOB SETUP / PREFLIGHT','NOT A CNC PROGRAM — UNVERIFIED PLANNING DATA','',`JOB: ${cleanTxt(job.name)}`,`PART: ${cleanTxt(s.part)||'—'} / REV ${cleanTxt(s.revision)||'—'}`,`WORK ORDER: ${cleanTxt(s.workOrder)||'—'}`,`MATERIAL: ${cleanTxt(s.material)||'—'}`,`PROGRAM ID (DRAFT): ${cleanTxt(s.program)||'—'}`,`MACHINE: ${MACHINE_PROFILES[s.machine].label}`,`UNITS: ${job.units.toUpperCase()} · X IS DIAMETER · WORK SIDE: ${job.workSide}`,`STOCK: ${job.stock.type} Ø${pfValue(job.stock.diameter)} x ${pfValue(job.stock.length)} · RAW FRONT Z${pfValue(job.stock.frontZ||0)}`,'', 'WORKHOLDING / DATUM',`FIXTURE: ${cleanTxt(s.fixture)||'—'}`,`Z0: ${cleanTxt(s.datum)||'—'}`,`CHUCKED LENGTH: ${pfValue(s.grip)} · MEASURED STICKOUT: ${pfValue(s.stickout)}`,`SAFE XØ: ${pfValue(s.safeX)} · SAFE Z: ${pfValue(s.safeZ)}`,`RPM LIMIT: ${s.maxRpm||'NOT SET'} · SUPPORT: ${s.support}`,`NOTES: ${cleanTxt(s.notes)||'—'}`,'','OPERATION SEQUENCE'];
  job.operations.forEach((op,i)=>{const t=job.tools.find(x=>x.id===op.toolId);lines.push(`${String(i+1).padStart(2,'0')} ${op.enabled?'ON ':'OFF'} ${op.kind.toUpperCase()} · ${cleanTxt(op.name)}`,`   ${t?`T${t.station} H${t.offset} ${cleanTxt(t.name)}`:'NO TOOL'} · ${op.speedMode==='css'?`G96 ${op.surfaceSpeedSfm} SFM`:op.speedMode==='sfm_fixed'?`G97 FROM ${op.surfaceSpeedSfm} SFM`:`G97 ${op.rpm} RPM`} · FEED ${pfValue(op.feed)}/REV`, `   DOC RAD ${pfValue(op.doc)} · FIN RAD/Z ${pfValue(op.finishRadial)}/${pfValue(op.finishAxial)} · CLR RAD/Z ${pfValue(op.clearanceRadial)}/${pfValue(op.retractZ)}`,op.kind==='face'?`   FACE Z${pfValue(op.faceZ)} · LEAVE ${pfValue(op.faceLeave||0)} · ${op.faceDirection==='outward'?'X+ INNER→OUTER':'X− OUTER→INNER'} · XØ${pfValue(op.faceDirection==='outward'?op.faceEndX:op.faceStartX)} TO XØ${pfValue(op.faceDirection==='outward'?op.faceStartX:op.faceEndX)} · AXIAL STEP ${pfValue(op.faceStep)}`:`   P${(op.cutDirection==='reverse'?op.to:op.from)+1} TO P${(op.cutDirection==='reverse'?op.from:op.to)+1} · ${op.cutDirection||'forward'} · ACCESS: ${op.accessPlan||'review'}`);});
  lines.push('','PREFLIGHT / OPERATOR CHECKS (THIS SESSION)');for(const [key,label] of PRECHECK_ITEMS)lines.push(`${pfSessionChecks.has(key)?'[X]':'[ ]'} ${label}`);
  lines.push('','OPEN BLOCKERS:',...report.blockers.map(s=>'BLOCK: '+s),'REVIEW:',...report.reviews.map(s=>'CHECK: '+s),'','NO VERIFIED TOOLPATH · NO COLLISION SAFETY CLAIM · NC EXPORT LOCKED');return lines.join('\n');
